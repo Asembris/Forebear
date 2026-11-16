@@ -24,3 +24,10 @@ data/_*.rl
 data/live/
 .DS_Store
 Thumbs.db
+# internal planning and review notes (kept local, not published)
+ARCHITECTURE.md
+DEMO_STORYBOARD.md
+NEXT_STEPS.md
+PRODUCT_BRIEF.md
+REVIEW.md
+SELECTION.md
