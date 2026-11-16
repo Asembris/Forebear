@@ -1,0 +1,706 @@
+{
+ "predicate": [
+  {
+   "src": "K081837",
+   "src_name": "AVEA VENTILATOR",
+   "dst": "K990949",
+   "dst_name": "CLEAR-GUARD II, CLEAR-THERM HMEF, CLEAR-THERM HMEF W/ FLEXTUBE, CLEAR GUARD 11 W/ GAS MONITORING PORT",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "onal disposable Filter are: * Existing reusable filter assembly (Which is part of the AVEA Ventilator, cleared under K013642) - Intersurgical: Clear Guard II - K990949 Device Description: The AVEA Ventilator is a fourth generation servo-controlled",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K081837.pdf"
+  },
+  {
+   "src": "K082237",
+   "src_name": "PURITAN BENNETT, SANDMAN DUO AND SANDMAN DUO ST",
+   "dst": "K071575",
+   "dst_name": "SANDMAN INTRO",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "nfigured with optional humidification. Predicate Device Equivalence The Sandman Duo and the Sandman Duo ST are equivalent to the Puritan Bennett Sandman Intro (K071 575) for all aspects except the Bilevel mode, to the Puritan Bennett Sandman Info (",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K082237.pdf"
+  },
+  {
+   "src": "K133769",
+   "src_name": "3B RESMART BPAP 25A, BMC RESMART BPAP 25A",
+   "dst": "K050759",
+   "dst_name": "BIPAP AUTO",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "lassification Reference 21 CFR 868.5905 Product Code BZD \u2013Non-continuous Ventilator (Respirator) Predicate Device(s) Predicate Respironics BiPAP Auto (K050759) Predicate RESmart\u00ae Auto-CPAP (K131707) Indications for Use The 3B and B",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K133769.pdf"
+  },
+  {
+   "src": "K112489",
+   "src_name": "SWIFT FX BELLA",
+   "dst": "K042403",
+   "dst_name": "MIRAGE SWIFT",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "intended for single-patient re-use in the home environment and multipatient re-use in the hospital/institutional environment. Secondary predicate Mirage Swift (K042403), Ultra Mirage 11 Mask (K050359), devices Mirage Quattro (K063122), Mirage Libe",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K112489.pdf"
+  },
+  {
+   "src": "K223747",
+   "src_name": "Whitsundays Mask System",
+   "dst": "K180497",
+   "dst_name": "Scone Mask",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "CFR 868.5905, 73 BZD (Class II) Classification Name: Accessory to Noncontinuous Ventilator (IPPB) Product Code: BZD Predicate Device: Scone mask (K180497)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K223747.pdf"
+  },
+  {
+   "src": "K110405",
+   "src_name": "TRUBLUE NASAL MASK",
+   "dst": "K092835",
+   "dst_name": "COMFORTGEL NASAL MASK",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ual Name Nasal Mask Classification Name IBZD - Ventilator, non-continuous (respirator) Product Code Predicate Device(s) Respironics ComfortGel Blue Nasal Mask (K092835) Respironics ComfortTwin Nasal Mask (K091 843) Device Description The TrueBlue",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K110405.pdf"
+  },
+  {
+   "src": "K023366",
+   "src_name": "DATEX-OHMEDA 7900 VENTILATOR ENHANCEMENTS",
+   "dst": "K960964",
+   "dst_name": "OHMEDA 7900 ANESTHESIA VENTILATOR",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "rrently marketed devices: 1. Ohmeda 7900 Anesthesia Ventilator - Class II - 21CFR868.5895, which has been the subject of a cleared 510(k) with FDA log number K960964 2. Ohmeda Excel 3000 Anesthesia Gas System - Class II - 21CFR868.5895, which h",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K023366.pdf"
+  },
+  {
+   "src": "K231313",
+   "src_name": "Therapy Mask 3100 NC/SP",
+   "dst": "K210386",
+   "dst_name": "Magneto Nasal Mask",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "assification Reference 21 CFR 868.5905 Classification Name/Product Code Ventilator, non-continuous (respirator)/BZD Predicate Device Therapy Mask 3100 NC/SP (K210386)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K231313.pdf"
+  },
+  {
+   "src": "K072926",
+   "src_name": "HELONTIX VENT",
+   "dst": "K970460",
+   "dst_name": "NELLCOR PURITAN BENNETT, 840 VENTILATOR SYSTEM (MODEL 840)",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "IA Date summary was prepared: October 1, 2007 Name(s) of the device: Helontix Vent Identification of predicate device(s): Puritan Bennett 840 Ventilator System K970460 GE Datex-Ohmeda Apta6r Heliox Delivery system, K041524 Maquet Critical Care AB,",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K072926.pdf"
+  },
+  {
+   "src": "K021112",
+   "src_name": "INSPIRATION VENTILATOR SYSTEM",
+   "dst": "K984379",
+   "dst_name": "NELLCOR PURITAN BENNETT, 760 VENTILATOR SYSTEM",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "cepted industry standards. The predicate devices are as follows: 1. Servo Ventilator 300, Siemens-Elema AB, K960010 2. 760 Ventilator, Puritan Bennett Inc., K984379 Section 16.e Device Description The /nspirafionTM Ventilator System is housed",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K021112.pdf"
+  },
+  {
+   "src": "K242547",
+   "src_name": "AirFit F20 Mask System; AirFit F20 NM Mask System",
+   "dst": "K170924",
+   "dst_name": "AirFit F20",
+   "kind": "predicate",
+   "page": 5,
+   "snippet": "ion and Classification Name: 21 CFR 868.5905, BZD (Class II) Accessory to Noncontinuous Ventilator (IPPB) Product Code: BZD Predicate Device: AirFit F20 (K170924)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K242547.pdf"
+  },
+  {
+   "src": "K222207",
+   "src_name": "Babylog VN800, Babylog VN600",
+   "dst": "K093632",
+   "dst_name": "INFINITY ACUTE CARE SYSTEM WORKSTATION NEONATAL CARE",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "VN800, Babylog VN600 Ventilator, Continuous, Facility Use 21 CFR \u00a7868.5895 CBK II Predicate Device: Infinity Acute Care System Workstation Neonatal Care, K093632 Dr\u00e4gerwerk AG & Co. KGaA is submitting a traditional 510(k) premarket notifi",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K222207.pdf"
+  },
+  {
+   "src": "K121379",
+   "src_name": "PNEUTON MINI VENTILATOR PNEUTON MINI NON-INVASIVE VENTILATION (NIV) KIT ACCESSORY",
+   "dst": "K110471",
+   "dst_name": "BABI PLUS INFANT NASAL CANNULA SYSTEM",
+   "kind": "predicate",
+   "page": 6,
+   "snippet": "is substantially equivalent in the indications for use, environment of use, patient population, material and function to the A Plus Medical Nasal Cannula Kit (K1 10471). The NIC FM CPAP Kit includes both nasal prongs and nasal masks while the A Pl",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K121379.pdf"
+  },
+  {
+   "src": "K090888",
+   "src_name": "NEWPORT HT70 FAMILY OF VENTILATORS",
+   "dst": "K010608",
+   "dst_name": "MODIFICATION TO LAP TOP VENTILATOR (LTV)",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "rketed predicate devices: * NEWPORT HT50\u00ae Ventilator cleared under K992133 and K082724; \u00b7 Pulmonetic Systems LTV\u00ae 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cl",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf9/K090888.pdf"
+  },
+  {
+   "src": "K153061",
+   "src_name": "Juno VPAP ST-A",
+   "dst": "K113288",
+   "dst_name": "VPAP ST-A",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "FR \u00a7868.5895 Regulation Name Anesthesiology devices, Continuous Ventilator Regulatory Class Class II Product Code MNS Predicate Device ResMed S9 VPAP ST-A (K113288) Reference Device ResMed S9 WANDA VPAP ST (K140159)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf15/K153061.pdf"
+  },
+  {
+   "src": "K120726",
+   "src_name": "FLIGHT 60 VENTILATOR",
+   "dst": "K111683",
+   "dst_name": "FLIGHT 60 VENTILATOR",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "oduct code 73 CBI( and NOU; regulation 21 CFR 868.5895 Classification and Review Panel: Anesthesiology Predicate Devices: * Flight 60 Ventilator, cleared under K(111683, manufactured by Flight Medical Innovations Ltd * Vela Ventilator, cleared unde",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120726.pdf"
+  },
+  {
+   "src": "K091919",
+   "src_name": "DEVILBISS INTELLIPAP/SLEEPCUBE BILEVEL S/ST",
+   "dst": "K071689",
+   "dst_name": "DEVILBISS INTELLIPAP MODEL DV 5 SERIES",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "or, non- continuous respirator Predicate Device Name(s) and 5 10(k) Resmed VPAP ST - K080131 number(s): DeVilbiss 9055 Bilevel - K032056 DeVilbiss Intellipap - K071689 Section 5.0 Page 1 of 3",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf9/K091919.pdf"
+  },
+  {
+   "src": "K032922",
+   "src_name": "CLARISSA INFANT NCPAP CANNULA",
+   "dst": "K792018",
+   "dst_name": "SILICONE RUBBER-BI NASOPHARYNGEAL AIR",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ce: 21CFR 868.5895 Device Product Code and CBK Panel Code: Anesthesiology Panel Predicate Devices: Argyle CPAP Nasal Cannula (K81 1409) Neotech Binasal Airway (K7920 18) Medicomp CPAP Nasal Cannula (K86 1280) Hudson Jnfant Nasal CPAP Cannula (K87 1",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf3/K032922.pdf"
+  },
+  {
+   "src": "K082979",
+   "src_name": "S8 ADVANCE",
+   "dst": "K041209",
+   "dst_name": "RESMED S8 PIONEER CPAP SYSTEM",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "905 Product Code 73,BZD Common/Usual Name Non continuous ventilator.(IPPB):. Proprietary Name S8 ADVANCE Predicate Device(s) S8 Escape 11 (K080079) 58 Pioneer (KO41209) Reason for submission New Device Indication for Use The S8 ADVANCE self-adjust",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K082979.pdf"
+  },
+  {
+   "src": "K152356",
+   "src_name": "Sapphire",
+   "dst": "K140054",
+   "dst_name": "RESCAN",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "21 CFR 868.5905, Product Code BZD) Continuous ventilator (21 CFR 868.5895, Product Codes MNS, MNT, CBK, NOU) III. Legally Marketed Predicate Devices \uf0b7 K140054 ResScan, ResMed LTD. \uf0b7 K132371 EasyCare Online, ResMed LTD. IV. Device Descri",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf15/K152356.pdf"
+  },
+  {
+   "src": "K133009",
+   "src_name": "NASAL MASK, NASAL MASK, FULL FACE MASK",
+   "dst": "K030798",
+   "dst_name": "MIRAGE ACTIVA MASK",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "dicate Device 3.1 Predicate Device of Nasal Mask BMC-NM and BMC-NM2 Product name: ComfortoerM (K092835) Manufacturer: RESPIRONICS Product name: Mirage Activa m(K030798) Manufacturer: Resmed Product Code: BZD Intended Use: * Mirage ActivaTM Mask (K",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K133009.pdf"
+  },
+  {
+   "src": "K172335",
+   "src_name": "Bleep DreamPort",
+   "dst": "K073638",
+   "dst_name": "SWIFT LT",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "/Usual Name: CPAP Nasal adhesive mask Classification Name: 21 CFR 868.5905, Class II Procode \u2013 BZD Non-continuous ventilator (IPPB) Predicate Device: K073638 \u2013 Resmed \u2013 Swift LT Reference Device: K112404 \u2013 Ventus Medical \u2013 ProVent D",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf17/K172335.pdf"
+  },
+  {
+   "src": "K061094",
+   "src_name": "NEWPORT E500 WAVE VENTILATOR",
+   "dst": "K984535",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATORY SYSTEM WITH BILEVEL OPTION",
+   "kind": "predicate",
+   "page": 2,
+   "snippet": "ort e500 Ventilator, K030780 Predicate Devices Drager EvitaXL K051263, July 12th, 2005 Maquet Servo-I Ventilator, K041223, July 29th, 2004 Puritan-Bennett 840, K984535, December 28, 1998 G. Summary of Substantial Equivalence The Newport e500 Wave",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K061094.pdf"
+  },
+  {
+   "src": "K181166",
+   "src_name": "Trilogy Evo",
+   "dst": "K111610",
+   "dst_name": "TRILOGY SERIES VENTILATOR WITH OXIMETRY",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "ator, Home Use DQA, Oximeter CCK, Analyzer, Gas, Carbon-Dioxide, Gaseous-Phase Primary Predicate Device: Trilogy Series of Ventilators with Oximetry (K111610) Predicate Devices: Breas Medical, Vivo 60 (K160481) Puritan Bennett",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf18/K181166.pdf"
+  },
+  {
+   "src": "K081029",
+   "src_name": "SLEEPSTYLE 200 AUTO SERIES HC254",
+   "dst": "K040941",
+   "dst_name": "CPAP HUMIDIFIER, MODEL HC234 (AND RELATED ACCESSORIES)",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "Auto Series HC254 Common name Auto CPAP Humidifier Classification Non continuous ventilator IPPB, Class II name (21 CFR \u00a7 868.5905, product code BZD) Predicate K040941 Fisher & Paykel Healthcare HC234 CPAP Humidifierdevices Establishment 9611451Re",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K081029.pdf"
+  },
+  {
+   "src": "K072588",
+   "src_name": "PERFORMAX SE TOTAL FACE MASK",
+   "dst": "K992969",
+   "dst_name": "RESPIRONICS TOTAL FACE MASK",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "acility use; ventilator, non-continuous (respirator) Proprietary Name Respironics Performax SE Total Face Mask Predicate Device(s) Respironics Total Face Mask (K992969) - BZD Image 3 SE Face Mask (K023135) - CBK Reason for submission new device Su",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K072588.pdf"
+  },
+  {
+   "src": "K083122",
+   "src_name": "HOSPITAL FULL FACE MASK NON VENTED, MODEL: RT041",
+   "dst": "K060044",
+   "dst_name": "ACUTE CARE FACE MASK, MODEL RT040",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "Mask Non Vented' Common name Face Mask Classification name Continuous ventilator (accessory to) Class 11 (21 CFR \u00a7 868.5895), product code CBK Predicate device K060044 Fisher & Paykel Healthcare RT040 Acute Care Face Mask 2 K023135 Respironics Ima",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K083122.pdf"
+  },
+  {
+   "src": "K020886",
+   "src_name": "PURTIAN BENNETT, GOOD KNIGHT 420G MODEL M-113900-US; PURTAN BENNETT, GOODKNIGHT 420S MODEL M-113903-US",
+   "dst": "K991150",
+   "dst_name": "NELLCOR PURITAN BENNETT, GOODKNIGHT 418G",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ate Device Equivalence We are claiming substantial equivalence to the Puritan Bennett GoodKnight 418G CPAP device, cleared for commercial distribution as per K991150. 4.0 - Device Description The GoodKnight 420 Series Devices consist of the fo",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K020886.pdf"
+  },
+  {
+   "src": "K081845",
+   "src_name": "IVENT101",
+   "dst": "K061627",
+   "dst_name": "MODIFICATION TO I VENT 201",
+   "kind": "predicate",
+   "page": 3,
+   "snippet": "Predicate Devices: The iVentlO1 is substantially equivalent to: \u00b7 LTV1200 cleared under K060647 * iVent201 cleared under K061627 * PLV Continuum II cleared under K034032 * Legendair XL2 cleared under K070899",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K081845.pdf"
+  },
+  {
+   "src": "K132013",
+   "src_name": "SWIFT AIR",
+   "dst": "K050359",
+   "dst_name": "ULTRA MIRAGE II MASK",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ory to Noncontinuous Ventilator (IPPB) Classification 21 CFR 868.5905, 73 BZD (Class 11) Predicate Devices Miraq FX (K1 02746)Mwf FX (K090244) Ultra Mirage 11 (K050359) Description The Swiftm Air provides an interface such that air flow from a pos",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K132013.pdf"
+  },
+  {
+   "src": "K201620",
+   "src_name": "Luna\u00ae G3 BPAP 25A",
+   "dst": "K133769",
+   "dst_name": "3B RESMART BPAP 25A, BMC RESMART BPAP 25A",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "tinuous ventilator Classification Panel Medical Device Products Code BZD Medical Specialties Anesthesiology Predicate Device(s) RESmart\u00ae BPAP 25A (K133769)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201620.pdf"
+  },
+  {
+   "src": "K063806",
+   "src_name": "SLEEPNET MOJO -NV FULL FACE MASK, NON-VENTED",
+   "dst": "K060273",
+   "dst_name": "SLEEPNET MOJO FULL FACE MASK -SMALL, MODEL NO. 53835, MEDIUM ,MODEL NO.53836,LARGE,MODEL NO. 53837",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "onvented Device Common Name: Face Mask Classification Name: Ventilator, Noncontinuous (Respirator), 73CBK Predicate devices: SleepNet MoJoTM-NV Full Face Mask, K060273 Respcare Hybrid NE Mask, K062019 Reason for submission: This device has not bee",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K063806.pdf"
+  },
+  {
+   "src": "K073069",
+   "src_name": "MODIFICATION TO AVEA VENTILATOR",
+   "dst": "K982499",
+   "dst_name": "COSMO PLUS WITH NICO, MODEL 8200",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ishment 2021710 Registration Number Device Class: Class I1 Classification Anesthesiology Panel: Predicate Device: The predicate devices are: \u2022 Respironics NICO K982499 * Maquet Servo-I K022132 * Cosmo Plus 8000 K963380 Device The AVEA is a servo-c",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K073069.pdf"
+  },
+  {
+   "src": "K062793",
+   "src_name": "SERVO-I VENTILATOR SYSTEM, MODEL 64 87 800 E407E; NAVA OPTION",
+   "dst": "K051263",
+   "dst_name": "EVITAXL WITH OPTION SMARTCARE",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "ices to which equivalence is being claimed 510(k) Galileo Gold Hamilton w ASV option K061090 Puritan Bennett w PAV\u00b1 option K053388 Drager EVITA XL w Smart Care K051263 Servo-i ventilator family K040221 Avea with Bicore option K013642",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K062793.pdf"
+  },
+  {
+   "src": "K090935",
+   "src_name": "MINIME PEDIATRIC MASK",
+   "dst": "K032922",
+   "dst_name": "CLARISSA INFANT NCPAP CANNULA",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "uous (respirator) CFR 868.5905 Device: MiniMeTM Pediatric Mask Predicate Devices: K073600 / K954207 - Respironics CornfortGel K053352 -Respironics ComfortLite2 K032922 - Airway Development Clarissa K060 105 - ResMed Kidsta KO013 306 - S leepNet Mi",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf9/K090935.pdf"
+  },
+  {
+   "src": "K251889",
+   "src_name": "myAir",
+   "dst": "K200565",
+   "dst_name": "Galapogos",
+   "kind": "predicate",
+   "page": 6,
+   "snippet": "non-invasive ventilator therapy devices (K251661 Mariana devices). The subject device also sustains the previously cleared medical device functions in myAir (K200565, K241216, and K250624). Indications for Use The myAir app is indicated for",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251889.pdf"
+  },
+  {
+   "src": "K090113",
+   "src_name": "BREAS VIVO 40 SYSTEM",
+   "dst": "K071702",
+   "dst_name": "BREAS VIVO BILEVEL SYSTEM, MODEL VIVO 40",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "System Common Name Vivo 40 Target Volume Classification Name Non- continuous ventilator (21 CFR 868.5895) MNT':Product Code MNT Breas Vivo 40 (curreft device (K07 1702)Predicate Devices R'espironics BiPAPi.AVAPS (0,070328) Page 5.1",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf9/K090113.pdf"
+  },
+  {
+   "src": "K131774",
+   "src_name": "HAMILTON-G5",
+   "dst": "K073179",
+   "dst_name": "SERVO-I VENTILATOR SYSTEM MODEL 64 87 800 E4073, HELIOX OPTION, MODEL 6675585",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "REGULATION NUMBER & 21 CFR 868.5895 (C6K) PRODUCT CODE 21 CFR 870.2700 (DQA) PREDICATE DEVICE: HAMILTON-GS (K103803 (PRIMARY) PREDICATE DEVICE: MAQUET Servo-i (K073179) (SECONDARY) For the Volume-Support mode MASIMO RAINBOW SET RADICAL PULSE CO-OX",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K131774.pdf"
+  },
+  {
+   "src": "K060546",
+   "src_name": "BREAS VIVO BILEVEL SYSTEM, MODEL VIVO 30",
+   "dst": "K974417",
+   "dst_name": "SULLIVAN VPAP II ST-A NASAL VPAP SYSTEM",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "vo 30 System Common Name Bilevel system Classification Name N~on- continuous ventilator (21 CFR 868.5895 Product Code MNS Predicate Device ResMed VPAP LI ST-A (K9744 17) Page 5.1",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K060546.pdf"
+  },
+  {
+   "src": "K070899",
+   "src_name": "PURITAN BENNETT LEGENDAIR XL2",
+   "dst": "K003770",
+   "dst_name": "BIRD TBIRD LEGACY VENTILATOR",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "gendair XL2 Common/Usual Name: Continuous Ventilator Classification Name: Ventilator (CBK) per 21 CFR \u00a7868.5895 Substantially Equivalent Devices: TBird Legacy (K003770) and Pulmonetic Systems LTV 1000 (KO51767) DEVICE DESCRIPTION The LEGENDAIR\u00ae XL",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K070899.pdf"
+  },
+  {
+   "src": "K050171",
+   "src_name": "IT NASAL MASK",
+   "dst": "K974453",
+   "dst_name": "NASAL INTERFACE MODEL 7910",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "sual Name Ventilator, continuous, non-life supporting (accessory to) Proprietary Name IT Nasal Mask Predicate Devices K991648 -- Respironics Contour Nasal Mask K974453 - Respironics Comfort Classic Nasal Mask K984428 -- ResMed Mirage Nasal Mask K9",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf5/K050171.pdf"
+  },
+  {
+   "src": "K080516",
+   "src_name": "LAMIN AIR",
+   "dst": "K022465",
+   "dst_name": "MODIFICATION TO NASAL-AIRE",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "sification Name: Ventilator, non-continuous (respirator), accessory BZD - 868.5905 Device: CPAP nasal mask with pillows Predicate Devices: InnoMed - Nasal Aire K022465 Device Description: The proposed nasal patient interface incorporates a number",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K080516.pdf"
+  },
+  {
+   "src": "K162877",
+   "src_name": "VOCSN Unified Respiratory System",
+   "dst": "K060647",
+   "dst_name": "LTV 1200 VENTILATOR",
+   "kind": "predicate",
+   "page": 5,
+   "snippet": "Reference Predicate Device Information: Mechanical ventilator component CareFusion Palmtop Ventilator PTV-8 & -10 (K070594) CareFusion LTV 1200 Ventilator (K060647) Oxygen concentrator component Omni 3 (eQuinox) Oxygen System (K120785)",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf16/K162877.pdf"
+  },
+  {
+   "src": "K081837",
+   "src_name": "AVEA VENTILATOR",
+   "dst": "K062093",
+   "dst_name": "AVEA VENTILATOR",
+   "kind": "predicate",
+   "page": 2,
+   "snippet": "perly trained clinical personnel, under the direction of a physician. This is the same intended use as previously cleared for AVEA under K01 3642, K022674, and K062093. There is no change to the AVEA intended use. Substantial Equivalence: The AVEA",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K081837.pdf"
+  },
+  {
+   "src": "K213169",
+   "src_name": "BPAP System",
+   "dst": "K153061",
+   "dst_name": "Juno VPAP ST-A",
+   "kind": "predicate",
+   "page": 6,
+   "snippet": "rilized by the user prior to use. The proposed device can be reused by single patient and multi-patients 5. Identification of Predicate Device 510(k) Number: K153061 Product Name: Juno VPAP ST-A 6. Identification of Secondary Predicate Device 51",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf21/K213169.pdf"
+  },
+  {
+   "src": "K014074",
+   "src_name": "HOFFRICHTER VECTOR, VECTOR PLUS, VECTOR BI-VEVEL, VECTOR BI-LEVEL PLUS, SCALAR, SCALAR PLUS; CPAP WITH HUMIDIFIER OPTION",
+   "dst": "K973161",
+   "dst_name": "CPAP HUMIDIFIER (HC 200)",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "oduct Code(s): MNS, 21 CFR S868.5895. BTT, 21 CFRS868.5450 Class: Class II Predicate Device(s): Fischer and Paykel HC200 Nasal CPAP with Heated Humidifier (K973161) Reason for Submission: New Device Description of Device: Hoffrichter SCALAR",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K014074.pdf"
+  },
+  {
+   "src": "K141522",
+   "src_name": "APEX MEDICAL CORP. ICH CPAP WITH PVA 9S-007XXX SERIES",
+   "dst": "K120035",
+   "dst_name": "APEX MEDICAL ICH CPAP SERIES (9S-007XXX)",
+   "kind": "predicate",
+   "page": 4,
+   "snippet": "egulation Number: 868.5905 Medical Specialty: Anesthesiology Product Code: 73 BZD Device Class: II Predicate Device APEX MEDICAL iCH CPAP 9S-007XXX series (K120035) APEX MEDICAL XT Auto CPAP with PVA 9S-005720 (K112079) Reason for Submissio",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf14/K141522.pdf"
+  },
+  {
+   "src": "K061057",
+   "src_name": "BREAS ISLEEP 20+",
+   "dst": "K030985",
+   "dst_name": "BREAS PV 10I CPAP SYSTEM, MODEL PV 10I",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "Breas iSleep 20+ System Common Name CPAP system Classification Name Non-continuous ventilator (21 CFR 868.5905) Product Code BZD Predicate Device Breas PVIOi (K030985) Page 3.1",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K061057.pdf"
+  },
+  {
+   "src": "K072885",
+   "src_name": "CARINA SYSTEM, MODEL 8419350; CARINA BASIC DEVICE, MODEL 5704110",
+   "dst": "K984056",
+   "dst_name": "LTV 1000",
+   "kind": "predicate",
+   "page": 2,
+   "snippet": "aragermedicalCarina G A Dr~ger and Siemens Company Legally Marketed Device to which Substantial Equivalence is claimed: K984056 LTV 1000 PulmoneticSystems K060705 Carina Home Dr~ger Medical b.v. K982454 BiPA",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K072885.pdf"
+  },
+  {
+   "src": "K103803",
+   "src_name": "HAMILTON-G5",
+   "dst": "K983219",
+   "dst_name": "NEOFLOW OPTION MODEL NUMBERS 8413563, 8411900",
+   "kind": "predicate",
+   "page": 1,
+   "snippet": "marketed devices to HAMILTON-C2 (K092148) HAMILTON-GALILEO (KO80l81) which equivalence is being Driger EvitaXL with NeoFlow and SpO2 clamed: options (K072412, K983219) ARM PYTON ETT Cuff Pressure Regulator (K092733) GE Datex-Ohmedla Engstrdm Care",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf10/K103803.pdf"
+  }
+ ],
+ "mention": [
+  {
+   "src": "K081521",
+   "src_name": "MODIFICATION TO HAMILTON-G5",
+   "dst": "K983219",
+   "dst_name": "NEOFLOW OPTION MODEL NUMBERS 8413563, 8411900",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "IS 510(k) Number: K062093 BEING CLAIM ED: Datex-Ohmeda Engstromn Carestation 510(k) Number: K062710 Drager EvitaXL with NeoFlow Option 510(k) Numbers: K051263, K983219 Page 1 of 3",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K081521.pdf"
+  },
+  {
+   "src": "K123557",
+   "src_name": "EASYCARE ONLINE",
+   "dst": "K113288",
+   "dst_name": "VPAP ST-A",
+   "kind": "mention",
+   "page": 2,
+   "snippet": "ciple * Same technology * Same manufacturing (deployment) process The modified EasyCare Online implemented changes to provide compatibility with the VPAP ST-A (KI 13288) flow generat 'or, a device indicated for patients with respiratory insufficien",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K123557.pdf"
+  },
+  {
+   "src": "K063650",
+   "src_name": "VENTILATOR WITH RESPIRATORY MECHANICS, MODEL 840",
+   "dst": "K021573",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATIOR SYSTEM WITH VOLUME VENTILATION PLUS OPTION",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "K984535 * Puritan-Bennett Corp. 840 Ventilator System with Neomode Option, KOO 1646 a Puritan-Bennett Corp. 840 Ventilator System with Volume Ventilation Plus, K021573 a Puritan-Bennett Corp. 840 Ventilator System with Proportional Assist Ventilat",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K063650.pdf"
+  },
+  {
+   "src": "K111116",
+   "src_name": "ENGSTROM CARESTATION, ENGSTROM PRO, MODELS 1505-9000-000, 1505-9003-000",
+   "dst": "K052582",
+   "dst_name": "DATEX-OHMEDA S/5 SINGLE-WIDTH AIRWAY MODULE, E-MINIC AND ACCESSORIES",
+   "kind": "mention",
+   "page": 3,
+   "snippet": ", M-CAiOVX, rev 3.2 software and higher (K001814), E-CO, E-COV, E-COVX, E-CAiO, E-CAiOV, E-CAiOVX (KOS51092), or M-Mini-C02 Module (K023454) or E-MiniC module (K052582) which are physically integrated into the Engstrom Carestation, receive electro",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K111116.pdf"
+  },
+  {
+   "src": "K040574",
+   "src_name": "GALILEO GOLD",
+   "dst": "K992608",
+   "dst_name": "ATC OPTION FOR EVITA 2 DURA AND EVITA 4",
+   "kind": "mention",
+   "page": 2,
+   "snippet": "Facility Use per 21 CFR 868.5895 Evita 4 Draeger K980642 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 TRC feature Evita 4 Draeger K992608 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 C. D",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf4/K040574.pdf"
+  },
+  {
+   "src": "K160127",
+   "src_name": "iCodeConnect",
+   "dst": "K141770",
+   "dst_name": "LUNA CPAP AND AUTO-CPAP SYSTEM",
+   "kind": "mention",
+   "page": 6,
+   "snippet": ". TheWi-Fi Kit is intended to be used in conjunction with the Luna CPAP System (E-20C- H-O), Auto-CPAP System (E-20A-H-O / E-20AJ- H-O), which were cleared in K141770. 1) iCodeConnect Software is an analysis and management platform for the p",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf16/K160127.pdf"
+  },
+  {
+   "src": "K040574",
+   "src_name": "GALILEO GOLD",
+   "dst": "K970460",
+   "dst_name": "NELLCOR PURITAN BENNETT, 840 VENTILATOR SYSTEM (MODEL 840)",
+   "kind": "mention",
+   "page": 4,
+   "snippet": "t name Galileo Gold PB 840 Raphael - Manufacturer Hamilton Medical Nellcor Puritan- Hamilton Medical - ________ _______Bennett The 510(K) number To be assigned K970460, K984535, I(022679 - K993071,K1(01646, K02 1573 Automatic and regular Yes Yes Y",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf4/K040574.pdf"
+  },
+  {
+   "src": "K082237",
+   "src_name": "PURITAN BENNETT, SANDMAN DUO AND SANDMAN DUO ST",
+   "dst": "K050072",
+   "dst_name": "GOODKNIGHT 425ST",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "and hypopneas, the Puritan Bennett GoodlKnight 425 (K041819) for the Bilevel mode. The Sandman Duo ST is equivalent to the Puritan Bennett GoodlKnight 425 ST (K050072) for the Bilevel mode including optional backup frequency. Covidien PROPRIETARY",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf8/K082237.pdf"
+  },
+  {
+   "src": "K111116",
+   "src_name": "ENGSTROM CARESTATION, ENGSTROM PRO, MODELS 1505-9000-000, 1505-9003-000",
+   "dst": "K023454",
+   "dst_name": "DATEX-OHMEDA S/5 SINGLE-WIDTH AIRWAY MODULE M-MINIC AND ACCESSORIES",
+   "kind": "mention",
+   "page": 3,
+   "snippet": "OV, M-COVX, M-CaiO, M- CAiOV, M-CAiOVX, rev 3.2 software and higher (K001814), E-CO, E-COV, E-COVX, E-CAiO, E-CAiOV, E-CAiOVX (KOS51092), or M-Mini-C02 Module (K023454) or E-MiniC module (K052582) which are physically integrated into the Engstrom",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K111116.pdf"
+  },
+  {
+   "src": "K113743",
+   "src_name": "EVOLUTION 3E VENTILATOR",
+   "dst": "K072690",
+   "dst_name": "HEMAWAY SEAT",
+   "kind": "mention",
+   "page": 8,
+   "snippet": "Compaitrison Parameter Inspi ration Ventilator eotinVentilator System System K072690 Alarm Settings Hi-gh Minute Volume (Ve High Minute Volume (ye high) high) Low M",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K113743.pdf"
+  },
+  {
+   "src": "K253553",
+   "src_name": "Orion",
+   "dst": "K151901",
+   "dst_name": "AirView",
+   "kind": "mention",
+   "page": 9,
+   "snippet": "53553 Predicate Device ResScan Manufacturer: ResMed Ltd 510(k) Number: K140054 Reference Device AirView Manufacturer: ResMed Ltd 510(k) Number: K151901 Substantial Equivalence Indications for Use Orion is a software platform",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253553.pdf"
+  },
+  {
+   "src": "K062793",
+   "src_name": "SERVO-I VENTILATOR SYSTEM, MODEL 64 87 800 E407E; NAVA OPTION",
+   "dst": "K925854",
+   "dst_name": "VYGON - ENTERAL FEEDING TUBE - POLYURETHANE",
+   "kind": "mention",
+   "page": 2,
+   "snippet": "1 Infant Star K923704 Arzco esophagus electrodes (bi-polar) K903136 Arzco esophagus electrodes (8 electrodes) K905831 Vygon Gastric Feeding tube - for function K925854 Utah medical (Gesco) Umbilical catheter - for material K940870 Device Descripti",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K062793.pdf"
+  },
+  {
+   "src": "K201082",
+   "src_name": "LTV2 Series Ventilators",
+   "dst": "K183364",
+   "dst_name": "Bellavista",
+   "kind": "mention",
+   "page": 5,
+   "snippet": "dels 8/10 Pulmonetic Systems, Inc. (Vyaire Medical, Inc.) K070594 01 August 2007 bellavista 1000/1000e Imtmedical AG Gewerbestrasse 8 Buchs Sg, CH 9470 K183364 13 September 2019 4. Device Description [21 CFR \u00a7 807.92(a)(4)] The LTV2",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201082.pdf"
+  },
+  {
+   "src": "K063404",
+   "src_name": "SERVO-I VENTILATOR SYSTEM, MODELS 64, 87 AND 800",
+   "dst": "K061627",
+   "dst_name": "MODIFICATION TO I VENT 201",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "3 Aestiva/5 MR] GE, Datex-Ohineda Inc. K050055 IC-2A B ic-med Devices Inc. K896380 MVP-lIO Bio-rned Devices Inc. K896391 Vent 201 VersaMed Medical Systems Inc. K06 1627",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf6/K063404.pdf"
+  },
+  {
+   "src": "K030563",
+   "src_name": "ARABELLA NCPAP MASKS",
+   "dst": "K990293",
+   "dst_name": "ALADDIN II MONITORING OXYGEN/AIR MONITOR",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "pport set (K945740) as an alternative to the NCPAP prongs. The tubing and support set has been designed to work with the ARABELLA Monitoring Oxygen/Air Mixer (K990293 and K960359). The items covered by K945740 and K990293/K960359 together form t",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf3/K030563.pdf"
+  },
+  {
+   "src": "K022132",
+   "src_name": "SERVO VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "dst": "K010925",
+   "dst_name": "SERVOI VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "kind": "mention",
+   "page": 2,
+   "snippet": "3 Doc-ID Issue no. EVU-111 163 - 00 Device Description (for detailed description see Section F) The ventilator is the same as described in the notification K010925. This application if for the following options to the Servo-i ventilator famil",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K022132.pdf"
+  },
+  {
+   "src": "K030985",
+   "src_name": "BREAS PV 10I CPAP SYSTEM, MODEL PV 10I",
+   "dst": "K980721",
+   "dst_name": "SULLIVAN AUTOSET",
+   "kind": "mention",
+   "page": 5,
+   "snippet": "d of home use, with follow-up after three and six months. The self-adjusting CPAP devices included in this study were the Breas PVlOi, the ResMed AutoSet@T (K980721), the Mallinckrodt Goodbight@ 41 8P (K993584), and the Weinmann SomnoSmart@.",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf3/K030985.pdf"
+  },
+  {
+   "src": "K113780",
+   "src_name": "EASYCARE TX SYSTEM (CONNEXUNS)",
+   "dst": "K971813",
+   "dst_name": "EMBLA",
+   "kind": "mention",
+   "page": 2,
+   "snippet": "to a remote C i a thernet connectlion. The --x Link aiso [)rovdc-s analog flow gencrator,. Eicna:s lo third party Polysomnograph (PSG) systems, such as Embla (K971813). Substantial Equivalence The modified EasyCare Tx System has the following sim",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K113780.pdf"
+  },
+  {
+   "src": "K023306",
+   "src_name": "MIRAGE FULL FACE MASK SERIES 2",
+   "dst": "K984428",
+   "dst_name": "SULLIVAN AUTOSET NASAL CPAP SYSTEM",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "(858) 746 2400 (858) 746 2282 September 2002 Mirage Full Face Mask (FFM) Series 2 Face mask Mirage Full Face Mask (FFM) K982530 Mirage Nasal Mask System K984428 Mirage FFM Series 2 is a respiratory mask covering the nose and the mouth. It",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K023306.pdf"
+  },
+  {
+   "src": "K051895",
+   "src_name": "GE DATEX-OHMEDA ENGSTROM CARESTATION",
+   "dst": "K023354",
+   "dst_name": "COMPRESSOR MINI, 115 V, MODEL 64 81 779 EH81E",
+   "kind": "mention",
+   "page": 1,
+   "snippet": "ed 510(k) with FDA log number K041775. Siemens Mini C Compressor - Class I - 21CFR 868.6250, which has been the subject of a cleared 510(k) with FDK log number K023354 The Engstrbm Ventilator (EV) is a flexible, adaptable, and intuitive critical c",
+   "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf5/K051895.pdf"
+  }
+ ]
+}

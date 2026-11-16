@@ -1,0 +1,50 @@
+{
+ "product_codes": [
+  "BZD",
+  "MNS",
+  "MNT",
+  "CBK"
+ ],
+ "built_at": "2026-11-16T20:42:12Z",
+ "seconds": 2.0,
+ "in_family_devices": 1040,
+ "out_of_family_predicates": 130,
+ "in_family_summary_status": {
+  "statement_only": 354,
+  "ok": 527,
+  "pre_1996": 12,
+  "ok_no_predicate_found": 44,
+  "missing": 35,
+  "no_text": 68
+ },
+ "citation_extraction": {
+  "kept_predicate": 1079,
+  "kept_mention": 266,
+  "kept_reference": 111,
+  "predicate_name_mismatch": 124,
+  "dropped_unresolved": 3
+ },
+ "in_family_summary_read_but_no_predicate_found": 44,
+ "curated_reviews_applied": "4/4",
+ "recall_records_linked": 559,
+ "design_related_recalls": 217,
+ "graph": {
+  "nodes": {
+   "ProductCode": 70,
+   "Device": 1170,
+   "Company": 296,
+   "Recall": 559
+  },
+  "relationships": {
+   "FILED_BY": 1170,
+   "IN_CODE": 1170,
+   "CITES": 1456,
+   "SUBJECT_OF": 758
+  },
+  "citations_by_kind": {
+   "predicate": 1079,
+   "mention": 266,
+   "reference": 111
+  }
+ }
+}

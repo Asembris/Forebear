@@ -1,0 +1,33 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+# python / tooling
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.pytest_tmp/
+# node (web/dist IS committed so the app runs without Node)
+web/node_modules/
+# local binaries (download instructions in README)
+tools/*
+!tools/.gitkeep
+# Claude Code local-only settings
+.claude/settings.local.json
+# scratch / OS
+*.log
+data/_*.rl
+data/live/
+.DS_Store
+Thumbs.db
+# internal planning and review notes (kept local, not published)
+ARCHITECTURE.md
+DEMO_STORYBOARD.md
+NEXT_STEPS.md
+PRODUCT_BRIEF.md
+REVIEW.md
+SELECTION.md

@@ -1,0 +1,5 @@
+# Keep the hook runnable by Git's sh on every OS.
+.githooks/* text eol=lf
+*.sh text eol=lf
+# Relate store is binary.
+*.rl binary
