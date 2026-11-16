@@ -1,0 +1,23 @@
+#!/bin/sh
+# Enforce Forebear's commit format: exactly one line, Conventional Commit subject, no body/trailers.
+# Activate once per clone:  git config core.hooksPath .githooks
+msg_file="$1"
+# Drop comment lines and trailing blank lines (editor-based commits), keep everything else.
+content=$(grep -v '^#' "$msg_file" | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba' -e '}')
+lines=$(printf '%s\n' "$content" | wc -l | tr -d ' ')
+subject=$(printf '%s\n' "$content" | head -n 1)
+
+fail() {
+  echo "commit-msg: $1" >&2
+  echo "  Expected one line like: chore: configure project safeguards" >&2
+  exit 1
+}
+
+[ -n "$subject" ] || fail "empty commit message."
+[ "$lines" -eq 1 ] || fail "message must be exactly one line (no body, bullets or trailers)."
+printf '%s' "$subject" | grep -Eq '^(feat|fix|chore|docs|refactor|test|perf|build|ci|style|revert)(\([a-z0-9._/-]+\))?!?: [^ ].*[^ ]$' \
+  || fail "subject must be a Conventional Commit: '<type>(<scope>)?: <description>'."
+[ "${#subject}" -le 100 ] || fail "subject is longer than 100 characters."
+printf '%s' "$subject" | grep -Eiq 'co-authored-by|claude-session|generated with' \
+  && fail "no attribution or session text."
+exit 0
