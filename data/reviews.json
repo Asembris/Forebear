@@ -1,0 +1,13 @@
+{
+  "about": "Curated human review decisions on extracted citation edges. Applied by scripts/build_graph.py after extraction, through the same review write the UI and MCP use (reviewer='curated'). Rejected edges stop counting in every lineage query. Each decision quotes the evidence; only unambiguous cases are listed, and edges that are merely suspicious are flagged in the UI (name_check='mismatch') instead.",
+  "reviews": [
+    {"src": "K120562", "dst": "K093416", "status": "rejected", "reviewer": "curated",
+     "note": "Typo in the 510(k) summary: text names 'Respironics Small Child Profile Lite Nasal Mask (K093416)', but openFDA K093416 is the TRILOGY 200 VENTILATOR. Checked 2026-11-16."},
+    {"src": "K120639", "dst": "K093416", "status": "rejected", "reviewer": "curated",
+     "note": "Typo in the 510(k) summary: text names 'Respironics Small Child Profile Lite Nasal Mask (K093416)', but openFDA K093416 is the TRILOGY 200 VENTILATOR. Checked 2026-11-16."},
+    {"src": "K151120", "dst": "K093416", "status": "rejected", "reviewer": "curated",
+     "note": "Typo in the 510(k) summary: 'Secondary Predicate: Profile Lite Small Child K093416', but openFDA K093416 is the TRILOGY 200 VENTILATOR. Checked 2026-11-16."},
+    {"src": "K092835", "dst": "K991646", "status": "rejected", "reviewer": "curated",
+     "note": "Typo in the 510(k) summary: text names 'Reusable Contour II Nasal Mask (K991646)', but openFDA K991646 is the AGILITY STEERABLE GUIDEWIRE. Checked 2026-11-16."}
+  ]
+}

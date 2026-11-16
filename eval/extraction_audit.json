@@ -1,0 +1,426 @@
+{
+ "predicate": [
+  {
+   "src": "K081837",
+   "dst": "K990949",
+   "verdict": "unclear",
+   "reason": "Snippet lists Clear Guard II (K990949) next to an existing filter assembly for an 'optional disposable Filter'. The word 'predicate' is cut off, and at most this is a comparison for an accessory filter, not the device."
+  },
+  {
+   "src": "K082237",
+   "dst": "K071575",
+   "verdict": "correct",
+   "reason": "Under 'Predicate Device Equivalence': equivalent to Sandman Intro (K071575) for all aspects except Bilevel."
+  },
+  {
+   "src": "K133769",
+   "dst": "K050759",
+   "verdict": "correct",
+   "reason": "'Predicate Device(s) Predicate Respironics BiPAP Auto (K050759)'."
+  },
+  {
+   "src": "K112489",
+   "dst": "K042403",
+   "verdict": "correct",
+   "reason": "'Secondary predicate devices Mirage Swift (K042403)'."
+  },
+  {
+   "src": "K223747",
+   "dst": "K180497",
+   "verdict": "correct",
+   "reason": "'Predicate Device: Scone mask (K180497)'."
+  },
+  {
+   "src": "K110405",
+   "dst": "K092835",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Device(s)': ComfortGel Blue Nasal Mask (K092835)."
+  },
+  {
+   "src": "K023366",
+   "dst": "K960964",
+   "verdict": "unclear",
+   "reason": "Listed among 'currently marketed devices' (Ohmeda 7900, K960964). The clause saying whether these are equivalence targets or compatible systems is cut off."
+  },
+  {
+   "src": "K231313",
+   "dst": "K210386",
+   "verdict": "correct",
+   "reason": "'Predicate Device Therapy Mask 3100 NC/SP (K210386)'."
+  },
+  {
+   "src": "K072926",
+   "dst": "K970460",
+   "verdict": "correct",
+   "reason": "'Identification of predicate device(s): Puritan Bennett 840 Ventilator System K970460'."
+  },
+  {
+   "src": "K021112",
+   "dst": "K984379",
+   "verdict": "correct",
+   "reason": "'The predicate devices are as follows: ... 760 Ventilator, K984379'."
+  },
+  {
+   "src": "K242547",
+   "dst": "K170924",
+   "verdict": "correct",
+   "reason": "'Predicate Device: AirFit F20 (K170924)'."
+  },
+  {
+   "src": "K222207",
+   "dst": "K093632",
+   "verdict": "correct",
+   "reason": "'Predicate Device: Infinity Acute Care System Workstation Neonatal Care, K093632'."
+  },
+  {
+   "src": "K121379",
+   "dst": "K110471",
+   "verdict": "correct",
+   "reason": "'substantially equivalent ... to the A Plus Medical Nasal Cannula Kit (K1 10471)'."
+  },
+  {
+   "src": "K090888",
+   "dst": "K010608",
+   "verdict": "correct",
+   "reason": "Under 'marketed predicate devices': LTV 1000 cleared under several numbers including K010608 (one of 7 clearances of a predicate)."
+  },
+  {
+   "src": "K153061",
+   "dst": "K113288",
+   "verdict": "correct",
+   "reason": "'Predicate Device ResMed S9 VPAP ST-A (K113288)'. The next line names a separate Reference Device (K140159)."
+  },
+  {
+   "src": "K120726",
+   "dst": "K111683",
+   "verdict": "correct",
+   "reason": "'Predicate Devices: * Flight 60 Ventilator, cleared under K(111683'."
+  },
+  {
+   "src": "K091919",
+   "dst": "K071689",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Device Name(s) and 510(k) number(s)': DeVilbiss Intellipap K071689."
+  },
+  {
+   "src": "K032922",
+   "dst": "K792018",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Devices': Neotech Binasal Airway (K7920 18)."
+  },
+  {
+   "src": "K082979",
+   "dst": "K041209",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Device(s)': S8 Pioneer (KO41209)."
+  },
+  {
+   "src": "K152356",
+   "dst": "K140054",
+   "verdict": "correct",
+   "reason": "'Legally Marketed Predicate Devices: K140054 ResScan'."
+  },
+  {
+   "src": "K133009",
+   "dst": "K030798",
+   "verdict": "correct",
+   "reason": "'Predicate Device of Nasal Mask ... Mirage Activa (K030798)'."
+  },
+  {
+   "src": "K172335",
+   "dst": "K073638",
+   "verdict": "correct",
+   "reason": "'Predicate Device: K073638 - Resmed - Swift LT'. The reference device K112404 is listed separately."
+  },
+  {
+   "src": "K061094",
+   "dst": "K984535",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Devices': Puritan-Bennett 840, K984535."
+  },
+  {
+   "src": "K181166",
+   "dst": "K111610",
+   "verdict": "correct",
+   "reason": "'Primary Predicate Device: Trilogy Series of Ventilators with Oximetry (K111610)'."
+  },
+  {
+   "src": "K081029",
+   "dst": "K040941",
+   "verdict": "correct",
+   "reason": "'Predicate devices K040941 Fisher & Paykel HC234 CPAP Humidifier'."
+  },
+  {
+   "src": "K072588",
+   "dst": "K992969",
+   "verdict": "correct",
+   "reason": "'Predicate Device(s) Respironics Total Face Mask (K992969)'."
+  },
+  {
+   "src": "K083122",
+   "dst": "K060044",
+   "verdict": "correct",
+   "reason": "'Predicate device K060044 Fisher & Paykel RT040 Acute Care Face Mask'."
+  },
+  {
+   "src": "K020886",
+   "dst": "K991150",
+   "verdict": "correct",
+   "reason": "'claiming substantial equivalence to ... GoodKnight 418G ... K991150'."
+  },
+  {
+   "src": "K081845",
+   "dst": "K061627",
+   "verdict": "correct",
+   "reason": "'substantially equivalent to: ... iVent201 cleared under K061627'."
+  },
+  {
+   "src": "K132013",
+   "dst": "K050359",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Devices': Ultra Mirage II (K050359)."
+  },
+  {
+   "src": "K201620",
+   "dst": "K133769",
+   "verdict": "correct",
+   "reason": "'Predicate Device(s) RESmart BPAP 25A (K133769)'."
+  },
+  {
+   "src": "K063806",
+   "dst": "K060273",
+   "verdict": "correct",
+   "reason": "'Predicate devices: SleepNet MoJo-NV Full Face Mask, K060273'."
+  },
+  {
+   "src": "K073069",
+   "dst": "K982499",
+   "verdict": "correct",
+   "reason": "'The predicate devices are: Respironics NICO K982499'."
+  },
+  {
+   "src": "K062793",
+   "dst": "K051263",
+   "verdict": "correct",
+   "reason": "Listed under 'devices to which equivalence is being claimed': Drager EVITA XL w Smart Care K051263."
+  },
+  {
+   "src": "K090935",
+   "dst": "K032922",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Devices': K032922 - Airway Development Clarissa."
+  },
+  {
+   "src": "K251889",
+   "dst": "K200565",
+   "verdict": "unclear",
+   "reason": "Says only that the app 'sustains the previously cleared medical device functions in myAir (K200565, ...)'. That is a prior clearance of the same app cited for continuity, and no predicate claim is visible."
+  },
+  {
+   "src": "K090113",
+   "dst": "K071702",
+   "verdict": "correct",
+   "reason": "Garbled table, but 'Breas Vivo 40 (current device (K071702))' is the value of the 'Predicate Devices' field, alongside BiPAP AVAPS. Low confidence because the OCR order is scrambled."
+  },
+  {
+   "src": "K131774",
+   "dst": "K073179",
+   "verdict": "correct",
+   "reason": "'PREDICATE DEVICE: MAQUET Servo-i (K073179) (SECONDARY)'."
+  },
+  {
+   "src": "K060546",
+   "dst": "K974417",
+   "verdict": "correct",
+   "reason": "'Predicate Device ResMed VPAP III ST-A (K9744 17)'."
+  },
+  {
+   "src": "K070899",
+   "dst": "K003770",
+   "verdict": "correct",
+   "reason": "'Substantially Equivalent Devices: TBird Legacy (K003770)'."
+  },
+  {
+   "src": "K050171",
+   "dst": "K974453",
+   "verdict": "correct",
+   "reason": "Listed under 'Predicate Devices': K974453 Respironics Comfort Classic Nasal Mask."
+  },
+  {
+   "src": "K080516",
+   "dst": "K022465",
+   "verdict": "correct",
+   "reason": "'Predicate Devices: InnoMed - Nasal Aire K022465'."
+  },
+  {
+   "src": "K162877",
+   "dst": "K060647",
+   "verdict": "unclear",
+   "reason": "Heading reads 'Reference Predicate Device Information' and lists LTV 1200 as the 'Mechanical ventilator component' comparator. Whether this is a predicate or a reference device, and for the whole device or one component, is ambiguous."
+  },
+  {
+   "src": "K081837",
+   "dst": "K062093",
+   "verdict": "unclear",
+   "reason": "K062093 is a prior AVEA clearance of the same device, cited only for 'same intended use as previously cleared'. The text is about intended-use continuity, not an explicit predicate claim."
+  },
+  {
+   "src": "K213169",
+   "dst": "K153061",
+   "verdict": "correct",
+   "reason": "'Identification of Predicate Device 510(k) Number: K153061'."
+  },
+  {
+   "src": "K014074",
+   "dst": "K973161",
+   "verdict": "correct",
+   "reason": "'Predicate Device(s): Fischer and Paykel HC200 ... (K973161)'."
+  },
+  {
+   "src": "K141522",
+   "dst": "K120035",
+   "verdict": "correct",
+   "reason": "'Predicate Device APEX MEDICAL iCH CPAP ... (K120035)'."
+  },
+  {
+   "src": "K061057",
+   "dst": "K030985",
+   "verdict": "correct",
+   "reason": "'Predicate Device Breas PV10i (K030985)'."
+  },
+  {
+   "src": "K072885",
+   "dst": "K984056",
+   "verdict": "correct",
+   "reason": "'Legally Marketed Device to which Substantial Equivalence is claimed: K984056 LTV 1000'."
+  },
+  {
+   "src": "K103803",
+   "dst": "K983219",
+   "verdict": "correct",
+   "reason": "Listed under 'devices to which equivalence is being claimed': Drager EvitaXL with NeoFlow (K072412, K983219)."
+  }
+ ],
+ "mention": [
+  {
+   "src": "K081521",
+   "dst": "K983219",
+   "verdict": "predicate",
+   "reason": "Follows '...BEING CLAIMED' (devices to which equivalence is claimed): Drager EvitaXL with NeoFlow, K051263, K983219."
+  },
+  {
+   "src": "K123557",
+   "dst": "K113288",
+   "verdict": "other",
+   "reason": "VPAP ST-A (K113288) is a flow generator the modified software was made compatible with."
+  },
+  {
+   "src": "K063650",
+   "dst": "K021573",
+   "verdict": "unclear",
+   "reason": "Bare list of PB 840 variants with K-numbers. Probably a predicate list, but no heading is visible."
+  },
+  {
+   "src": "K111116",
+   "dst": "K052582",
+   "verdict": "other",
+   "reason": "E-MiniC module (K052582) is a component physically integrated into the Engstrom Carestation."
+  },
+  {
+   "src": "K040574",
+   "dst": "K992608",
+   "verdict": "unclear",
+   "reason": "Table row 'TRC feature Evita 4 Draeger K992608' looks like a feature-specific comparator in a predicate table, but no heading is visible."
+  },
+  {
+   "src": "K160127",
+   "dst": "K141770",
+   "verdict": "other",
+   "reason": "Wi-Fi Kit is used with the Luna CPAP cleared in K141770, so this is a compatible host device."
+  },
+  {
+   "src": "K040574",
+   "dst": "K970460",
+   "verdict": "unclear",
+   "reason": "Comparison-table 510(k) row (subject 'To be assigned'; PB 840 K970460...). Likely a predicate column, but the table is not labelled as predicates in the snippet."
+  },
+  {
+   "src": "K082237",
+   "dst": "K050072",
+   "verdict": "predicate",
+   "reason": "Under the same 'Predicate Device Equivalence' wording as the predicate edge for this src: 'Sandman Duo ST is equivalent to ... GoodKnight 425 ST (K050072) for the Bilevel mode'. The extractor missed it."
+  },
+  {
+   "src": "K111116",
+   "dst": "K023454",
+   "verdict": "other",
+   "reason": "M-Mini-CO2 Module (K023454) is a component integrated into the Engstrom Carestation."
+  },
+  {
+   "src": "K113743",
+   "dst": "K072690",
+   "verdict": "unclear",
+   "reason": "Comparison-table column 'Inspiration Ventilator System K072690'. Probably the predicate (prior version), but the role is not stated."
+  },
+  {
+   "src": "K253553",
+   "dst": "K151901",
+   "verdict": "reference",
+   "reason": "'Reference Device AirView ... 510(k) Number: K151901'."
+  },
+  {
+   "src": "K062793",
+   "dst": "K925854",
+   "verdict": "unclear",
+   "reason": "'Vygon Gastric Feeding tube - for function K925854' appears in a list of comparators for parts (for function / for material), which reads like component-level equivalence. The heading is not visible."
+  },
+  {
+   "src": "K201082",
+   "dst": "K183364",
+   "verdict": "predicate",
+   "reason": "Listed with dates immediately before '4. Device Description [21 CFR 807.92(a)(4)]', which places it in the 807.92(a)(3) predicate-device section. This is inferred from the structure."
+  },
+  {
+   "src": "K063404",
+   "dst": "K061627",
+   "verdict": "unclear",
+   "reason": "List of devices with manufacturers (Aestiva, IC-2A, MVP-10, Vent 201 K061627) and no visible heading."
+  },
+  {
+   "src": "K030563",
+   "dst": "K990293",
+   "verdict": "other",
+   "reason": "Tubing set designed to work with the ARABELLA mixer (K990293), so this is a compatible system."
+  },
+  {
+   "src": "K022132",
+   "dst": "K010925",
+   "verdict": "unclear",
+   "reason": "'ventilator is the same as described in the notification K010925', the base device's own prior clearance being extended with options. Likely the predicate, but this is not stated."
+  },
+  {
+   "src": "K030985",
+   "dst": "K980721",
+   "verdict": "other",
+   "reason": "ResMed AutoSet (K980721) was one of the devices in a cited clinical study."
+  },
+  {
+   "src": "K113780",
+   "dst": "K971813",
+   "verdict": "other",
+   "reason": "Third-party PSG systems 'such as Embla (K971813)' are interoperability targets."
+  },
+  {
+   "src": "K023306",
+   "dst": "K984428",
+   "verdict": "unclear",
+   "reason": "Header-style list (Mirage FFM K982530, Mirage Nasal Mask System K984428) with no label. Plausibly the predicate list, but this cannot be confirmed."
+  },
+  {
+   "src": "K051895",
+   "dst": "K023354",
+   "verdict": "unclear",
+   "reason": "'Siemens Mini C Compressor ... cleared 510(k) with FDA log number K023354' is in a list of marketed devices. Whether these are predicates or system components is cut off."
+  }
+ ]
+}
