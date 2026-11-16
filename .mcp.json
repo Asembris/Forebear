@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "forebear": {
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-m", "forebear.mcp_server"],
+      "env": { "FOREBEAR_URL": "http://127.0.0.1:8765" }
+    },
+    "relate-forebear-readonly": {
+      "command": "tools/relate.exe",
+      "args": ["serve", "--database", "data/forebear.rl", "--mcp", "stdio", "--read-only"]
+    }
+  }
+}
