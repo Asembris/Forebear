@@ -227,3 +227,109 @@ def test_report_discloses_shortened_tool_results(real, monkeypatch):
     md = store.report(real, inv["id"])[1]
     assert any(c["shown_truncated"] for c in rep["reproducibility"]["tool_calls"])
     assert re.search(r"shortened \(omitted items are not evidence\)", md)
+
+
+# ------------------------------------------------------------------ second review: evidence the model never saw
+def test_calls_in_the_submitting_turn_are_not_run(tiny):
+    """submit_report is written before any result of its turn arrives, so nothing else in that turn may run."""
+    def policy(turn, messages):
+        return [("submit_report", {"summary": "s", "findings": [
+                    {"claim": "K000002 has recall Z-0001-2008, a Class I recall.", "evidence": ["Z-0001-2008"]}]}),
+                ("get_device", {"k_number": "K000002"})]
+    inv = start(tiny, "K000005", depth=4)
+    rep = runner.run(lambda fn: fn(tiny), inv, client=Scripted(policy))
+    tr = store.trace(tiny, inv["id"])
+    assert [(t["tool"], t["ok"]) for t in tr] == [("submit_report", True), ("get_device", False)]
+    assert "must be the only call" in tr[1]["summary"]
+    assert rep["agent"]["findings_verified"] == [] and rep["agent"]["findings_rejected"]
+
+
+def test_resumed_model_is_shown_the_replayed_evidence(tiny):
+    first = start(tiny, "K000005", depth=4, mode="deterministic")
+    runner.run(lambda fn: fn(tiny), first)
+    prior = store.trace(tiny, first["id"])
+    again = start(tiny, "K000005", depth=4)
+    again["resumed_from"] = first["id"]
+    seen = {}
+
+    def policy(turn, messages):
+        seen["tool_msgs"] = [m for m in messages if m["role"] == "tool"]
+        seen["text"] = " ".join(m["content"] for m in seen["tool_msgs"])
+        return [("submit_report", {"summary": "s", "findings": [
+            {"claim": "K000005 cites K000004.", "evidence": ["K000005->K000004"]}]})]
+    rep = runner.run(lambda fn: fn(tiny), again, client=Scripted(policy), prior=prior)
+    replays = [t for t in store.trace(tiny, again["id"]) if t["origin"] == "resume_replay"]
+    assert replays and len(seen["tool_msgs"]) == len(replays)                # every replayed result was shown
+    assert all(json.loads(m["content"].split("\n", 1)[1]) is not None for m in seen["tool_msgs"])
+    assert "K000004" in seen["text"] and len(rep["agent"]["findings_verified"]) == 1
+
+
+def test_echoed_arguments_and_unknown_rows_are_not_evidence(tiny):
+    ctx = RunContext("I-x", "K000005")
+    run_tool(tiny, "search_devices", {"query": "K999999 Z-9999-2099 2019-02-03"}, ctx)
+    run_tool(tiny, "compare_predicates", {"k_numbers": ["K888888"]}, ctx)
+    assert not {"K999999", "K888888"} & set(ctx.ledger.devices) and "Z-9999-2099" not in ctx.ledger.recalls
+    assert "2019-02-03" not in ctx.ledger.dates
+    v = verify_finding({"claim": "K999999 was decided on 2019-02-03; recall Z-9999-2099 names no 510(k).",
+                        "evidence": ["K999999", "Z-9999-2099"]}, ctx.ledger, {})
+    assert v["status"] == "rejected"
+    ok, res = run_tool(tiny, "propose_ingest", {"k_number": "K888888", "reason": "r"}, ctx)
+    assert not ok
+
+
+def test_counts_and_absences_need_shown_totals(real):
+    ctx = RunContext("I-x", "K252078")
+    run_tool(real, "verify_citation", {"citing_k": "K252078", "cited_k": "K113053"}, ctx)   # no recall counts shown
+    from forebear.investigation import report as report_mod
+    from forebear.lineage import assess
+    a = assess(real, "K252078", 2)
+    claim = "K113053 has 5 recall records."                     # true in the graph, but never shown
+    v = verify_finding({"claim": claim, "evidence": ["K113053"]}, ctx.ledger, {},
+                       report_mod.recall_counts(real, a, [claim]))
+    assert v["status"] == "rejected" and "not shown" in " ".join(v["reasons"])
+    run_tool(real, "get_device", {"k_number": "K113053"}, ctx)
+    v = verify_finding({"claim": claim, "evidence": ["K113053"]}, ctx.ledger, {},
+                       report_mod.recall_counts(real, a, [claim]))
+    assert v["status"] == "verified"
+    absent = "K252078 has no recall records (provisional: evidence incomplete)."
+    v = verify_finding({"claim": absent, "evidence": ["K252078"]}, ctx.ledger, {},
+                       report_mod.recall_counts(real, a, [absent]))
+    assert v["status"] == "rejected" and "no zero count" in " ".join(v["reasons"])
+    run_tool(real, "get_device", {"k_number": "K252078"}, ctx)             # shows 0 recall records
+    v = verify_finding({"claim": absent, "evidence": ["K252078"]}, ctx.ledger, {},
+                       report_mod.recall_counts(real, a, [absent]))
+    assert v["status"] == "verified"
+
+
+def test_target_evidence_status_comes_only_from_a_shown_assessment(real):
+    def policy(turn, messages):
+        if turn == 1:
+            return [("get_device", {"k_number": "K201620"})]
+        return [("submit_report", {"summary": "s", "findings": [
+            {"claim": "The lineage evidence for K201620 is complete.", "evidence": ["K201620"]}]})]
+    rep = runner.run(lambda fn: fn(real), start(real, "K201620", depth=4), client=Scripted(policy))
+    assert rep["conclusion"]["evidence"] == "complete"                         # true in the graph ...
+    assert rep["agent"]["findings_verified"] == []                             # ... but never shown to the model
+
+
+def test_protected_heavy_and_bare_list_results_stay_within_limit():
+    heavy = {"k": "K252078", "coverage": {"a": "x" * 1400}, "checks": {"b": "y" * 1400}, "status": "s" * 1400,
+             "verdict": "v" * 1400, "error": "e" * 1400, "code": "c" * 1400}
+    for limit in (1000, 3000, 7000):
+        shown, _ = bound_result(heavy, limit)
+        assert len(canonical_json(shown)) <= limit and shown.get("k") == "K252078"
+    shown, omitted = bound_result(list(range(5000)), 2000)
+    assert len(canonical_json(shown)) <= 2000 and len(shown["items"]) > 10 and omitted[0]["total"] == 5000
+
+
+def test_shortened_strings_never_split_numbers():
+    shown, _ = bound_result({"k": "K252078", "rows": [{"t": "total " + "1" * 300 + " records " + "z" * 400}] * 3},
+                            1500)
+    led = Ledger()
+    led.absorb_numbers(shown)
+    assert all(len(n) in (1, 300) or n == "3" for n in led.numbers)
+
+
+def test_event_numbers_are_not_counts():
+    from forebear.investigation.verify import count_claims
+    assert count_claims("K201620 was cleared before the 88058 recall began.") == []

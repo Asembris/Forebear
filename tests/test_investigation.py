@@ -392,14 +392,16 @@ def test_resume_does_not_spend_the_new_budget_and_skips_failed_calls(real):
 
     def policy(turn, messages):
         if turn == 1:
-            return [("coverage_gaps", {"k_number": "K252078", "generations": 2})]
+            return [("get_device", {"k_number": "K113053"})]          # not among the replayed calls
         return [("submit_report", {"summary": "s", "findings": [
             {"claim": "K252078's lineage evidence is partial.", "evidence": ["K252078"], "kind": "gap"}]})]
     runner.run(lambda fn: fn(real), again, client=Scripted(policy), prior=prior,
                budget=runner.Budget(max_tool_calls=2))
     tr = store.trace(real, again["id"])
     replayed = [t for t in tr if t["origin"] == "resume_replay"]
-    assert {t["tool"] for t in replayed} == {"check_predicate", "trace_ancestry"}    # the failed call is not replayed
+    assert {"check_predicate", "trace_ancestry"} <= {t["tool"] for t in replayed}
+    assert all(t["ok"] for t in replayed) and len(replayed) <= runner.MAX_REPLAY     # the failed call is not replayed
+    assert not any(t["args"].get("recall_id") == "bad" for t in replayed)
     assert next(t for t in tr if t["origin"] == "llm")["ok"]                         # budget of 2 not used up
 
 
