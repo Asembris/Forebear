@@ -191,6 +191,13 @@ def proposal(g: Graph, pid: str) -> dict | None:
     return _clean(rows[0]["p"]) if rows else None
 
 
+def claim_proposal(g: Graph, pid: str, reviewer: str) -> bool:
+    """pending_human_decision -> deciding, in one statement (the caller is the single Relate thread)."""
+    rows = g.q("""MATCH (p:Proposal {id:$id}) WHERE p.status = 'pending_human_decision'
+                  SET p.status = 'deciding', p.decided_by = $who RETURN p.id AS id""", {"id": pid, "who": reviewer})
+    return bool(rows)
+
+
 def decide_proposal(g: Graph, pid: str, status: str, reviewer: str, note: str | None, result: dict | None) -> dict:
     g.conn.execute("""MATCH (p:Proposal {id:$id}) SET p.status = $st, p.decided_by = $who, p.decided_at = datetime(),
                       p.decision_note = $note, p.result = $res""",

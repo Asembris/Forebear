@@ -304,11 +304,25 @@ def _inv_id(i: str) -> str:
     return i
 
 
-def _launch(inv: dict, budget: inv_runner.Budget, prior: list[dict] | None) -> None:
+def _reserve(inv_id: str) -> None:
+    """Take a run slot before the Investigation node is created, so a refusal leaves nothing behind. Runs on the
+    event loop thread (no await in between), so check-and-add is atomic."""
     if len(_running) >= MAX_CONCURRENT_INVESTIGATIONS:
         raise HTTPException(429, f"{MAX_CONCURRENT_INVESTIGATIONS} investigations are already running; try again later")
-    _running.add(inv["id"])
+    _running.add(inv_id)
 
+
+async def _create_and_launch(inv: dict, budget: inv_runner.Budget, prior: list[dict] | None) -> None:
+    _reserve(inv["id"])
+    try:
+        await run(lambda g: inv_store.create(g, inv))
+    except Exception:
+        _running.discard(inv["id"])
+        raise
+    _launch(inv, budget, prior)
+
+
+def _launch(inv: dict, budget: inv_runner.Budget, prior: list[dict] | None) -> None:
     def work():
         try:
             inv_runner.run(_graph_sync, inv, budget=budget, prior=prior)
@@ -337,8 +351,7 @@ async def start_investigation(body: InvestigateIn):
     budget = inv_runner.Budget()
     if body.max_steps:
         budget.max_steps = body.max_steps
-    await run(lambda g: inv_store.create(g, inv))
-    _launch(inv, budget, None)
+    await _create_and_launch(inv, budget, None)
     return {"id": inv["id"], "status": "queued", "target_k": k, "mode": body.mode, "links": _links(inv["id"])}
 
 
@@ -404,8 +417,7 @@ async def resume_investigation(inv_id: str, body: ResumeIn | None = None):
     budget = inv_runner.Budget()
     if body.max_steps:
         budget.max_steps = body.max_steps
-    await run(lambda g: inv_store.create(g, inv))
-    _launch(inv, budget, prior)
+    await _create_and_launch(inv, budget, prior)
     return {"id": inv["id"], "status": "queued", "resumed_from": inv_id, "links": _links(inv["id"])}
 
 
@@ -439,7 +451,8 @@ async def decide_proposal(pid: str, body: DecisionIn):
     p = await run(lambda g: inv_store.proposal(g, pid))
     if p is None:
         raise HTTPException(404, f"No proposal {pid}")
-    if p["status"] != "pending_human_decision":
+    # claim it atomically on the single Relate thread, so two concurrent approvals cannot both run an ingest
+    if not await run(lambda g: inv_store.claim_proposal(g, pid, who)):
         raise HTTPException(409, f"{pid} was already decided ({p['status']})")
     if body.decision == "dismiss":
         return await run(lambda g: inv_store.decide_proposal(g, pid, "dismissed", who, body.note, None))
@@ -455,8 +468,9 @@ async def decide_proposal(pid: str, body: DecisionIn):
         present = await run(lambda g: ingest_mod.present_devices(g, fetched.cited))
         related = await loop.run_in_executor(None, ingest_mod.fetch_related, fetched, present)
         r = await run(lambda g: ingest_mod.write(g, fetched, related, existing))
-    except IngestError as e:
-        return await run(lambda g: inv_store.decide_proposal(g, pid, "failed", who, body.note, {"error": str(e)}))
+    except Exception as e:            # IngestError or anything else: never leave the proposal 'deciding'
+        return await run(lambda g: inv_store.decide_proposal(g, pid, "failed", who, body.note,
+                                                             {"error": f"{type(e).__name__}: {str(e)[:300]}"}))
     res = {k2: r[k2] for k2 in ("k", "summary_status", "summary_url", "new_devices", "recalls_linked")} | {
         "citations_added": [{k2: c[k2] for k2 in ("dst", "kind", "page")} for c in r["citations_added"]]}
     return await run(lambda g: inv_store.decide_proposal(g, pid, "executed", who, body.note, res))
