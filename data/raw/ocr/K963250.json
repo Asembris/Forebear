@@ -1,0 +1,28 @@
+{
+"k": "K963250",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K963250.pdf",
+"source_sha256": "116c9cb2713c0f6cb79b4c86f1babdcb47629c580f76b16436ec75ed81dde0ec",
+"ocr_at": "2026-11-17T08:16:00Z",
+"status": "ocr_ok",
+"pages": [
+"K963250\nNOV 14 1996\nRESPIRONICS INC.\nNon-Confidential Summary of Safety and Effectiveness\npage 1 of 3\nAugust 16, 1996\nRespironics, Inc.\n1001 Murry Ridge Drive\nMurrysville, PA\nTel - (412) 733-0200\nFax - (412) 733-0299\nOfficial Contact: Francis X. Dobscha, Manager, Regulatory Affairs\nProprietary or Trade Name: Pressure Valve\nCommon/Usual Name: One-way valve\nClassification Name: Accessory for Ventilator, Passive Exhaust Port, Critical\nCare\nDevice: Respironics Pressure Valve\nPredicate Devices: Instrumentation Industries, Inc. - Reusable One-Way\nValve (Preamendment)\nDevice Description\nThe Pressure Valve is an in-line one-way valve which prevents oxygen or water in the patient\ncircuit from backflowing into the Respironics CPAP or bi-level device when the unit is not\nfunctioning. The Pressure Valve incorporates a valve disc, spring, and housing. The device vents\nany backflow to the atmosphere when the pressure output of the Respironics CPAP or BiPAP unit\ndrops below 0.5 cm H2O.\nIntended Use:\nIndicated Use -- To prevent backflow of oxygen or water from patient\ncircuit into Respironics CPAP or BiPAP device when the\nunit is not functioning\nEnvironment of Use -- Hospital and Home\nEquipment -- Respironics CPAP and bi-level systems indicated for use\nwith supplemental oxygen and/or humidifiers.\npage 3 of 54\n1001 Murry Ridge Drive,Murrysville.PA 15668-8550\n412/733-0200Fax:412/733-0299",
+"Non-Confidential Summary of Safety and Effectiveness\n(continued)\npage 2 of 3\nAugust 16, 1996\nComparison to Predicate Devices:\nIntended device: Instrumentation\nAttribute Respironics, Inc. Industries, Inc.\nPressure Valve One-Way Valve\nIntended Use -- placed in-line in patient Yes Yes\ncircuits\nIntended equipment - to be used only with Yes No\nRespironics, Inc. CPAP and bi-level systems\nIndicated-to establish directional flow in a\npatient circuit and thus prevent backflow Yes Yes\nIndicated - prevents backflow of oxygen or\nwater into CPAP or bi-level device when the Yes No\nunit is not functioning.\nIntended environment - Hospital and Home Yes Yes\nDesign\nPlaced in-line in patient breathing circuit Yes Yes\nHas standard 22 mm fittings Yes Yes\nVents backflow to atmosphere Yes No\nReusable - multiple use, can be cleaned Yes Yes\nMaterials - Body Polycarbonate Polycarbonate\nValve Polycarbonate Silicone Rubber\nSpring Phosphor Bronze N/A\nPerfonmance Standards/Specifications\nHas minimal resistance to flow while in-line Yes s\nMeets design requirements after cleaning Yes Yes\npage 4 of 54",
+"Non-Confidential Summary of Safety and Effectiveness\n(continued)\npage 3 of 3\nAugust 16, 1996\nDifferences Compared To Other Legally Marketed Predicate Device\nThe differences between the intended device and the Instrumentation Industries,\nInc., One-Way Valve are -\nThe intended device is designed to be used only with the Respironics, Inc., CPAP\nand bi-level systems.\nThe intended device vents any backflow of oxygen or water to the atmosphere,\nwhereas the predicate device is generally placed in a circle type of circuit and is\nnot required to vent to atmosphere.\nThere are no other significant differences in design, intended use, safety and\neffectiveness between the Pressure Valve and the predicate device.\npage 5 of 54"
+],
+"page_confidence": [
+0.981,
+0.986,
+0.988
+],
+"page_boxes": [
+43,
+62,
+15
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

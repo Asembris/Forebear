@@ -1,0 +1,275 @@
+{
+ "ran": true,
+ "calls": 30,
+ "answered": 28,
+ "seconds": 46.4,
+ "agreement_on_decided": "5/28",
+ "llm_said_predicate_where_audit_said_not": [],
+ "llm_said_not_where_audit_said_predicate": [
+  "K023244->K982530",
+  "K023244->K984428",
+  "K023306->K982530",
+  "K023306->K984428",
+  "K023350->K902506",
+  "K023350->K905272",
+  "K023350->K961687",
+  "K023350->K970460",
+  "K023350->K982454",
+  "K023559->K003894",
+  "K031047->K961783",
+  "K031896->K022465",
+  "K031896->K023244",
+  "K040540->K010608",
+  "K040574->K010093",
+  "K040574->K970839",
+  "K040574->K980642",
+  "K040790->K002881",
+  "K040790->K032226",
+  "K042403->K023284",
+  "K042403->K023306",
+  "K050171->K962517",
+  "K051263->K040574"
+ ],
+ "rows": [
+  {
+   "src": "K023068",
+   "dst": "K984428",
+   "audit_label": "predicate",
+   "llm_label": "predicate",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023244",
+   "dst": "K982530",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023244",
+   "dst": "K984428",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023306",
+   "dst": "K982530",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023306",
+   "dst": "K984428",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023350",
+   "dst": "K902506",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023350",
+   "dst": "K905272",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023350",
+   "dst": "K961687",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023350",
+   "dst": "K970460",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023350",
+   "dst": "K982454",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K023559",
+   "dst": "K003894",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K031047",
+   "dst": "K961783",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K031896",
+   "dst": "K022465",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K031896",
+   "dst": "K023244",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040540",
+   "dst": "K010608",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040574",
+   "dst": "K001646",
+   "audit_label": "predicate",
+   "llm_label": "predicate",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040574",
+   "dst": "K010093",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040574",
+   "dst": "K010925",
+   "audit_label": "predicate",
+   "llm_label": null,
+   "llm_model": null,
+   "llm_error": "nvidia/nemotron-3.5-lightning-30b-a3b: quote not found in snippet; mistralai/mistral-large-4-1t-a52b: invalid label None"
+  },
+  {
+   "src": "K040574",
+   "dst": "K022132",
+   "audit_label": "predicate",
+   "llm_label": null,
+   "llm_model": null,
+   "llm_error": "nvidia/nemotron-3.5-lightning-30b-a3b: quote not found in snippet; mistralai/mistral-large-4-1t-a52b: invalid label None"
+  },
+  {
+   "src": "K040574",
+   "dst": "K970839",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040574",
+   "dst": "K980642",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040790",
+   "dst": "K002881",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040790",
+   "dst": "K010608",
+   "audit_label": "predicate",
+   "llm_label": "predicate",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040790",
+   "dst": "K032226",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K040944",
+   "dst": "K971812",
+   "audit_label": "not_predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K042403",
+   "dst": "K023284",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K042403",
+   "dst": "K023306",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K050171",
+   "dst": "K962517",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K051263",
+   "dst": "K021573",
+   "audit_label": "predicate",
+   "llm_label": "predicate",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  },
+  {
+   "src": "K051263",
+   "dst": "K040574",
+   "audit_label": "predicate",
+   "llm_label": "reference",
+   "llm_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+   "llm_error": null
+  }
+ ]
+}

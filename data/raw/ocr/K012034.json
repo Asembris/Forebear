@@ -1,0 +1,31 @@
+{
+"k": "K012034",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K012034.pdf",
+"source_sha256": "1d56aafd22c5f413d098689e020ca85e86c58c8bf453e89b387418f12a792e10",
+"ocr_at": "2026-11-17T08:05:03Z",
+"status": "ocr_ok",
+"pages": [
+"JUL 2 4 2001 K012034\nInfant Flow System - Summary of Safety and Effectiveness\nCompany:\nSensorMedics Corporation\n22705 Savi Ranch Parkway\nYorba Linda,CA 92887\n714 283-1830\nContact:\nPaul Kittinger\nProprietary Name:\nSiPAP Infant Nasal CPAP Circuit\nCommon Name:\nNasal CPAP Circuit\nIntended Use:\nThe SensorMedics SiPAP Infant Nasal CPAP Circuit, consisting of a pressure\ngenerator, Nasal CPAP Prongs and Masks, is intended to provide CPAP for use\nin hospitals to treat newborns and infants with RDs or who are recovering from\nRDS.\nDescription of the Device:\nDetailed description of the device circuit is contained in the SiPAP Infant Nasal\nCPAP Operator's Instructions.\nClinical and Non-Clinical Tests of Equivalency:\nThe SiPAP Infant Nasal CPAP Circuit is the equivalent device circuit as the\nInfant Flow distributed by Hamilton Medical under the \"Aladdin\" name (510(k) #\"s\nK960359 and K945740) and the Infant Flow distributed by SensorMedics under\n510(k)'s K974303, K984254 and K991972.\nBecause there are no performance differences between the SensorMedics\nSiPAP Infant Nasal CPAP Circuit, the SensorMedics Infant Flow Circuit and the\nHamilton Medical Aladdin Circuit, no additional clinical or non-clinical tests were\nperformed or submitted in the premarket notification. Refer to 510(k) numbers s\nK960359 andK945740for thisdata.\nAppendix 7\n16",
+"DEPARTMENTOFHEALTH&HUMANSERVICES Public Heaith Service\nFood and Drug Administration\n9200 CorporateBoulevard\nJUL 2 4 2001 RockvilleMD20850\nMr. Earl Draper\nSensorMedics Corporation\n22705 Savi Ranch Parkway\nYorba Linda, CA 92887-4645\nRe: K012034\nSiPAP Infant Nasal CPAP Circuit\nRegulation Number: 868.5905\nRegulatory Class: II (two)\nProduct Code: 73 BZD\nDated: June 27, 2001\nReceived: June 29, 2001\nDear Mr. Draper:\nWe have reviewed your Section 510(k) notification of intent to market the device referenced\nabove and we have determined the device is substantially equivalent (for the indications for use\nstated in the enclosure) to legally marketed predicate devices marketed in interstate commerce\nprior to May 28, 1976, the enactment date of the Medical Device Amendments, or to devices that\nhave been reclassified in accordance with the provisions of the Federal Food, Drug, and\nCosmetic Act (Act). You may, therefore, market the device, subject to the general controls\nprovisions of the Act. The general controls provisions of the Act include requirements for annual\nregistration, listing of devices, good manufacturing practice, labeling, and prohibitions against\nmisbranding and adulteration.\nIf your device is classified (see above) into either class II (Special Controls) or class III\naffecting your device can be found in the Code of Federal Regulations, Title 21, Parts 800 to 895.\nA substantially equivalent determination assumes compliance with the Current Good\nManufacturing Practice requirements, as set forth in the Quality System Regulation (Qs) for\nMedical Devices: General regulation (21 CFR Part 820) and that, through periodic QS\ninspections, the Food and Drug Administration (FDA) will verify such assumptions. Failure to\ncomply with the GMP regulation may result in regulatory action. In addition, FDA may publish\nfurther announcements concerning your device in the Federal Register. Please note: this\nresponse to your premarket notification submission does not affect any obligation you might",
+"Page 2 - Mr. Earl Draper\nhave under sections 531 through 542 of the Act for devices under the Electronic Product\nRadiation Control provisions, or other Federal laws or regulations.\nThis letter will allow you to begin marketing your device as described in your 510(k) premarket\nnotification. The FDA finding of substantial equivalence of your device to a legally marketed\npredicate device results in a classification for your device and thus, permits your device to\nproceed to the market.\nIf you desire specific advice for your device on our labeling regulation (21 CFR Part 801 and\nadditionally 809.10 for in vitro diagnostic devices), please contact the Office of Compliance at\n(301) 594-4646. Additionally, for questions on the promotion and advertising of your device,\nplease contact the Office of Compliance at (301) 594-4639. Also, please note the regulation\nentitled, \"Misbranding by reference to premarket notification\" (21CFR 807.97). Other general\ninformation on your responsibilities under the Act may be obtained from the Division of Small\nManufacturers Assistance at its toll-free number (800) 638-2041 or (301) 443-6597 or at its\nSincerely yours,\nJames E. Dillard III\nDirector\nDivision of Cardiovascular\nand Respiratory Devices\nOffice of Device Evaluation\nCenter for Devices and\nRadiological Health\nEnclosure",
+"Page 1 of 1\n510(k) NUMBER (IF KNOWN): K0IZ034\nDEVICE NAME: SiPAPInfant Nasal CPAP Circuit\nINDICATIONSFOR USE:\nThe SensorMedics SiPAP Infant Nasal CPAP Circuit, consisting of a pressure generator,\nNasal CPAP Prongs and Masks, is intended to provide CPAP for use in hospitals to treat\nnewborns and infants with RDS or who are recovering from RDS.\n(PLEASE DO NOT WRITE BELOW THIS LINE-CONTINUE ON ANOTHER PAGE IF\nNEEDED)\nConcurrence of CDRH, Office of Device Evaluation (ODE)\nPrescription Use OR Over-The-Counter-Use\n(Per 21 CFR 801.109) (Optional Format (1-2-96)\nAppendix 6\nDivision of Cardiovascular &Respiratory Devices\n510(k) Number\n15"
+],
+"page_confidence": [
+0.978,
+0.984,
+0.992,
+0.982
+],
+"page_boxes": [
+34,
+36,
+23,
+20
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

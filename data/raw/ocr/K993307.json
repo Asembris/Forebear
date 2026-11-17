@@ -1,0 +1,22 @@
+{
+"k": "K993307",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K993307.pdf",
+"source_sha256": "5c80ee01b26da48c5bfae36a5d065cdb3c3ff06b8dacf0eaeb594a6bffb267e6",
+"ocr_at": "2026-11-17T08:30:30Z",
+"status": "ocr_ok",
+"pages": [
+"Page 2 - Mr. David J. Vanella\nThis letter will allow you to begin marketing your device as described\nin your 5lo(k) premarket notification.The FDA finding of substantial\nequivalence of your device to a legally marketed predicate device\nresults in a classification for your device and thus, permits your\ndevicetoproceedtothe market.\nIf you desire specific advice for your device on our labeling\nregulation (21 CFR Part 801 and additionally 809.10 for in yitrQ\ndiagnostic devices) please contact the Office of Compliance at\n(301) 594-4648. Additionally, for questions on the promotion and\nadvertising of your device, please contact the Office of Compliance at\n(301) 594-4639. Also, please note the regulation entitled,\n\"Misbranding by reference to premarket notification\"(21 CFR 807.97).\nOther general information on your responsibilities under the Act may\nbeobtainedfromthe Division of SmallManufacturers Assistance atits\ntol1-free number (800) 638-2041 or (301) 443-6597 or at its internet\naddress \"http://www.fda.gov/cdrh/dsma/dsmamain.html\".\nSincerely yours,\nWolf Sapirstein, M.D.\nActing Director\nDivision of Cardiovascular,\nRespiratory; and Neurological Devices\nOffice of Device Evaluation\nCeriter fuiDevices and\nRadiological Health\nEnclosure"
+],
+"page_confidence": [
+0.968
+],
+"page_boxes": [
+26
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

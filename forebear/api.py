@@ -196,12 +196,14 @@ class ReviewIn(BaseModel):
     dst: str
     status: str = Field(pattern="^(confirmed|rejected|)$")
     note: str | None = None
+    # Who recorded it: "user" (the app) or "mcp-client" (the MCP tool, possibly an AI agent). Optional.
+    via: str = Field("user", pattern="^(user|mcp-client)$")
 
 
 @app.post("/api/citation/review")
 async def review(body: ReviewIn):
     src, dst = _norm_k(body.src), _norm_k(body.dst)
-    r = await run(lambda g: g.review_citation(src, dst, body.status, body.note))
+    r = await run(lambda g: g.review_citation(src, dst, body.status, body.note, reviewer=body.via))
     if r is None:
         raise HTTPException(404, f"No citation {src} -> {dst}")
     return r

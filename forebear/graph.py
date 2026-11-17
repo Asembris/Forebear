@@ -11,8 +11,11 @@ Schema (labels / relationship types):
             initiated, status, firm, reason, product, url})
   (:Assessment {id, created_at, target_k, verdict, payload, memo, memo_source})
 
-  (Device)-[:CITES {kind: predicate|reference|mention, confidence, page, snippet,
-                    method, source_url, review, review_note}]->(Device)
+  (Device)-[:CITES {kind: predicate|reference|mention, confidence, page, snippet, quote,
+                    method, text_source, source_url, source_sha256, name_check, panel_check,
+                    audit, audit_note, audit_by, corrected_from,       <- extraction audit (not human)
+                    review, review_note, reviewer, reviewed_at,        <- human review in the app
+                    ai_label, ai_quote, ai_model, ai_at}]->(Device)    <- optional LLM triage
   (Device)-[:SUBJECT_OF]->(Recall)
   (Device)-[:IN_CODE]->(ProductCode)
   (Device)-[:FILED_BY]->(Company)
@@ -40,10 +43,12 @@ SCHEMA = [
 ]
 FULLTEXT = "CREATE FULLTEXT INDEX device_text IF NOT EXISTS FOR (d:Device) ON EACH [d.name, d.applicant]"
 
-# Rule: extractor says predicate, OR a human confirmed it, OR the LLM triage labelled an ambiguous
-# mention as predicate (quote-checked) - unless a human rejected it. Humans always win.
+# Rule: a human confirmed it, OR (the extractor says predicate, or the LLM triage labelled an ambiguous
+# mention as predicate, quote-checked) and the extraction audit did not find it wrong - unless a human
+# rejected it. Humans always win; the audit outranks the extractor and the LLM.
 LINEAGE_EDGE = ("coalesce(r.review, '') <> 'rejected' AND "
-                "(r.kind = 'predicate' OR r.review = 'confirmed' OR r.ai_label = 'predicate')")
+                "(r.review = 'confirmed' OR (NOT coalesce(r.audit, '') IN ['error', 'not_predicate'] AND "
+                "(r.kind = 'predicate' OR r.ai_label = 'predicate')))")
 
 
 class Graph:
@@ -75,7 +80,10 @@ class Graph:
     def upsert_product_codes(self, rows: list[dict]) -> None:
         self.conn.execute(
             "UNWIND $rows AS r MERGE (p:ProductCode {code: r.code}) "
-            "SET p.name = r.name, p.device_class = r.device_class, p.regulation = r.regulation",
+            "SET p.name = r.name, p.device_class = r.device_class, p.regulation = r.regulation, "
+            "p.unattributed_recalls = r.unattributed_recalls, "
+            "p.unattributed_recalls_n = coalesce(r.unattributed_recalls_n, 0), "
+            "p.unattributed_design_recalls_n = coalesce(r.unattributed_design_recalls_n, 0)",
             {"rows": rows})
 
     def upsert_devices(self, rows: list[dict]) -> None:
@@ -92,7 +100,10 @@ class Graph:
                     d.product_code = r.product_code, d.decision = r.decision,
                     d.clearance_type = r.clearance_type, d.summary_status = r.summary_status,
                     d.summary_url = r.summary_url, d.summary_sha256 = r.summary_sha256,
-                    d.in_scope = r.in_scope, d.lineage_known = r.lineage_known
+                    d.in_scope = r.in_scope, d.lineage_known = r.lineage_known,
+                    d.text_source = r.text_source, d.panel = r.panel,
+                    d.unresolved_predicates = coalesce(r.unresolved_predicates, 0),
+                    d.unresolved_citations = r.unresolved_citations
                 WITH d, r
                 MERGE (c:Company {name: r.company})
                 MERGE (d)-[:FILED_BY]->(c)
@@ -102,20 +113,31 @@ class Graph:
                 {"rows": rows[i:i + 500]})
 
     def upsert_citations(self, rows: list[dict]) -> None:
-        """rows: {src, dst, kind, confidence, page, snippet, method, source_url}.
-        An existing human review on the edge is preserved."""
+        """rows: {src, dst, kind, confidence, page, snippet, quote, method, source_url, ...}.
+        An existing human review or LLM label on the edge is preserved; audit fields are rewritten
+        (a row without them clears a stale audit decision)."""
         for i in range(0, len(rows), 500):
             self.conn.execute(
                 """UNWIND $rows AS r
                 MATCH (a:Device {k: r.src}) MATCH (b:Device {k: r.dst})
                 MERGE (a)-[c:CITES]->(b)
                 SET c.kind = r.kind, c.confidence = r.confidence, c.page = r.page,
-                    c.snippet = r.snippet, c.method = r.method, c.source_url = r.source_url,
-                    c.name_check = r.name_check""",
+                    c.snippet = r.snippet, c.quote = r.quote, c.method = r.method,
+                    c.text_source = r.text_source, c.source_url = r.source_url,
+                    c.source_sha256 = r.source_sha256, c.name_check = r.name_check,
+                    c.name_check_method = r.name_check_method, c.panel_check = r.panel_check,
+                    c.explicit_label = r.explicit_label,
+                    c.audit = r.audit, c.audit_note = r.audit_note, c.audit_by = r.audit_by,
+                    c.audit_date = r.audit_date, c.corrected_from = r.corrected_from""",
                 {"rows": rows[i:i + 500]})
 
     def upsert_recalls(self, rows: list[dict]) -> None:
-        """rows: recall dicts incl. k_numbers list; links each to the devices it names."""
+        """rows: recall dicts incl. k_numbers list; links each to the devices it names. Optional
+        `links` carry per-device evidence (dataset.link_recalls); existing evidence is kept otherwise."""
+        rows = [{**r, "links": r.get("links", []) + [{"k": k, "name_check": None, "before_clearance": None}
+                                                     for k in r["k_numbers"]
+                                                     if k not in {x["k"] for x in r.get("links", [])}]}
+                for r in rows]
         for i in range(0, len(rows), 500):
             self.conn.execute(
                 """UNWIND $rows AS r
@@ -127,9 +149,11 @@ class Graph:
                     x.status = r.status, x.firm = r.firm, x.reason = r.reason,
                     x.product = r.product, x.url = r.url, x.product_code = r.product_code
                 WITH x, r
-                UNWIND r.k_numbers AS k
-                MATCH (d:Device {k: k})
-                MERGE (d)-[:SUBJECT_OF]->(x)""",
+                UNWIND r.links AS l
+                MATCH (d:Device {k: l.k})
+                MERGE (d)-[s:SUBJECT_OF]->(x)
+                SET s.name_check = coalesce(l.name_check, s.name_check),
+                    s.before_clearance = coalesce(l.before_clearance, s.before_clearance)""",
                 {"rows": rows[i:i + 500]})
 
     def review_citation(self, src: str, dst: str, status: str, note: str | None,
@@ -182,10 +206,11 @@ class Graph:
     def device(self, k: str) -> dict | None:
         rows = self.q(
             """MATCH (d:Device {k:$k})
-            OPTIONAL MATCH (d)-[:SUBJECT_OF]->(x:Recall)
+            OPTIONAL MATCH (d)-[s:SUBJECT_OF]->(x:Recall)
             OPTIONAL MATCH (d)-[:IN_CODE]->(p:ProductCode)
             RETURN d {.*} AS device, p {.*} AS code,
-                   collect(DISTINCT x {.*}) AS recalls""", {"k": k})
+                   collect(DISTINCT x {.*, link_name_check: s.name_check,
+                                       linked_before_clearance: s.before_clearance}) AS recalls""", {"k": k})
         if not rows:
             return None
         r = rows[0]
@@ -227,13 +252,17 @@ class Graph:
             WHERE a.k <> $k AND all(r IN relationships(p) WHERE {LINEAGE_EDGE})
             WITH a, p ORDER BY length(p)
             WITH a, collect(p)[0] AS p, count(p) AS routes
-            OPTIONAL MATCH (a)-[:SUBJECT_OF]->(x:Recall)
-            WITH a, p, routes, collect(DISTINCT x {{.*}}) AS recalls
+            OPTIONAL MATCH (a)-[s:SUBJECT_OF]->(x:Recall)
+            WITH a, p, routes, collect(DISTINCT x {{.*, link_name_check: s.name_check,
+                                                   linked_before_clearance: s.before_clearance}}) AS recalls
             RETURN a {{.*}} AS device, length(p) AS gen, routes,
                    [n IN nodes(p) | n.k] AS chain,
                    [r IN relationships(p) | {{src: startNode(r).k, dst: endNode(r).k, page: r.page,
-                        snippet: r.snippet, confidence: r.confidence, review: r.review,
-                        name_check: r.name_check, source_url: r.source_url}}] AS hops,
+                        snippet: r.snippet, confidence: r.confidence, review: r.review, reviewer: r.reviewer,
+                        name_check: r.name_check, source_url: r.source_url, kind: r.kind,
+                        audit: r.audit, audit_note: r.audit_note, ai_label: r.ai_label,
+                        text_source: r.text_source, panel_check: r.panel_check,
+                        quote: r.quote, method: r.method}}] AS hops,
                    recalls
             ORDER BY gen, device.decision_date""", {"k": k})
         out = []
@@ -252,9 +281,38 @@ class Graph:
                    c.kind AS kind, c.confidence AS confidence, c.page AS page, c.snippet AS snippet,
                    c.review AS review, c.review_note AS review_note, c.source_url AS source_url,
                    c.ai_label AS ai_label, c.ai_quote AS ai_quote, c.ai_model AS ai_model,
-                   c.name_check AS name_check, c.reviewer AS reviewer
+                   c.name_check AS name_check, c.reviewer AS reviewer,
+                   c.panel_check AS panel_check, c.quote AS quote, c.method AS method,
+                   c.text_source AS text_source, c.audit AS audit, c.audit_note AS audit_note,
+                   c.audit_by AS audit_by, c.corrected_from AS corrected_from
             ORDER BY CASE c.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, b.k""",
             {"k": k})]
+
+    def lineage_edges_from(self, ks: list[str]) -> list[dict]:
+        """Every lineage edge leaving the given devices, on any route (the ancestor query keeps only one
+        shortest path per ancestor, so a doubtful edge on another route would otherwise go unseen)."""
+        if not ks:
+            return []
+        return self.q(
+            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND {LINEAGE_EDGE}
+            RETURN a.k AS src, b.k AS dst, r.page AS page, r.snippet AS snippet, r.confidence AS confidence,
+                   r.review AS review, r.reviewer AS reviewer, r.name_check AS name_check,
+                   r.source_url AS source_url, r.kind AS kind, r.audit AS audit, r.audit_note AS audit_note,
+                   r.ai_label AS ai_label, r.text_source AS text_source, r.panel_check AS panel_check,
+                   r.quote AS quote, r.method AS method
+            ORDER BY src, dst""", {"ks": list(ks)})
+
+    def out_of_lineage_predicates(self, k: str) -> list[dict]:
+        """Citations the extractor read as predicates that do not count in lineage queries (removed by
+        the audit or rejected by a person), minus K-number typos the audit corrected to another edge."""
+        rows = self.q(
+            f"""MATCH (d:Device {{k:$k}})-[r:CITES]->(b:Device)
+            RETURN b.k AS dst, r.kind AS kind, r.page AS page, r.quote AS quote, r.snippet AS snippet,
+                   r.review AS review, r.review_note AS review_note, r.audit AS audit,
+                   r.audit_note AS audit_note, r.corrected_from AS corrected_from,
+                   ({LINEAGE_EDGE}) AS in_lineage""", {"k": k})
+        corrected = {r["corrected_from"] for r in rows if r["corrected_from"] and r["in_lineage"]}
+        return [r for r in rows if r["kind"] == "predicate" and not r["in_lineage"] and r["dst"] not in corrected]
 
     def cited_after_recall(self, design_only: bool = True, limit: int = 200) -> list[dict]:
         """Clearances whose (direct or 2nd-generation) predicate was already under a recall

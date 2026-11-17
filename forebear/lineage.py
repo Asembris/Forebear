@@ -10,6 +10,8 @@ field is coarse.
 """
 from __future__ import annotations
 
+import json
+
 from .graph import Graph
 
 SEVERITY_ORDER = {"high": 3, "medium": 2, "low": 1, "info": 0}
@@ -19,7 +21,8 @@ def _recall_ev(x: dict) -> dict:
     return {"type": "recall", "id": x["id"], "event": x.get("event"), "classification": x.get("classification"),
             "root_cause": x.get("root_cause"), "design_related": x.get("design_related"),
             "initiated": x.get("initiated"), "firm": x.get("firm"), "reason": x.get("reason"),
-            "url": x.get("url"), "status": x.get("status")}
+            "url": x.get("url"), "status": x.get("status"),
+            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance")}
 
 
 def _count(recs: list[dict]) -> str:
@@ -29,12 +32,15 @@ def _count(recs: list[dict]) -> str:
 
 
 def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
+    depth = max(1, min(int(depth), 8))           # the range the lineage query actually traverses
     dev = g.device(k)
     if dev is None:
         return None
     ancestors = g.ancestors(k, depth)
     descendants = g.descendants(k, 3)
     signals: list[dict] = []
+
+    pc = dev.get("product") or {}
 
     # D: the candidate's own recalls (one signal, all recalls as evidence)
     own = sorted(dev["recalls"], key=lambda x: x.get("initiated") or "", reverse=True)
@@ -88,18 +94,66 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                                       "summary_status": a.get("summary_status")} for a in unknown[:12]],
                         "chain": []})
 
-    # N: links in the readable ancestry whose cited name does not match the FDA record
-    seen, flagged = set(), []
-    for a in ancestors:
-        for h in a["hops"]:
-            if h.get("name_check") == "mismatch" and (h["src"], h["dst"]) not in seen:
-                seen.add((h["src"], h["dst"]))
+    # N/U: links in the ancestry whose evidence is doubtful. A doubtful link may route the ancestry to
+    # the wrong device, and the right one may be missing, so these never count as "checked".
+    # Every lineage edge leaving the candidate or an ancestor within the requested depth is checked, on any
+    # route: its generation is its source's generation + 1 (the candidate is generation 0).
+    gen_of = {k: 0} | {a["k"]: a["gen"] for a in ancestors}
+    flagged, doubtful = [], []
+    for h in g.lineage_edges_from([x for x, n in gen_of.items() if n < depth]):
+        why = doubt(h)
+        if why:
+            doubtful.append({"type": "citation", "doubt": why, "gen": gen_of[h["src"]] + 1, **h})
+            if "name_mismatch" in why:
                 flagged.append({"type": "citation", **h})
     if flagged:
         signals.append({"code": "NAME_MISMATCH_IN_LINEAGE", "severity": "info",
                         "title": f"This ancestry uses {len(flagged)} link(s) where the cited device's FDA name does not "
                                  f"appear in the summary text (possible K-number typo). Verify them before relying on "
                                  f"the result.", "evidence": flagged, "chain": []})
+    other = [d for d in doubtful if d["doubt"] != ["name_mismatch"]]
+    if other:
+        signals.append({"code": "UNCERTAIN_LINK_IN_LINEAGE", "severity": "info",
+                        "title": f"{len(other)} link(s) in this ancestry rest on uncertain evidence (unresolved in the "
+                                 f"extraction audit, cited device from another FDA panel, or labelled only by the LLM "
+                                 f"and not confirmed by a person)", "evidence": other, "chain": []})
+
+    # C: predicate citations in the own summary of the candidate or of any ancestor whose predicates fall inside
+    # the requested depth, that did not become lineage edges: K-number not in openFDA, cleared later, or removed
+    # by the audit or a reviewer. `gen` is the generation the missing predicate would have had.
+    gen1 = [a for a in ancestors if a["gen"] == 1]
+    all_missing = [m | {"gen": 1} for m in _missing_predicates(g, dev)] + \
+                  [m | {"gen": a["gen"] + 1} for a in ancestors if a["gen"] < depth for m in _missing_predicates(g, a)]
+    missing = [m for m in all_missing if m["gen"] <= EVIDENCE_WINDOW]
+    deeper_missing = [m for m in all_missing if m["gen"] > EVIDENCE_WINDOW]
+    if all_missing:
+        signals.append({"code": "PREDICATE_CITATION_UNRESOLVED", "severity": "info",
+                        "title": f"{len(all_missing)} predicate citation(s) in the summaries of {k} or its ancestors "
+                                 f"could not be resolved to a device in this graph, so part of the ancestry is missing"
+                                 f" ({len(missing)} within two generations)",
+                        "evidence": all_missing[:20], "chain": []})
+
+    # G: gaps deeper than the evidence window but inside the requested depth. Recalls there can only yield
+    # low-severity signals, so they cannot change the verdict, but the lower-severity list may be incomplete.
+    deeper_doubtful = [d for d in doubtful if d["gen"] > EVIDENCE_WINDOW]
+    deeper_unread = [a for a in ancestors if EVIDENCE_WINDOW <= a["gen"] < depth and not a.get("lineage_known")]
+    deeper = {"missing_predicate_citations": len(deeper_missing), "doubtful_links": len(deeper_doubtful),
+              "unread_ancestors": len(deeper_unread)}
+    if any(deeper.values()):
+        signals.append({"code": "DEEPER_ANCESTRY_GAPS", "severity": "info",
+                        "title": f"Beyond two generations (up to the requested {depth}): {len(deeper_missing)} unresolved "
+                                 f"predicate citation(s), {len(deeper_doubtful)} doubtful link(s), {len(deeper_unread)} "
+                                 f"ancestor(s) whose own summaries were not read. Recalls there would only be "
+                                 f"lower-severity signals, and some may be missing.",
+                        "evidence": deeper_missing[:10] + deeper_doubtful[:10], "chain": []})
+
+    # R: recalls filed under the candidate's product code that name no 510(k): no lineage query sees them
+    if pc.get("unattributed_design_recalls_n"):
+        un = [u for u in json.loads(pc.get("unattributed_recalls") or "[]") if u.get("design_related")]
+        signals.append({"code": "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE", "severity": "info",
+                        "title": f"{len(un)} design-related recall record(s) under product code {pc.get('code')} name no "
+                                 f"510(k) number, so they cannot be attributed to this or any device's lineage",
+                        "evidence": [{"type": "recall", **u} for u in un[:12]], "chain": []})
 
     # F: how the family downstream has fared (context, not a verdict input)
     recalled_desc = [d for d in descendants if d["recalls"]]
@@ -108,6 +162,30 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                         "title": f"{len(recalled_desc)} of {len(descendants)} later devices citing this lineage "
                                  f"(≤3 generations) have recalls", "evidence": [], "chain": []})
 
+    # U2: recalls whose cause or class is unknown cannot be ruled out as design-related / Class I
+    unknown_recalls = [(0, x) for x in own if recall_unknown(x, 0)] + \
+              [(a["gen"], x) for a in ancestors if a["gen"] <= 2 for x in a["recalls"] if recall_unknown(x, a["gen"])]
+    if unknown_recalls:
+        signals.append({"code": "RECALL_CAUSE_OR_CLASS_UNKNOWN", "severity": "info",
+                        "title": f"{len(unknown_recalls)} recall record(s) on the candidate or its direct/grand-predicates have no "
+                                 f"stated root cause or no FDA classification, so they cannot be ruled out as design-related "
+                                 f"or Class I", "evidence": [_recall_ev(x) | {"gen": g} for g, x in unknown_recalls[:12]],
+                        "chain": []})
+
+    # Evidence completeness: keeps a green result from resting on evidence we could not verify.
+    trusted_gen1 = [a for a in gen1 if not doubt(a["hops"][0])]
+    gen1_unread = [a for a in gen1 if not a.get("lineage_known")]
+    # `evidence` describes the verdict window only (the candidate and two predicate generations, the reach of
+    # every severity rule that can change a verdict); gaps beyond it are counted in coverage.deeper_gaps.
+    shallow = depth < EVIDENCE_WINDOW         # grand-predicates were not traversed at all
+    if gen1 and not trusted_gen1:
+        evidence = "uncertain"
+    elif missing or gen1_unread or any(d["gen"] <= EVIDENCE_WINDOW for d in doubtful) or unknown_recalls or \
+            pc.get("unattributed_design_recalls_n") or (shallow and ancestors):
+        evidence = "partial"
+    else:
+        evidence = "complete" if ancestors else "none"
+
     signals.sort(key=lambda s: (-SEVERITY_ORDER[s["severity"]], s.get("gen", 0)))
     worst = max((SEVERITY_ORDER[s["severity"]] for s in signals), default=0)
     n_low = sum(1 for s in signals if s["severity"] == "low")
@@ -115,30 +193,106 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         verdict = "DESIGN_RECALL_ON_FILE"
     elif worst == 2:
         verdict = "REVIEW_LINEAGE"
-    elif not ancestors:
+    elif not ancestors or evidence == "uncertain":
         verdict = "INSUFFICIENT_LINEAGE"      # we could not check: never show a green result here
     else:
         verdict = "NO_DESIGN_RECALL_SIGNAL"
+    if not dev.get("lineage_known"):
+        insufficient = (f"The candidate's own predicates could not be read (summary status: "
+                        f"{dev.get('summary_status')}), so its ancestry was not checked.")
+    elif ancestors and evidence == "uncertain":
+        insufficient = ("Every direct predicate link of the candidate rests on uncertain evidence (see the "
+                        "uncertain-link signals), so its ancestry was not treated as checked.")
+    else:
+        insufficient = "No predicate citations were found for the candidate, so its ancestry was not checked."
+    clear = ("No design-related recall on the candidate or its direct/grand-predicates in the readable ancestry "
+             f"({n_low} lower-severity signal(s) listed). Not a safety finding.")
+    if evidence == "partial" and shallow:
+        clear = ("Provisional: " + clear.replace("its direct/grand-predicates", "its direct predicates") +
+                 f" Only {depth} predicate generation was traversed, so grand-predicate recalls were not checked; "
+                 f"request at least {EVIDENCE_WINDOW} generations.")
+    elif evidence == "partial":
+        clear = ("Provisional: " + clear + " Part of the ancestry within two generations is missing or rests on "
+                 "uncertain links (see the coverage signals), so a recall there would not show.")
+    if any(deeper.values()):
+        clear += (" Beyond two generations the ancestry has gaps (see DEEPER_ANCESTRY_GAPS), so the lower-severity "
+                  "list may be incomplete.")
     reasons = {
         "DESIGN_RECALL_ON_FILE": "The candidate itself has a design-related recall on file. FDA's draft guidance "
                                  "recommends predicates without design-related recalls; document how this is addressed.",
         "REVIEW_LINEAGE": "A direct or grand-predicate has a design-related recall (Class I/II or unclassified), the "
                           "direct predicate has a Class I recall, or the candidate has a Class I recall.",
-        "INSUFFICIENT_LINEAGE": "The candidate's own predicates could not be read "
-                                f"(summary status: {dev.get('summary_status')}), so its ancestry was not checked."
-                                if not dev.get("lineage_known") else
-                                "No predicate citations were found for the candidate, so its ancestry was not checked.",
-        "NO_DESIGN_RECALL_SIGNAL": "No design-related recall on the candidate or its direct/grand-predicates in the "
-                                   f"readable ancestry ({n_low} lower-severity signal(s) listed). Not a safety finding.",
+        "INSUFFICIENT_LINEAGE": insufficient,
+        "NO_DESIGN_RECALL_SIGNAL": clear,
     }
     return {
         "k": k, "device": dev, "verdict": verdict, "verdict_reason": reasons[verdict],
         "signals": signals, "depth": depth,
         "ancestors": ancestors, "descendants": descendants,
         "coverage": {"ancestors": len(ancestors), "ancestors_lineage_unknown": len(unknown),
-                     "candidate_lineage_known": bool(dev.get("lineage_known"))},
-        "rules_version": "forebear-rules-v2",
+                     "candidate_lineage_known": bool(dev.get("lineage_known")),
+                     "evidence": evidence, "doubtful_links": len(doubtful),
+                     "unresolved_predicate_citations": len(missing),
+                     "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1),
+                     "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+                     "generations_traversed": depth, "deeper_gaps": deeper},
+        "rules_version": RULES_VERSION,
     }
+
+
+RULES_VERSION = "forebear-rules-v3"
+EVIDENCE_WINDOW = 2
+MACHINE_REVIEWERS = ("mcp-client",)       # reviews recorded through an automated client, not a person      # generations within which a recall can raise a verdict above "no signal"
+
+
+def doubt(h: dict) -> list[str]:
+    """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it; a
+    confirmation sent through the MCP tool (reviewer "mcp-client", possibly an AI agent) does not."""
+    if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
+        return []
+    why = []
+    if h.get("audit") == "unresolved":
+        why.append("audit_unresolved")
+    if h.get("audit") == "corrected":         # the K-number was supplied by the audit, not printed in the PDF
+        why.append("audit_correction")
+    if h.get("name_check") == "mismatch" and h.get("audit") not in ("variant", "corrected"):
+        why.append("name_mismatch")
+    if h.get("panel_check") == "different" and h.get("audit") not in ("variant", "corrected"):
+        why.append("different_fda_panel")
+    if h.get("kind") not in (None, "predicate") and h.get("ai_label") == "predicate":
+        why.append("llm_label_only")
+    if h.get("kind") not in (None, "predicate") and h.get("review") == "confirmed" \
+            and h.get("reviewer") in MACHINE_REVIEWERS:
+        why.append("client_confirmation_only")
+    return why
+
+
+UNKNOWN_CAUSES = ("", "other", "under investigation by firm", "unknown/undetermined by firm")
+
+
+def recall_unknown(x: dict, gen: int) -> bool:
+    """A recall that the severity rules cannot classify: not known to be design-related and either its root
+    cause is missing/unspecific, or (on the candidate or a direct predicate, where Class I alone matters)
+    FDA's classification is missing."""
+    if x.get("design_related"):
+        return False
+    cause = (x.get("root_cause") or "").strip().lower()
+    return cause in UNKNOWN_CAUSES or (gen <= 1 and not x.get("classification"))
+
+
+def _missing_predicates(g: Graph, d: dict) -> list[dict]:
+    """Predicate citations from d's summary that are not lineage edges."""
+    out = []
+    if d.get("unresolved_citations"):
+        for u in json.loads(d["unresolved_citations"]):
+            if u.get("kind") == "predicate":
+                out.append({"type": "unresolved_citation", "src": d["k"], "cited": u["cited"],
+                            "reason": u["reason"], "page": u.get("page"), "quote": u.get("quote")})
+    for c in g.out_of_lineage_predicates(d["k"]):
+        out.append({"type": "unresolved_citation", "src": d["k"], "cited": c["dst"], "page": c.get("page"),
+                    "reason": "rejected_by_reviewer" if c.get("review") == "rejected" else f"audit_{c.get('audit')}",
+                    "quote": c.get("quote") or c.get("snippet"), "note": c.get("review_note") or c.get("audit_note")})
+    return out
 
 
 def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:

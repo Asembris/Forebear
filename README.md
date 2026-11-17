@@ -41,7 +41,7 @@ Frontend (only when changing the UI; Node 18+):
 cd web; npm ci; npm run build; cd ..
 ```
 
-Tests (53: extraction, graph, verdict rules, ingest and rollback, API journey, security, MCP, offline rebuild; the Relate-CLI MCP test is skipped if `tools\relate.exe` is absent):
+Tests (extraction and adversarial rules, OCR provenance, audit decisions, uncertainty rules, recall links, graph, verdict rules, ingest and rollback, API journey, BreathePal evidence chain, security, MCP, offline rebuild; the Relate-CLI MCP test is skipped if `tools\relate.exe` is absent):
 ```powershell
 .venv\Scripts\python.exe -m pytest
 ```
@@ -49,12 +49,12 @@ Tests (53: extraction, graph, verdict rules, ingest and rollback, API journey, s
 ## Try this (90 seconds)
 1. **The story.** On the start page, click **K252078 BreathePal Bilevel (2026)**:
    - Verdict: **Review lineage**.
-   - Its predicate, BiPAP A30 (K113053), is named on pages 5 and 6 of the summary.
+   - Its predicate, BiPAP A30 (K113053), is named on pages 5, 6 and 7 of the summary.
    - K113053 carries the June 2021 Philips PE-PUR foam recall records (Class I, root cause "Device Design").
    - The timeline shows the recall diamonds sitting *before* BreathePal's clearance date.
 2. **The evidence.** Expand a signal to see the citation chain, the quoted summary text with a PDF link, and each FDA recall record.
 3. **Writes.** Click **Save assessment to graph**. Then, under *What K252078 cites*, reject the edge: the lineage and verdict change immediately, and the saved assessment is marked **stale**. Restore the edge.
-4. **Recall reach.** Open the tab and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 19 later devices descend from them; 8 of those were cleared after the recall on their own lineage began.
+4. **Recall reach.** Open the tab and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 25 later devices descend from them; 8 of those were cleared after the recall on their own lineage began.
 5. **Live update.** In **Add a clearance**, enter an out-of-family ancestor (dashed node) to read its summary from FDA and extend the tree. This needs internet.
 
 ## How it uses Relate
@@ -84,21 +84,23 @@ Tests (53: extraction, graph, verdict rules, ingest and rollback, API journey, s
 - `data/forebear.rl`: the Relate store.
 - `data/raw/`: cached openFDA JSON and summary text with URL and SHA-256. Provenance is in `data/PROVENANCE.md`.
 - `data/build_report.json`: counts and extraction statistics.
-- `data/reviews.json`: curated human review decisions (4 rejected K-number typos), applied by the build through the same review write the UI and MCP use.
+- `data/reviews.json`: human review decisions, applied by the build through the same review write the UI and MCP use; each must name the person (none yet). Four earlier AI-generated decisions that had been labelled "curated human review" are kept there for the record under `ai_generated_not_applied` and are not applied.
+- `data/audit/link_decisions.json`: extraction-audit decisions on flagged predicate links (error / not_predicate / variant / unresolved, with verified corrections). Made by an AI agent, stored apart from human review, overridden by any human review. See `docs/EVIDENCE_QUALITY.md`.
+- `data/raw/ocr/`: text recovered from the 68 image-only summaries (local OCR, or a PDF Portfolio's embedded summary), each checked against the PDF's recorded SHA-256.
 - `data/live/` (gitignored): anything fetched by live ingest in the app. The committed `data/raw` is only written by `scripts/fetch_data.py`.
-- `eval/`: the extraction audit sample and results.
+- `eval/`: extraction audit and evaluation outputs (`link_audit.json`, `link_audit_queue.json` = links awaiting a person, `extraction_eval*.json`, `llm_triage_experiment.json`).
 
 Dataset: four FDA product codes for respiratory devices (CPAP/BiPAP: BZD; ventilators: MNS, MNT, CBK).
-- 1,040 clearances, plus 130 out-of-family predicates.
-- 1,079 predicate links, 111 reference-device links, 266 ambiguous mentions.
-- 124 predicate links are flagged "name ≠ FDA record" (the cited device's FDA name doesn't appear near the citation); verify those.
-- 559 recall records.
+- 1,040 clearances, plus 147 out-of-family predicates.
+- 1,229 predicate links, 123 reference-device links, 244 ambiguous mentions.
+- Every predicate link flagged by the name or FDA-panel check has an audit decision: 13 verified K-number errors (removed from lineage, 12 with a verified correction), 8 non-predicates, 98 naming variants, and 21 unresolved links that are kept, flagged and listed for a person. Evidence quality, methods and remaining limits: `docs/EVIDENCE_QUALITY.md`.
+- 563 recall records.
 
 ## AI and third-party tools (disclosure)
 - **LLM (optional).** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b`, falling back to `mistralai/mistral-large-4-1t-a52b`. Used only to label *ambiguous* citation mentions, on request. Its output must quote the snippet verbatim or it is discarded, and humans can override it.
-  - The LLM is **not** used for verdicts or notes. In testing it miscounted recalls.
+  - The LLM is **not** used for verdicts, notes or the extraction audit. In testing it miscounted recalls, and on hard citation cases it agreed with the audit 5 times in 28 (`eval/llm_triage_experiment.json`). A link made a predicate only by the LLM counts as uncertain evidence in assessments.
   - Set `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` to enable it. Everything else works without it.
-- **Libraries.** FastAPI, Uvicorn, pypdf, httpx, React 18, Vite.
+- **Libraries.** FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional for refreshing the OCR cache: RapidOCR (ONNX) and pypdfium2 (`requirements-ocr.txt`).
 - **Built with.** Claude Code (an AI coding assistant) wrote most of the code and docs under the team's direction.
 
 Not regulatory advice. Forebear reports documented lineage and recall history; it does not judge device safety.

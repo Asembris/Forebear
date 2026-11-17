@@ -3,6 +3,7 @@
     python scripts/fetch_data.py metadata            # 510(k) records + recalls for the product codes
     python scripts/fetch_data.py summaries [--max N] # 510(k) summary PDFs -> text (slow, polite)
     python scripts/fetch_data.py expand              # metadata + recalls for out-of-family predicates
+    python scripts/fetch_data.py ocr [--max N]       # local OCR of image-only summaries (requirements-ocr.txt)
 
 Everything is cached; re-running only fetches what is missing.
 """
@@ -76,28 +77,54 @@ def cmd_summaries(codes: list[str], max_n: int | None, extra: list[str] | None =
 
 
 def cmd_expand(codes: list[str]) -> None:
-    """Fetch metadata + recalls for predicates referenced from in-family summaries."""
-    from forebear.predicates import extract_from_summary
+    """Fetch metadata + recalls for predicates referenced from in-family summaries.
+
+    Mirrors build_graph.build() query for query (same K-number sets, same chunking), so the offline
+    build finds every response it needs in the cache. Re-run after extraction rules or OCR change."""
+    from scripts.build_graph import cited_from_in_family
     in_family = {r["k_number"] for c in codes for r in openfda.clearances_for_product_code(c)}
-    cited = set()
-    for k in in_family:
-        rec = summaries.load(k)
-        if rec and rec["status"] == "ok":
-            cited |= {p["k"] for p in extract_from_summary(rec, self_k=k)}
-    outside = sorted(cited - in_family)
-    print(f"{len(cited)} cited predicates, {len(outside)} outside the families")
-    meta = openfda.clearances_by_k(outside)
-    print(f"  metadata found for {len({r['k_number'] for r in meta})}")
-    rc = openfda.recalls_by_k(sorted(in_family | cited))
-    print(f"  recall records referencing graph devices: {len(rc)}")
+    cited = cited_from_in_family(in_family)
+    outside_wanted = sorted(cited - in_family)
+    print(f"{len(cited)} cited K-numbers, {len(outside_wanted)} outside the families")
+    meta = openfda.clearances_by_k(outside_wanted)
+    found = {r["k_number"] for r in meta}
+    print(f"  metadata found for {len(found)}; not in openFDA: {sorted(set(outside_wanted) - found)}")
+    known = sorted(in_family | found)
+    rc = openfda.recalls_by_k(known)
+    enf = openfda.enforcement_by_event({r.get("res_event_number") for r in rc})
+    print(f"  recall records referencing graph devices: {len(rc)}; enforcement rows: {len(enf)}")
     m = load_manifest()
-    m["expanded_predicates"] = outside
+    m["expanded_predicates"] = sorted(found)
     save_manifest(m)
+
+
+def cmd_ocr(codes: list[str], max_n: int | None) -> None:
+    """OCR every in-family summary whose PDF has no text layer (see forebear/ocr.py)."""
+    from forebear import ocr
+    in_family = sorted({r["k_number"] for c in codes for r in openfda.clearances_for_product_code(c)})
+    todo = [k for k in in_family
+            if (summaries.load(k) or {}).get("status") == "no_text" and ocr.load(k) is None]
+    if max_n:
+        todo = todo[:max_n]
+    print(f"{len(todo)} image-only summaries to OCR", flush=True)
+    engine, meta = ocr._engine()
+    stats: dict[str, int] = {}
+    t0 = time.time()
+    with httpx.Client(timeout=60, headers={"User-Agent": USER_AGENT}, follow_redirects=True) as client:
+        for i, k in enumerate(todo, 1):
+            rec = ocr.run(summaries.load(k), client, engine, meta)
+            if rec["status"] != "download_failed":          # transient network errors are not cached
+                ocr.save(rec)
+            stats[rec["status"]] = stats.get(rec["status"], 0) + 1
+            print(f"  {i}/{len(todo)} {k} {rec['status']} pages={len(rec['pages'])} "
+                  f"low_conf={rec.get('low_confidence_pages')} {time.time()-t0:.0f}s", flush=True)
+            time.sleep(0.5)
+    print("done", stats, flush=True)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["metadata", "summaries", "expand"])
+    ap.add_argument("cmd", choices=["metadata", "summaries", "expand", "ocr"])
     ap.add_argument("--codes", nargs="*", default=DEFAULT_PRODUCT_CODES)
     ap.add_argument("--max", type=int, default=None)
     a = ap.parse_args()
@@ -105,5 +132,7 @@ if __name__ == "__main__":
         cmd_metadata(a.codes)
     elif a.cmd == "summaries":
         cmd_summaries(a.codes, a.max)
+    elif a.cmd == "ocr":
+        cmd_ocr(a.codes, a.max)
     else:
         cmd_expand(a.codes)

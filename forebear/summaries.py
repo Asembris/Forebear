@@ -39,6 +39,30 @@ def load(k: str) -> dict | None:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
+def load_text(k: str) -> dict | None:
+    """The readable text of k's summary: the PDF text layer when it has one, otherwise the local OCR
+    of the same PDF (data/raw/ocr), used only if it was run on bytes with the recorded SHA-256.
+    For a PDF Portfolio the recovered text is the embedded summary PDF's own text layer instead.
+    The returned record carries `ocr` metadata (with `method` "ocr" or "embedded_pdf_attachment")
+    when the text did not come from the PDF's text layer; None if unreadable."""
+    rec = load(k)
+    if not rec:
+        return None
+    if rec["status"] == "ok":
+        return rec
+    if rec["status"] != "no_text":
+        return None
+    from . import ocr
+    o = ocr.load(k)
+    if (not o or o.get("status") not in ("ocr_ok", "attachment_text") or not rec.get("sha256")
+            or o.get("source_sha256") != rec["sha256"]):
+        return None
+    meta = {key: o.get(key) for key in ("engine", "engine_version", "dpi", "page_confidence",
+                                        "low_confidence_pages", "ocr_at", "attachment", "attachment_sha256")}
+    meta["method"] = "embedded_pdf_attachment" if o["status"] == "attachment_text" else "ocr"
+    return {**rec, "pages": o["pages"], "ocr": meta}
+
+
 def fetch(k: str, client: httpx.Client | None = None, force: bool = False) -> dict:
     """Return {k, status, url, sha256, pages:[text], fetched_at}. status in ok|missing|no_text|error."""
     if not force:

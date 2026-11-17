@@ -41,7 +41,9 @@ TOOLS = [
                                                 "and MERGE it into the graph. Also extends lineage for a device whose summary was unread.",
      "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
     {"name": "review_citation", "description": "Record a human-verified judgement on an extracted citation edge: confirmed, rejected, "
-                                               "or '' to clear. Rejected edges stop counting in every lineage query.",
+                                               "or '' to clear. Rejected edges stop counting in every lineage query. Recorded with reviewer "
+                                               "'mcp-client': a confirmation made here does not clear uncertain-evidence flags, "
+                                               "which only a person's review in the app does.",
      "inputSchema": {"type": "object", "properties": {"src": K, "dst": K, "status": {"type": "string", "enum": ["confirmed", "rejected", ""]},
                                                       "note": {"type": "string"}}, "required": ["src", "dst", "status"]}},
     {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls.",
@@ -64,11 +66,14 @@ def _compact_assessment(a: dict) -> dict:
     return {
         "k": a["k"], "name": a["device"].get("name"), "applicant": a["device"].get("applicant"),
         "decision_date": a["device"].get("decision_date"), "verdict": a["verdict"], "why": a["verdict_reason"],
-        "signals": [{"severity": s["severity"], "title": s["title"], "chain": s.get("chain"),
+        "signals": [{"code": s.get("code"), "severity": s["severity"], "title": s["title"], "chain": s.get("chain"),
                      "recalls": [{k: e.get(k) for k in ("id", "classification", "root_cause", "initiated", "url")}
                                  for e in s["evidence"] if e.get("type") == "recall"][:5],
-                     "citation_evidence": [{k: e.get(k) for k in ("src", "dst", "page", "snippet", "source_url")}
-                                           for e in s["evidence"] if e.get("type") == "citation"]}
+                     "citation_evidence": [{k: e.get(k) for k in ("src", "dst", "page", "snippet", "source_url",
+                                                                 "name_check", "audit", "audit_note", "doubt")}
+                                           for e in s["evidence"] if e.get("type") == "citation"],
+                     "unresolved_citations": [{k: e.get(k) for k in ("src", "cited", "reason", "page", "quote")}
+                                              for e in s["evidence"] if e.get("type") == "unresolved_citation"]}
                     for s in a["signals"]],
         "coverage": a["coverage"], "note": a["memo"],
     }
@@ -94,7 +99,8 @@ def call_tool(name: str, args: dict):
             "citations_added": [{k: c[k] for k in ("dst", "kind", "page", "snippet")} for c in r["citations_added"]]}
     if name == "review_citation":
         return _http("POST", "/api/citation/review", json={"src": up(args["src"]), "dst": up(args["dst"]),
-                                                           "status": args["status"], "note": args.get("note")})
+                                                           "status": args["status"], "note": args.get("note"),
+                                                           "via": "mcp-client"})
     if name == "save_assessment":
         return _http("POST", "/api/assessments", json={"k": up(args["k_number"]), "note": args.get("note")})
     raise KeyError(name)

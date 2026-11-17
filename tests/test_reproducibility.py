@@ -25,5 +25,6 @@ def test_rebuild_from_raw_cache_matches_shipped_report(tmp_path, monkeypatch):
     shipped = json.loads((ROOT / "data" / "build_report.json").read_text())
     rep = bg.build(tmp_path / "rebuilt.rl", shipped["product_codes"])
     for key in ("in_family_devices", "out_of_family_predicates", "citation_extraction",
-                "recall_records_linked", "graph"):
+                "recall_records_linked", "graph", "in_family_summary_status", "in_family_text_from_ocr",
+                "citations_not_resolved", "audit", "recall_links", "unattributed_recalls_by_code"):
         assert rep[key] == shipped[key], key

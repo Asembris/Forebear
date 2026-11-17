@@ -1,0 +1,34 @@
+{
+"k": "K964019",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K964019.pdf",
+"source_sha256": "84be5c9daa3cb8dca9f328e75101e0f5e151990f85ad37e260ef60ee5c666360",
+"ocr_at": "2026-11-17T08:17:03Z",
+"status": "ocr_ok",
+"pages": [
+"K964019\nJUN 18 1997\n510(k) Summary\nGeneral Information\nNellcor Puritan Bennett\n10200 Valley View Road\nEden Prairie, MN 55344\nSubmitter's Name: Chris Hadland\nPhone: (612) 941-3006\nFax Number: (612) 829-5423\nProprietary Name of the Device\nMorphee Plus Alpha\nCommon Name of the Device\nObstructive Sleep Apnea Management System\nDevice Classification\nObstructive sleep apnea management systems have been classified as\nof this type have a classification code of 73FLS, Apnea Detector (21CFR\n868.2375) and 73BZD, Non-c0ntinuous Ventilator (868.5905).\nIntended Use\nMorphee Plus Alpha is intended to manage obstructive sleep apnea\nthrough a predetermined program of positive   air   pressure\nadministered through a tube and mask.\nPredicate Device Equivalence\nCompanion 3lg Nasal CPAP System - Nellcor Purtitan Bennett\nDPAP Interactive Airway Management System - SleepNet Corporation\nDevice Description\nThe Morphee Plus Alpha System consists of a line powered control\nunit, an air tube and a patient mask.  The mask is attached to the\npatient covering the nose and secured with straps.  The air tube\nattaches to the mask and the control unit allowing airflow from the\ncontrol unit to the mask as well as respitory sensing by the control\nunit.",
+"The control unit offers both continous (CPAP) and automatice modes.\n s    n   o  \nproduct. The auto mode allows the control unit to adjust the airway\npressure based on the patient's respiration.\nSummary of Performance Testing\nThe Morphee Plus Alpha  System was tested  to national and\ninternational product  safety standards for electrical safety and\nelectromagnetic compatibility. The product was also tested for\nmechanical, environmental and biocompatibility.\nThe product met all requirements and is suitable for the intended use.\nConclusions\nWe conclude that the Morphee Plus Alpha System meets its stated\nperformance specifications and meets international safety standards.\npredicate_ products as well as the theory of operation and basic\nproduct design.",
+"DEPARTMENT OF HEALTH & HUMAN SERVICES Public Health Service\nFood and Drug Administration\n9200 CorporateBoulevard\nRockvilleMD20850\nMr. Chris Hadland JUN181997\nNellcor Puritan Bennett Inc.\n10200 Valley View Road.:\nEdenPrairie,Minnesota 55344\nRe K964019\nMorphee Plus Alpha\nRegulatory Class:  II (two)\nProductCode:73BzD\nDated: March 17 1997\nReceived: March 20, 1997\nDear Mr. Hadland:\nWe have reviewed your Section 5io(k) notification of intent to market\nthedevice referencedabove and we havedeterminedthedeviceis\nMay 28, 1976, the enactment date of the Medical Device Amendments, or\nprovisions of the Federal Food, Drug, and Cosmetic Act (Act). You\nmay, therefore, market the device, subject to the general controls\nprovisions of the Act. rhe general controls provisions of the Act\ninclude requirements for annual registration, listing of devices, good\nmanufacturing practice, labeling, and prohibitions against misbranding\nand adulteration.\nIf your device is classified (see above) into either class II (Special\nadditional controls. Existing major regulations affecting your device\ncan be found in the Code of _Federal_Regulations, Title 21, Parts 800\nto 895. A substantially equivalent determination assumes compliance\ninspections, the Food and Drug Administration (FDA) will verify such\nassumptions. Failure to comply with the GMP regulation may result in\nregulatory action.  In aadition, FDA may publish further announcements\nconcerning your device in the Federal_Register.  Piease note:  this\nfor devices under the Electronic Product Radiation Control provisions,\nor other Federal laws or regulations.",
+"Page 2 - Mr. Chris Hadland\n   1   o  c m 1 \nin your 5io(k)`premarket notification. The FDA finding of substantial\nresults in a classification for your device and thus, permits your\ndevieeto proceed tothe market.\nIf you desire specific advice for your device on our labeling\nregulation (21 CFR Part 801 and additionally 809.10 for in vitrQ\ndiagnostic devices), please contact the Office of Compliance at\n(3014 594-4646. Additionally, for questions on the promotion and\nadvertising of your device, please contact the Office of Compliance at\n(301)594-4639.A Also, please note the regulation entitled,\n\"Misbranding by reference to premarket notification\" (21 CFR 807.97).\nbe obtained from the Division of Small Manufacturers Assistance at its\nto1l-free number (800) 638-2041 or (301) 443-6597 or at its internet\naddress \"http:/ /www.fda.gov/cdrh/dsmamain.html\".\nSincerely yours,\nBmad J. CallAsn\nThomas J. Callahan, Ph.D.\nDirector\nDivision of Cardiovascular,\nRespiratory. and Neurological Devices\nOffice of Device Evaluation\nCenter for Devices and\nRadiological Health\nEnclosure",
+"Statement of Intended Use\nDevice Name:\nMorphee Plus Alpha\nIntended Use:\nThe Morphee Plus Alpha is intended to manage obstructive sleep apnea by delivering air\npressure through a tube and mask. It is intended for use in either the hospital or home\nenvironment.\nConcurence of CDRH, Office of Device Evaluation\n510(k) number: _K9(4 Ol9\nPrescriptio s vertno(ccnter\n(Division Sign-Off)\nDivision of Cardiovascular, Respiratory,\nand Neurological Devices\n510(k) Number."
+],
+"page_confidence": [
+0.982,
+0.952,
+0.972,
+0.95,
+0.945
+],
+"page_boxes": [
+38,
+17,
+40,
+27,
+15
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

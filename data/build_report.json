@@ -5,46 +5,92 @@
   "MNT",
   "CBK"
  ],
- "built_at": "2026-11-16T20:42:12Z",
- "seconds": 2.0,
+ "built_at": "2026-11-17T09:04:49Z",
+ "seconds": 1.9,
  "in_family_devices": 1040,
- "out_of_family_predicates": 130,
+ "out_of_family_predicates": 147,
  "in_family_summary_status": {
   "statement_only": 354,
-  "ok": 527,
+  "ok": 533,
   "pre_1996": 12,
-  "ok_no_predicate_found": 44,
+  "ok_no_predicate_found": 38,
   "missing": 35,
-  "no_text": 68
+  "ocr": 45,
+  "ocr_no_predicate_found": 22,
+  "attachment_text": 1
  },
  "citation_extraction": {
-  "kept_predicate": 1079,
-  "kept_mention": 266,
-  "kept_reference": 111,
-  "predicate_name_mismatch": 124,
-  "dropped_unresolved": 3
+  "kept_predicate": 1229,
+  "kept_mention": 244,
+  "kept_reference": 123,
+  "predicate_name_mismatch": 122,
+  "predicate_panel_mismatch": 26,
+  "dropped_future": 3,
+  "dropped_unresolved": 8
  },
- "in_family_summary_read_but_no_predicate_found": 44,
- "curated_reviews_applied": "4/4",
- "recall_records_linked": 559,
+ "in_family_summary_read_but_no_predicate_found": 60,
+ "in_family_text_from_ocr": 67,
+ "in_family_text_from_pdf_attachment": 1,
+ "citations_not_resolved": 11,
+ "devices_with_unresolved_predicate_citations": 4,
+ "audit": {
+  "applied": 140,
+  "unmatched": [],
+  "corrections_added": 6,
+  "corrections_refused": [],
+  "edges_by_audit": {
+   "error": 13,
+   "not_predicate": 8,
+   "variant": 98,
+   "unresolved": 21,
+   "corrected": 6
+  }
+ },
+ "human_reviews_applied": "0/0",
+ "ai_generated_reviews_not_applied": 4,
+ "recall_records_linked": 563,
  "design_related_recalls": 217,
+ "recalls_without_classification": 184,
+ "recall_links": {
+  "links": 762,
+  "name_mismatch": 106,
+  "before_clearance": 2
+ },
+ "unattributed_recalls_by_code": {
+  "BZD": {
+   "records": 8,
+   "design_related": 0
+  },
+  "CBK": {
+   "records": 29,
+   "design_related": 8
+  },
+  "MNS": {
+   "records": 8,
+   "design_related": 4
+  },
+  "MNT": {
+   "records": 10,
+   "design_related": 4
+  }
+ },
  "graph": {
   "nodes": {
-   "ProductCode": 70,
-   "Device": 1170,
-   "Company": 296,
-   "Recall": 559
+   "ProductCode": 76,
+   "Device": 1187,
+   "Company": 301,
+   "Recall": 563
   },
   "relationships": {
-   "FILED_BY": 1170,
-   "IN_CODE": 1170,
-   "CITES": 1456,
-   "SUBJECT_OF": 758
+   "FILED_BY": 1187,
+   "IN_CODE": 1187,
+   "CITES": 1602,
+   "SUBJECT_OF": 762
   },
   "citations_by_kind": {
-   "predicate": 1079,
-   "mention": 266,
-   "reference": 111
+   "predicate": 1235,
+   "mention": 244,
+   "reference": 123
   }
  }
 }

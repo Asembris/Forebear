@@ -1,0 +1,34 @@
+{
+"k": "K013738",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K013738.pdf",
+"source_sha256": "503dcc0093bb18297b23a1a12cd111d97ddcdc13d4ede2819fd20d4e80820e3e",
+"ocr_at": "2026-11-17T08:06:36Z",
+"status": "ocr_ok",
+"pages": [
+"K013738\nWEINMANN\nJAN 2 2 2002\n510(k) SUMMARY\nWeinmann SOMNOmask\nOctober 31, 2001\nSubmitter Information:\nGottlieb Weinmann\nGeraetefurMedizinund\nArbeitsschutz GmbH+Co.\nKronsaalsweg 40\n22525 Hamburg Germany\nSubmitter's Name: Eckhardt Albers\nPhone: 011 49 40 54 70 2 - 180\nDevice Name:\nProprietary name: Weinmann SOMNOmask\nCommon Name: Nasal mask\nClassification Name: Accessory tonon-continuousventilator\nPredicate Device Equivalence:\nSubstantial equivalence is. claimed to the Respironics Reusable Contour ll Nasal\nMask and to the Puritan-Bennett Breeze SleepGear with DreamSeal, cleared for\ncommercial distribution per K991648 and K002001, respectively.\nDevice Description:\nThe Weinmann SOMNOmask comes in three sizes, small, medium and large. It\nhas a removable mask seal.\nremoving the CO2 buildup, an external exhalation device must be used.",
+"WEINMANN\nThe SOMNOmask is secured to the patient's head with a 4-point headgear called\nthe SOMNOstrap.\nIntended Use:\nThe Weinmann SOMNOmask is intended for prescription use to be used during\nnasal CPAP or Bi-level Positive Pressure therapy for adult patients (>30 KG).\nComparison of Technological Characteristics:\nThe Weinmann SOMNOmask has the same technological characteristics as the\npredicate devices.\nSummary of Device Testing:\nA drop test, operating and storage temperature testing and flow resistance\ntesting were performed to ensure that the SoMNOmask met its specifications.\nConclusions:\nBased on the above, we concluded that the Weinmann SOMNOmask is\nsubstantially equivalent to legally marketed predicate devices and is safe and\neffectiveforitsintendeduse.\n2",
+"DEPARTMENTOFHEALTH&HUMANSERVICES PublicHealthService\nFood and Drug Administration\n9200CorporateBoulevard\nRockville MD 20850\nJAN 2 2 2002\nMr.Eckhardt Albers\nGottliebWeinmann\nGerate fur Medizin und\nArbeitsschutz GmbH + Co.\nKronsaalsweg 40\nD-22525 Hamburg, Germany\nRe: K013738\nWeinmann SOMNOmask\nRegulation Number:868.5905\nRegulation Name: Non-continuous ventilator, Accessory\nRegulatory Class: Class II (two)\nProduct Code: BZD\nDated: October 31, 2001\nReceived: November 13,2001\nDear Mr. Albers:\nWe have reviewed your Section 51o(k) premarket notification of intent to market the device\nreferenced above and have determined the device is substantially equivalent (for the indications\nfor use stated in the enclosure) to legally marketed predicate devices marketed in interstate\ncommerce prior to May 28, 1976, the enactment date of the Medical Device Amendments, or to\ndevices that have been reclassified in accordance with the provisions of the Federal Food, Drug,\nand Cosmetic Act (Act) that do not require approval of a premarket approval application (PMA).\nYou may, therefore, market the device, subject to the general controls provisions of the Act. The\ngeneral controls provisions of the Act include requirements for annual registration, listing of\ndevices, good manufacturing practice, labeling, and prohibitions against misbranding and\nadulteration.\nIf your device is classified (see above) into either class II (Special Controls) or class IlI (PMA), it\nmay be subject to such additional controls. Existing major regulations affecting your device can\nbe found in the Code of Federal Regulations, Title 21, Parts 800 to 898. In addition, FDA may\npublish further announcemenis concerning your device in the Federal Register.",
+"Page 2 - Mr. Eckhardt Albers\nPlease be advised that FDA's issuance of a substantial equivalence determination does not mean\nthat FDA has made a determination that your device complies with other requirements of the Act\nor any Federal statutes and regulations administered by other Federal agencies. You must\ncomply with all the Act's requirements, including, but not limited to: registration and listing (21\nCFR Part 807); labeling (21 CFR Part 801); good manufacturing practice requirements as set\nforth in the quality systems (QS) regulation (21 CFR Part 820); and if applicable, the electronic\nproduct radiation control provisions (Sections 531-542 of the Act); 21 CFR 1000-1050.\nThis letter will allow you to begin marketing your device as described in your Section 510(k)\npremarket notification. The FDA finding of substantial equivalence of your device to a legally\nmarketed predicate device results in a classification for your device and thus, permits your device\nto proceed to the market.\nIf you desire specific advice for your device on our labeling regulation (21 CFR Part 801 and\nadditionally 21 CFR Part 809.10 for in vitro diagnostic devices), please contact the Office of\nCompliance at (301) 594-4646. Additionally, for questions on the promotion and advertising of\nyour device, please contact the Office of Compliance at (301) 594-4639. Also, please note the\nregulation entitled, \"Misbranding by reference to premarket notification\" (21CFR Part 807.97).\nOther general information on your responsibilities under the Act may be obtained from the\nDivision of Small Manufacturers, International and Consumer Assistance at its toll-free number\n(800) 638-2041 or (301) 443-6597 or at its Internet address\nhttp://www.fda.gov/cdrh/dsma/dsmamain.html\nSincerely yours,\nJOelartil\nBram D. Zuckerman, M.D.\nActing Director\nDivision of Cardiovascular\nand Respiratory Devices\nOffice of DeviceEvaluation\nCenter for Devices and\nRadiological Health\nEnclosure",
+"WEINM/ANN\nDevice Name:  K01373%\nWeinmannSOMNOmask\nIndications for Use:\nThe Weinmann SOMNOmask is intended for prescription use to be used during nasal CPAP or Bi-\nlevel Positive Pressure therapy for adult patients (>30 Kg).\nioti\nDivision of Cardiovascuiar &Respiratory Devicos\n510(k) Number K013i3.X\nProe. ..I!st\n: 301.109)"
+],
+"page_confidence": [
+0.982,
+0.985,
+0.985,
+0.977,
+0.862
+],
+"page_boxes": [
+31,
+17,
+35,
+31,
+13
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}
