@@ -54,7 +54,7 @@ Tests (extraction and adversarial rules, OCR provenance, audit decisions, uncert
    - The timeline shows the recall diamonds sitting *before* BreathePal's clearance date.
 2. **The evidence.** Expand a signal to see the citation chain, the quoted summary text with a PDF link, and each FDA recall record.
 3. **Writes.** Click **Save assessment to graph**. Then, under *What K252078 cites*, reject the edge: the lineage and verdict change immediately, and the saved assessment is marked **stale**. Restore the edge.
-4. **Recall reach.** Open the tab and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 19 later devices descend from them; 6 of those were cleared after the recall on their own lineage began.
+4. **Recall reach.** Open the tab and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 25 later devices descend from them; 8 of those were cleared after the recall on their own lineage began.
 5. **Live update.** In **Add a clearance**, enter an out-of-family ancestor (dashed node) to read its summary from FDA and extend the tree. This needs internet.
 
 ## How it uses Relate
@@ -84,7 +84,7 @@ Tests (extraction and adversarial rules, OCR provenance, audit decisions, uncert
 - `data/forebear.rl`: the Relate store.
 - `data/raw/`: cached openFDA JSON and summary text with URL and SHA-256. Provenance is in `data/PROVENANCE.md`.
 - `data/build_report.json`: counts and extraction statistics.
-- `data/reviews.json`: 4 curated review decisions (rejected K-number typos, reviewer recorded as `curated`), applied by the build through the same review write the UI and MCP use.
+- `data/reviews.json`: human review decisions, applied by the build through the same review write the UI and MCP use; each must name the person (none yet). Four earlier AI-generated decisions that had been labelled "curated human review" are kept there for the record under `ai_generated_not_applied` and are not applied.
 - `data/audit/link_decisions.json`: extraction-audit decisions on flagged predicate links (error / not_predicate / variant / unresolved, with verified corrections). Made by an AI agent, stored apart from human review, overridden by any human review. See `docs/EVIDENCE_QUALITY.md`.
 - `data/raw/ocr/`: text recovered from the 68 image-only summaries (local OCR, or a PDF Portfolio's embedded summary), each checked against the PDF's recorded SHA-256.
 - `data/live/` (gitignored): anything fetched by live ingest in the app. The committed `data/raw` is only written by `scripts/fetch_data.py`.
