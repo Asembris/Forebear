@@ -52,6 +52,7 @@ class Ledger:
     numbers: set = field(default_factory=set)                         # from trusted (non-document) fields only
     dates: set = field(default_factory=set)                           # YYYY-MM-DD values in trusted fields
     hashes: set = field(default_factory=set)                          # SHA-256 values a tool returned
+    recall_totals: dict[str, list] = field(default_factory=dict)      # k -> recall counts the model was shown
     injection_flags: list = field(default_factory=list)
 
     def known_ids(self) -> set[str]:
@@ -61,7 +62,8 @@ class Ledger:
         """Numbers and dates the tools stated themselves. Document text (untrusted_*, quotes, snippets, reasons,
         product text, notes) and URLs are skipped: a number there is not a fact the graph asserts. Identifiers
         are removed first so their digits do not count as numbers."""
-        if isinstance(obj, bool) or obj is None or key.startswith(("untrusted", "_")) or key in UNTRUSTED_KEYS:
+        if isinstance(obj, bool) or obj is None or key.startswith(("untrusted", "_")) or key in UNTRUSTED_KEYS \
+                or key in ECHO_KEYS:
             return
         if isinstance(obj, (int, float)):
             if float(obj).is_integer():
@@ -580,6 +582,11 @@ def canonical_json(obj: Any) -> str:
 
 
 TRUNCATION_KEY = "_truncated"
+# Fields that echo the model's own input (search text, its proposal): never evidence.
+ECHO_KEYS = {"query", "proposal"}
+# Free-text fields whose K-numbers / recall ids are tool-stated (titles and chains the rules generated).
+ID_STRING_KEYS = {"chain", "via", "title", "signal_index", "printed_k_number", "corrected_from", "verdict_reason",
+                  "recall_ids", "k", "dst", "src", "cited", "id"}
 NEVER_SHRINK = {"signal_index", "chain"}       # small lists the model must always see whole
 OMITTED_KEY = "_omitted_items"
 
@@ -610,7 +617,9 @@ def _shorten_strings(obj: Any, n: int, key: str = "") -> Any:
     if isinstance(obj, list):
         return [_shorten_strings(v, n, key) for v in obj]
     if isinstance(obj, str) and len(obj) > n:
-        return obj[:n] + "..."
+        cut = obj[:n]
+        space = cut.rfind(" ")
+        return (cut[:space] if space > n // 2 else re.sub(r"\w+$", "", cut)) + "..."   # never split a number/word
     return obj
 
 
@@ -627,6 +636,8 @@ def bound_result(obj: Any, limit: int) -> tuple[Any, list[dict]]:
     if len(canonical_json(obj)) <= limit:
         return obj, []
     shown = json.loads(canonical_json(obj))
+    if not isinstance(shown, dict):                       # a bare list or scalar: wrap it so it can be shrunk
+        shown = {"items": shown}
     totals: dict[str, int] = {}
     budget = limit - 700                                  # room for the disclosure itself
     while (size := len(canonical_json(shown))) > budget:
@@ -647,16 +658,22 @@ def bound_result(obj: Any, limit: int) -> tuple[Any, list[dict]]:
         if len(canonical_json(shown)) > budget:
             shown = _shorten_strings(shown, n)
             strings_shortened = True
-    if not isinstance(shown, dict):
-        shown = {"items": shown}
-    omitted = [{"path": p, "shown": _shown_len(shown, p), "total": t} for p, t in totals.items()]
-    shown[TRUNCATION_KEY] = {"omitted_lists": omitted[:15], "strings_shortened": strings_shortened,
+    omitted = [{"path": p, "shown": _shown_len(shown, p) or 0, "total": t} for p, t in totals.items()]
+    shown[TRUNCATION_KEY] = {"omitted_lists": omitted[:15], "omitted_lists_total": len(omitted),
+                             "strings_shortened": strings_shortened,
                              "note": "Result shortened to fit; omitted items are NOT evidence in this run. "
                                      "Ask a narrower question (e.g. fewer generations, one device or recall)."}
-    if len(canonical_json(shown)) > limit:                # last resort: keep identity and verdict fields only
-        core = {k: v for k, v in shown.items() if k in PROTECTED_KEYS and len(canonical_json(v)) < 1500}
-        core[TRUNCATION_KEY] = {"omitted_lists": omitted[:5], "result_too_large": True,
-                                "note": "Most of this result was omitted; ask a narrower question."}
+    if len(canonical_json(shown)) > limit:
+        # last resort: identity and verdict fields only, smallest first, while they fit
+        marker = {"omitted_lists": omitted[:3], "result_too_large": True,
+                  "note": "Most of this result was omitted; ask a narrower question."}
+        core: dict = {TRUNCATION_KEY: marker}
+        for k, v in sorted(((k, v) for k, v in shown.items() if k in PROTECTED_KEYS),
+                           key=lambda kv: len(canonical_json(kv[1]))):
+            if len(canonical_json(core | {k: v})) <= limit:
+                core[k] = v
+        if len(canonical_json(core)) > limit:             # cannot happen for sane limits; keep the guarantee
+            core = {TRUNCATION_KEY: {"result_too_large": True}}
         shown = core
         omitted.append({"path": "*", "shown": 0, "total": None})
     return shown, omitted
@@ -681,6 +698,8 @@ def _is_z(v: Any) -> bool:
 
 
 CITATION_FACTS = ("page", "kind", "doubt", "provenance", "audit", "review")
+SIGNAL_COUNTS = re.compile(r"has (\d+) recall event\(s\) \((\d+) product record\(s\)\)(?:, (\d+) record\(s\) "
+                           r"design-related)?")
 
 
 def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
@@ -693,11 +712,29 @@ def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
         led.recalls.setdefault(rid, {"id": rid})
         led.recall_links.setdefault(rid, set()).add(k)
 
+    def totals(k: str, basis: str, **counts) -> None:
+        c = {n: v for n, v in counts.items() if isinstance(v, int) and not isinstance(v, bool)}
+        if c:
+            led.recall_totals.setdefault(k, []).append(c | {"basis": basis})
+
     def walk(o: Any, key: str, parent_k: str | None) -> None:
-        if key.startswith("_") or key.startswith("untrusted") or key in UNTRUSTED_KEYS:
+        if key.startswith("_") or key.startswith("untrusted") or key in UNTRUSTED_KEYS or key in ECHO_KEYS:
             return
         if isinstance(o, dict):
+            if o.get("found") is False:          # compare_predicates row for a K-number not in the graph
+                return
             here = o["k"] if _is_k(o.get("k")) else parent_k
+            if _is_k(o.get("k")) and ("recall_records" in o or "recall_events" in o):
+                recs = o.get("recalls") if isinstance(o.get("recalls"), list) else None
+                whole = recs is not None and "recalls" not in (o.get(OMITTED_KEY) or {}) \
+                    and len(recs) == o.get("recall_records")
+                totals(o["k"], "all recalls", records=o.get("recall_records"), events=o.get("recall_events"),
+                       design=o.get("design_related_records",
+                                    sum(1 for x in recs if isinstance(x, dict) and x.get("design_related"))
+                                    if whole else None),
+                       class_i=o.get("class_i_records",
+                                     sum(1 for x in recs if isinstance(x, dict) and x.get("classification") == "Class I")
+                                     if whole else None))
             if _is_k(o.get("k")):
                 led.see_device(o)
             if _is_z(o.get("id")):
@@ -723,6 +760,13 @@ def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
                         link(r, holder)
                     else:
                         led.recalls.setdefault(r, {"id": r})
+                if "code" in o and holder:
+                    # the rule-generated title states the counts: "... has 4 recall event(s) (5 product record(s)),
+                    # 4 record(s) design-related"
+                    m = SIGNAL_COUNTS.search(str(o.get("title") or ""))
+                    if m:
+                        totals(holder, "signalled recalls", events=int(m.group(1)), records=int(m.group(2)),
+                               design=int(m.group(3)) if m.group(3) else 0)
             src = o.get("src")
             if _is_k(src) and _is_k(o.get("dst")):
                 led.see_citation(src, o["dst"], {f: o[f] for f in CITATION_FACTS if o.get(f) is not None} |
@@ -738,7 +782,7 @@ def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
         elif isinstance(o, list):
             for v in o:
                 walk(v, key, parent_k)
-        elif isinstance(o, str):
+        elif isinstance(o, str) and key in ID_STRING_KEYS:
             for k in re.findall(r"\bK\d{6}\b", o):
                 led.devices.setdefault(k, {"k": k})
             for r in re.findall(r"\bZ-\d{4}-\d{4}\b", o):
