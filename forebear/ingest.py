@@ -18,8 +18,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from . import openfda, summaries
-from .dataset import citation_rows, device_row, fetch_recalls_for, mark_no_predicate
+from . import audit, openfda, summaries
+from .dataset import (citation_rows, device_row, fetch_recalls_for, mark_no_predicate,
+                      mark_unresolved)
 from .graph import Graph
 from .predicates import extract_from_summary
 
@@ -65,7 +66,8 @@ def fetch_clearance(k: str, use_cache: bool = True) -> Fetched:
         raise IngestError(f"Could not download the 510(k) summary: {e}") from e
     if summ["status"] == "error":
         raise IngestError(f"Could not download the 510(k) summary: {summ.get('error')}")
-    cited = [h["k"] for h in extract_from_summary(summ, self_k=k)] if summ["status"] == "ok" else []
+    text = summaries.load_text(k)
+    cited = [h["k"] for h in extract_from_summary(text, self_k=k)] if text else []
     return Fetched(k, meta[0], summ, cited)
 
 
@@ -73,7 +75,8 @@ def present_devices(g: Graph, ks: list[str]) -> dict[str, dict]:
     if not ks:
         return {}
     rows = g.q("MATCH (d:Device) WHERE d.k IN $ks RETURN d.k AS k, toString(d.decision_date) AS decision_date, "
-               "d.name AS device_name, d.in_scope AS in_scope, d.lineage_known AS lineage_known", {"ks": ks})
+               "d.name AS device_name, d.in_scope AS in_scope, d.lineage_known AS lineage_known, "
+               "d.panel AS advisory_committee", {"ks": ks})
     return {r["k"]: r for r in rows}
 
 
@@ -84,7 +87,8 @@ def fetch_related(f: Fetched, present: dict[str, dict], use_cache: bool = True) 
         recalls = fetch_recalls_for([f.k] + list(cited_meta), use_cache=use_cache)
     except Exception as e:
         raise IngestError(f"openFDA lookup failed: {e}") from e
-    known = {c: {"decision_date": p["decision_date"], "device_name": p["device_name"]}
+    known = {c: {"decision_date": p["decision_date"], "device_name": p["device_name"],
+                 "advisory_committee": p.get("advisory_committee")}
              for c, p in present.items() if c in f.cited and p.get("decision_date")}
     known.update({c: m for c, m in cited_meta.items()})
     return Related(cited_meta, recalls, known)
@@ -96,8 +100,13 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
     devices = [device_row(f.rec, in_scope)] + [device_row(m, False, read_summary=False)
                                                 for m in rel.cited_meta.values()]
     report: dict = {}
-    cits = citation_rows(f.k, f.rec.get("date_received"), f.rec.get("decision_date"), rel.known, report)
+    unresolved: list[dict] = []
+    cits = citation_rows(f.k, f.rec.get("date_received"), f.rec.get("decision_date"), rel.known, report,
+                         unresolved, src_meta=f.rec)
+    # same audit decisions as the shipped build, so re-ingesting an audited clearance keeps them
+    cits += audit.apply(cits, rel.known, audit.load(), {f.k: f.rec.get("decision_date") or f.rec.get("date_received")})
     mark_no_predicate(devices[:1], cits)
+    mark_unresolved(devices[:1], unresolved)
     g.conn.autocommit = False
     try:
         g.upsert_devices(devices)
@@ -115,7 +124,7 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
         "k": f.k, "was_present": existing is not None,
         "lineage_was_known": bool(existing and existing.get("lineage_known")),
         "summary_status": devices[0]["summary_status"], "summary_url": f.summ.get("url"),
-        "citations_added": cits, "new_devices": list(rel.cited_meta),
+        "citations_added": cits, "citations_unresolved": unresolved, "new_devices": list(rel.cited_meta),
         "recalls_linked": [r["id"] for r in rel.recalls], "extraction": report,
         "graph_before": before["nodes"], "graph_after": after["nodes"],
         "rels_before": before["relationships"], "rels_after": after["relationships"],

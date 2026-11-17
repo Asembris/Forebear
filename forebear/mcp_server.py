@@ -64,11 +64,14 @@ def _compact_assessment(a: dict) -> dict:
     return {
         "k": a["k"], "name": a["device"].get("name"), "applicant": a["device"].get("applicant"),
         "decision_date": a["device"].get("decision_date"), "verdict": a["verdict"], "why": a["verdict_reason"],
-        "signals": [{"severity": s["severity"], "title": s["title"], "chain": s.get("chain"),
+        "signals": [{"code": s.get("code"), "severity": s["severity"], "title": s["title"], "chain": s.get("chain"),
                      "recalls": [{k: e.get(k) for k in ("id", "classification", "root_cause", "initiated", "url")}
                                  for e in s["evidence"] if e.get("type") == "recall"][:5],
-                     "citation_evidence": [{k: e.get(k) for k in ("src", "dst", "page", "snippet", "source_url")}
-                                           for e in s["evidence"] if e.get("type") == "citation"]}
+                     "citation_evidence": [{k: e.get(k) for k in ("src", "dst", "page", "snippet", "source_url",
+                                                                 "name_check", "audit", "audit_note", "doubt")}
+                                           for e in s["evidence"] if e.get("type") == "citation"],
+                     "unresolved_citations": [{k: e.get(k) for k in ("src", "cited", "reason", "page", "quote")}
+                                              for e in s["evidence"] if e.get("type") == "unresolved_citation"]}
                     for s in a["signals"]],
         "coverage": a["coverage"], "note": a["memo"],
     }

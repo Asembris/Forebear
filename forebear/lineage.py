@@ -10,6 +10,8 @@ field is coarse.
 """
 from __future__ import annotations
 
+import json
+
 from .graph import Graph
 
 SEVERITY_ORDER = {"high": 3, "medium": 2, "low": 1, "info": 0}
@@ -88,18 +90,41 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                                       "summary_status": a.get("summary_status")} for a in unknown[:12]],
                         "chain": []})
 
-    # N: links in the readable ancestry whose cited name does not match the FDA record
-    seen, flagged = set(), []
+    # N/U: links in the ancestry whose evidence is doubtful. A doubtful link may route the ancestry to
+    # the wrong device, and the right one may be missing, so these never count as "checked".
+    seen, flagged, doubtful = set(), [], []
     for a in ancestors:
-        for h in a["hops"]:
-            if h.get("name_check") == "mismatch" and (h["src"], h["dst"]) not in seen:
-                seen.add((h["src"], h["dst"]))
-                flagged.append({"type": "citation", **h})
+        for i, h in enumerate(a["hops"]):
+            e = (h["src"], h["dst"])
+            if e in seen:
+                continue
+            seen.add(e)
+            why = doubt(h)
+            if why:
+                doubtful.append({"type": "citation", "doubt": why, "gen": i + 1, **h})
+                if "name_mismatch" in why:
+                    flagged.append({"type": "citation", **h})
     if flagged:
         signals.append({"code": "NAME_MISMATCH_IN_LINEAGE", "severity": "info",
                         "title": f"This ancestry uses {len(flagged)} link(s) where the cited device's FDA name does not "
                                  f"appear in the summary text (possible K-number typo). Verify them before relying on "
                                  f"the result.", "evidence": flagged, "chain": []})
+    other = [d for d in doubtful if d["doubt"] != ["name_mismatch"]]
+    if other:
+        signals.append({"code": "UNCERTAIN_LINK_IN_LINEAGE", "severity": "info",
+                        "title": f"{len(other)} link(s) in this ancestry rest on uncertain evidence (unresolved in the "
+                                 f"extraction audit, cited device from another FDA panel, or labelled only by the LLM "
+                                 f"and not confirmed by a person)", "evidence": other, "chain": []})
+
+    # C: predicate citations in the candidate's (or a direct predicate's) own summary that did not become
+    # lineage edges: K-number not in openFDA, cleared later, or removed by the audit or a reviewer.
+    gen1 = [a for a in ancestors if a["gen"] == 1]
+    missing = _missing_predicates(g, dev) + [m for a in gen1 for m in _missing_predicates(g, a)]
+    if missing:
+        signals.append({"code": "PREDICATE_CITATION_UNRESOLVED", "severity": "info",
+                        "title": f"{len(missing)} predicate citation(s) in the summaries of {k} or its direct predicates "
+                                 f"could not be resolved to a device in this graph, so part of the ancestry is missing",
+                        "evidence": missing[:20], "chain": []})
 
     # F: how the family downstream has fared (context, not a verdict input)
     recalled_desc = [d for d in descendants if d["recalls"]]
@@ -108,6 +133,16 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                         "title": f"{len(recalled_desc)} of {len(descendants)} later devices citing this lineage "
                                  f"(≤3 generations) have recalls", "evidence": [], "chain": []})
 
+    # Evidence completeness: keeps a green result from resting on evidence we could not verify.
+    trusted_gen1 = [a for a in gen1 if not doubt(a["hops"][0])]
+    gen1_unread = [a for a in gen1 if not a.get("lineage_known")]
+    if gen1 and not trusted_gen1:
+        evidence = "uncertain"
+    elif missing or gen1_unread or any(d["gen"] <= 2 for d in doubtful):
+        evidence = "partial"
+    else:
+        evidence = "complete" if ancestors else "none"
+
     signals.sort(key=lambda s: (-SEVERITY_ORDER[s["severity"]], s.get("gen", 0)))
     worst = max((SEVERITY_ORDER[s["severity"]] for s in signals), default=0)
     n_low = sum(1 for s in signals if s["severity"] == "low")
@@ -115,30 +150,76 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         verdict = "DESIGN_RECALL_ON_FILE"
     elif worst == 2:
         verdict = "REVIEW_LINEAGE"
-    elif not ancestors:
+    elif not ancestors or evidence == "uncertain":
         verdict = "INSUFFICIENT_LINEAGE"      # we could not check: never show a green result here
     else:
         verdict = "NO_DESIGN_RECALL_SIGNAL"
+    if not dev.get("lineage_known"):
+        insufficient = (f"The candidate's own predicates could not be read (summary status: "
+                        f"{dev.get('summary_status')}), so its ancestry was not checked.")
+    elif ancestors and evidence == "uncertain":
+        insufficient = ("Every direct predicate link of the candidate rests on uncertain evidence (see the "
+                        "uncertain-link signals), so its ancestry was not treated as checked.")
+    else:
+        insufficient = "No predicate citations were found for the candidate, so its ancestry was not checked."
+    clear = ("No design-related recall on the candidate or its direct/grand-predicates in the readable ancestry "
+             f"({n_low} lower-severity signal(s) listed). Not a safety finding.")
+    if evidence == "partial":
+        clear = ("Provisional: " + clear + " Part of the ancestry within two generations is missing or rests on "
+                 "uncertain links (see the coverage signals), so a recall there would not show.")
     reasons = {
         "DESIGN_RECALL_ON_FILE": "The candidate itself has a design-related recall on file. FDA's draft guidance "
                                  "recommends predicates without design-related recalls; document how this is addressed.",
         "REVIEW_LINEAGE": "A direct or grand-predicate has a design-related recall (Class I/II or unclassified), the "
                           "direct predicate has a Class I recall, or the candidate has a Class I recall.",
-        "INSUFFICIENT_LINEAGE": "The candidate's own predicates could not be read "
-                                f"(summary status: {dev.get('summary_status')}), so its ancestry was not checked."
-                                if not dev.get("lineage_known") else
-                                "No predicate citations were found for the candidate, so its ancestry was not checked.",
-        "NO_DESIGN_RECALL_SIGNAL": "No design-related recall on the candidate or its direct/grand-predicates in the "
-                                   f"readable ancestry ({n_low} lower-severity signal(s) listed). Not a safety finding.",
+        "INSUFFICIENT_LINEAGE": insufficient,
+        "NO_DESIGN_RECALL_SIGNAL": clear,
     }
     return {
         "k": k, "device": dev, "verdict": verdict, "verdict_reason": reasons[verdict],
         "signals": signals, "depth": depth,
         "ancestors": ancestors, "descendants": descendants,
         "coverage": {"ancestors": len(ancestors), "ancestors_lineage_unknown": len(unknown),
-                     "candidate_lineage_known": bool(dev.get("lineage_known"))},
-        "rules_version": "forebear-rules-v2",
+                     "candidate_lineage_known": bool(dev.get("lineage_known")),
+                     "evidence": evidence, "doubtful_links": len(doubtful),
+                     "unresolved_predicate_citations": len(missing),
+                     "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1)},
+        "rules_version": RULES_VERSION,
     }
+
+
+RULES_VERSION = "forebear-rules-v3"
+
+
+def doubt(h: dict) -> list[str]:
+    """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it."""
+    if h.get("review") == "confirmed":
+        return []
+    why = []
+    if h.get("audit") == "unresolved":
+        why.append("audit_unresolved")
+    if h.get("name_check") == "mismatch" and h.get("audit") not in ("variant", "corrected"):
+        why.append("name_mismatch")
+    if h.get("panel_check") == "different" and h.get("audit") not in ("variant", "corrected"):
+        why.append("different_fda_panel")
+    if h.get("kind") not in (None, "predicate") and h.get("ai_label") == "predicate":
+        why.append("llm_label_only")
+    return why
+
+
+def _missing_predicates(g: Graph, d: dict) -> list[dict]:
+    """Predicate citations from d's summary that are not lineage edges."""
+    out = []
+    if d.get("unresolved_citations"):
+        for u in json.loads(d["unresolved_citations"]):
+            if u.get("kind") == "predicate":
+                out.append({"type": "unresolved_citation", "src": d["k"], "cited": u["cited"],
+                            "reason": u["reason"], "page": u.get("page"), "quote": u.get("quote")})
+    for c in g.out_of_lineage_predicates(d["k"]):
+        out.append({"type": "unresolved_citation", "src": d["k"], "cited": c["dst"], "page": c.get("page"),
+                    "reason": "rejected_by_reviewer" if c.get("review") == "rejected" else f"audit_{c.get('audit')}",
+                    "quote": c.get("quote") or c.get("snippet"), "note": c.get("review_note") or c.get("audit_note")})
+    return out
 
 
 def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:
