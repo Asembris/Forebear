@@ -41,6 +41,9 @@ def _get(endpoint: str, search: str, limit: int = 1000, skip: int = 0, use_cache
     path = _cache_path(endpoint, search, skip)
     if use_cache and path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
+    if CACHE_MODE.get("offline"):
+        raise RuntimeError(f"offline build: no cached openFDA response for {endpoint} {search[:80]!r}. "
+                           "Run: python scripts/fetch_data.py expand")
     wait = 0.3 - (time.time() - _last_call)       # stay well under 240 req/min
     if wait > 0:
         time.sleep(wait)

@@ -25,8 +25,25 @@ from forebear import summaries  # noqa: E402
 REVIEWS = DATA / "reviews.json"
 
 
+def cited_from_in_family(in_family) -> set[str]:
+    """Every K-number cited (any kind) in the readable in-family summaries, OCR included."""
+    cited = set()
+    for k in in_family:
+        rec = summaries.load_text(k)
+        if rec:
+            cited |= {h["k"] for h in extract_from_summary(rec, self_k=k)}
+    return cited
+
+
 def build(out: Path, codes: list[str]) -> dict:
-    use_raw_cache()              # the shipped store is built from data/raw only, never data/live
+    use_raw_cache(offline=True)  # the shipped store is built from data/raw only: never data/live, never the network
+    try:
+        return _build(out, codes)
+    finally:
+        use_raw_cache()
+
+
+def _build(out: Path, codes: list[str]) -> dict:
     t0 = time.time()
     report: dict = {"product_codes": codes}
     in_family = {}
@@ -34,11 +51,7 @@ def build(out: Path, codes: list[str]) -> dict:
         for r in openfda.clearances_for_product_code(code):
             in_family[r["k_number"]] = r
     # predicates cited from in-family summaries, possibly in other product codes
-    cited = set()
-    for k in in_family:
-        rec = summaries.load(k)
-        if rec and rec["status"] == "ok":
-            cited |= {h["k"] for h in extract_from_summary(rec, self_k=k)}
+    cited = cited_from_in_family(in_family)
     outside = {r["k_number"]: r for r in openfda.clearances_by_k(sorted(cited - set(in_family)))}
     known = {**outside, **in_family}
 

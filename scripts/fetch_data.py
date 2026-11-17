@@ -77,22 +77,24 @@ def cmd_summaries(codes: list[str], max_n: int | None, extra: list[str] | None =
 
 
 def cmd_expand(codes: list[str]) -> None:
-    """Fetch metadata + recalls for predicates referenced from in-family summaries."""
-    from forebear.predicates import extract_from_summary
+    """Fetch metadata + recalls for predicates referenced from in-family summaries.
+
+    Mirrors build_graph.build() query for query (same K-number sets, same chunking), so the offline
+    build finds every response it needs in the cache. Re-run after extraction rules or OCR change."""
+    from scripts.build_graph import cited_from_in_family
     in_family = {r["k_number"] for c in codes for r in openfda.clearances_for_product_code(c)}
-    cited = set()
-    for k in in_family:
-        rec = summaries.load(k)
-        if rec and rec["status"] == "ok":
-            cited |= {p["k"] for p in extract_from_summary(rec, self_k=k)}
-    outside = sorted(cited - in_family)
-    print(f"{len(cited)} cited predicates, {len(outside)} outside the families")
-    meta = openfda.clearances_by_k(outside)
-    print(f"  metadata found for {len({r['k_number'] for r in meta})}")
-    rc = openfda.recalls_by_k(sorted(in_family | cited))
-    print(f"  recall records referencing graph devices: {len(rc)}")
+    cited = cited_from_in_family(in_family)
+    outside_wanted = sorted(cited - in_family)
+    print(f"{len(cited)} cited K-numbers, {len(outside_wanted)} outside the families")
+    meta = openfda.clearances_by_k(outside_wanted)
+    found = {r["k_number"] for r in meta}
+    print(f"  metadata found for {len(found)}; not in openFDA: {sorted(set(outside_wanted) - found)}")
+    known = sorted(in_family | found)
+    rc = openfda.recalls_by_k(known)
+    enf = openfda.enforcement_by_event({r.get("res_event_number") for r in rc})
+    print(f"  recall records referencing graph devices: {len(rc)}; enforcement rows: {len(enf)}")
     m = load_manifest()
-    m["expanded_predicates"] = outside
+    m["expanded_predicates"] = sorted(found)
     save_manifest(m)
 
 

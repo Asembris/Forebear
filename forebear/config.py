@@ -17,15 +17,21 @@ LIVE_OPENFDA_CACHE = LIVE / "openfda"
 LIVE_SUMMARY_CACHE = LIVE / "summaries"
 
 # Cache mode: "raw" (build/fetch scripts: read+write data/raw) or "live" (app: read raw+live, write live).
-CACHE_MODE = {"mode": "raw"}
+CACHE_MODE = {"mode": "raw", "offline": False}
 
 
 def use_live_cache() -> None:
     CACHE_MODE["mode"] = "live"
+    CACHE_MODE["offline"] = False
 
 
-def use_raw_cache() -> None:
+def use_raw_cache(offline: bool = False) -> None:
+    """offline=True (the shipped build): a cache miss raises instead of calling openFDA, so the
+    build can never depend on whatever the network returns today."""
     CACHE_MODE["mode"] = "raw"
+    CACHE_MODE["offline"] = offline
+
+
 DB_PATH = Path(os.environ.get("FOREBEAR_DB", DATA / "forebear.rl"))
 
 # Device families in the shipped dataset (FDA product codes).
