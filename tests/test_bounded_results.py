@@ -381,3 +381,12 @@ def test_replayed_results_are_compact(tiny, monkeypatch):
                                                                   "evidence": ["K000005"]}]})]
     runner.run(lambda fn: fn(tiny), again, client=Scripted(policy), prior=store.trace(tiny, first["id"]))
     assert sizes and max(sizes) <= runner.REPLAY_RESULT_CHARS + 200
+
+
+def test_all_design_related_claim_checks_each_shown_recall(real):
+    ctx = RunContext("I-x", "K113053")
+    run_tool(real, "get_device", {"k_number": "K113053"}, ctx)     # shows each recall's design_related flag
+    claim = ("Direct predicate K113053 has recalls Z-1957-2021, Z-1958-2021 and Z-1654-2022, all Class I and "
+             "design-related.")
+    v = verify_finding({"claim": claim, "evidence": ["K113053"]}, ctx.ledger, {})
+    assert v["status"] == "rejected" and any("Z-1654-2022 is not design-related" in r for r in v["reasons"])

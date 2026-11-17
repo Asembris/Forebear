@@ -71,6 +71,8 @@ CLASS_QUALIFIED = re.compile(r"unclassified|not classified|no (fda )?classificat
                              r"of|one of|among|lack|missing|ruled out|cannot be|could be|may be|whether|\bnone\b|"
                              r"\bneither\b|\bnor\b", re.I)
 UNATTRIBUTED = re.compile(r"product code|unattributed|no 510\(k\)|name no|cannot be attributed", re.I)
+ALL_DESIGN = re.compile(r"\b(all|both|each|every)\b[^.;]{0,80}\bdesign[- ]related", re.I)
+NOT_DESIGN = re.compile(r"\bnot design|\bnon-design|\bnone\b", re.I)
 PAGE_ANY = re.compile(r"\bpages?\s+(\d+)", re.I)
 CLEARED_ON = re.compile(r"\b(cleared|decided|decision(?: date)?|received)\b[^.;]{0,25}?\b(?:in|on|of)\s+"
                         r"((?:19|20)\d{2}(?:-\d{2}-\d{2})?)", re.I)
@@ -268,6 +270,14 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
                 reasons.append(f"calls the evidence complete or settled, but the assessment says otherwise for "
                                f"{open_ or 'the devices involved'}")
 
+    # "all/both/each ... design-related" over listed recalls: every listed recall the model saw must be design-related
+    if rids and ALL_DESIGN.search(claim) and not NOT_DESIGN.search(claim):
+        for rid in sorted(rids & set(ledger.recalls)):
+            if ledger.recalls[rid].get("design_related") is False:
+                reasons.append(f"recall {rid} is not design-related (root cause "
+                               f"{ledger.recalls[rid].get('root_cause') or 'unknown'})")
+            elif "design_related" not in ledger.recalls[rid]:
+                reasons.append(f"recall {rid} was called design-related, but its root cause was not shown")
     classes = {"Class " + c.upper() for c in CLASS_ANY.findall(claim)}
     if len(classes) == 1 and rids and not CLASS_QUALIFIED.search(claim):
         want = classes.pop()
