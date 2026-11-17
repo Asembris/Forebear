@@ -235,6 +235,7 @@ def t_list_citations(g: Graph, args: dict, ctx: RunContext) -> dict:
     if not rows and g.device(k) is None:
         raise ToolError(f"{k} is not in the graph")
     ctx.examined.add(k)
+    ctx.ledger.see_device({"k": k})
     out = []
     for r in rows:
         why = doubt(r) if r["in_lineage"] else []
@@ -389,6 +390,8 @@ def t_verify_citation(g: Graph, args: dict, ctx: RunContext) -> dict:
     if v.get("source_sha256") and (v.get("checks") or {}).get("sha256_matches_edge"):
         ctx.ledger.hashes.add(v["source_sha256"].lower())
     ctx.ledger.see_citation(src, dst, {"page": v["page"], "in_lineage": v["in_lineage"], "kind": v["kind"]})
+    ctx.ledger.see_device({"k": src})
+    ctx.ledger.see_device({"k": dst})
     ctx.examined.update({src, dst})
     _flag_injection(ctx, f"summary text {src}", v.get("untrusted_excerpt"))
     return v

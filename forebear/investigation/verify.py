@@ -28,13 +28,15 @@ NUMBER = re.compile(r"(?<![\w.-])\d+(?:[.,]\d+)?(?![\w-])")
 
 # Safety / regulatory determinations Forebear never makes (it reports documented lineage and recall history).
 OVERCLAIM = re.compile(
-    r"\b(is|are|be|was|were)\s+(safe|unsafe|dangerous|defective)\b|\bsafe to (use|cite|rely)\b|"
+    r"\b(is|are|be|was|were|remains?)\s+(an?\s+|the\s+)?(very\s+|completely\s+)?(safe|safer|unsafe|dangerous|"
+    r"defective|harmless)\b|\bsafe to (use|cite|rely)\b|\bsafety (is|was) (confirmed|established|assured)\b|"
+    r"\b(safe|safer|suitable|acceptable|good|appropriate|valid|reliable|trustworthy|sound) (predicate|choice)\b|"
     r"\bno (safety )?(risk|concern|issue)s?\b|\brisk[- ]free\b|\b(fda[- ])?approved\b|\bnot? (substantially )?"
     r"equivalent\b(?! claim)|\bmeets? (all )?(regulatory|fda) (requirements|standards)\b|\bcompliant\b|"
     r"\bguarantee[sd]?\b|\bdefinitive(ly)?\b|\bclears? (it|the device) for\b|\brecommend(ed)? (as|for use as) "
-    r"(a )?predicate\b|\b(suitable|acceptable|good) predicate\b", re.I)
+    r"(a )?predicate\b", re.I)
 # Claims that something is absent or clean: only allowed when the evidence for that device is complete.
-ABSENCE = re.compile(r"\bno (design[- ]related |class i )?(recall|signal|issue|problem)s?\b|\bclean\b|"
+ABSENCE = re.compile(r"\bno (design(?:[- ]related)? |class i )?(recall|signal|issue|problem)s?\b|\bclean\b|"
                      r"\bnothing (found|of concern)\b|\bfree of\b|\bwithout (any )?recall", re.I)
 QUALIFIED = re.compile(r"provisional|incomplete|partial|uncertain|not checkable|cannot be (ruled out|"
                        r"confirmed|checked)|could not|unverified|unknown|insufficient|not complete|gap", re.I)
