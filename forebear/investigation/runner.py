@@ -26,6 +26,7 @@ from .tools import TOOLS, RunContext, canonical_args, canonical_json, run_tool, 
 
 AGENT_VERSION = "forebear-agent-v1"
 MAX_REPLAY = 12          # resumed calls re-run and shown to the model as tool results
+REPLAY_RESULT_CHARS = 2500   # tighter bound for replayed results: they are resent with every later turn
 
 SYSTEM_PROMPT = """You are Forebear's investigation agent for FDA 510(k) predicate due diligence.
 You investigate by calling tools over Forebear's Relate graph (510(k) devices, predicate citation links, FDA recall
@@ -101,12 +102,13 @@ def summarize(name: str, ok: bool, res: dict) -> str:
     return ", ".join(f"{k}" for k in list(res)[:6])
 
 
-def timed(call_graph: GraphCall, name: str, args: dict, ctx: RunContext) -> tuple[bool, dict, int, object, list]:
+def timed(call_graph: GraphCall, name: str, args: dict, ctx: RunContext,
+          limit: int | None = None) -> tuple[bool, dict, int, object, list]:
     """(ok, shown, ms, full, omitted): `shown` is what the model sees, `full` the internal result."""
     t = time.time()
 
     def call(g):
-        ok, shown = run_tool(g, name, args, ctx)
+        ok, shown = run_tool(g, name, args, ctx, limit)
         return ok, shown, ctx.last_full, list(ctx.last_omitted)
     ok, shown, full, omitted = call_graph(call)
     return ok, shown, int((time.time() - t) * 1000), full, omitted
@@ -185,7 +187,7 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
                 key = canonical_args(p["tool"], p["args"])
                 if (p.get("ok") and p["tool"] in TOOLS and not TOOLS[p["tool"]].writes and p["tool"] != "submit_report"
                         and key not in seen_calls and replayed < MAX_REPLAY):
-                    ok, shown, ms, full, omitted = timed(call_graph, p["tool"], p["args"], ctx)
+                    ok, shown, ms, full, omitted = timed(call_graph, p["tool"], p["args"], ctx, REPLAY_RESULT_CHARS)
                     record(p["tool"], p["args"], ok, shown, "resume_replay", None, None, ms=ms, full=full,
                            omitted=omitted)
                     seen_calls.add(key)
