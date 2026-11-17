@@ -288,6 +288,20 @@ class Graph:
             ORDER BY CASE c.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, b.k""",
             {"k": k})]
 
+    def lineage_edges_from(self, ks: list[str]) -> list[dict]:
+        """Every lineage edge leaving the given devices, on any route (the ancestor query keeps only one
+        shortest path per ancestor, so a doubtful edge on another route would otherwise go unseen)."""
+        if not ks:
+            return []
+        return self.q(
+            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND {LINEAGE_EDGE}
+            RETURN a.k AS src, b.k AS dst, r.page AS page, r.snippet AS snippet, r.confidence AS confidence,
+                   r.review AS review, r.reviewer AS reviewer, r.name_check AS name_check,
+                   r.source_url AS source_url, r.kind AS kind, r.audit AS audit, r.audit_note AS audit_note,
+                   r.ai_label AS ai_label, r.text_source AS text_source, r.panel_check AS panel_check,
+                   r.quote AS quote, r.method AS method
+            ORDER BY src, dst""", {"ks": list(ks)})
+
     def out_of_lineage_predicates(self, k: str) -> list[dict]:
         """Citations the extractor read as predicates that do not count in lineage queries (removed by
         the audit or rejected by a person), minus K-number typos the audit corrected to another edge."""
