@@ -138,8 +138,10 @@ def test_resume_creates_a_linked_run(client):
 def test_concurrency_limit(api_mod, client):
     api_mod._running.update({"I-aaaaaaaaaaaa", "I-bbbbbbbbbbbb"})
     try:
+        before = len(client.get("/api/investigations").json())
         r = client.post("/api/investigations", json={"request": "Investigate K252078", "mode": "deterministic"})
         assert r.status_code == 429
+        assert len(client.get("/api/investigations").json()) == before       # no orphaned 'queued' node
     finally:
         api_mod._running.clear()
 

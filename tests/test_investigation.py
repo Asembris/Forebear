@@ -23,7 +23,7 @@ class Scripted:
     def __init__(self, policy, model="fake/scripted"):
         self.policy, self.models, self.errors, self.n = policy, [model], [], 0
 
-    def chat(self, messages, tools):
+    def chat(self, messages, tools, deadline=None):
         self.n += 1
         out = self.policy(self.n, messages)
         if isinstance(out, Exception):
@@ -117,7 +117,7 @@ def _ledger(real):
     ("Direct predicate K113053 has 5 recall events, including Z-1957-2021.", ["K113053"], False, "do not match"),
     ("K113053 has 4 recall events and 3 product records.", ["K113053"], False, "do not match"),
     ("K999999 also cites K113053.", ["K999999->K113053"], False, "not returned"),
-    ("K252078 has recall Z-1957-2021.", ["Z-1957-2021"], False, "not linked by FDA"),
+    ("K252078 has recall Z-1957-2021.", ["Z-1957-2021"], False, "FDA links it to"),
     ("K252078 is safe to use because its predicate was reviewed.", ["K252078"], False, "safety"),
     ("K252078 has no design-related recall signal.", ["K252078"], False, "absence"),
     ("Evidence for K252078 is partial, so the absence of further recalls is provisional.", ["K252078"], True, None),
@@ -130,13 +130,34 @@ def _ledger(real):
     ("K252078 is a safe predicate choice.", ["K252078"], False, "safety"),
     ("K113053 has recalls Z-1957/58-2021.", ["K113053"], False, "written in full"),
     ("Grand-predicate K092818 (cited by K113053) has 1 recall record.", ["K092818"], True, None),
+    # skeptical-review reproductions (each was accepted before the fix)
+    ("Evidence for K252078 is partial, but K113053 has no design-related recalls.", ["K113053"], False,
+     "design-related recall record(s) in the graph"),
+    ("K252078 has no design-related recalls; there is no gap in its lineage.", ["K252078"], False, "absence"),
+    ("K252078's lineage has zero recalls.", ["K252078"], False, "REVIEW_LINEAGE"),
+    ("K252078 is clinically safe and poses no hazard.", ["K252078"], False, "safety"),
+    ("Lineage of K252078 is complete and established; no further review is needed.", ["K252078"], False, "settled"),
+    ("K252078 cites K113053, which was confirmed by a human reviewer, so the lineage is established.",
+     ["K252078->K113053"], False, "confirmed by a person"),
+    ("K113053 cites K082660; checked against the FDA PDF.", ["K113053->K082660"], False, "verify_citation did not pass"),
+    ("There are 3 Class I recall events affecting K113053.", ["K113053"], False, "do not match"),
+    ("Z-1957-2021 was initiated on 2021-01-14.", ["Z-1957-2021", "K113053"], False, "does not match"),
+    ("Z-1957-2021 on K113053 was initiated on 2021-06-14.", ["Z-1957-2021", "K113053"], True, None),
+    ("K113053 was cleared in 2024.", ["K113053"], False, "date"),
+    ("K252078 was itself recalled under Z-1957-2021, which also names K113053.", ["Z-1957-2021"], False,
+     "attributed to K252078"),
+    ("The design recall Z-1957-2021 on predicate K113053 reaches K252078 through its lineage.",
+     ["Z-1957-2021", "K113053"], True, None),
+    ("The link K252078->K113053 has not been confirmed by a person and needs human review.",
+     ["K252078->K113053"], True, None),
     ("Some devices were recalled.", [], False, "no evidence identifier"),
 ])
 def test_verifier_accepts_grounded_and_rejects_unsupported(real, claim, evidence, ok, why):
     ledger = _ledger(real)
     a = assess(real, "K252078", 2)
     counts = report_mod.recall_counts(real, a, [claim])
-    v = verify_finding({"claim": claim, "evidence": evidence}, ledger, {"K252078": "partial"}, counts)
+    v = verify_finding({"claim": claim, "evidence": evidence}, ledger, {"K252078": "partial"}, counts,
+                       {"K252078": "REVIEW_LINEAGE"})
     assert (v["status"] == "verified") is ok, v["reasons"]
     if why:
         assert any(why in r for r in v["reasons"]), v["reasons"]
@@ -148,6 +169,20 @@ def test_verified_claim_needs_a_passing_verify_citation(real):
     v = verify_finding({"claim": "K252078 -> K113053 was verified in the PDF.", "evidence": ["K252078->K113053"]},
                        ctx.ledger, {})
     assert v["status"] == "rejected" and "verify_citation did not pass" in v["reasons"][0]
+
+
+def test_established_certainty_is_downgraded_on_partial_evidence(real):
+    v = verify_finding({"claim": "K252078's lineage runs through K113053.", "evidence": ["K252078->K113053"],
+                        "certainty": "established"}, _ledger(real), {"K252078": "partial"}, {})
+    assert v["status"] == "verified" and v["certainty"] == "provisional" and "downgraded" in v["certainty_note"]
+
+
+def test_numbers_in_fda_text_are_not_evidence():
+    led = Ledger()
+    led.absorb_numbers({"untrusted_reason": "lot 98765 affected", "reason": "77777 units", "records": 5,
+                        "id": "Z-1957-2021", "k": "K113053", "initiated": "2021-06-14", "url": "https://x/3333"})
+    assert {"5", "2021"} <= led.numbers and not {"98765", "77777", "1957", "113053", "3333"} & led.numbers
+    assert led.dates == {"2021-06-14"}
 
 
 def test_count_attribution_is_positional():
@@ -216,7 +251,7 @@ def test_llm_investigation_end_to_end_with_persistence(real):
     assert [r["id"] for r in store.listing(real, "K113053")] == [inv["id"]]
     saved, md = store.report(real, inv["id"])
     assert saved["investigation_id"] == inv["id"] and "not a medical-device safety determination" in md
-    assert "[REJECTED] K252078 is a safe predicate choice." in md
+    assert "[REJECTED, shown for transparency] K252078 is a safe predicate choice." in md
 
 
 def test_report_recall_totals_match_an_independent_count(real):
@@ -324,6 +359,59 @@ def test_loop_is_bounded_and_rejects_repeats(real):
     llm_calls = [t for t in store.trace(real, inv["id"]) if t["origin"] == "llm"]
     assert len(llm_calls) <= 7 and calls["n"] <= 7
     assert sum("duplicate call" in t["summary"] for t in llm_calls) == len(llm_calls) - 1
+
+
+def test_equivalent_calls_count_as_duplicates(real):
+    def policy(turn, messages):
+        if turn == 1:
+            return [("check_predicate", {"k_number": "K252078", "generations": 4}),
+                    ("check_predicate", {"k_number": "k252078 ", "generations": "4"}),
+                    ("check_predicate", {"k_number": "K252078"})]
+        return [("submit_report", {"summary": "s", "findings": [{"claim": "K252078 was assessed.",
+                                                                  "evidence": ["K252078"]}]})]
+    inv = start(real, "K252078")
+    runner.run(lambda fn: fn(real), inv, client=Scripted(policy))
+    tr = store.trace(real, inv["id"])
+    assert [t["ok"] for t in tr[:3]] == [True, False, False]
+
+
+def test_resume_does_not_spend_the_new_budget_and_skips_failed_calls(real):
+    first = start(real, "K252078", depth=2)
+    seq = [[("check_predicate", {"k_number": "K252078", "generations": 2}), ("get_recall", {"recall_id": "bad"})],
+           [("trace_ancestry", {"k_number": "K252078", "generations": 2})]]
+    runner.run(lambda fn: fn(real), first, client=Scripted(
+        lambda n, m: seq[n - 1] if n <= len(seq) else LLMUnavailable("x")))
+    prior = store.trace(real, first["id"])
+    again = start(real, "K252078", depth=2)
+    again["resumed_from"] = first["id"]
+
+    def policy(turn, messages):
+        if turn == 1:
+            return [("coverage_gaps", {"k_number": "K252078", "generations": 2})]
+        return [("submit_report", {"summary": "s", "findings": [
+            {"claim": "K252078's lineage evidence is partial.", "evidence": ["K252078"], "kind": "gap"}]})]
+    runner.run(lambda fn: fn(real), again, client=Scripted(policy), prior=prior,
+               budget=runner.Budget(max_tool_calls=2))
+    tr = store.trace(real, again["id"])
+    replayed = [t for t in tr if t["origin"] == "resume_replay"]
+    assert {t["tool"] for t in replayed} == {"check_predicate", "trace_ancestry"}    # the failed call is not replayed
+    assert next(t for t in tr if t["origin"] == "llm")["ok"]                         # budget of 2 not used up
+
+
+def test_unverified_summary_and_overclaiming_questions_are_withheld(real):
+    def policy(turn, messages):
+        if turn == 1:
+            return [("check_predicate", {"k_number": "K252078", "generations": 2})]
+        return [("submit_report", {"summary": "K252078 is safe; there is no risk.",
+                                   "findings": [{"claim": "K252078 was assessed.", "evidence": ["K252078"]}],
+                                   "open_questions": ["Is K252078 a safe, FDA-approved predicate?",
+                                                      "Should a person review K252078->K113053?"]})]
+    rep = runner.run(lambda fn: fn(real), start(real, "K252078", depth=2), client=Scripted(policy))
+    ag = rep["agent"]
+    assert ag["summary"] is None and ag["summary_withheld"] and ag["summary_issues"]
+    assert ag["open_questions"] == ["Should a person review K252078->K113053?"] and ag["open_questions_dropped"] == 1
+    md = report_mod.markdown(rep)
+    assert "Agent summary withheld" in md and "FDA-approved" not in md
 
 
 def test_step_budget_ends_the_run(real):
