@@ -250,8 +250,9 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
                     reasons.append(f"states an absence in the lineage of {k}, whose assessment is {verdicts[k]}")
                 # the absence must rest on something the model was shown: an assessment for a lineage claim,
                 # a zero recall count for a device claim
-                if lineage and k not in evidence_status:
-                    reasons.append(f"states an absence in the lineage of {k}, but no assessment of {k} was shown")
+                if lineage and not any(x in evidence_status for x in subjects):
+                    reasons.append(f"states an absence in the lineage of {k}, but no assessment of "
+                                   f"{sorted(subjects)} was shown")
                 elif not lineage and not _counts_ok([("design" if design else "records", 0)],
                                                     ledger.recall_totals.get(k, [])):
                     reasons.append(f"states an absence of recalls for {k}, but no zero count for {k} was shown")

@@ -548,7 +548,7 @@ TOOLS: dict[str, Tool] = {t.name: t for t in [
 ]}
 
 
-def run_tool(g: Graph, name: str, args: Any, ctx: RunContext) -> tuple[bool, dict]:
+def run_tool(g: Graph, name: str, args: Any, ctx: RunContext, limit: int | None = None) -> tuple[bool, dict]:
     """Execute one allow-listed tool. Never raises for agent mistakes.
 
     Returns (ok, shown): `shown` is the model-visible result, valid JSON within MAX_RESULT_CHARS, with any omission
@@ -568,7 +568,7 @@ def run_tool(g: Graph, name: str, args: Any, ctx: RunContext) -> tuple[bool, dic
         res = tool.fn(g, args, ctx)
     except ToolError as e:
         return False, {"error": str(e)[:500]}
-    shown, omitted = bound_result(res, MAX_RESULT_CHARS)
+    shown, omitted = bound_result(res, limit or MAX_RESULT_CHARS)
     ctx.last_full, ctx.last_omitted = res, omitted
     absorb_visible(ctx.ledger, name, shown)
     _screen(ctx, name, shown)
@@ -586,7 +586,7 @@ TRUNCATION_KEY = "_truncated"
 ECHO_KEYS = {"query", "proposal"}
 # Free-text fields whose K-numbers / recall ids are tool-stated (titles and chains the rules generated).
 ID_STRING_KEYS = {"chain", "via", "title", "signal_index", "printed_k_number", "corrected_from", "verdict_reason",
-                  "recall_ids", "k", "dst", "src", "cited", "id"}
+                  "recall_ids", "k", "dst", "src", "cited", "id", "top_signal"}
 NEVER_SHRINK = {"signal_index", "chain"}       # small lists the model must always see whole
 OMITTED_KEY = "_omitted_items"
 
@@ -698,8 +698,28 @@ def _is_z(v: Any) -> bool:
 
 
 CITATION_FACTS = ("page", "kind", "doubt", "provenance", "audit", "review")
+# Counts in rule-generated signal titles (lineage.assess). Ancestor signals: "... has N recall event(s) (M product
+# record(s)), D record(s) design-related"; the candidate's own: "... has N recall event(s) (M product record(s)),
+# design-related" (all M design-related), ", Class I (not design-related)" or ", none design-related or Class I".
 SIGNAL_COUNTS = re.compile(r"has (\d+) recall event\(s\) \((\d+) product record\(s\)\)(?:, (\d+) record\(s\) "
-                           r"design-related)?")
+                           r"design-related|(, design-related)|(, Class I \(not design-related\))|"
+                           r"(, none design-related or Class I))?")
+
+
+def _signal_totals(title: str) -> dict | None:
+    m = SIGNAL_COUNTS.search(title)
+    if not m:
+        return None
+    events, records = int(m.group(1)), int(m.group(2))
+    if m.group(3):
+        return {"events": events, "records": records, "design": int(m.group(3))}
+    if m.group(4):
+        return {"events": events, "records": records, "design": records}
+    if m.group(5):
+        return {"events": events, "records": records, "design": 0, "class_i": records}
+    if m.group(6):
+        return {"events": events, "records": records, "design": 0, "class_i": 0}
+    return {"events": events, "records": records, "design": 0}
 
 
 def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
@@ -724,6 +744,8 @@ def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
             if o.get("found") is False:          # compare_predicates row for a K-number not in the graph
                 return
             here = o["k"] if _is_k(o.get("k")) else parent_k
+            if _is_k(o.get("k")) and "own_recalls" in o:           # a compare_predicates row
+                totals(o["k"], "all recalls", records=o.get("own_recalls"), design=o.get("own_design_recalls"))
             if _is_k(o.get("k")) and ("recall_records" in o or "recall_events" in o):
                 recs = o.get("recalls") if isinstance(o.get("recalls"), list) else None
                 whole = recs is not None and "recalls" not in (o.get(OMITTED_KEY) or {}) \
@@ -763,10 +785,9 @@ def absorb_visible(led: Ledger, name: str, shown: Any) -> None:
                 if "code" in o and holder:
                     # the rule-generated title states the counts: "... has 4 recall event(s) (5 product record(s)),
                     # 4 record(s) design-related"
-                    m = SIGNAL_COUNTS.search(str(o.get("title") or ""))
-                    if m:
-                        totals(holder, "signalled recalls", events=int(m.group(1)), records=int(m.group(2)),
-                               design=int(m.group(3)) if m.group(3) else 0)
+                    st = _signal_totals(str(o.get("title") or ""))
+                    if st:
+                        totals(holder, "signalled recalls", **st)
             src = o.get("src")
             if _is_k(src) and _is_k(o.get("dst")):
                 led.see_citation(src, o["dst"], {f: o[f] for f in CITATION_FACTS if o.get(f) is not None} |
