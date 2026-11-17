@@ -3,7 +3,9 @@
     (:Investigation {id, created_at, updated_at, status, request, target_k, depth, mode, models, model_used,
                      steps, tool_calls, prompt_tokens, completion_tokens, error, verdict, evidence, stance,
                      report, report_md, generated_by, agent_version, resumed_from})
-    (:ToolCall {id, investigation_id, seq, step, tool, args, ok, summary, result, result_sha256,
+    (:ToolCall {id, investigation_id, seq, step, tool, args, ok, summary,
+                result, result_complete, result_chars, result_omitted, result_sha256,     <- full internal result
+                shown, shown_sha256, shown_truncated, shown_omitted,                    <- what the model saw
                 duration_ms, at, rationale, model, origin})
     (:Finding {id, investigation_id, seq, kind, claim, status, reasons, evidence, certainty, origin,
                human_approved})
@@ -27,6 +29,7 @@ import json
 import uuid
 
 from ..graph import Graph, _clean
+from .tools import bound_result, canonical_json
 
 SCHEMA = [
     "CREATE INDEX investigation_id IF NOT EXISTS FOR (i:Investigation) ON (i.id)",
@@ -76,19 +79,44 @@ def update(g: Graph, inv_id: str, **fields) -> None:
                    {"id": inv_id, **fields})
 
 
+# A stored result larger than this is kept as a valid, structurally shortened JSON document with its omissions
+# disclosed; result_sha256 and result_chars always describe the complete result, which a replay of the same call on
+# the same store reproduces.
+STORE_MAX_CHARS = 120_000
+
+
+def stored_result(full) -> tuple[str, bool, list]:
+    """(JSON text to store, complete?, omitted) for a tool's full result. Always valid JSON."""
+    body = canonical_json(full)
+    if len(body) <= STORE_MAX_CHARS:
+        return body, True, []
+    shown, omitted = bound_result(full, STORE_MAX_CHARS)
+    return canonical_json(shown), False, omitted
+
+
 def add_tool_call(g: Graph, inv_id: str, c: dict) -> str:
     tid = new_id("T")
-    body = json.dumps(c["result"], default=str, ensure_ascii=False)
+    full = c["result"]
+    shown = c.get("shown", full)
+    body, complete, stored_omitted = stored_result(full)
+    full_text = canonical_json(full)
+    shown_text = canonical_json(shown)
     g.conn.execute(
         """MATCH (i:Investigation {id:$inv})
         CREATE (t:ToolCall {id:$id, investigation_id:$inv, seq:$seq, step:$step, tool:$tool, args:$args, ok:$ok,
-                            summary:$summary, result:$result, result_sha256:$sha, duration_ms:$ms, at: datetime(),
+                            summary:$summary, result:$result, result_complete:$complete, result_chars:$chars,
+                            result_omitted:$r_omitted, result_sha256:$sha, shown:$shown, shown_sha256:$shown_sha,
+                            shown_truncated:$shown_trunc, shown_omitted:$s_omitted, duration_ms:$ms, at: datetime(),
                             rationale:$why, model:$model, origin:$origin})
         CREATE (i)-[:RAN {seq:$seq}]->(t)""",
         {"inv": inv_id, "id": tid, "seq": c["seq"], "step": c["step"], "tool": c["tool"],
          "args": json.dumps(c["args"], default=str), "ok": c["ok"], "summary": c["summary"][:500],
-         "result": body[:12000], "sha": hashlib.sha256(body.encode()).hexdigest(), "ms": c["duration_ms"],
-         "why": (c.get("rationale") or "")[:600], "model": c.get("model"), "origin": c["origin"]})
+         "result": body, "complete": complete, "chars": len(full_text),
+         "r_omitted": canonical_json(stored_omitted), "sha": hashlib.sha256(full_text.encode()).hexdigest(),
+         "shown": shown_text, "shown_sha": hashlib.sha256(shown_text.encode()).hexdigest(),
+         "shown_trunc": bool(c.get("omitted")), "s_omitted": canonical_json(c.get("omitted") or []),
+         "ms": c["duration_ms"], "why": (c.get("rationale") or "")[:600], "model": c.get("model"),
+         "origin": c["origin"]})
     return tid
 
 
@@ -163,12 +191,32 @@ def trace(g: Graph, inv_id: str, with_results: bool = False) -> list[dict]:
     out = []
     for r in rows:
         t = _clean(r["t"])
-        t["args"] = json.loads(t.get("args") or "{}")
-        res = t.pop("result", None)
+        t["args"] = _parse(t.get("args")) or {}
+        res, shown = t.pop("result", None), t.pop("shown", None)
+        for key in ("result_omitted", "shown_omitted"):
+            t[key] = _parse(t.get(key)) or []
+        if t.get("result_complete") is None and res is not None:     # stored before this format: may be cut
+            t["result_complete"] = _parse(res) is not None and len(res) < 12000
         if with_results:
-            t["result"] = json.loads(res) if res else None
+            t["result"] = _parse(res, legacy=True)
+            t["shown"] = _parse(shown, legacy=True)
         out.append(t)
     return out
+
+
+def _parse(text: str | None, legacy: bool = False):
+    """JSON from a stored property. Records written before results were bounded structurally may hold JSON cut at
+    12,000 characters; they are returned as a disclosed, unparsed prefix instead of raising."""
+    if text is None:
+        return None
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, TypeError):
+        if not legacy:
+            return None
+        return {"_unparseable_legacy_record": True, "_note": "stored by an earlier version that cut results at "
+                "12,000 characters; replay the call to reproduce it (result_sha256 identifies the original)",
+                "_prefix": str(text)[:2000]}
 
 
 def findings(g: Graph, inv_id: str) -> list[dict]:
