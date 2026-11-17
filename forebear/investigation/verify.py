@@ -116,7 +116,7 @@ def count_claims(claim: str) -> list[tuple[str | None, str, int]]:
         for m in COUNT.finditer(masked):
             _all, n, noun = m.groups()
             n = int(WORDS.get(n.lower(), n))
-            if 1900 <= n <= 2100:            # "a 2024 Class I recall": a year, not a count
+            if 1900 <= n <= 2100 or n >= 10000:   # "a 2024 Class I recall", "the 88058 recall": not counts
                 continue
             noun = noun.lower()
             kind = ("events" if noun.startswith("event") else "records" if noun.startswith("record") else
@@ -248,6 +248,13 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
                                    f"{'design-related ' if design else ''}recall record(s) in the graph")
                 if lineage and verdicts.get(k) in ("REVIEW_LINEAGE", "DESIGN_RECALL_ON_FILE"):
                     reasons.append(f"states an absence in the lineage of {k}, whose assessment is {verdicts[k]}")
+                # the absence must rest on something the model was shown: an assessment for a lineage claim,
+                # a zero recall count for a device claim
+                if lineage and k not in evidence_status:
+                    reasons.append(f"states an absence in the lineage of {k}, but no assessment of {k} was shown")
+                elif not lineage and not _counts_ok([("design" if design else "records", 0)],
+                                                    ledger.recall_totals.get(k, [])):
+                    reasons.append(f"states an absence of recalls for {k}, but no zero count for {k} was shown")
             if not QUALIFIED.search(sentence):
                 open_ = sorted(k for k in subjects if evidence_status.get(k, "unassessed") != "complete")
                 if open_ or not subjects:
@@ -276,12 +283,15 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
             unattributed.append(str(n))
     for subj, stated in by_subject.items():
         sets = counts.get(subj)
-        if sets is None:
-            reasons.append(f"states recall counts for {subj}, whose recalls could not be counted")
-        elif not _counts_ok(stated, sets):
+        shown_sets = ledger.recall_totals.get(subj, [])
+        if sets is not None and not _counts_ok(stated, sets):
             reasons.append(f"recall counts for {subj} do not match the graph: stated "
                            f"{[f'{n} {kind}' for kind, n in stated]}, graph has {sets[0]} (all recalls) / "
                            f"{sets[-1]} (signalled recalls)")
+        elif not _counts_ok(stated, shown_sets):
+            # correct or not, a count is only accepted if the model was shown it for this device
+            reasons.append(f"recall counts for {subj} were not shown to the model in this run "
+                           f"(shown: {[{k: v for k, v in x.items()} for x in shown_sets][:3] or 'none'})")
     for d in DATE_ANY.finditer(claim):
         if d.group(0) not in ledger.dates:
             reasons.append(f"date {d.group(0)} does not appear in any tool result")
@@ -301,7 +311,7 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
         reasons.append("makes a safety, approval or regulatory determination, which this evidence cannot support")
     out = {**f, "status": "rejected" if reasons else "verified", "reasons": list(dict.fromkeys(reasons))}
     if not reasons and f.get("certainty") == "established" and f.get("kind") not in ("uncertainty", "gap"):
-        open_ = sorted(k for k in claim_ks if evidence_status.get(k) in ("partial", "uncertain", "none"))
+        open_ = sorted(k for k in claim_ks if evidence_status.get(k) != "complete")
         if open_ and (ABSENCE.search(claim) or LINEAGE_WORD.search(claim)):
             out["certainty"] = "provisional"
             out["certainty_note"] = f"downgraded from 'established': evidence for {open_} is not complete"

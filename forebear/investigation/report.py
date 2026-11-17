@@ -127,8 +127,8 @@ def build(g: Graph, ctx: RunContext, meta: dict) -> dict:
     paths = _evidence_paths(g, a)
     unverified_hops = [h for p in paths for h in p["hops"] if not str(h.get("status", "")).startswith("verified")]
 
+    # evidence status only from assessments the model was shown, since it can make the verifier ACCEPT a claim
     status_by_k = {kk: c["coverage"]["evidence"] for kk, c in ctx.ledger.assessments.items()}
-    status_by_k[k] = a["coverage"]["evidence"]
     sub = ctx.submission or {}
     origin = meta.get("finding_origin") or "llm"
     verdicts = {kk: c["verdict"] for kk, c in ctx.ledger.assessments.items()}
