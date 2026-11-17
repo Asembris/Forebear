@@ -1,0 +1,52 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_212524.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 2.16s -> ['get_device']
+  #1 llm: get_device({"k_number": "K201620"}) -> K201620 Luna® G3 BPAP 25A: 0 recall record(s), summary ok
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 1.15s -> ['list_citations']
+  #2 llm: list_citations({"k_number": "K201620"}) -> K201620: 4 citation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 1.0s -> ['verify_citation']
+  #3 llm: verify_citation({"citing_k": "K201620", "cited_k": "K131982"}) -> K201620->K131982 verified (page 6)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 1.65s -> ['get_device']
+  #4 llm: get_device({"k_number": "K131982"}) -> K131982 REMSTAR AUTO A-FLEX HT: 5 recall record(s), summary ok
+
+[turn 5] mistralai/mistral-large-4-1t-a52b 2.72s -> ['get_recall', 'get_recall', 'get_recall', 'get_recall', 'get_recall']
+  #5 llm: get_recall({"recall_id": "Z-1974-2021"}) -> Z-1974-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+  #6 llm: get_recall({"recall_id": "Z-1322-2023"}) -> Z-1322-2023 Class I / Software design (manufacturing process) initiated 2023-02-10, 1 linked device(s)
+  #7 llm: get_recall({"recall_id": "Z-2227-2025"}) -> Z-2227-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+  #8 llm: get_recall({"recall_id": "Z-2228-2025"}) -> Z-2228-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 6] nvidia/nemotron-3-ultra-550b-a55b 1.62s -> ['trace_ancestry']
+  #9 llm: trace_ancestry({"k_number": "K201620", "generations": 4}) -> K201620: 16 ancestor(s) within 4 generation(s)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 1.54s -> ['check_predicate']
+  #10 llm: check_predicate({"k_number": "K201620", "generations": 4}) -> K201620 verdict REVIEW_LINEAGE, evidence complete, 5 signal(s), 4 generation(s)
+
+[turn 8] nvidia/nemotron-3-ultra-550b-a55b 1.3s -> ['coverage_gaps']
+  #11 llm: coverage_gaps({"k_number": "K201620", "generations": 4}) -> K201620 evidence complete: 1 unread ancestor(s), 0 doubtful link(s), 0 unresolved predicate citation(s)
+
+[turn 9] nvidia/nemotron-3-ultra-550b-a55b 1.96s -> ['recall_reach']
+  #12 llm: recall_reach({"event": "88058"}) -> event 88058: 10 recalled, 12 descendant(s), 7 cleared after the recall
+
+[turn 10] nvidia/nemotron-3-ultra-550b-a55b 1.44s -> ['recall_reach']
+  #13 llm: recall_reach({"event": "91837"}) -> event 91837: 1 recalled, 5 descendant(s), 1 cleared after the recall
+
+[turn 11] mistralai/mistral-large-4-1t-a52b 1.76s -> ['recall_reach']
+  #14 llm: recall_reach({"event": "97191"}) -> event 97191: 1 recalled, 5 descendant(s), 1 cleared after the recall
+
+[turn 12] mistralai/mistral-large-4-1t-a52b 2.76s -> ['get_recall', 'get_recall', 'get_recall', 'get_recall']
+  #15 llm: get_recall({"recall_id": "Z-2229-2025"}) -> Z-2229-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+  #16 llm: get_recall({"recall_id": "Z-1817-2024"}) -> Z-1817-2024 Class I / Device Design initiated 2024-04-01, 3 linked device(s)
+  #17 llm: get_recall({"recall_id": "Z-1055-2008"}) -> Z-1055-2008 None / Environmental control initiated 2007-10-15, 1 linked device(s)
+  #18 llm: get_recall({"recall_id": "Z-1069-2008"}) -> Z-1069-2008 None / Environmental control initiated 2007-10-15, 2 linked device(s)
+
+[turn 13] nvidia/nemotron-3-ultra-550b-a55b 52.1s -> ['submit_report']
+  #19 llm: submit_report({"summary": "K201620 (Luna G3 BPAP 25A, 3B Medical, cleared 2021-01-29) cites two direct predicates: K131982 (REMSTAR AU) -> report submitted with 8 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-6bbd5647ddd7: completed / llm_agent
+conclusion: recall_signal_documented (REVIEW_LINEAGE, evidence complete)
+findings: 7 verified, 1 rejected; proposals: 0

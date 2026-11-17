@@ -1,6 +1,6 @@
 {
   "schema": "forebear-investigation-report/1",
-  "investigation_id": "I-ff684a6f6a90",
+  "investigation_id": "I-9d54c908215e",
   "request": "Investigate K251889 (myAir): is there any design-related recall signal in its predicate lineage? Verify the FDA evidence and identify uncertain or unresolved lineage before concluding.",
   "disclaimer": "Evidence research, not a medical-device safety determination or regulatory advice. Forebear reports documented 510(k) predicate lineage and FDA recall records; recalls can be lot-, model- or software-specific, openFDA's root-cause field is coarse, and FDA recall records can cover product families. Machine-generated findings below have not been reviewed by a person.",
   "status": "completed",
@@ -318,50 +318,56 @@
     "verdict_window": 2
   },
   "agent": {
-    "summary": null,
-    "summary_withheld": "K251889 (myAir, ResMed Corp, cleared 2026-04-08) has a provisional NO_DESIGN_RECALL_SIGNAL verdict across 4 generations. One design-related recall (Z-1263-2009, software design, Class unknown) was found on generation-4 ancestor K060705 (CARINA HOME, Draeger Medical, cleared 2006-06-14) via the chain K251889→K132371→K123557→K103167→K060705. The link K103167→K060705 is verified in the FDA summary (page 1). However, the lineage has significant uncertainty: the direct predicate link K251889→K200565 (page 6) is audit-unresolved with a name mismatch (cited as \"Galapogos\" but summary text references \"myAir\"); three ancestors (K083575, K905404, K974417) have unread summaries; four predicate citations are unresolved (two within two generations); and four design-related recalls in product code MNS lack 510(k) attribution. The verdict is therefore provisional, not clean.",
-    "summary_issues": [
-      "states an absence, but K060705 has 1 recall record(s) in the graph",
-      "recall counts for K200565 do not match the graph: stated ['4 design'], graph has {'events': 0, 'records': 0, 'design': 0, 'class_i': 0} (all recalls) / {'events': 0, 'records': 0, 'design': 0, 'class_i': 0} (signalled recalls)"
-    ],
+    "summary": "K251889 (myAir) has a provisional NO_DESIGN_RECALL_SIGNAL verdict across 4 generations. One design-related recall (Z-1263-2009, software design, Class unknown) was found on generation-4 ancestor K060705 (CARINA HOME) via the chain K251889→K132371→K123557→K103167→K060705. The lineage contains an unresolved link K251889→K200565 (name mismatch, audit unresolved), three unread ancestors (K083575, K905404, K974417), and four unresolved predicate citations (two within two generations). Evidence is partial; the verdict is provisional and may miss recalls in unread or uncertain branches.",
+    "summary_withheld": null,
+    "summary_issues": [],
     "findings_verified": [
       {
-        "claim": "The citation K103167→K060705 (page 1) is verified against the cached FDA summary (SHA-256 c2ba76816fe183427683c2adb36cd7752206680b77c7f4bc83abd4f4f1a9d11d).",
-        "kind": "citation",
+        "claim": "A design-related recall (Z-1263-2009, software design) exists on generation-4 ancestor K060705 (CARINA HOME) in the predicate chain K251889→K132371→K123557→K103167→K060705.",
+        "kind": "recall_signal",
         "evidence": [
+          "Z-1263-2009",
+          "K251889->K132371",
+          "K132371->K123557",
+          "K123557->K103167",
           "K103167->K060705"
-        ],
-        "certainty": "established",
-        "status": "verified",
-        "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
-        "human_approved": false,
-        "refs": [
-          "K060705",
-          "K103167"
-        ],
-        "id": "F-d2527786ae90"
-      },
-      {
-        "claim": "The direct predicate link K251889→K200565 (page 6) is audit-unresolved and has a name mismatch (summary text cites K200565 as 'myAir' but the device is named 'Galapogos'), making this hop uncertain.",
-        "kind": "lineage",
-        "evidence": [
-          "K251889->K200565"
         ],
         "certainty": "provisional",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "certainty_note": "downgraded from 'established': evidence for ['K060705', 'K103167', 'K123557', 'K132371', 'K251889'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K060705",
+          "K103167",
+          "K123557",
+          "K132371",
+          "K251889",
+          "Z-1263-2009"
+        ],
+        "id": "F-99bf33819546"
+      },
+      {
+        "claim": "The citation K251889→K200565 (page 6) is verified in the FDA summary text but remains audit-unresolved with a name mismatch (cited device named 'Galapogos' in the graph vs. 'myAir' in the summary).",
+        "kind": "citation",
+        "evidence": [
+          "K251889->K200565"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K200565",
           "K251889"
         ],
-        "id": "F-935d7ac6e3ec"
+        "id": "F-4f9163463768"
       },
       {
-        "claim": "Three ancestors in the 4-generation tree have unread summaries: K083575 (gen 2, not_expanded), K905404 (gen 3, statement_only), K974417 (gen 4, statement_only).",
-        "kind": "gap",
+        "claim": "Three ancestors (K083575 gen-2, K905404 gen-3, K974417 gen-4) have unread summaries, so their recall records and further predicates are unknown.",
+        "kind": "uncertainty",
         "evidence": [
           "K083575",
           "K905404",
@@ -370,17 +376,17 @@
         "certainty": "established",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K083575",
           "K905404",
           "K974417"
         ],
-        "id": "F-03057d9afa23"
+        "id": "F-5d46fde48f4b"
       },
       {
-        "claim": "Four predicate citations are unresolved in the graph (two within two generations): K132371→K835511 (not_in_openfda), K241216→K200656 (audit_error), K123557→K091947 (audit_not_predicate), K153061→K132371 (audit_not_predicate).",
+        "claim": "Four predicate citations in the lineage could not be resolved to devices in the graph (K132371→K835511, K241216→K200656, K123557→K091947, K153061→K132371), two of them within the two-generation verdict window.",
         "kind": "gap",
         "evidence": [
           "K132371->K835511",
@@ -391,7 +397,7 @@
         "certainty": "established",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K091947",
@@ -402,32 +408,10 @@
           "K241216",
           "K835511"
         ],
-        "id": "F-1faf0069d352"
+        "id": "F-2401568a5afb"
       },
       {
-        "claim": "Four design-related recall records (Z-1812-2024, Z-1814-2024, Z-1972-2021, Z-2035-2025) under product code MNS lack 510(k) numbers and cannot be attributed to this lineage.",
-        "kind": "uncertainty",
-        "evidence": [
-          "Z-1812-2024",
-          "Z-1814-2024",
-          "Z-1972-2021",
-          "Z-2035-2025"
-        ],
-        "certainty": "unknown",
-        "status": "verified",
-        "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
-        "human_approved": false,
-        "refs": [
-          "Z-1812-2024",
-          "Z-1814-2024",
-          "Z-1972-2021",
-          "Z-2035-2025"
-        ],
-        "id": "F-95425e056ac3"
-      },
-      {
-        "claim": "The overall verdict NO_DESIGN_RECALL_SIGNAL is provisional because evidence is partial (coverage.evidence=partial), the verdict window is two generations, and deeper gaps (unread ancestors, unresolved citations) mean additional recall signals could exist beyond generation 2.",
+        "claim": "The overall verdict NO_DESIGN_RECALL_SIGNAL is provisional because evidence is partial (unread ancestors, unresolved citations, and an uncertain link); recalls in those gaps would not appear in the signal list.",
         "kind": "uncertainty",
         "evidence": [
           "K251889"
@@ -435,47 +419,41 @@
         "certainty": "provisional",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K251889"
         ],
-        "id": "F-3a31b56ae1cd"
-      }
-    ],
-    "findings_rejected": [
+        "id": "F-53ed189820f8"
+      },
       {
-        "claim": "A design-related recall (Z-1263-2009, software design, initiated 2009-01-21, terminated) exists on generation-4 ancestor K060705 (CARINA HOME) via the verified chain K251889→K132371→K123557→K103167→K060705.",
-        "kind": "recall_signal",
+        "claim": "Four design-related recall records (Z-1812-2024, Z-1814-2024, Z-1972-2021, Z-2035-2025) exist under product code MNS without a 510(k) number, so they cannot be attributed to this lineage.",
+        "kind": "gap",
         "evidence": [
-          "Z-1263-2009",
-          "K251889->K132371",
-          "K132371->K123557",
-          "K123557->K103167",
-          "K103167->K060705"
+          "Z-1812-2024",
+          "Z-1814-2024",
+          "Z-1972-2021",
+          "Z-2035-2025"
         ],
         "certainty": "established",
-        "status": "rejected",
-        "reasons": [
-          "claims verification, but verify_citation did not pass for [('K123557', 'K103167'), ('K251889', 'K132371')]"
-        ],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
-          "K060705",
-          "K103167",
-          "K123557",
-          "K132371",
-          "K251889",
-          "Z-1263-2009"
+          "Z-1812-2024",
+          "Z-1814-2024",
+          "Z-1972-2021",
+          "Z-2035-2025"
         ],
-        "id": "F-cd2944c037cc"
+        "id": "F-fbd884fd4d4e"
       }
     ],
+    "findings_rejected": [],
     "open_questions": [
-      "Should the uncertain link K251889→K200565 be confirmed or rejected by a human reviewer?",
+      "Should the unresolved link K251889→K200565 be confirmed or rejected by a human reviewer?",
       "Should the unread ancestors K083575, K905404, K974417 be ingested to extend the lineage?",
-      "Do the four unattributed MNS product-code recalls (Z-1812-2024, Z-1814-2024, Z-1972-2021, Z-2035-2025) relate to any device in this ancestry?"
+      "Do the four unattributed MNS recalls relate to any device in this ancestry?"
     ],
     "open_questions_dropped": 0,
     "note": "Machine-generated by the model named below; each finding was checked against this run's tool results. Rejected findings are shown with the reason and are not part of the conclusion."
@@ -496,9 +474,14 @@
       "mistralai/mistral-large-4-1t-a52b"
     ],
     "model_used": [
+      "mistralai/mistral-large-4-1t-a52b",
       "nvidia/nemotron-3-ultra-550b-a55b"
     ],
-    "llm_errors": [],
+    "llm_errors": [
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429"
+    ],
     "depth": 4,
     "budget": {
       "max_steps": 14,
@@ -510,20 +493,20 @@
     },
     "usage": {
       "turns": 7,
-      "prompt_tokens": 49411,
-      "completion_tokens": 1745,
-      "tool_calls": 7,
-      "seconds": 80.1
+      "prompt_tokens": 48335,
+      "completion_tokens": 1462,
+      "tool_calls": 10,
+      "seconds": 48.0
     },
-    "started_at": "2026-11-17T19:16:56Z",
-    "finished_at": "2026-11-17T19:18:16Z",
+    "started_at": "2026-11-17T20:32:58Z",
+    "finished_at": "2026-11-17T20:33:46Z",
     "graph": {
       "ProductCode": 76,
       "Device": 1187,
       "Company": 301,
       "Recall": 563,
       "Investigation": 1,
-      "ToolCall": 7
+      "ToolCall": 10
     },
     "tool_calls": [
       {
@@ -534,8 +517,10 @@
           "generations": 4
         },
         "ok": true,
+        "shown_sha256": "06cb045e51ec70924dd81dc5e861ca2d7b1632d7dd91795a5e5e4da18d36a68b",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "3908e8207fcbc3c352cf7e652d71cd9f1cf16604376b968db4a7d8ca72fb8e94"
+        "result_sha256": "06cb045e51ec70924dd81dc5e861ca2d7b1632d7dd91795a5e5e4da18d36a68b"
       },
       {
         "seq": 2,
@@ -545,6 +530,8 @@
           "generations": 4
         },
         "ok": true,
+        "shown_sha256": "ace8e13f8deaae6f906425f0f601fd36ba4a9160b7275e3042f5fb7d738e9316",
+        "shown_truncated": true,
         "origin": "llm",
         "result_sha256": "c6870e804653246885b3ad19724668a7f05fc98f6cd439dd58854a57a9107d3d"
       },
@@ -555,6 +542,8 @@
           "recall_id": "Z-1263-2009"
         },
         "ok": true,
+        "shown_sha256": "1fa880293f48add6767dad9ae1648bcf1159caef36f6a338cbf30084b3dd2127",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "1fa880293f48add6767dad9ae1648bcf1159caef36f6a338cbf30084b3dd2127"
       },
@@ -566,6 +555,8 @@
           "cited_k": "K200565"
         },
         "ok": true,
+        "shown_sha256": "bc3798e35ed1e11c0394b6ca3f4086a3e5ceec77e123f25beaeba1cff1a04387",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "bc3798e35ed1e11c0394b6ca3f4086a3e5ceec77e123f25beaeba1cff1a04387"
       },
@@ -577,30 +568,75 @@
           "cited_k": "K060705"
         },
         "ok": true,
+        "shown_sha256": "15d166f77b0c9b9edc501feca727f8eee45ba3ce226157a7249b30f02c897038",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "15d166f77b0c9b9edc501feca727f8eee45ba3ce226157a7249b30f02c897038"
       },
       {
         "seq": 6,
-        "tool": "coverage_gaps",
+        "tool": "verify_citation",
         "args": {
-          "k_number": "K251889",
-          "generations": 4
+          "citing_k": "K251889",
+          "cited_k": "K132371"
         },
         "ok": true,
+        "shown_sha256": "8e985bb60ad4813832306b5a9db01219163a0206078f15aadbb09b11e499ff4c",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "8e985bb60ad4813832306b5a9db01219163a0206078f15aadbb09b11e499ff4c"
+      },
+      {
+        "seq": 7,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K132371",
+          "cited_k": "K123557"
+        },
+        "ok": true,
+        "shown_sha256": "5eb0778ee4d9148d8b4bade4e604c48ff2abc4a0e40335092db44fd11fd92ae3",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "5eb0778ee4d9148d8b4bade4e604c48ff2abc4a0e40335092db44fd11fd92ae3"
+      },
+      {
+        "seq": 8,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K123557",
+          "cited_k": "K103167"
+        },
+        "ok": true,
+        "shown_sha256": "8237b8efca65900195bfaeb1ba2313e8d9b8120b8e0101a75a386d2eea4e22f8",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "8237b8efca65900195bfaeb1ba2313e8d9b8120b8e0101a75a386d2eea4e22f8"
+      },
+      {
+        "seq": 9,
+        "tool": "coverage_gaps",
+        "args": {
+          "generations": 4,
+          "k_number": "K251889"
+        },
+        "ok": true,
+        "shown_sha256": "3d43af7d2805209089c81ceeaeedfb695fcaca9451f980627601e2743b5c78fc",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "3d43af7d2805209089c81ceeaeedfb695fcaca9451f980627601e2743b5c78fc"
       },
       {
-        "seq": 7,
+        "seq": 10,
         "tool": "submit_report",
         "args": {
-          "findings": 7,
+          "findings": 6,
           "note": "content verified above; raw text in the ToolCall node"
         },
         "ok": true,
+        "shown_sha256": "e35fca55070ce081d0324f1dd161a20bfdbc4e1c30a4ad9962c080351089ee2f",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "bcc8e53f1ec36d6539ae22f9da6a15db0c81f82d84d8950522a71f17f8c31ade"
+        "result_sha256": "e35fca55070ce081d0324f1dd161a20bfdbc4e1c30a4ad9962c080351089ee2f"
       }
     ],
     "how_to_rerun": "POST /api/investigations {\"request\": ..., \"k\": \"K251889\", \"depth\": 4} or scripts/investigate.py --k K251889 --depth 4"

@@ -1,0 +1,49 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_213532.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 2.07s -> ['trace_ancestry']
+  #1 llm: trace_ancestry({"k_number": "K251770", "generations": 4}) -> K251770: 8 ancestor(s) within 4 generation(s)
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 1.07s -> ['check_predicate']
+  #2 llm: check_predicate({"k_number": "K251770", "generations": 4}) -> K251770 verdict REVIEW_LINEAGE, evidence complete, 6 signal(s), 4 generation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 2.33s -> ['coverage_gaps']
+  #3 llm: coverage_gaps({"k_number": "K251770", "generations": 4}) -> K251770 evidence complete: 2 unread ancestor(s), 0 doubtful link(s), 0 unresolved predicate citation(s)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 1.16s -> ['get_recall']
+  #4 llm: get_recall({"recall_id": "Z-1974-2021"}) -> Z-1974-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+
+[turn 5] nvidia/nemotron-3-ultra-550b-a55b 1.43s -> ['get_recall']
+  #5 llm: get_recall({"recall_id": "Z-1817-2024"}) -> Z-1817-2024 Class I / Device Design initiated 2024-04-01, 3 linked device(s)
+
+[turn 6] mistralai/mistral-large-4-1t-a52b 1.65s -> ['get_recall']
+  #6 llm: get_recall({"recall_id": "Z-1322-2023"}) -> Z-1322-2023 Class I / Software design (manufacturing process) initiated 2023-02-10, 1 linked device(s)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 1.04s -> ['get_recall']
+  #7 llm: get_recall({"recall_id": "Z-2227-2025"}) -> Z-2227-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 8] nvidia/nemotron-3-ultra-550b-a55b 1.15s -> ['get_recall']
+  #8 llm: get_recall({"recall_id": "Z-2228-2025"}) -> Z-2228-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 9] mistralai/mistral-large-4-1t-a52b 1.34s -> ['get_recall']
+  #9 llm: get_recall({"recall_id": "Z-2229-2025"}) -> Z-2229-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 10] nvidia/nemotron-3-ultra-550b-a55b 1.66s -> ['verify_citation']
+  #10 llm: verify_citation({"citing_k": "K251770", "cited_k": "K200480"}) -> K251770->K200480 verified (page 5)
+
+[turn 11] mistralai/mistral-large-4-1t-a52b 41.35s -> ['verify_citation', 'verify_citation', 'verify_citation', 'verify_citation']
+  #11 llm: verify_citation({"citing_k": "K200480", "cited_k": "K130077"}) -> K200480->K130077 verified (page 4)
+  #12 llm: verify_citation({"citing_k": "K200480", "cited_k": "K131982"}) -> K200480->K131982 verified (page 4)
+  #13 llm: verify_citation({"citing_k": "K131982", "cited_k": "K113068"}) -> K131982->K113068 verified (page 1)
+  #14 llm: verify_citation({"citing_k": "K130077", "cited_k": "K122769"}) -> K130077->K122769 verified (page 1)
+
+[turn 12] nvidia/nemotron-3-ultra-550b-a55b 1.42s -> ['verify_citation']
+  #15 llm: verify_citation({"citing_k": "K113068", "cited_k": "K091319"}) -> K113068->K091319 verified (page 1)
+
+[turn 13] nvidia/nemotron-3-ultra-550b-a55b 50.0s -> ['submit_report']
+  #16 llm: submit_report({"summary": "K251770 (SleepRes PAP System, Sleepres Inc., cleared 2025-12-15) traces through one direct predicate (K2004) -> report submitted with 8 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-8203364b195e: completed / llm_agent
+conclusion: recall_signal_documented (REVIEW_LINEAGE, evidence complete)
+findings: 6 verified, 2 rejected; proposals: 0

@@ -1,6 +1,6 @@
 {
   "schema": "forebear-investigation-report/1",
-  "investigation_id": "I-d0099f0875f7",
+  "investigation_id": "I-8203364b195e",
   "request": "Investigate K251770: trace its predicate lineage and recalled predicates, verify the FDA evidence, identify unresolved or unread lineage, and state clearly what the evidence does not cover.",
   "disclaimer": "Evidence research, not a medical-device safety determination or regulatory advice. Forebear reports documented 510(k) predicate lineage and FDA recall records; recalls can be lot-, model- or software-specific, openFDA's root-cause field is coarse, and FDA recall records can cover product families. Machine-generated findings below have not been reviewed by a person.",
   "status": "completed",
@@ -355,178 +355,197 @@
     "verdict_window": 2
   },
   "agent": {
-    "summary": "K251770 (SleepRes PAP System, Sleepres Inc., cleared 2025-12-15) traces through one direct predicate (K200480 DreamStation 2) to two grand-predicate branches (K130077 REMSTAR SE and K131982 REMSTAR AUTO A-FLEX HT) and further back to eight ancestors within four generations. The lineage triggers a REVIEW_LINEAGE verdict because grand-predicates K130077 and K131982 each carry Class I design-related recalls (event 88058, PE-PUR foam degradation). Two generation-4 ancestors (K010263 and K091112) have unread summaries, so evidence beyond the verdict window is incomplete.",
-    "summary_withheld": null,
-    "summary_issues": [],
+    "summary": null,
+    "summary_withheld": "K251770 (SleepRes PAP System, Sleepres Inc., cleared 2025-12-15) traces through one direct predicate (K200480, DreamStation 2) to two grand-predicate branches (K130077 REMSTAR SE and K131982 REMSTAR AUTO A-FLEX HT) and further back to eight ancestors within four generations. The lineage is fully verified against cached FDA summary text for all seven read summaries; two generation-4 ancestors (K010263 and K091112) have unread or missing summaries. Multiple Class I recalls affect the predicate chain, most notably the 2021 PE-PUR foam degradation recall (Z-1974-2021, event 88058) that directly names five ancestors in the chain, and a 2024 therapy-interruption recall (Z-1817-2024, event 94487) linked to K113068. Evidence is complete for the verdict window (candidate, direct predicates, grand-predicates) but incomplete beyond two generations due to the two unread ancestors.",
+    "summary_issues": [
+      "claims verification, but verify_citation did not pass for any named citation"
+    ],
     "findings_verified": [
       {
-        "claim": "K251770 cites K200480 (DreamStation 2) as its sole direct predicate; the citation appears on page 5 of K251770's FDA summary.",
-        "kind": "lineage",
+        "claim": "K251770 cites K200480 (DreamStation 2) as its sole direct predicate on page 5 of its FDA summary; the citation is verified against the cached PDF (SHA-256 73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1).",
+        "kind": "citation",
         "evidence": [
           "K251770->K200480"
         ],
-        "certainty": "established",
+        "certainty": "provisional",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "certainty_note": "downgraded from 'established': evidence for ['K200480'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K200480",
           "K251770"
         ],
-        "id": "F-771438c53bc0"
+        "id": "F-15537bb0eefe"
       },
       {
-        "claim": "K200480 cites two grand-predicates: K130077 (REMSTAR SE, page 4) and K131982 (REMSTAR AUTO A-FLEX HT, page 4).",
-        "kind": "lineage",
+        "claim": "K200480 cites both K130077 (REMSTAR SE) and K131982 (REMSTAR AUTO A-FLEX HT) as primary and secondary predicates on page 4; both citations are verified against the cached PDF (SHA-256 923bbcfbbaea7deaf5a1b208872bda1afcf8433ff7c413ac5831cdc6c69bd1cb).",
+        "kind": "citation",
         "evidence": [
           "K200480->K130077",
           "K200480->K131982"
         ],
-        "certainty": "established",
+        "certainty": "provisional",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "certainty_note": "downgraded from 'established': evidence for ['K130077', 'K131982', 'K200480'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K130077",
           "K131982",
           "K200480"
         ],
-        "id": "F-823f2a618f43"
+        "id": "F-41599fe3e171"
       },
       {
-        "claim": "Grand-predicate K130077 is linked to Class I recall Z-1974-2021 (event 88058) for PE-PUR foam degradation; the recall record lists K130077 as a linked device.",
-        "kind": "recall_signal",
+        "claim": "The predicate chain continues through K131982->K113068 (page 1), K130077->K122769 (page 1), and K113068->K091319 (page 1); all three citations are verified against their respective cached FDA summaries.",
+        "kind": "lineage",
         "evidence": [
-          "Z-1974-2021",
-          "K251770->K200480->K130077"
-        ],
-        "certainty": "established",
-        "status": "verified",
-        "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
-        "human_approved": false,
-        "refs": [
-          "K130077",
-          "K200480",
-          "K251770",
-          "Z-1974-2021"
-        ],
-        "id": "F-f5258f28a7ca"
-      },
-      {
-        "claim": "Generation-3 ancestor K113068 carries Class I recall Z-1817-2024 (event 94487) for possible therapy interruption; the recall record lists K113068 with a name mismatch.",
-        "kind": "recall_signal",
-        "evidence": [
-          "Z-1817-2024",
-          "K251770->K200480->K131982->K113068"
-        ],
-        "certainty": "established",
-        "status": "verified",
-        "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
-        "human_approved": false,
-        "refs": [
-          "K113068",
-          "K131982",
-          "K200480",
-          "K251770",
-          "Z-1817-2024"
-        ],
-        "id": "F-2a0cc650dd42"
-      },
-      {
-        "claim": "Two generation-4 ancestors (K010263 summary missing, K091112 summary ok_no_predicate_found) have unread FDA summaries, so predicate citations beyond generation 4 are unknown; coverage_gaps reports zero doubtful links and zero unresolved predicate citations within the four-generation window.",
-        "kind": "uncertainty",
-        "evidence": [
-          "K010263",
-          "K091112"
+          "K131982->K113068",
+          "K130077->K122769",
+          "K113068->K091319"
         ],
         "certainty": "provisional",
         "status": "verified",
         "reasons": [],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "certainty_note": "downgraded from 'established': evidence for ['K091319', 'K113068', 'K122769', 'K130077', 'K131982'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K091319",
+          "K113068",
+          "K122769",
+          "K130077",
+          "K131982"
+        ],
+        "id": "F-fac6ba407354"
+      },
+      {
+        "claim": "Class I recall Z-1974-2021 (event 88058, initiated 2021-06-14, root cause Device Design) for PE-PUR foam degradation is linked by FDA to five ancestors in the K251770 lineage: K131982, K130077, K122769, K113068, and K091319.",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1974-2021",
+          "event:88058"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "certainty_note": "downgraded from 'established': evidence for ['K091319', 'K113068', 'K122769', 'K130077', 'K131982'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K091319",
+          "K113068",
+          "K122769",
+          "K130077",
+          "K131982",
+          "K251770",
+          "Z-1974-2021"
+        ],
+        "id": "F-9e30c0967227"
+      },
+      {
+        "claim": "Class I recall Z-1817-2024 (event 94487, initiated 2024-04-01, root cause Device Design) for therapy interruption is linked by FDA to K113068 (link_name_check mismatch noted).",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1817-2024",
+          "event:94487"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K113068",
+          "Z-1817-2024"
+        ],
+        "id": "F-7e809fcd6403"
+      },
+      {
+        "claim": "Two generation-4 ancestors (K010263 REMSTAR PLUS CPAP SYSTEM and K091112 RESPIRONICS SLEEPEASY CPAP SYSTEM) have unread or missing FDA summaries; their predicate citations and any further ancestry are therefore unverified, creating a coverage gap beyond two generations.",
+        "kind": "gap",
+        "evidence": [
+          "K010263",
+          "K091112"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K010263",
           "K091112"
         ],
-        "id": "F-13fe8e897bcb"
+        "id": "F-0bdef6c1ced5"
       }
     ],
     "findings_rejected": [
       {
-        "claim": "Grand-predicate K131982 is linked to the same Class I recall Z-1974-2021 plus four additional Class I recalls (Z-2229-2025, Z-2228-2025, Z-2227-2025, Z-1322-2023) spanning 2023-2025; all five recall records list K131982 as a linked device.",
+        "claim": "Three additional Class I recalls (Z-2227-2025, Z-2228-2025, Z-2229-2025, all event 97191, initiated 2025-06-30, root cause Process control) for programming errors are linked by FDA to K131982 (link_name_check mismatch noted).",
         "kind": "recall_signal",
         "evidence": [
-          "Z-1974-2021",
-          "Z-2229-2025",
-          "Z-2228-2025",
           "Z-2227-2025",
-          "Z-1322-2023",
-          "K251770->K200480->K131982"
+          "Z-2228-2025",
+          "Z-2229-2025",
+          "event:97191"
         ],
         "certainty": "established",
         "status": "rejected",
         "reasons": [
-          "recall counts for K131982 do not match the graph: stated ['4 class_i', '5 records'], graph has {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (all recalls) / {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (signalled recalls)"
+          "recall counts for K131982 do not match the graph: stated ['3 class_i'], graph has {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (all recalls) / {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (signalled recalls)"
         ],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K131982",
-          "K200480",
-          "K251770",
-          "Z-1322-2023",
-          "Z-1974-2021",
           "Z-2227-2025",
           "Z-2228-2025",
           "Z-2229-2025"
         ],
-        "id": "F-4820792ebd1a"
+        "id": "F-076ceb6dfffe"
       },
       {
-        "claim": "Generation-4 ancestor K091319 is linked to recall Z-1974-2021; generation-4 ancestor K010263 carries three older recalls (Z-1066-2008, Z-0447-2007, Z-0446-2007) none classified as Class I and none design-related.",
-        "kind": "recall_signal",
+        "claim": "Evidence is complete for the verdict window (candidate, direct predicates, grand-predicates) but incomplete beyond two generations due to the two unread ancestors; no doubtful links or unresolved predicate citations were found in the verified portion.",
+        "kind": "uncertainty",
         "evidence": [
-          "Z-1974-2021",
-          "Z-1066-2008",
-          "Z-0447-2007",
-          "Z-0446-2007",
-          "K251770->K200480->K131982->K113068->K091",
-          "K251770->K200480->K130077->K122769->K010"
+          "K251770",
+          "K200480",
+          "K130077",
+          "K131982",
+          "K113068",
+          "K122769",
+          "K091319",
+          "K010263",
+          "K091112"
         ],
-        "certainty": "established",
+        "certainty": "provisional",
         "status": "rejected",
         "reasons": [
-          "recall Z-0446-2007 is not classified by FDA, not Class I",
-          "recall Z-0447-2007 is not classified by FDA, not Class I",
-          "recall Z-1066-2008 is not classified by FDA, not Class I"
+          "claims verification, but verify_citation did not pass for any named citation"
         ],
-        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
         "human_approved": false,
         "refs": [
           "K010263",
+          "K091112",
           "K091319",
           "K113068",
           "K122769",
           "K130077",
           "K131982",
           "K200480",
-          "K251770",
-          "Z-0446-2007",
-          "Z-0447-2007",
-          "Z-1066-2008",
-          "Z-1974-2021"
+          "K251770"
         ],
-        "id": "F-06a94d3db481"
+        "id": "F-36023bb83c06"
       }
     ],
     "open_questions": [
-      "Whether the PE-PUR foam recall (Z-1974-2021) affects design elements shared with K251770 through the K200480->K130077/K131982 lineage.",
-      "Whether the therapy-interruption recall (Z-1817-2024) on K113068 reflects a design pattern that persists in K251770.",
-      "Full predicate chains for K010263 and K091112 beyond generation 4 remain unread."
+      "Should the unread summaries for K010263 and K091112 be ingested to extend lineage verification beyond generation 4?",
+      "Do the link_name_check mismatches for recalls Z-1817-2024 and Z-2227/8/9-2025 indicate potential mis-attribution of those recalls to K113068 and K131982?"
     ],
     "open_questions_dropped": 0,
     "note": "Machine-generated by the model named below; each finding was checked against this run's tool results. Rejected findings are shown with the reason and are not part of the conclusion."
@@ -547,9 +566,20 @@
       "mistralai/mistral-large-4-1t-a52b"
     ],
     "model_used": [
+      "mistralai/mistral-large-4-1t-a52b",
       "nvidia/nemotron-3-ultra-550b-a55b"
     ],
-    "llm_errors": [],
+    "llm_errors": [
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429"
+    ],
     "depth": 4,
     "budget": {
       "max_steps": 14,
@@ -561,20 +591,20 @@
     },
     "usage": {
       "turns": 13,
-      "prompt_tokens": 97599,
-      "completion_tokens": 1852,
-      "tool_calls": 13,
-      "seconds": 67.4
+      "prompt_tokens": 99022,
+      "completion_tokens": 2102,
+      "tool_calls": 16,
+      "seconds": 157.9
     },
-    "started_at": "2026-11-17T19:15:48Z",
-    "finished_at": "2026-11-17T19:16:55Z",
+    "started_at": "2026-11-17T20:35:32Z",
+    "finished_at": "2026-11-17T20:38:10Z",
     "graph": {
       "ProductCode": 76,
       "Device": 1187,
       "Company": 301,
       "Recall": 563,
       "Investigation": 1,
-      "ToolCall": 13
+      "ToolCall": 16
     },
     "tool_calls": [
       {
@@ -585,6 +615,8 @@
           "generations": 4
         },
         "ok": true,
+        "shown_sha256": "73932a7d4f80c03d3ac74040221e8fdc6b84ea83ca2704a724ac4a58e2a999ab",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "73932a7d4f80c03d3ac74040221e8fdc6b84ea83ca2704a724ac4a58e2a999ab"
       },
@@ -596,8 +628,10 @@
           "generations": 4
         },
         "ok": true,
+        "shown_sha256": "8f62bc1f76d5eadc44f5f1d2e093a6ac392b30ac16c29b3f66d233eb1d2749b6",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "7e39cc76009e13d85c07d046537ffb93d7378f4353b0ac97d933568eb31a97ea"
+        "result_sha256": "8f62bc1f76d5eadc44f5f1d2e093a6ac392b30ac16c29b3f66d233eb1d2749b6"
       },
       {
         "seq": 3,
@@ -607,6 +641,8 @@
           "generations": 4
         },
         "ok": true,
+        "shown_sha256": "e6dee894f13c630ff6da0b209f7d28af3fa58b38467199bdc9556e2df6276a65",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "e6dee894f13c630ff6da0b209f7d28af3fa58b38467199bdc9556e2df6276a65"
       },
@@ -617,6 +653,8 @@
           "recall_id": "Z-1974-2021"
         },
         "ok": true,
+        "shown_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e"
       },
@@ -627,6 +665,8 @@
           "recall_id": "Z-1817-2024"
         },
         "ok": true,
+        "shown_sha256": "14399a1f2f4da9a710a682eaf73c1cf9918353da59cea6604f1c19784ee0db8e",
+        "shown_truncated": false,
         "origin": "llm",
         "result_sha256": "14399a1f2f4da9a710a682eaf73c1cf9918353da59cea6604f1c19784ee0db8e"
       },
@@ -634,82 +674,140 @@
         "seq": 6,
         "tool": "get_recall",
         "args": {
-          "recall_id": "Z-2229-2025"
+          "recall_id": "Z-1322-2023"
         },
         "ok": true,
+        "shown_sha256": "a1951bda553e8ff7027991c55c007bfd8cb4f85b4478e55cfb818674117713d3",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "7d37f1b8c2aea4591b6759c50f08f6cc6a231b8cb849b57b938e7840ac19279e"
+        "result_sha256": "a1951bda553e8ff7027991c55c007bfd8cb4f85b4478e55cfb818674117713d3"
       },
       {
         "seq": 7,
         "tool": "get_recall",
         "args": {
-          "recall_id": "Z-2228-2025"
+          "recall_id": "Z-2227-2025"
         },
         "ok": true,
+        "shown_sha256": "e4177b637f5bffe2c885cea5ae21e3fb6339c9efc2e81b259bc1a8f7c37e12be",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "e14d953018f1b66d362c728ffb4de30462e1c40226bb5788accbedefecd3c5d0"
+        "result_sha256": "e4177b637f5bffe2c885cea5ae21e3fb6339c9efc2e81b259bc1a8f7c37e12be"
       },
       {
         "seq": 8,
         "tool": "get_recall",
         "args": {
-          "recall_id": "Z-2227-2025"
+          "recall_id": "Z-2228-2025"
         },
         "ok": true,
+        "shown_sha256": "e14d953018f1b66d362c728ffb4de30462e1c40226bb5788accbedefecd3c5d0",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "e4177b637f5bffe2c885cea5ae21e3fb6339c9efc2e81b259bc1a8f7c37e12be"
+        "result_sha256": "e14d953018f1b66d362c728ffb4de30462e1c40226bb5788accbedefecd3c5d0"
       },
       {
         "seq": 9,
         "tool": "get_recall",
         "args": {
-          "recall_id": "Z-1322-2023"
+          "recall_id": "Z-2229-2025"
         },
         "ok": true,
+        "shown_sha256": "7d37f1b8c2aea4591b6759c50f08f6cc6a231b8cb849b57b938e7840ac19279e",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "a1951bda553e8ff7027991c55c007bfd8cb4f85b4478e55cfb818674117713d3"
+        "result_sha256": "7d37f1b8c2aea4591b6759c50f08f6cc6a231b8cb849b57b938e7840ac19279e"
       },
       {
         "seq": 10,
-        "tool": "get_recall",
+        "tool": "verify_citation",
         "args": {
-          "recall_id": "Z-1066-2008"
+          "citing_k": "K251770",
+          "cited_k": "K200480"
         },
         "ok": true,
+        "shown_sha256": "8aea039b3ebf427640685e04247fd96e6d55d05408987ace31cb0aa9f713d452",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "f4977938c1aea9aa43ad4586dbabf8b685758e16a48cb5a5209f15a3710cce2b"
+        "result_sha256": "8aea039b3ebf427640685e04247fd96e6d55d05408987ace31cb0aa9f713d452"
       },
       {
         "seq": 11,
-        "tool": "get_recall",
+        "tool": "verify_citation",
         "args": {
-          "recall_id": "Z-0447-2007"
+          "citing_k": "K200480",
+          "cited_k": "K130077"
         },
         "ok": true,
+        "shown_sha256": "0324d953926205ac1f354ce9413b01f7f5dcb466d926a27db7123897e36aeb0d",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "f2356a4e583640fe887224630a9eb8bf31e5f17a5ca456a19dccd1a2605eaa95"
+        "result_sha256": "0324d953926205ac1f354ce9413b01f7f5dcb466d926a27db7123897e36aeb0d"
       },
       {
         "seq": 12,
-        "tool": "get_recall",
+        "tool": "verify_citation",
         "args": {
-          "recall_id": "Z-0446-2007"
+          "citing_k": "K200480",
+          "cited_k": "K131982"
         },
         "ok": true,
+        "shown_sha256": "811db478a54a0a82a7c7be0f1925a2fb06a6cda7bd5fd64f5bc64a857759e238",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "e17349e793532e1c53f6ee47aa95d9218a564ff78c64032031eb4e679baf3ee6"
+        "result_sha256": "811db478a54a0a82a7c7be0f1925a2fb06a6cda7bd5fd64f5bc64a857759e238"
       },
       {
         "seq": 13,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K131982",
+          "cited_k": "K113068"
+        },
+        "ok": true,
+        "shown_sha256": "897184555c89a21fc33eadbaafd24dab4904d85d351f018ff011d35f3e664158",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "897184555c89a21fc33eadbaafd24dab4904d85d351f018ff011d35f3e664158"
+      },
+      {
+        "seq": 14,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K130077",
+          "cited_k": "K122769"
+        },
+        "ok": true,
+        "shown_sha256": "d61b84e21e7977a6d0e081170487aab8d9f1adb01995df4c74f383a6e903da5f",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "d61b84e21e7977a6d0e081170487aab8d9f1adb01995df4c74f383a6e903da5f"
+      },
+      {
+        "seq": 15,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K113068",
+          "cited_k": "K091319"
+        },
+        "ok": true,
+        "shown_sha256": "91a8a60a6811deb02b1dc4fd4b7d818e909a466f5676c5f7206a4f579d896cb1",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "91a8a60a6811deb02b1dc4fd4b7d818e909a466f5676c5f7206a4f579d896cb1"
+      },
+      {
+        "seq": 16,
         "tool": "submit_report",
         "args": {
-          "findings": 7,
+          "findings": 8,
           "note": "content verified above; raw text in the ToolCall node"
         },
         "ok": true,
+        "shown_sha256": "fff367eb221e67b3262a2d64344b4fd844b4d243bd95bdbd4b8cc69dbb3e2f4e",
+        "shown_truncated": false,
         "origin": "llm",
-        "result_sha256": "bcc8e53f1ec36d6539ae22f9da6a15db0c81f82d84d8950522a71f17f8c31ade"
+        "result_sha256": "fff367eb221e67b3262a2d64344b4fd844b4d243bd95bdbd4b8cc69dbb3e2f4e"
       }
     ],
     "how_to_rerun": "POST /api/investigations {\"request\": ..., \"k\": \"K251770\", \"depth\": 4} or scripts/investigate.py --k K251770 --depth 4"
