@@ -16,6 +16,9 @@ from dataclasses import dataclass, field
 DEFAULT_MODELS = ["nvidia/nemotron-3-ultra-550b-a55b", "mistralai/mistral-large-4-1t-a52b"]
 
 
+MAX_RATE_LIMIT_WAIT = 20.0
+
+
 class LLMUnavailable(Exception):
     pass
 
@@ -37,6 +40,7 @@ class ChatClient:
     max_tokens: int = 1200
     failures: dict[str, int] = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
+    rate_limit_waits: int = 0
     _client: object = None
 
     @classmethod
@@ -65,26 +69,45 @@ class ChatClient:
                  for c in (ch.message.tool_calls or [])]
         return r, ch, calls
 
+    @staticmethod
+    def _retry_after(e: Exception) -> float:
+        """Seconds a rate-limited endpoint asks us to wait (Retry-After), defaulting to 8, capped at 20."""
+        try:
+            return max(1.0, min(float(e.response.headers.get("retry-after")), MAX_RATE_LIMIT_WAIT))
+        except (AttributeError, TypeError, ValueError):
+            return 8.0
+
     def chat(self, messages: list[dict], tools: list[dict], deadline: float | None = None) -> Turn:
-        """One model turn. `deadline` (epoch seconds) caps every request so a run cannot overrun its time budget."""
+        """One model turn. `deadline` (epoch seconds) caps every request so a run cannot overrun its time budget.
+        A rate limit (HTTP 429) is transient, not a broken endpoint: the same model is retried once after its
+        Retry-After (at most 20 s, only if the deadline allows), and a 429 is not a circuit-breaker strike."""
         for model in self.usable():
-            t0 = time.time()
-            try:
-                r, ch, calls = self._once(model, messages, tools, self.max_tokens, deadline)
-                if not calls and not (ch.message.content or "").strip() and ch.finish_reason == "length":
-                    # a long tool call (submit_report) cut off by max_tokens: one retry with more room
-                    r, ch, calls = self._once(model, messages, tools, self.max_tokens * 3, deadline)
-                if not calls and not (ch.message.content or "").strip():
-                    raise ValueError(f"empty reply (finish_reason={ch.finish_reason})")
-                u = getattr(r, "usage", None)
-                return Turn(ch.message.content or "", calls, model, round(time.time() - t0, 2),
-                            getattr(u, "prompt_tokens", 0) or 0, getattr(u, "completion_tokens", 0) or 0)
-            except TimeoutError as e:       # out of run time: no point trying another model
-                self.errors.append(f"{model}: {e}")
-                break
-            except Exception as e:          # timeout, 4xx/5xx, malformed reply: count it, try the next model
-                self.failures[model] = self.failures.get(model, 0) + 1
-                self.errors.append(f"{model}: {type(e).__name__}: {str(e)[:160]}")
-                if type(e).__name__ in ("AuthenticationError", "PermissionDeniedError", "NotFoundError"):
-                    self.failures[model] = 2          # broken endpoint for this run: never retried
+            for attempt in (1, 2):
+                t0 = time.time()
+                try:
+                    r, ch, calls = self._once(model, messages, tools, self.max_tokens, deadline)
+                    if not calls and not (ch.message.content or "").strip() and ch.finish_reason == "length":
+                        # a long tool call (submit_report) cut off by max_tokens: one retry with more room
+                        r, ch, calls = self._once(model, messages, tools, self.max_tokens * 3, deadline)
+                    if not calls and not (ch.message.content or "").strip():
+                        raise ValueError(f"empty reply (finish_reason={ch.finish_reason})")
+                    u = getattr(r, "usage", None)
+                    return Turn(ch.message.content or "", calls, model, round(time.time() - t0, 2),
+                                getattr(u, "prompt_tokens", 0) or 0, getattr(u, "completion_tokens", 0) or 0)
+                except TimeoutError as e:   # out of run time: no point trying another model
+                    self.errors.append(f"{model}: {e}")
+                    raise LLMUnavailable("; ".join(self.errors[-3:]))
+                except Exception as e:      # timeout, 4xx/5xx, malformed reply: count it, try the next model
+                    self.errors.append(f"{model}: {type(e).__name__}: {str(e)[:160]}")
+                    if type(e).__name__ == "RateLimitError":
+                        wait = self._retry_after(e)
+                        if attempt == 1 and (deadline is None or deadline - time.time() > wait + 30):
+                            self.rate_limit_waits += 1
+                            time.sleep(wait)
+                            continue
+                        break                 # still limited: next model for this turn, no strike
+                    self.failures[model] = self.failures.get(model, 0) + 1
+                    if type(e).__name__ in ("AuthenticationError", "PermissionDeniedError", "NotFoundError"):
+                        self.failures[model] = 2          # broken endpoint for this run: never retried
+                    break
         raise LLMUnavailable("; ".join(self.errors[-3:]) or "no usable model")
