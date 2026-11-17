@@ -9,6 +9,7 @@ DATA = ROOT / "data"
 RAW = DATA / "raw"
 OPENFDA_CACHE = RAW / "openfda"
 SUMMARY_CACHE = RAW / "summaries"      # extracted text + metadata JSON per K-number (PDFs are not kept)
+OCR_CACHE = RAW / "ocr"                # OCR text for image-only summaries (scripts/fetch_data.py ocr)
 # Live-ingest cache (gitignored). The committed raw cache is only written by scripts/fetch_data.py,
 # so the shipped build stays reproducible no matter what users ingest in the app.
 LIVE = DATA / "live"

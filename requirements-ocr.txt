@@ -1,0 +1,16 @@
+# Optional: local OCR of image-only 510(k) summaries (scripts/fetch_data.py ocr). Not needed to run the
+# app, the tests or the offline rebuild: OCR output is cached in data/raw/ocr. Tested on Windows, Python 3.12.0.
+# RapidOCR ships its ONNX models inside the wheel, so no system binary (Tesseract etc.) is required.
+rapidocr-onnxruntime==1.4.4
+pypdfium2==5.15.2
+onnxruntime==1.32.0
+opencv-python==5.0.0.93
+numpy==2.5.5
+Pillow==13.0.0
+pyclipper==1.4.0
+Shapely==2.2.0
+PyYAML==6.0.3
+six==1.17.0
+tqdm==4.70.1
+flatbuffers==25.12.19
+protobuf==7.36.2
