@@ -24,7 +24,7 @@ RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
 EVENT_RE = re.compile(r"^\d{4,7}$")
 MAX_RESULT_CHARS = 7000
 UNTRUSTED_KEYS = {"quote", "snippet", "reason", "product", "audit_note", "untrusted_quote", "untrusted_reason",
-                  "untrusted_product", "untrusted_excerpt", "summary_url", "source_url", "url", "note", "name", "dst_name", "applicant", "firm"}
+                  "untrusted_product", "untrusted_excerpt", "summary_url", "source_url", "url", "note", "applicant", "firm"}
 MAX_PROPOSALS = 6
 # Phrases that try to steer a model, found inside FDA text returned by a tool. They are flagged, never obeyed.
 INJECTION_RE = re.compile(r"ignore (all |any )?(previous|prior|above) (instructions|rules)|disregard (the )?"

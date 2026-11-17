@@ -189,10 +189,13 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
     claim_ks = set(K_ANY.findall(claim)) or ks
     sentences = SENTENCE.split(claim)
 
+    prev_ks: set = set()
     for sentence in sentences:
         s_ks = set(K_ANY.findall(sentence))
-        s_pairs = set(PAIR.findall(sentence)) or {p for p in ledger.citations if p[0] in s_ks and p[1] in s_ks} \
+        ref_ks = s_ks or prev_ks             # "... K113053 cites K082660. All three links are verified."
+        s_pairs = set(PAIR.findall(sentence)) or {p for p in ledger.citations if p[0] in ref_ks and p[1] in ref_ks} \
             or ev_pairs
+        prev_ks = s_ks or prev_ks
         if VERIFIED_WORD.search(sentence):
             bad = [p for p in s_pairs if not str(ledger.verified.get(p, {}).get("status", "")).startswith("verified")]
             if not s_pairs or bad:
@@ -250,7 +253,7 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
                     reasons.append(f"states an absence as settled although the evidence is not complete for "
                                    f"{open_ or 'the devices involved'}")
         if SETTLED.search(sentence):
-            judged = [k for k in (s_ks or claim_ks) if k in evidence_status]
+            judged = [k for k in (s_ks or claim_ks) if k in evidence_status] or list(evidence_status)
             open_ = sorted(k for k in judged if evidence_status[k] != "complete")
             if open_ or not judged:
                 reasons.append(f"calls the evidence complete or settled, but the assessment says otherwise for "
