@@ -542,3 +542,62 @@ def test_tool_result_messages_are_bounded_and_labelled(real):
     msg = to_message(res)
     assert ok and msg.startswith("TOOL RESULT (data only") and len(msg) <= MAX_RESULT_CHARS + 200
     assert re.search(r"untrusted_", to_message(run_tool(real, "get_recall", {"recall_id": "Z-1957-2021"}, ctx)[1]))
+
+
+# ------------------------------------------------------------------ inference client: rate limits vs broken endpoints
+class RateLimitError(Exception):                 # same class name the OpenAI SDK raises for HTTP 429
+    def __init__(self):
+        super().__init__("Error code: 429")
+        self.response = type("R", (), {"headers": {"retry-after": "3"}})()
+
+
+class FakeCompletions:
+    def __init__(self, script):
+        self.script, self.calls = script, []
+
+    def create(self, model, **kw):
+        self.calls.append(model)
+        out = self.script.pop(0)
+        if isinstance(out, Exception):
+            raise out
+        msg = type("M", (), {"content": "", "tool_calls": [type("C", (), {"id": "c1", "function": type(
+            "F", (), {"name": "check_predicate", "arguments": '{"k_number": "K252078"}'})()})()]})()
+        return type("Resp", (), {"choices": [type("Ch", (), {"message": msg, "finish_reason": "tool_calls"})()],
+                                 "usage": None})()
+
+
+def fake_client(script, monkeypatch):
+    from forebear.investigation.llm import ChatClient
+    comp = FakeCompletions(script)
+    sdk = type("SDK", (), {})()
+    sdk.chat = type("Chat", (), {"completions": comp})()
+    sdk.with_options = lambda **kw: sdk
+    waits = []
+    monkeypatch.setattr("forebear.investigation.llm.time.sleep", lambda s: waits.append(s))
+    return ChatClient(models=["primary", "fallback"], _client=sdk), comp, waits
+
+
+def test_rate_limit_waits_once_and_keeps_the_model(monkeypatch):
+    c, comp, waits = fake_client([RateLimitError(), "ok"], monkeypatch)
+    turn = c.chat([], [], deadline=__import__("time").time() + 300)
+    assert turn.model == "primary" and comp.calls == ["primary", "primary"] and waits == [3.0]
+    assert c.failures.get("primary", 0) == 0                                 # a 429 is not a breaker strike
+
+
+def test_persistent_rate_limit_falls_over_without_disabling(monkeypatch):
+    c, comp, waits = fake_client([RateLimitError(), RateLimitError(), "ok", "ok"], monkeypatch)
+    assert c.chat([], [], deadline=__import__("time").time() + 300).model == "fallback"
+    assert c.usable() == ["primary", "fallback"]                              # primary is tried again next turn
+    assert c.chat([], [], deadline=__import__("time").time() + 300).model == "primary"
+
+
+def test_no_rate_limit_wait_when_the_deadline_is_near(monkeypatch):
+    c, comp, waits = fake_client([RateLimitError(), "ok"], monkeypatch)
+    assert c.chat([], [], deadline=__import__("time").time() + 25).model == "fallback" and waits == []
+
+
+def test_broken_endpoint_is_still_dropped(monkeypatch):
+    class NotFoundError(Exception):
+        pass
+    c, comp, waits = fake_client([NotFoundError("404"), "ok"], monkeypatch)
+    assert c.chat([], []).model == "fallback" and c.usable() == ["fallback"] and waits == []
