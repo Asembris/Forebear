@@ -38,6 +38,10 @@ def test_forebear_mcp_agent_workflow(live_api):
     a = json.loads(res[3]["result"]["content"][0]["text"])
     assert a["verdict"] == "REVIEW_LINEAGE" and a["signals"][0]["chain"] == ["K252078", "K113053"]
     assert json.loads(res[4]["result"]["content"][0]["text"])["review"] == "confirmed"
+    # the write is attributed to the MCP client, so it does not count as a person's confirmation
+    import httpx
+    cits = httpx.get(live_api["FOREBEAR_URL"] + "/api/device/K252078").json()["citations"]
+    assert next(c for c in cits if c["dst"] == "K113053")["reviewer"] == "mcp-client"
     assert json.loads(res[5]["result"]["content"][0]["text"])["id"].startswith("A-")
     assert res[6]["result"]["isError"] is True
     assert res[7]["error"]["code"] == -32601

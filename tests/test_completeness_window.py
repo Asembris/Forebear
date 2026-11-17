@@ -175,3 +175,19 @@ def test_equal_length_routes_do_not_make_completeness_depend_on_query_order(tmp_
 def test_depth_is_reported_as_traversed(g):
     assert assess(g, "K000001", 0)["coverage"]["generations_traversed"] == 1
     assert assess(g, "K000001", 10)["coverage"]["generations_traversed"] == 8
+
+
+def test_confirmation_through_the_mcp_client_is_not_a_human_confirmation(g):
+    g.conn.execute("MATCH (:Device {k:'K000001'})-[r:CITES]->(:Device {k:'K000002'}) SET r.audit = 'unresolved'")
+    g.review_citation("K000001", "K000002", "confirmed", "looks right", reviewer="mcp-client")
+    assert assess(g, "K000001", 4)["coverage"]["evidence"] == "uncertain"      # still doubtful
+    g.review_citation("K000001", "K000002", "confirmed", "checked p.4", reviewer="user")
+    assert assess(g, "K000001", 4)["coverage"]["evidence"] == "complete"
+
+
+def test_mention_promoted_only_by_the_mcp_client_is_doubtful(g):
+    g.conn.execute("MATCH (:Device {k:'K000001'})-[r:CITES]->(:Device {k:'K000002'}) SET r.kind = 'mention'")
+    g.review_citation("K000001", "K000002", "confirmed", None, reviewer="mcp-client")
+    a = assess(g, "K000001", 4)
+    assert "K000002" in {x["k"] for x in a["ancestors"]}
+    assert a["coverage"]["evidence"] == "uncertain" and a["verdict"] == "INSUFFICIENT_LINEAGE"

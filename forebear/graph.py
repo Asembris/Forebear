@@ -258,7 +258,7 @@ class Graph:
             RETURN a {{.*}} AS device, length(p) AS gen, routes,
                    [n IN nodes(p) | n.k] AS chain,
                    [r IN relationships(p) | {{src: startNode(r).k, dst: endNode(r).k, page: r.page,
-                        snippet: r.snippet, confidence: r.confidence, review: r.review,
+                        snippet: r.snippet, confidence: r.confidence, review: r.review, reviewer: r.reviewer,
                         name_check: r.name_check, source_url: r.source_url, kind: r.kind,
                         audit: r.audit, audit_note: r.audit_note, ai_label: r.ai_label,
                         text_source: r.text_source, panel_check: r.panel_check,

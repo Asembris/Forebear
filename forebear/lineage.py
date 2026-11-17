@@ -241,12 +241,14 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
 
 
 RULES_VERSION = "forebear-rules-v3"
-EVIDENCE_WINDOW = 2      # generations within which a recall can raise a verdict above "no signal"
+EVIDENCE_WINDOW = 2
+MACHINE_REVIEWERS = ("mcp-client",)       # reviews recorded through an automated client, not a person      # generations within which a recall can raise a verdict above "no signal"
 
 
 def doubt(h: dict) -> list[str]:
-    """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it."""
-    if h.get("review") == "confirmed":
+    """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it; a
+    confirmation sent through the MCP tool (reviewer "mcp-client", possibly an AI agent) does not."""
+    if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
         return []
     why = []
     if h.get("audit") == "unresolved":
@@ -259,6 +261,9 @@ def doubt(h: dict) -> list[str]:
         why.append("different_fda_panel")
     if h.get("kind") not in (None, "predicate") and h.get("ai_label") == "predicate":
         why.append("llm_label_only")
+    if h.get("kind") not in (None, "predicate") and h.get("review") == "confirmed" \
+            and h.get("reviewer") in MACHINE_REVIEWERS:
+        why.append("client_confirmation_only")
     return why
 
 

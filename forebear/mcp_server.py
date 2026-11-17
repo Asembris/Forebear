@@ -41,7 +41,9 @@ TOOLS = [
                                                 "and MERGE it into the graph. Also extends lineage for a device whose summary was unread.",
      "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
     {"name": "review_citation", "description": "Record a human-verified judgement on an extracted citation edge: confirmed, rejected, "
-                                               "or '' to clear. Rejected edges stop counting in every lineage query.",
+                                               "or '' to clear. Rejected edges stop counting in every lineage query. Recorded with reviewer "
+                                               "'mcp-client': a confirmation made here does not clear uncertain-evidence flags, "
+                                               "which only a person's review in the app does.",
      "inputSchema": {"type": "object", "properties": {"src": K, "dst": K, "status": {"type": "string", "enum": ["confirmed", "rejected", ""]},
                                                       "note": {"type": "string"}}, "required": ["src", "dst", "status"]}},
     {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls.",
@@ -97,7 +99,8 @@ def call_tool(name: str, args: dict):
             "citations_added": [{k: c[k] for k in ("dst", "kind", "page", "snippet")} for c in r["citations_added"]]}
     if name == "review_citation":
         return _http("POST", "/api/citation/review", json={"src": up(args["src"]), "dst": up(args["dst"]),
-                                                           "status": args["status"], "note": args.get("note")})
+                                                           "status": args["status"], "note": args.get("note"),
+                                                           "via": "mcp-client"})
     if name == "save_assessment":
         return _http("POST", "/api/assessments", json={"k": up(args["k_number"]), "note": args.get("note")})
     raise KeyError(name)
