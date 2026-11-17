@@ -122,6 +122,10 @@ def _ledger(real):
     ("K252078 cites K113053 on page 9.", ["K252078->K113053"], False, "page 9"),
     ("K252078 cites K113053, verified with SHA-256 " + "0" * 64 + ".", ["K252078->K113053"], False, "SHA-256"),
     ("K113053 was cleared in 1999.", ["K113053"], False, "numbers not found"),
+    ("K113053 has a Class II recall, Z-1957-2021.", ["K113053", "Z-1957-2021"], False, "is Class I, not Class II"),
+    ("K113053 has a Class I design recall, Z-1957-2021.", ["K113053", "Z-1957-2021"], True, None),
+    ("K252078 cites K113053. The link was verified.", ["K252078->K113053"], True, None),
+    ("K252078 is a safe predicate choice.", ["K252078"], False, "safety"),
     ("Some devices were recalled.", [], False, "no evidence identifier"),
 ])
 def test_verifier_accepts_grounded_and_rejects_unsupported(real, claim, evidence, ok, why):

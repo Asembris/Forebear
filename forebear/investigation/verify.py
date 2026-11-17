@@ -42,6 +42,10 @@ QUALIFIED = re.compile(r"provisional|incomplete|partial|uncertain|not checkable|
                        r"confirmed|checked)|could not|unverified|unknown|insufficient|not complete|gap", re.I)
 VERIFIED_WORD = re.compile(r"\bverif(y|ied|ication)\b|\bconfirmed in the (pdf|summary|fda)", re.I)
 SHA_ANY = re.compile(r"\b[0-9a-fA-F]{64}\b")
+CLASS_ANY = re.compile(r"\bclass (iii|ii|i)\b", re.I)
+# wording that says the listed recalls are a mix, or some are unclassified, so a single class is not asserted
+CLASS_QUALIFIED = re.compile(r"unclassified|not classified|no (fda )?classification|unknown|mixed|some of|several "
+                             r"of|one of|among", re.I)
 PAGE_ANY = re.compile(r"\bpages?\s+(\d+)", re.I)
 WORDS = {w: str(i) for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve "
                                          "thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty".split())}
@@ -126,11 +130,23 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
     for src, dst in sorted(pairs):
         if (src, dst) not in ledger.citations:
             reasons.append(f"citation {src}->{dst} was not returned by any tool")
-    if VERIFIED_WORD.search(claim):
-        named = pairs or {p for p in ledger.citations if p[0] in ks and p[1] in ks}
+    ev_pairs = set(PAIR.findall(" ".join(f.get("evidence") or [])))
+    for sentence in re.split(r"(?<=[.!?])\s+", claim):
+        if not VERIFIED_WORD.search(sentence):
+            continue
+        s_ks = set(K_ANY.findall(sentence))
+        named = set(PAIR.findall(sentence)) or {p for p in ledger.citations if p[0] in s_ks and p[1] in s_ks} \
+            or ev_pairs
         bad = [p for p in named if not str(ledger.verified.get(p, {}).get("status", "")).startswith("verified")]
         if not named or bad:
             reasons.append(f"claims verification, but verify_citation did not pass for {sorted(bad) or 'any named citation'}")
+    classes = {"Class " + c.upper() for c in CLASS_ANY.findall(claim)}
+    if len(classes) == 1 and rids and not CLASS_QUALIFIED.search(claim):
+        want = classes.pop()
+        for rid in sorted(rids & set(ledger.recalls)):
+            have = ledger.recalls[rid].get("classification")
+            if have != want:
+                reasons.append(f"recall {rid} is {have or 'not classified by FDA'}, not {want}")
     claim_ks = set(K_ANY.findall(claim)) or ks
     for rid in sorted(rids & known):
         linked = ledger.recall_links.get(rid, set())
