@@ -68,7 +68,8 @@ HUMAN_PENDING = re.compile(r"\b(needs?|awaits?|awaiting|requires?|pending|should
 SHA_ANY = re.compile(r"\b[0-9a-fA-F]{64}\b")
 CLASS_ANY = re.compile(r"\bclass (iii|ii|i)\b", re.I)
 CLASS_QUALIFIED = re.compile(r"unclassified|not classified|no (fda )?classification|unknown|mixed|some of|several "
-                             r"of|one of|among", re.I)
+                             r"of|one of|among|lack|missing|ruled out|cannot be|could be|may be|whether", re.I)
+UNATTRIBUTED = re.compile(r"product code|unattributed|no 510\(k\)|name no|cannot be attributed", re.I)
 PAGE_ANY = re.compile(r"\bpages?\s+(\d+)", re.I)
 CLEARED_ON = re.compile(r"\b(cleared|decided|decision(?: date)?|received)\b[^.;]{0,25}?\b(?:in|on|of)\s+"
                         r"((?:19|20)\d{2}(?:-\d{2}-\d{2})?)", re.I)
@@ -114,6 +115,8 @@ def count_claims(claim: str) -> list[tuple[str | None, str, int]]:
         for m in COUNT.finditer(masked):
             _all, n, noun = m.groups()
             n = int(WORDS.get(n.lower(), n))
+            if 1900 <= n <= 2100:            # "a 2024 Class I recall": a year, not a count
+                continue
             noun = noun.lower()
             kind = ("events" if noun.startswith("event") else "records" if noun.startswith("record") else
                     "recalls" if noun.startswith(("recall", "time")) else "design" if noun.startswith("design")
@@ -205,6 +208,8 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
             if rid not in known:
                 continue
             linked = ledger.recall_links.get(rid, set())
+            if not linked and UNATTRIBUTED.search(sentence):
+                continue                 # a recall that names no 510(k), described as such
             subj = _subject_before(sentence, m.start())
             between = _strip_asides(sentence[:m.start()])
             between = between[between.rfind(subj) + 7:] if subj else ""
@@ -245,8 +250,9 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
                     reasons.append(f"states an absence as settled although the evidence is not complete for "
                                    f"{open_ or 'the devices involved'}")
         if SETTLED.search(sentence):
-            open_ = sorted(k for k in (s_ks or claim_ks) if evidence_status.get(k, "unassessed") != "complete")
-            if open_ or not (s_ks or claim_ks):
+            judged = [k for k in (s_ks or claim_ks) if k in evidence_status]
+            open_ = sorted(k for k in judged if evidence_status[k] != "complete")
+            if open_ or not judged:
                 reasons.append(f"calls the evidence complete or settled, but the assessment says otherwise for "
                                f"{open_ or 'the devices involved'}")
 

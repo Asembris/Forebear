@@ -130,6 +130,8 @@ def _ledger(real):
     ("K252078 is a safe predicate choice.", ["K252078"], False, "safety"),
     ("K113053 has recalls Z-1957/58-2021.", ["K113053"], False, "written in full"),
     ("Grand-predicate K092818 (cited by K113053) has 1 recall record.", ["K092818"], True, None),
+    ("Z-1957-2021, a 2021 Class I recall, is linked to K113053.", ["Z-1957-2021", "K113053"], True, None),
+    ("Grand-predicate K082660 has recalls that cannot be ruled out as Class I.", ["K082660"], True, None),
     # skeptical-review reproductions (each was accepted before the fix)
     ("Evidence for K252078 is partial, but K113053 has no design-related recalls.", ["K113053"], False,
      "design-related recall record(s) in the graph"),
