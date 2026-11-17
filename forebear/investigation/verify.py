@@ -68,7 +68,8 @@ HUMAN_PENDING = re.compile(r"\b(needs?|awaits?|awaiting|requires?|pending|should
 SHA_ANY = re.compile(r"\b[0-9a-fA-F]{64}\b")
 CLASS_ANY = re.compile(r"\bclass (iii|ii|i)\b", re.I)
 CLASS_QUALIFIED = re.compile(r"unclassified|not classified|no (fda )?classification|unknown|mixed|some of|several "
-                             r"of|one of|among|lack|missing|ruled out|cannot be|could be|may be|whether", re.I)
+                             r"of|one of|among|lack|missing|ruled out|cannot be|could be|may be|whether|\bnone\b|"
+                             r"\bneither\b|\bnor\b", re.I)
 UNATTRIBUTED = re.compile(r"product code|unattributed|no 510\(k\)|name no|cannot be attributed", re.I)
 PAGE_ANY = re.compile(r"\bpages?\s+(\d+)", re.I)
 CLEARED_ON = re.compile(r"\b(cleared|decided|decision(?: date)?|received)\b[^.;]{0,25}?\b(?:in|on|of)\s+"

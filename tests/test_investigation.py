@@ -132,6 +132,7 @@ def _ledger(real):
     ("Grand-predicate K092818 (cited by K113053) has 1 recall record.", ["K092818"], True, None),
     ("Z-1957-2021, a 2021 Class I recall, is linked to K113053.", ["Z-1957-2021", "K113053"], True, None),
     ("Grand-predicate K082660 has recalls that cannot be ruled out as Class I.", ["K082660"], True, None),
+    ("K113053 has recall Z-1654-2022, none of them Class II.", ["Z-1654-2022"], True, None),
     ("K252078 cites K113053. The link was checked against the FDA PDF.", ["K252078"], True, None),
     ("Coverage is complete for every device in the verdict window.", ["K252078"], False, "settled"),
     # skeptical-review reproductions (each was accepted before the fix)
