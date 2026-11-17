@@ -5,7 +5,7 @@
   "MNT",
   "CBK"
  ],
- "built_at": "2026-11-17T08:48:04Z",
+ "built_at": "2026-11-17T09:04:49Z",
  "seconds": 1.9,
  "in_family_devices": 1040,
  "out_of_family_predicates": 147,
@@ -46,7 +46,8 @@
    "corrected": 6
   }
  },
- "curated_reviews_applied": "4/4",
+ "human_reviews_applied": "0/0",
+ "ai_generated_reviews_not_applied": 4,
  "recall_records_linked": 563,
  "design_related_recalls": 217,
  "recalls_without_classification": 184,

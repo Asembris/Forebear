@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -24,6 +25,27 @@ from forebear import summaries  # noqa: E402
 
 
 REVIEWS = DATA / "reviews.json"
+# A human review needs a reviewer who is a person: an explicit attestation ("human": true) and a name that is not
+# a role, tool or model.
+NOT_A_PERSON = re.compile(r"^\s*$|curat|audit|agent|\bai\b|llm|claude|gpt|gemini|nemotron|mistral|model|\bbot\b|"
+                          r"automat|script|pipeline|mcp|^\s*(user|system|admin|reviewer)\s*$", re.I)
+
+
+def load_human_reviews(path: Path = REVIEWS) -> tuple[list[dict], list[dict]]:
+    """(reviews to apply as human decisions, AI-generated decisions kept only for the record).
+
+    Raises if an entry in `reviews` does not name a person: an unattributed decision must never take the
+    human-review slot, which overrides the extraction audit in every lineage query."""
+    if not path.exists():
+        return [], []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    reviews = data.get("reviews", [])
+    for rv in reviews:
+        who = (rv.get("reviewer") or "").strip()
+        if rv.get("human") is not True or NOT_A_PERSON.search(who) or not rv.get("note"):
+            raise ValueError(f"data/reviews.json: {rv.get('src')}->{rv.get('dst')} must name the person who reviewed "
+                             f"it, attest \"human\": true and quote the evidence (reviewer={who!r})")
+    return reviews, data.get("ai_generated_not_applied", [])
 
 
 def cited_from_in_family(in_family) -> set[str]:
@@ -70,7 +92,7 @@ def _build(out: Path, codes: list[str]) -> dict:
     n_unresolved = mark_unresolved(devices, unresolved)
     recalls = fetch_recalls_for(sorted(known))
     recall_links = link_recalls(recalls, {d["k"]: d for d in devices})
-    reviews = json.loads(REVIEWS.read_text(encoding="utf-8"))["reviews"] if REVIEWS.exists() else []
+    reviews, ai_generated = load_human_reviews()
     codes_meta = []
     for code in sorted({d["product_code"] for d in devices if d["product_code"]}):
         c = openfda.classification(code) if code in codes else None
@@ -93,7 +115,7 @@ def _build(out: Path, codes: list[str]) -> dict:
         g.upsert_recalls(recalls)
         g.conn.commit()
         applied = 0
-        for rv in reviews:      # curated human decisions, versioned in data/reviews.json
+        for rv in reviews:      # human decisions, versioned in data/reviews.json (named reviewer required)
             if g.review_citation(rv["src"], rv["dst"], rv["status"], rv["note"], reviewer=rv["reviewer"]):
                 applied += 1
         g.conn.commit()
@@ -122,7 +144,8 @@ def _build(out: Path, codes: list[str]) -> dict:
         "audit": {**audit_report,
                   "edges_by_audit": {s: sum(1 for c in citations if c.get("audit") == s)
                                      for s in audit.STATUSES + ("corrected",)}},
-        "curated_reviews_applied": f"{applied}/{len(reviews)}",
+        "human_reviews_applied": f"{applied}/{len(reviews)}",
+        "ai_generated_reviews_not_applied": len(ai_generated),
         "recall_records_linked": len(recalls),
         "design_related_recalls": sum(r["design_related"] for r in recalls),
         "recalls_without_classification": sum(1 for r in recalls if not r["classification"]),

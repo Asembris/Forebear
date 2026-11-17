@@ -179,3 +179,24 @@ def test_unattributed_design_recalls_in_the_product_code_make_green_provisional(
     a = assess(tiny, "K000009")
     assert a["coverage"]["evidence"] == "partial"
     assert any(s["code"] == "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE" for s in a["signals"])
+
+
+def test_build_refuses_a_review_that_does_not_name_a_person(tmp_path):
+    from scripts.build_graph import load_human_reviews
+    p = tmp_path / "reviews.json"
+    for who in ("curated", "", "Claude", "extraction-audit", "Claude Code agent", "gpt-4o", "Curated review",
+                "user", "AI", "mcp-client"):
+        p.write_text(json.dumps({"reviews": [{"src": "K1", "dst": "K2", "status": "rejected", "reviewer": who,
+                                              "human": True, "note": "x"}]}))
+        with pytest.raises(ValueError, match="must name the person"):
+            load_human_reviews(p)
+    # a person's name without the explicit attestation is refused too
+    p.write_text(json.dumps({"reviews": [{"src": "K1", "dst": "K2", "status": "rejected", "reviewer": "Jane Doe, RA",
+                                          "note": "checked p4"}]}))
+    with pytest.raises(ValueError, match="must name the person"):
+        load_human_reviews(p)
+    p.write_text(json.dumps({"reviews": [{"src": "K1", "dst": "K2", "status": "rejected", "reviewer": "Jane Doe, RA",
+                                          "human": True, "note": "checked p4"}],
+                             "ai_generated_not_applied": [{"src": "K3", "dst": "K4"}]}))
+    reviews, ai = load_human_reviews(p)
+    assert [r["reviewer"] for r in reviews] == ["Jane Doe, RA"] and len(ai) == 1

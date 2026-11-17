@@ -51,15 +51,18 @@ def test_recall_reach_of_philips_foam_recall(client):
     after = {d["k"] for d in r["descendants"] if d["after_recall"]}
     assert {"K252078", "K251770", "K212263"} <= after and len(after) == 7
     both = client.get("/api/recall-event/88058,88071").json()   # the same Philips recall, two openFDA events
-    # Phase 1: 19 -> 22 descendants. K183226 (cites K083526 only as a reference device) leaves; K112754,
-    # K120726, K130171, K122715 (Trilogy 100 rows recovered from predicate tables / OCR) join.
-    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 22
+    # Phase 1: 19 -> 25 descendants. K183226 (cites K083526 only as a reference device) leaves; K112754,
+    # K120726, K130171, K122715 (Trilogy 100 rows recovered from predicate tables / OCR) join; and K120562,
+    # K120639, K151120 cite K093416 (Trilogy 200), whose earlier AI-generated rejections are no longer applied
+    # as human reviews (the links are audit-unresolved, so they count and are flagged).
+    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 25
+    assert {"K120562", "K120639", "K151120"} <= {d["k"] for d in both["descendants"]}
     assert sum(d["after_recall"] for d in both["descendants"]) == 8
 
 
 def test_watchlist_and_compare(client):
     w = client.get("/api/watchlist").json()
-    assert w["count"] == 114 and w["direct"] == 66          # Phase 1: recovered/OCR edges (was 106/62)
+    assert w["count"] == 117 and w["direct"] == 69          # Phase 1: recovered/OCR edges, K093416 links (was 106/62)
     rows = client.post("/api/compare", json={"ks": ["K200480", "K113053", "K999999"]}).json()
     v = {r["k"]: r.get("verdict") for r in rows}
     assert v == {"K200480": "REVIEW_LINEAGE", "K113053": "DESIGN_RECALL_ON_FILE", "K999999": None}
@@ -98,11 +101,14 @@ def test_search_limit_is_validated(client):
 
 
 def test_curated_reviews_and_name_flags_are_in_the_shipped_store(client):
+    # The earlier 'curated' rejections were AI-generated, not human: they no longer occupy the human-review
+    # field. K120562 -> K093416 is audit-unresolved, stays in the lineage and is flagged as doubtful.
     cits = {c["dst"]: c for c in client.get("/api/device/K120562").json()["citations"]}
-    assert cits["K093416"]["review"] == "rejected" and cits["K093416"]["reviewer"] == "curated"
+    assert cits["K093416"]["review"] is None and cits["K093416"]["reviewer"] is None
+    assert cits["K093416"]["audit"] == "unresolved" and "not human" in cits["K093416"]["audit_by"]
     assert cits["K093416"]["name_check"] == "mismatch"          # 'Profile Lite' text vs Trilogy 200 record
     a = client.get("/api/assess/K120562").json()
-    assert "K093416" not in {x["k"] for x in a["ancestors"]}
+    assert "K093416" in {x["k"] for x in a["ancestors"] if x["gen"] == 1}
     # the Airvo 3 reference-table edge is a reference, not a predicate
     airvo = {c["dst"]: c["kind"] for c in client.get("/api/device/K233643").json()["citations"]}
     assert airvo["K121623"] == "reference"
@@ -113,10 +119,11 @@ def test_flagged_links_in_lineage_are_surfaced(client):
     # says the mask was added in that clearance, so the audit keeps it as a variant (no longer a doubt).
     a = client.get("/api/assess/K120562").json()
     assert "K092043" in {x["k"] for x in a["ancestors"] if x["gen"] == 1}
-    # K120562 -> K093416 is still rejected by the curated review, and is reported as a missing predicate
-    sig = next(s for s in a["signals"] if s["code"] == "PREDICATE_CITATION_UNRESOLVED")
-    assert any(e["cited"] == "K093416" and e["reason"] == "rejected_by_reviewer" for e in sig["evidence"])
-    assert a["verdict_reason"].startswith("Provisional")
+    # K120562 -> K093416 is disputed (audit 'unresolved'): it counts, but as uncertain evidence, and the
+    # Trilogy 200's design recalls are shown rather than dropped by a supposed human rejection
+    sig = next(s for s in a["signals"] if s["code"] == "UNCERTAIN_LINK_IN_LINEAGE")
+    assert any(e["dst"] == "K093416" and "audit_unresolved" in e["doubt"] for e in sig["evidence"])
+    assert a["verdict"] == "REVIEW_LINEAGE" and a["coverage"]["evidence"] != "complete"
     # an unresolved audit link is surfaced on the lineage it sits in
     b = client.get("/api/assess/K040944").json()
     assert any(s["code"] == "UNCERTAIN_LINK_IN_LINEAGE" for s in b["signals"])

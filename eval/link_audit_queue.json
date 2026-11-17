@@ -203,7 +203,7 @@
    "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120562.pdf",
    "quote": ") Respironics Small Child Profile Lite Nasal Mask (K(093416) Device Description PerforMax Pediatric EE Total Face Mask is intended to provide an interface for",
    "decision": "unresolved",
-   "note": "Text p1 'Respironics Small Child Profile Lite Nasal Mask (K093416)'. openFDA K093416 is the TRILOGY 200 VENTILATOR. Respironics' own K151120 cites 'Profile Lite Small Child (K093416)' as a secondary predicate on six pages and 'Trilogy 200 (K093416)' as a reference device, so the mask may have been cleared inside the Trilogy 510(k); the cached K093416 summary does not mention it. Changed after review from 'error'. Conflicts with the curated rejection in data/reviews.json, which still applies until a person re-checks it.",
+   "note": "Text p1 'Respironics Small Child Profile Lite Nasal Mask (K093416)'. openFDA K093416 is the TRILOGY 200 VENTILATOR. Respironics' own K151120 cites 'Profile Lite Small Child (K093416)' as a secondary predicate on six pages and 'Trilogy 200 (K093416)' as a reference device, so the mask may have been cleared inside the Trilogy 510(k); the cached K093416 summary does not mention it. Changed after review from 'error'. The earlier AI-generated 'curated' rejection of this link (data/reviews.json) is kept for the record but no longer applied.",
    "suggestion": "needs review"
   },
   {
@@ -215,7 +215,7 @@
    "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120639.pdf",
    "quote": ") Respironics Small Child Profile Lite Nasal Mask (K093416) Device Description The PerforMax Pediatric SE Total Face Mask is intended to provide a patient int",
    "decision": "unresolved",
-   "note": "Text p1 'Respironics Small Child Profile Lite Nasal Mask (K093416)'. See K120562 -> K093416. Changed after review from 'error'; conflicts with the curated rejection in data/reviews.json.",
+   "note": "Text p1 'Respironics Small Child Profile Lite Nasal Mask (K093416)'. See K120562 -> K093416. Changed after review from 'error'; the earlier AI-generated 'curated' rejection is no longer applied.",
    "suggestion": "needs review"
   },
   {
@@ -227,7 +227,7 @@
    "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf15/K151120.pdf",
    "quote": "Manufacturer: Respironics, Inc. Secondary Predicate: Device: Profile Lite Small Child K093416 Manufacturer: Respironics, Inc. Subject Device: Device: Simple T Pediatric Nasal Mask Ma",
    "decision": "unresolved",
-   "note": "Text p4 'Respironics Profile Lite Small Child (K093416) Respironics Trilogy 200 (K093416)', p6 'Secondary Predicate: Device: Profile Lite Small Child K093416'. The firm's own summary uses K093416 for both the mask (secondary predicate) and the Trilogy 200 (reference device); see K120562 -> K093416. Changed after review from 'not_predicate'; conflicts with the curated rejection in data/reviews.json.",
+   "note": "Text p4 'Respironics Profile Lite Small Child (K093416) Respironics Trilogy 200 (K093416)', p6 'Secondary Predicate: Device: Profile Lite Small Child K093416'. The firm's own summary uses K093416 for both the mask (secondary predicate) and the Trilogy 200 (reference device); see K120562 -> K093416. Changed after review from 'not_predicate'; the earlier AI-generated 'curated' rejection is no longer applied.",
    "suggestion": "needs review"
   },
   {

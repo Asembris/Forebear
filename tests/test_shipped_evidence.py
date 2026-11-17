@@ -105,3 +105,21 @@ def test_corrected_edges_are_never_counted_as_fully_verified(shipped):
     hop = next(x for x in a["ancestors"] if x["k"] == "K013909")["hops"][0]
     assert hop["audit"] == "corrected"
     assert a["coverage"]["evidence"] != "complete"
+
+
+def test_no_ai_decision_occupies_the_human_review_field(shipped):
+    rows = shipped.q("MATCH ()-[r:CITES]->() WHERE r.review IS NOT NULL RETURN r.reviewer AS who, count(*) AS n")
+    assert rows == []                                   # no named person has reviewed any edge yet
+    for src in ("K120562", "K120639", "K151120"):
+        c = next(c for c in shipped.direct_citations(src) if c["dst"] == "K093416")
+        assert c["audit"] == "unresolved" and c["review"] is None
+        assert "K093416" in {x["k"] for x in shipped.ancestors(src, 1)}
+
+
+def test_reviews_file_keeps_the_ai_decisions_for_the_record_only():
+    data = json.loads((ROOT / "data" / "reviews.json").read_text(encoding="utf-8"))
+    assert data["reviews"] == []
+    kept = {(x["src"], x["dst"]): x for x in data["ai_generated_not_applied"]}
+    assert set(kept) == {("K120562", "K093416"), ("K120639", "K093416"), ("K151120", "K093416"), ("K092835", "K991646")}
+    for x in kept.values():
+        assert x["applied_as_human_review"] is False and "AI-generated" in x["provenance"] and x["note"]
