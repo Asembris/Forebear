@@ -86,8 +86,36 @@ def ocr_pdf_bytes(data: bytes, engine=None, meta: dict | None = None) -> dict:
     return {"pages": pages, "page_confidence": conf, "page_boxes": boxes, **(meta or {})}
 
 
+def attachment_text(data: bytes) -> dict | None:
+    """Some FDA "summaries" are PDF Portfolios: the visible page only says to open the portfolio in
+    Acrobat, and the real 510(k) summary is an embedded PDF. If an attachment whose name mentions the
+    summary has a text layer, return its text (no OCR needed) with the attachment's name and SHA-256."""
+    from importlib.metadata import version
+
+    from pypdf import PdfReader
+    try:
+        attachments = PdfReader(io.BytesIO(data)).attachments
+    except Exception:  # no attachment table, or an unreadable one
+        return None
+    for name in sorted(attachments):
+        if "summary" not in name.lower():
+            continue
+        for blob in attachments[name]:
+            if blob[:4] != b"%PDF":
+                continue
+            try:
+                pages = [p.extract_text() or "" for p in PdfReader(io.BytesIO(blob)).pages]
+            except Exception:  # encrypted or malformed attachment
+                continue
+            if sum(len(p.strip()) for p in pages) > 200:
+                return {"pages": pages, "engine": "pypdf-embedded-attachment", "engine_version": version("pypdf"),
+                        "attachment": name, "attachment_sha256": hashlib.sha256(blob).hexdigest()}
+    return None
+
+
 def run(summary: dict, client, engine=None, meta: dict | None = None) -> dict:
-    """OCR one no_text summary record. Returns the record written to data/raw/ocr/{K}.json."""
+    """Recover the text of one no_text summary record: from an embedded summary PDF if the file is a
+    portfolio, otherwise by OCR. Returns the record written to data/raw/ocr/{K}.json."""
     k = summary["k"]
     out = {"k": k, "source_url": summary.get("url"), "source_sha256": summary.get("sha256"),
            "ocr_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "status": "download_failed",
@@ -105,6 +133,10 @@ def run(summary: dict, client, engine=None, meta: dict | None = None) -> dict:
     if summary.get("sha256") and sha != summary["sha256"]:
         out.update(status="sha_mismatch", downloaded_sha256=sha,
                    error="FDA now serves different bytes than the summary record describes; not OCR'd")
+        return out
+    att = attachment_text(data)
+    if att:                         # a PDF Portfolio: the summary is an embedded PDF with a text layer
+        out.update(att, status="attachment_text", low_confidence_pages=[])
         return out
     try:
         res = ocr_pdf_bytes(data, engine, meta)

@@ -41,3 +41,21 @@ def test_ocr_line_grouping_keeps_table_rows_together():
     text, conf, n = ocr._lines(boxes)
     assert text.splitlines() == ["Predicate Device(s) BiPAP Duet (K000994)", "Reason for submission"]
     assert n == 3 and conf > 0.9
+
+
+def test_pdf_portfolio_summary_is_read_from_its_embedded_attachment():
+    import io
+
+    from pypdf import PdfWriter
+    inner = PdfWriter()
+    inner.add_blank_page(612, 792)
+    buf = io.BytesIO()
+    inner.write(buf)
+    outer = PdfWriter()
+    outer.add_blank_page(612, 792)
+    outer.add_attachment("K163127.510kSummary.Final.pdf", buf.getvalue())
+    out = io.BytesIO()
+    outer.write(out)
+    # a blank embedded page has no text layer: nothing is recovered, so OCR would run instead
+    assert ocr.attachment_text(out.getvalue()) is None
+    assert ocr.attachment_text(b"%PDF-1.4 not really a pdf") is None
