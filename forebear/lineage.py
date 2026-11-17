@@ -39,6 +39,8 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     descendants = g.descendants(k, 3)
     signals: list[dict] = []
 
+    pc = dev.get("product") or {}
+
     # D: the candidate's own recalls (one signal, all recalls as evidence)
     own = sorted(dev["recalls"], key=lambda x: x.get("initiated") or "", reverse=True)
     if own:
@@ -128,7 +130,6 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                         "evidence": missing[:20], "chain": []})
 
     # R: recalls filed under the candidate's product code that name no 510(k): no lineage query sees them
-    pc = dev.get("product") or {}
     if pc.get("unattributed_design_recalls_n"):
         un = [u for u in json.loads(pc.get("unattributed_recalls") or "[]") if u.get("design_related")]
         signals.append({"code": "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE", "severity": "info",
@@ -143,12 +144,23 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                         "title": f"{len(recalled_desc)} of {len(descendants)} later devices citing this lineage "
                                  f"(≤3 generations) have recalls", "evidence": [], "chain": []})
 
+    # U2: recalls whose cause or class is unknown cannot be ruled out as design-related / Class I
+    unknown_recalls = [(0, x) for x in own if recall_unknown(x, 0)] + \
+              [(a["gen"], x) for a in ancestors if a["gen"] <= 2 for x in a["recalls"] if recall_unknown(x, a["gen"])]
+    if unknown_recalls:
+        signals.append({"code": "RECALL_CAUSE_OR_CLASS_UNKNOWN", "severity": "info",
+                        "title": f"{len(unknown_recalls)} recall record(s) on the candidate or its direct/grand-predicates have no "
+                                 f"stated root cause or no FDA classification, so they cannot be ruled out as design-related "
+                                 f"or Class I", "evidence": [_recall_ev(x) | {"gen": g} for g, x in unknown_recalls[:12]],
+                        "chain": []})
+
     # Evidence completeness: keeps a green result from resting on evidence we could not verify.
     trusted_gen1 = [a for a in gen1 if not doubt(a["hops"][0])]
     gen1_unread = [a for a in gen1 if not a.get("lineage_known")]
     if gen1 and not trusted_gen1:
         evidence = "uncertain"
-    elif missing or gen1_unread or any(d["gen"] <= 2 for d in doubtful):
+    elif missing or gen1_unread or any(d["gen"] <= 2 for d in doubtful) or unknown_recalls or \
+            pc.get("unattributed_design_recalls_n"):
         evidence = "partial"
     else:
         evidence = "complete" if ancestors else "none"
@@ -208,6 +220,8 @@ def doubt(h: dict) -> list[str]:
     why = []
     if h.get("audit") == "unresolved":
         why.append("audit_unresolved")
+    if h.get("audit") == "corrected":         # the K-number was supplied by the audit, not printed in the PDF
+        why.append("audit_correction")
     if h.get("name_check") == "mismatch" and h.get("audit") not in ("variant", "corrected"):
         why.append("name_mismatch")
     if h.get("panel_check") == "different" and h.get("audit") not in ("variant", "corrected"):
@@ -215,6 +229,19 @@ def doubt(h: dict) -> list[str]:
     if h.get("kind") not in (None, "predicate") and h.get("ai_label") == "predicate":
         why.append("llm_label_only")
     return why
+
+
+UNKNOWN_CAUSES = ("", "other", "under investigation by firm", "unknown/undetermined by firm")
+
+
+def recall_unknown(x: dict, gen: int) -> bool:
+    """A recall that the severity rules cannot classify: not known to be design-related and either its root
+    cause is missing/unspecific, or (on the candidate or a direct predicate, where Class I alone matters)
+    FDA's classification is missing."""
+    if x.get("design_related"):
+        return False
+    cause = (x.get("root_cause") or "").strip().lower()
+    return cause in UNKNOWN_CAUSES or (gen <= 1 and not x.get("classification"))
 
 
 def _missing_predicates(g: Graph, d: dict) -> list[dict]:

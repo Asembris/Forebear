@@ -65,6 +65,7 @@ def test_doubt_rules():
     assert doubt({"audit": "unresolved", "review": "confirmed"}) == []
     assert doubt({"kind": "mention", "ai_label": "predicate"}) == ["llm_label_only"]
     assert doubt({"panel_check": "different"}) == ["different_fda_panel"]
+    assert doubt({"audit": "corrected", "name_check": "match"}) == ["audit_correction"]
 
 
 def test_uncertain_only_predicate_link_is_not_green(tiny):
@@ -155,3 +156,26 @@ def test_reingest_keeps_human_review_and_reapplies_the_audit(tiny, monkeypatch):
     assert cits["K000003"]["review"] == "rejected" and cits["K000003"]["reviewer"] == "person"
     a = assess(tiny, "K261000")
     assert a["coverage"]["evidence"] == "uncertain"             # its only remaining predicate link is unresolved
+
+
+def test_recall_with_unknown_cause_or_class_makes_a_green_result_provisional(tiny):
+    assert assess(tiny, "K000009")["coverage"]["evidence"] == "complete"
+    tiny.upsert_recalls([{**recall("Z-0100-2010", ["K000001"], "2010-01-01", design=False, cls=None),
+                          "root_cause": "Other"}])
+    a = assess(tiny, "K000009")
+    assert a["verdict"] == "NO_DESIGN_RECALL_SIGNAL" and a["verdict_reason"].startswith("Provisional")
+    assert any(s["code"] == "RECALL_CAUSE_OR_CLASS_UNKNOWN" for s in a["signals"])
+
+
+def test_known_non_design_classified_recall_does_not_lower_completeness(tiny):
+    tiny.upsert_recalls([recall("Z-0101-2010", ["K000001"], "2010-01-01", design=False, cls="Class II")])
+    assert assess(tiny, "K000009")["coverage"]["evidence"] == "complete"
+
+
+def test_unattributed_design_recalls_in_the_product_code_make_green_provisional(tiny):
+    tiny.upsert_product_codes([{"code": "BZD", "name": "CPAP", "device_class": "2", "regulation": "868.5905",
+                                "unattributed_recalls": json.dumps([{"id": "Z-9", "design_related": True}]),
+                                "unattributed_recalls_n": 1, "unattributed_design_recalls_n": 1}])
+    a = assess(tiny, "K000009")
+    assert a["coverage"]["evidence"] == "partial"
+    assert any(s["code"] == "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE" for s in a["signals"])

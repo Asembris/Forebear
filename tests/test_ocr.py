@@ -59,3 +59,23 @@ def test_pdf_portfolio_summary_is_read_from_its_embedded_attachment():
     # a blank embedded page has no text layer: nothing is recovered, so OCR would run instead
     assert ocr.attachment_text(out.getvalue()) is None
     assert ocr.attachment_text(b"%PDF-1.4 not really a pdf") is None
+
+
+def test_ocr_is_never_used_when_no_sha256_was_recorded(tmp_path, monkeypatch):
+    monkeypatch.setattr(summaries, "SUMMARY_CACHE", tmp_path / "s")
+    monkeypatch.setattr(ocr, "OCR_CACHE", tmp_path / "o")
+    (tmp_path / "s").mkdir()
+    (tmp_path / "o").mkdir()
+    (tmp_path / "s" / "K1.json").write_text(json.dumps({"k": "K1", "status": "no_text", "sha256": None, "pages": [""]}))
+    (tmp_path / "o" / "K1.json").write_text(json.dumps({"k": "K1", "status": "ocr_ok", "source_sha256": None,
+                                                        "pages": ["Predicate: X (K000994)"]}))
+    assert summaries.load_text("K1") is None
+
+    class Resp:
+        status_code = 200
+        content = b"%PDF-1.4 bytes"
+
+    class Client:
+        def get(self, url):
+            return Resp()
+    assert ocr.run({"k": "K1", "url": "u", "sha256": None}, Client(), engine=object(), meta={})["status"] == "sha_mismatch"

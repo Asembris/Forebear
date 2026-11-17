@@ -130,7 +130,7 @@ def run(summary: dict, client, engine=None, meta: dict | None = None) -> dict:
         out["error"] = f"HTTP {r.status_code}, not a PDF"
         return out
     sha = hashlib.sha256(data).hexdigest()
-    if summary.get("sha256") and sha != summary["sha256"]:
+    if not summary.get("sha256") or sha != summary["sha256"]:
         out.update(status="sha_mismatch", downloaded_sha256=sha,
                    error="FDA now serves different bytes than the summary record describes; not OCR'd")
         return out

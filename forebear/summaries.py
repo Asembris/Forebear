@@ -54,7 +54,8 @@ def load_text(k: str) -> dict | None:
         return None
     from . import ocr
     o = ocr.load(k)
-    if not o or o.get("status") not in ("ocr_ok", "attachment_text") or o.get("source_sha256") != rec.get("sha256"):
+    if (not o or o.get("status") not in ("ocr_ok", "attachment_text") or not rec.get("sha256")
+            or o.get("source_sha256") != rec["sha256"]):
         return None
     meta = {key: o.get(key) for key in ("engine", "engine_version", "dpi", "page_confidence",
                                         "low_confidence_pages", "ocr_at", "attachment", "attachment_sha256")}
