@@ -23,6 +23,8 @@ K_RE = re.compile(r"^K\d{6}$")
 RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
 EVENT_RE = re.compile(r"^\d{4,7}$")
 MAX_RESULT_CHARS = 7000
+UNTRUSTED_KEYS = {"quote", "snippet", "reason", "product", "audit_note", "untrusted_quote", "untrusted_reason",
+                  "untrusted_product", "untrusted_excerpt", "summary_url", "source_url", "url", "note", "name", "dst_name", "applicant", "firm"}
 MAX_PROPOSALS = 6
 # Phrases that try to steer a model, found inside FDA text returned by a tool. They are flagged, never obeyed.
 INJECTION_RE = re.compile(r"ignore (all |any )?(previous|prior|above) (instructions|rules)|disregard (the )?"
@@ -45,34 +47,43 @@ class Ledger:
     verified: dict[tuple, dict] = field(default_factory=dict)         # (src, dst) -> verify_citation result
     events: set = field(default_factory=set)
     assessments: dict[str, dict] = field(default_factory=dict)        # k -> compact assessment (latest)
-    numbers: set = field(default_factory=set)
+    numbers: set = field(default_factory=set)                         # from trusted (non-document) fields only
+    dates: set = field(default_factory=set)                           # YYYY-MM-DD values in trusted fields
     hashes: set = field(default_factory=set)                          # SHA-256 values a tool returned
     injection_flags: list = field(default_factory=list)
 
     def known_ids(self) -> set[str]:
         return set(self.devices) | set(self.recalls)
 
-    def absorb_numbers(self, obj: Any) -> None:
-        if isinstance(obj, bool) or obj is None:
+    def absorb_numbers(self, obj: Any, key: str = "") -> None:
+        """Numbers and dates the tools stated themselves. Document text (untrusted_*, quotes, snippets, reasons,
+        product text, notes) and URLs are skipped: a number there is not a fact the graph asserts. Identifiers
+        are removed first so their digits do not count as numbers."""
+        if isinstance(obj, bool) or obj is None or key.startswith("untrusted") or key in UNTRUSTED_KEYS:
             return
         if isinstance(obj, (int, float)):
             if float(obj).is_integer():
                 self.numbers.add(str(int(obj)))
         elif isinstance(obj, str):
-            for n in re.findall(r"\d+", obj):
+            self.dates.update(re.findall(r"\b(?:19|20)\d{2}-\d{2}-\d{2}\b", obj))
+            s = re.sub(r"\bZ-\d{4}-\d{4}\b|\bK\d{6}\b|\b(?:19|20)\d{2}-\d{2}-\d{2}\b|\b[0-9a-f]{64}\b", " ", obj)
+            for n in re.findall(r"\d+", s):
                 self.numbers.add(str(int(n)))
+            for d in re.findall(r"\b((?:19|20)\d{2})-(\d{2})-(\d{2})\b", obj):    # a date's year stands alone too
+                self.numbers.add(str(int(d[0])))
         elif isinstance(obj, dict):
-            for v in obj.values():
-                self.absorb_numbers(v)
+            for k, v in obj.items():
+                self.absorb_numbers(v, str(k))
         elif isinstance(obj, (list, tuple, set)):
             for v in obj:
-                self.absorb_numbers(v)
+                self.absorb_numbers(v, key)
 
     def see_device(self, d: dict) -> None:
         if d and d.get("k"):
             cur = self.devices.setdefault(d["k"], {})
             cur.update({k: v for k, v in d.items() if v is not None and k in
-                        ("k", "name", "applicant", "decision_date", "summary_status", "lineage_known")})
+                        ("k", "name", "applicant", "decision_date", "received_date", "summary_status",
+                         "lineage_known")})
 
     def see_recall(self, x: dict, k: str | None = None) -> None:
         if not x or not x.get("id"):
@@ -160,6 +171,8 @@ def compact_assessment(a: dict, ctx: RunContext | None = None) -> dict:
             sig["unresolved"] = [{"src": e["src"], "cited": e["cited"], "reason": e.get("reason")} for e in unres][:10]
             if ctx:
                 for e in unres:
+                    ctx.ledger.see_device({"k": e["src"]})
+                    ctx.ledger.see_device({"k": e["cited"]})
                     ctx.ledger.see_citation(e["src"], e["cited"], {"in_lineage": False, "unresolved": e.get("reason"),
                                                                     "page": e.get("page")})
         if dev:
@@ -172,6 +185,7 @@ def compact_assessment(a: dict, ctx: RunContext | None = None) -> dict:
                 ctx.ledger.see_recall(e, holder if s.get("code") in ("ANCESTOR_RECALL", "DIRECT_RECALL") else None)
             for e in cit:
                 ctx.ledger.see_citation(e["src"], e["dst"], {"page": e.get("page"), "in_lineage": True,
+                                                              "provenance": _provenance(e),
                                                               "doubt": e.get("doubt") or doubt(e)})
     d = a["device"]
     if ctx:
@@ -180,7 +194,7 @@ def compact_assessment(a: dict, ctx: RunContext | None = None) -> dict:
             ctx.ledger.see_device(x)
             for h in x["hops"]:
                 ctx.ledger.see_citation(h["src"], h["dst"], {"page": h.get("page"), "in_lineage": True,
-                                                              "doubt": doubt(h)})
+                                                              "doubt": doubt(h), "provenance": _provenance(h)})
     return {"k": a["k"], "name": d.get("name"), "applicant": d.get("applicant"),
             "decision_date": d.get("decision_date"), "verdict": a["verdict"], "verdict_reason": a["verdict_reason"],
             "generations": a["depth"], "coverage": a["coverage"], "signals": out_signals,
@@ -241,6 +255,7 @@ def t_list_citations(g: Graph, args: dict, ctx: RunContext) -> dict:
         why = doubt(r) if r["in_lineage"] else []
         ctx.ledger.see_device({"k": r["dst"], "name": r["dst_name"], "decision_date": r["dst_decision_date"]})
         ctx.ledger.see_citation(k, r["dst"], {"page": r["page"], "kind": r["kind"], "in_lineage": r["in_lineage"],
+                                              "provenance": _provenance(r),
                                               "audit": r["audit"], "review": r["review"], "doubt": why})
         _flag_injection(ctx, f"citation {k}->{r['dst']}", r["quote"], r["snippet"], r["audit_note"])
         out.append({"dst": r["dst"], "dst_name": r["dst_name"], "dst_decision_date": r["dst_decision_date"],
@@ -274,7 +289,8 @@ def t_trace_ancestry(g: Graph, args: dict, ctx: RunContext) -> dict:
     for a in anc:
         ctx.ledger.see_device(a)
         for h in a["hops"]:
-            ctx.ledger.see_citation(h["src"], h["dst"], {"page": h.get("page"), "in_lineage": True, "doubt": doubt(h)})
+            ctx.ledger.see_citation(h["src"], h["dst"], {"page": h.get("page"), "in_lineage": True, "doubt": doubt(h),
+                                                          "provenance": _provenance(h)})
         for x in a["recalls"]:
             ctx.ledger.see_recall(x, a["k"])
         out.append({"k": a["k"], "name": a.get("name"), "gen": a["gen"], "chain": a["chain"],
@@ -390,7 +406,8 @@ def t_verify_citation(g: Graph, args: dict, ctx: RunContext) -> dict:
     ctx.ledger.verified[(src, dst)] = v
     if v.get("source_sha256") and (v.get("checks") or {}).get("sha256_matches_edge"):
         ctx.ledger.hashes.add(v["source_sha256"].lower())
-    ctx.ledger.see_citation(src, dst, {"page": v["page"], "in_lineage": v["in_lineage"], "kind": v["kind"]})
+    ctx.ledger.see_citation(src, dst, {"page": v["page"], "in_lineage": v["in_lineage"], "kind": v["kind"],
+                                       "provenance": v.get("provenance")})
     ctx.ledger.see_device({"k": src})
     ctx.ledger.see_device({"k": dst})
     ctx.examined.update({src, dst})
@@ -451,6 +468,8 @@ def t_coverage_gaps(g: Graph, args: dict, ctx: RunContext) -> dict:
     for e in r["doubtful_links"]:
         ctx.ledger.see_citation(e["src"], e["dst"], {"in_lineage": True, "doubt": e["doubt"]})
     for e in r["unresolved_predicate_citations"]:
+        ctx.ledger.see_device({"k": e["src"]})
+        ctx.ledger.see_device({"k": e["cited"]})
         ctx.ledger.see_citation(e["src"], e["cited"], {"in_lineage": False, "unresolved": e.get("reason"),
                                                         "page": e.get("page")})
     for x in r["recalls_with_unknown_cause_or_class"]:
@@ -602,7 +621,46 @@ def run_tool(g: Graph, name: str, args: Any, ctx: RunContext) -> tuple[bool, dic
     except ToolError as e:
         return False, {"error": str(e)}
     ctx.ledger.absorb_numbers(res)
+    _screen(ctx, name, res)
     return True, res
+
+
+def _screen(ctx: RunContext, where: str, obj: Any) -> None:
+    """Flag instruction-like text anywhere in a result (names, firms, titles included), once per string."""
+    if isinstance(obj, str):
+        t = untrusted(obj, 160)
+        if INJECTION_RE.search(obj) and not any(f["text"] == t for f in ctx.ledger.injection_flags):
+            ctx.ledger.injection_flags.append({"where": where, "text": t})
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            _screen(ctx, where, v)
+    elif isinstance(obj, (list, tuple)):
+        for v in obj:
+            _screen(ctx, where, v)
+
+
+def canonical_args(name: str, args: Any) -> str:
+    """A call in the form the tools normalise it to, so 'k113053' and 'K113053', or generations 4 and '4', and an
+    omitted default count as the same call."""
+    if not isinstance(args, dict):
+        return name + json.dumps(args, sort_keys=True, default=str)
+    out = {}
+    for k, v in args.items():
+        if k in ("reason", "summary", "findings", "open_questions"):
+            out[k] = v
+        elif isinstance(v, str):
+            out[k] = v.strip().upper()
+        elif isinstance(v, list):
+            out[k] = [x.strip().upper() if isinstance(x, str) else x for x in v]
+        else:
+            out[k] = v
+    default = {"check_predicate": 4, "coverage_gaps": 4, "compare_predicates": 4, "trace_ancestry": 3}.get(name)
+    if "generations" in out or default:
+        try:
+            out["generations"] = max(1, min(int(out.get("generations", default)), 6))
+        except (TypeError, ValueError):
+            pass
+    return name + json.dumps(out, sort_keys=True, default=str)
 
 
 def to_message(result: dict) -> str:
