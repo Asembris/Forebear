@@ -1,0 +1,31 @@
+{
+"k": "K990659",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K990659.pdf",
+"source_sha256": "a66ce83dac1f9d53c6d638a73b73fdc1b8efa566d169960e231bed6950f42276",
+"ocr_at": "2026-11-17T08:26:43Z",
+"status": "ocr_ok",
+"pages": [
+"K990659\nBreathingTechnologies:Summary NOV 2 6 1999\nX1.  510(K) Summary\n510(K) SUMMARY OF SAFETY AND EFFECTIVENESS\nSubmitted By: Breathing Technologies Corp. Date Prepared: November 16, 1999\n1909 Tebeau Street\nWaycross, GA 31501\nTelephone: 912-285-0576\nE-mail: btech@accessatc.net\nContact Person: Tom Wood, CEO\nDevice Name: Ventiator accessory mask,\nVentilator nasal mask\nVentilator nasal insert\n(common names)\nVentilator Accessory\n(classificationnames)\nNasal-AireTM\n(proprietarytradename)\nPredicate Device: The Monarch? Mini Mask manufactured by Respironics, Inc.\nCleared for market by510(k) #K945938\nIndications for Use and Description of Subject Devlce:\nNasal-Aire is intended for use as an accessory to respiratory ventilators. Nasal-Aire is a nasal insert with\nattached tubing for connection with non-continuousventilation devices. The simplicity of the Nasal-Aire\ndesign allows easy manipulation of the device. Soft, pliable silicone is used for the nasal insert portion of\nthe device facilitates a comfortable fit of the devicewhen in use.Ventilation is indicated for patientswho\nrequire mechanical assistance with breathing.\nThe device consists of a hollow silicone elastomer under nosestrip with molded nasal insert sleeves\nelastomer \"Y\" coupling. The system is completed by the leg of the \"Y\" coupling connected to an adapter\nstrip is positioned across the patient's upper lip and the silicone nasal inserts are inserted in the patient's\nnares. The tubing drapes over the patient's ears in the manner of standard nasal cannulae used for\ngases during clinical use. In vivo tests with healthy subjects ventilated with up to 2 Liters at inspiration\neffectivenessofthedevice,\nThematerialsofwhichthedevice ismanufactured are all standard medical grademateriaiswith an\nmaterials used in the device arespecified tomeet thebiocompatibilityrequirements identified in the\n   (           \nmembrane contact.",
+"DEPARTMENTOFHEALTH&HUMANSERVICES Public Health Service\nFood and Drug Administration\n9200 Corporate Boulevard\nRockville MD 20850\nNOV 2 61999\nMr. Tom Wood\nBreathing Technologies, Corp.\n1909 TebeauStreet\nWaycross, GA 31501\nRe: K990659\nNasal-Aire\nRegulatory Class: II (two)\nProduct Code:73 BZD\nDated:Undated\nReceived: September 16, 1999\nDear Mr. Wood:\nWe have reviewed your Section 5lo(k) notification of intent to market\nthe device referenced above and we have determined the device is\nenclosure)to legally marketed predicate devices marketed in\ninterstate commerce prior to May 28, 1976, the enactment date of the\nMedical Device Amendments, or to devices that have been reclassified\nin accordance with the provisions of the Federal Food, Drug, and\nCosmetic Act (Act). You may, therefore, market the device, subject to\nthe general controls provisions of the Act.The general controls\nprovisions of the Act include requirements for annual registration,\nlisting of devices, good manufacturing practice, labeling, and\nprohibitions against misbranding and adulteration.\nIf your device is classified (see above) into either class II (Special\nControls) or class III (Premarket Approval), it may be subject to such\nadditional controls.E Existing major regulations affecting your device\ncan be found in the Code of Federal Regulations, Title 2l, Parts 800\nto 895.  A substantially equivalent determination assumes compliance\nwith the Current Good Manufacturing Practice requirements, as set\n   (      \nGeneral regulation (21 CFR Part 820) and that, through periodic QS\ninspections, the Food and Drug Administration (FDA) will verify such\nassumptions. Failure to comply with the GMP regulation may result in\nregulatory action. In addition, FDA may publish further announcements\nconcerning your device in the Federal Register.1 Please note: this\nobligation you might have under sections 531 through 542 of the Act\nfor devices under the Electronic Product Radiation Control provisions,\nor other Federal laws or regulations.",
+"Page 2 - Mr. Tom Wood\n     r \nin your 510(k) premarket notification. T The FDA findingof substantial\nresults in a classification for your device and thus, permits your\ndevice to proceed to the market.\ne   o  o oe o  o \n  1        \ndiagnostic devices), please contact the Office of Compliance at\n(301) 594-4648. Additionally, for questions on the promotion and\nadvertising of your device, please contact the Office of Compliance at\n(301) 594-4639.) Also, please note the regulation entitled,\n\"Misbranding by reference to premarket notification\"(21 CFR 807.97).\nOther general information on your responsibilities under the Act may\nbe obtained from the Division of Small Manufacturers Assistance at its\ntol1-free number (800) 638-2041 or (301) 443-6597, or at its internet\naddress \"http://www.fda.gov/cdrh/dsma/dsmamain.html\".\nSincerely yours Cual(.Caxey\nCelia M. Witten, Ph.D., M.D.\nActing Director\nDivision of Cardiovascular,\nRespiratory, and Neurological Devices\nOffice of Device Evaluation\nCenterfor Devices and\nRadiological Health\nEnclosure",
+"iqq 0659\nBreathingTechnologies:K990659\nNasal Aire\nby\nBreathing Technologies\nIntended Use\nIt may also be used in respiratory insufficiencies if the patient can tolerate the excess\ndead space.\nThe Nasal-Aire cannot exhaust exhaled air therefore this device must be used with a\nventilator that contains an active exhalation valve or with an intentional leak port added\ninto the breathing circuit\n(Division Sign-Off)\nDivision of Cardiovascular,Respiratory,\nand Neurological Devices\n510(k) Number_K990l [\npresenptrm vte\nDoc:1ntUse001,Rev2,11-16-99"
+],
+"page_confidence": [
+0.97,
+0.971,
+0.914,
+0.955
+],
+"page_boxes": [
+44,
+48,
+28,
+17
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

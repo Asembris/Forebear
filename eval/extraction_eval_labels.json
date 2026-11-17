@@ -1,0 +1,930 @@
+{
+ "about": "Labels for eval/extraction_eval_sample.json: does the summary cite this K-number as a predicate (primary or secondary)? Read from the full cached page text by the extraction audit (Claude Code agent, not a human); not ground truth. A correct citation of a mistyped K-number is labelled predicate here (extraction is right) and handled as an error by the link audit.",
+ "labeller": "extraction-audit-2026-11-17 (Claude Code agent; not human-reviewed)",
+ "labels": [
+  {
+   "src": "K253647",
+   "dst": "K222024",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K142554",
+   "dst": "K082866",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K103410",
+   "dst": "K040862",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K122560",
+   "dst": "K092264",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K102515",
+   "dst": "K061653",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K071915",
+   "dst": "K002465",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K100753",
+   "dst": "K992133",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K060273",
+   "dst": "K043382",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K032433",
+   "dst": "K900164",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K091238",
+   "dst": "K060647",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K131252",
+   "dst": "K092847",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K150365",
+   "dst": "K100121",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K091919",
+   "dst": "K071689",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K241661",
+   "dst": "K190254",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K110884",
+   "dst": "K081014",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K140124",
+   "dst": "K083575",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063036",
+   "dst": "K042403",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K041223",
+   "dst": "K040221",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063122",
+   "dst": "K023306",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K080181",
+   "dst": "K041223",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063650",
+   "dst": "K970460",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K082558",
+   "dst": "K053352",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K112393",
+   "dst": "K050359",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K061653",
+   "dst": "K060405",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K042294",
+   "dst": "K021861",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K103803",
+   "dst": "K080181",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K140980",
+   "dst": "K022465",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K050759",
+   "dst": "K041010",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K243583",
+   "dst": "K200089",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K201620",
+   "dst": "K131982",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Cited as the predicate (\"The predicate device DreamStation Auto BiPAP (K131982)\"); the K-number itself is a typo handled by the audit (error)."
+  },
+  {
+   "src": "K063268",
+   "dst": "K991648",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K140939",
+   "dst": "K120670",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K243394",
+   "dst": "K101129",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K112914",
+   "dst": "K103167",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K030797",
+   "dst": "K013909",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K153563",
+   "dst": "K123979",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K123557",
+   "dst": "K093684",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K001686",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K121225",
+   "dst": "K120670",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040540",
+   "dst": "K984056",
+   "stratum": "both",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040944",
+   "dst": "K971812",
+   "stratum": "old_only",
+   "label": "not_predicate",
+   "note": "\"transfer data ... to a polysomnograph display system such as Sonologica (K971812)\": a compatible display system."
+  },
+  {
+   "src": "K070746",
+   "dst": "K062291",
+   "stratum": "old_only",
+   "label": "not_predicate",
+   "note": "\"Design and Verification activities were performed on the ResTraxx System with the inclusion of the VPAP Malibu (K062291)\": test configuration, not a predicate."
+  },
+  {
+   "src": "K161412",
+   "dst": "K023559",
+   "stratum": "old_only",
+   "label": "not_predicate",
+   "note": "\"This accessory was cleared under K023559 and has not been modified\": an accessory."
+  },
+  {
+   "src": "K203601",
+   "dst": "K190254",
+   "stratum": "old_only",
+   "label": "not_predicate",
+   "note": "\"uses the same material as the Sleepnet V3 full face vented mask - K190254\": a material source."
+  },
+  {
+   "src": "K242935",
+   "dst": "K160127",
+   "stratum": "old_only",
+   "label": "not_predicate",
+   "note": "\"Users can upload the data to the cloud platform (K160127)\": a data platform."
+  },
+  {
+   "src": "K023068",
+   "dst": "K984428",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023244",
+   "dst": "K982530",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023244",
+   "dst": "K984428",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023306",
+   "dst": "K982530",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023306",
+   "dst": "K984428",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023350",
+   "dst": "K902506",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023350",
+   "dst": "K905272",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023350",
+   "dst": "K961687",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023350",
+   "dst": "K970460",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023350",
+   "dst": "K982454",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K023559",
+   "dst": "K003894",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K031047",
+   "dst": "K961783",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K031896",
+   "dst": "K022465",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K031896",
+   "dst": "K023244",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040540",
+   "dst": "K010608",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K001646",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K010093",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K010925",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K022132",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K970839",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040574",
+   "dst": "K980642",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040790",
+   "dst": "K002881",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040790",
+   "dst": "K010608",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K040790",
+   "dst": "K032226",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K042403",
+   "dst": "K023284",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K042403",
+   "dst": "K023306",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K050171",
+   "dst": "K962517",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K051263",
+   "dst": "K021573",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K051263",
+   "dst": "K040574",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K051263",
+   "dst": "K970839",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K051767",
+   "dst": "K010608",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K060647",
+   "dst": "K051767",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K061653",
+   "dst": "K040506",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063404",
+   "dst": "K061627",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063650",
+   "dst": "K001646",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063650",
+   "dst": "K021573",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K063650",
+   "dst": "K062093",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K070594",
+   "dst": "K021981",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K070594",
+   "dst": "K032451",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K071526",
+   "dst": "K032451",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K071526",
+   "dst": "K061627",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K072009",
+   "dst": "K071163",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K072590",
+   "dst": "K062093",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K080439",
+   "dst": "K042184",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K082237",
+   "dst": "K041819",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090804",
+   "dst": "K072993",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K011957",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K021981",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K042468",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K052554",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K053270",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K061627",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K070594",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K073694",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K090888",
+   "dst": "K981668",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K093632",
+   "dst": "K072412",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K093632",
+   "dst": "K992608",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K102465",
+   "dst": "K024191",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K103803",
+   "dst": "K081842",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K112271",
+   "dst": "K063036",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K120726",
+   "dst": "K083526",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K121374",
+   "dst": "K013843",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K130171",
+   "dst": "K083526",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K131901",
+   "dst": "K112271",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K143677",
+   "dst": "K082209",
+   "stratum": "new_only",
+   "label": "not_predicate",
+   "note": "Comparison-table cell describing the predicate's SmartLink module \"(K082209) to connect an optional Nonin oximeter\"; a component, not a predicate. Known limitation: the table's \"Predicate Device\" header defeats the component guard."
+  },
+  {
+   "src": "K163127",
+   "dst": "K121225",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K201082",
+   "dst": "K183364",
+   "stratum": "new_only",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K973161",
+   "dst": "K930656",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K961626",
+   "dst": "K952292",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K983981",
+   "dst": "K935788",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K011714",
+   "dst": "K000994",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K963761",
+   "dst": "K905540",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K122715",
+   "dst": "K113640",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K020777",
+   "dst": "K011714",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K982242",
+   "dst": "K930656",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K112754",
+   "dst": "K092135",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K130328",
+   "dst": "K040506",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K981412",
+   "dst": "K870976",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K960518",
+   "dst": "K952292",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K013738",
+   "dst": "K002001",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K951264",
+   "dst": "K883825",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K013738",
+   "dst": "K991648",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K951264",
+   "dst": "K905540",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K110629",
+   "dst": "K012554",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K984379",
+   "dst": "K902506",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K981668",
+   "dst": "K943531",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  },
+  {
+   "src": "K981744",
+   "dst": "K972061",
+   "stratum": "ocr",
+   "label": "predicate",
+   "note": "Named under a predicate heading, predicate table or substantial-equivalence statement in the full page text."
+  }
+ ]
+}

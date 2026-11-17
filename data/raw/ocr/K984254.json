@@ -1,0 +1,31 @@
+{
+"k": "K984254",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K984254.pdf",
+"source_sha256": "894066c1c5535daa69c739c433bce3ce088419bd0b464352a0fcfadfe5483eff",
+"ocr_at": "2026-11-17T08:25:28Z",
+"status": "ocr_ok",
+"pages": [
+"K984254\nAppendix 3: 510(k) Summary\nPreparation Date:\nNovember 23, 1998\nCompany:\nSensorMedics Corporation\n22705 Save Ranch Parkway\nYorba Linda, CA 92887\nTelephone: (714) 283-2228\nFax: (714) 283-8411\nContact:\nPaul L. Kittinger\nDirector, Regulatory Affairs\nProprietary Name:\nInfant Flow Nasal CPAP Masks\nCommon Name:\nNasal CPAP Masks\nIntended Use:\nSensorMedics Infant Flow System, consisting of a Driver and NCPAP Generator.\nIt is intended to provide CPAP with a nasal mask for use in hospitals to treat\nnewborms and infants with RDS or who are recovering from RDS.\nDescription:\nThe SensorMedics Infant Flow Nasal CPAP Mask is a silicone mask that fits into\nthe generator of the Infant Flow System in place of the standard nasal prongs.\nClinical and Non-Clinical Tests of Equivalency:\nThe Infant Flow Mask is similar in purpose to the Hans Rudolph CPAP Mask\n(K962848) and provides the same function as the nasal CPAP prongs of the\nSensorMedics Infant Flow System (K974303) and Hamilton Aladdin CPAP\nSystem (K960359 and K945740).\nbetween the SensorMedics Infant Flow System prongs and the SensorMedics\nInfant Flow Mask, no additional clinical tests were performed or submitted in the\npremarket notification. Refer to 510(k) numbers K960359 and K945740 for these\ndata.\nNon-clinical testing of the Infant Flow System using the mask as compared to the\nprongs demonstrated no differences in safety or effectiveness.\n-- 11 --",
+"DEPARTMENT OF HEALTH &HUMAN SERVICES Public Health Service\nFood andDrug Administration\n9200 Corporate Boulevard\nRockville MD 20850\nFEB 2 41999\nMr. Paul L. Kittinger\nSensorMedics Corporation\n22705 Savi Ranch Parkway\nYorba Linda, CA  92887\nRe: K984254\nInfant Flow NCPAP Masks\nRegulatory Class: II (two)\nProduct Code:73 BzD\nDated: November 23, 1998\nReceived: November 27, 1998\nDear Mr. Kittinger:\nWe have reviewed your Section 5io(k) notification of intent to market\nthe device referenced above and we have determined the device is\nsubstantially equivalent (for the indications for use stated in the\nenclosure) to legally marketed predicate devices marketed in\ninterstate commerce prior to May 28, 1976, the enactment date of the\nMedical Device Amendments, or to devices that have been reclassified\nin accordance with the provisions of the Federal Food, Drug, and\nCosmetic Act (Act). You may. therefore, market the device, subject to\nthe general controls provisions of the Act. The general controls\nprovisions of the Act include requirements for annual registration,\nlisting of devices, good manufacturing practice, labeling, and\nprohibitions against misbranding and adulteration.\nIf your device is classified (see above) into either class II (Special\nControls) or class III (Premarket Approval), it may be subject to such\nadditional controls.1 Existing major regulations affecting your device\ncan be found in the Code of Federal Regulations, Title 2l, Parts 800\nto 895. A substantially equivalent determination assumes compliance\nwith the Current Good Manufacturing Practice requirements, as set\nGeneral regulation (21 CFR Part 820) and that, through periodic QS\ninspections, the Food and Drug Administration (FDA) will verify such\nassumptions. Failure to comply with the GMP regulation may result in\nregulatory action. In addition, FDA may publish further announcements\nconcerning your device in the Federal Register. Please note: this\nresponse to your premarket notification submission does not affect any\nobligation you might have under sections 531 through 542 of the Act\nfor devices under the Electronic Product Radiation Control provisions,\nor other Federal laws or regulations.",
+"Page 2 - Mr. Paul L. Kittinger\nThis letter will allow you to begin marketing your device as described\nin your 5lo(k) premarket notification. The FDA finding of substantial\nequivalence of your device to a legally marketed predicate device\nresults in a classification for your device and thus, permits your\ndevice to proceed to the market.\nregulation (21 CFR Part 801 and additionally 809.10 for in vitro\ndiagnostic devices), please contact the Office of Compliance at\n(301) 594-4648. Additionally, for questions on the promotion and\nadvertising of your device, please contact the Office of Compliance at\n(301)594-4639.1 Also, please note the regulation entitled,\n\"Misbranding by reference to premarket notification\"(21 CFR 807.97).\nOther general information on your responsibilities under the Act may\nbe obtained from the Division of Small Manufacturers Assistance at its\naddress \"http://www.fda.gov/cdrh/dsma/dsmamain.html\".\nSincerely yours,\n1. Callchsn\nThomas J. CaVlahan, Ph.D.\nDirector\nDivision of Cardiovascular,\nRespiratory, and Neurological Devices\nOffice of Device Evaluation\nCenter for Devices and\nRadiological Health\nEnclosure",
+"510(k) NUMBER: K984254\nDEVICE NAME: Infant FlowNCPAP Masks\nINDICATIONS FOR USE:\nThe SensorMedics Infant Flow NCPAP Masks are intended for use with the\nSensorMedics Infant Flow System, consisting of a Driver and NCPAP Generator.\nIt is intended to provide CPAP with a nasal mask for use in hospitals to treat\nnewborns and infants with RDs or who are recovering from RDS.\nConcurrence of CDRH, Office of Device Evaluation (ODE)\n(Division Sign-Off)\nDivision of Cardiovascuiar, Roepirstory.\nand Neurological Devices\n510(k) Number. Over-The-Counter-Use\nPrescription Use\n(Per 21 CFR 801.109) [Optional Format (1-2-96)]"
+],
+"page_confidence": [
+0.984,
+0.982,
+0.971,
+0.974
+],
+"page_boxes": [
+37,
+48,
+26,
+18
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

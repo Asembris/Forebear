@@ -1,0 +1,1067 @@
+{
+ "seed": 17,
+ "population": {
+  "both": 1074,
+  "old_only": 5,
+  "new_only": 67,
+  "ocr": 88
+ },
+ "items": [
+  {
+   "stratum": "both",
+   "src": "K253647",
+   "dst": "K222024",
+   "dst_name": "Evita V800, Evita V600",
+   "page": 5,
+   "context": "act Person: Holger Nadler Regulatory Affairs Manager E-Mail: holger.nadler@draeger.com Telephone: +49 451 882 6856 Date prepared: April 9, 2026 This 510(k) Summary is being submitted in accordance with 21 CFR 807.92. Device Name: Common name: Ventilator Trade Name: Evita V800 / Evita V600 Classification name: Continuous ventilator Regulation Number: 21 CFR §868.5895 Product Code: CBK (Ventilator, Continuous, Facility Use) Class: II Predicate Device: Evita V800, Evita V600, K222024 Reference device: Getinge Maquet Servo-U K180098 Device Description Evita V800 and Evita V600 are specified for the ventilation of adults, pediatric patients and neonates. These devices provide mandatory ventilation modes and ventilation modes for supporting spontaneous breathing as wel"
+  },
+  {
+   "stratum": "both",
+   "src": "K142554",
+   "dst": "K082866",
+   "dst_name": "REVOLUTIONFULL FACE MASK",
+   "page": 4,
+   "context": "Sr. Regulatory Affairs Engineer Establishment Registration # 2518422 Proprietary Name Shimmer Full Face Mask Common/Usual Name Mask Accessory to a Non-Continuous Ventilator Classification Panel Anesthesiology Devices Classification Reference 21 CFR 868.5905 Classification Name / Product Code BZD – Ventilator, non-continuous (respirator) Predicate Device(s) Respironics Revolution Full Face Mask (K082866) Indication for Use This mask is intended to provide an interface for application of CPAP or bi-level therapy to patients. The mask is for single patient use in the home or multi-patient use in the hospital/institutional environment. The mask is to be used on patients (>66lbs/30kg) fo"
+  },
+  {
+   "stratum": "both",
+   "src": "K103410",
+   "dst": "K040862",
+   "dst_name": "GUARDIAN NEONATE CPAP/HUMIDIFICATION SYSTEM",
+   "page": 3,
+   "context": "hyperinflation bag. The percentage of oxygen can be adjusted while in any mode by using a rotary knob on the user interface. The NeoPAP System alarms when pressure levels or oxygen concentration are above or below alarm limits. The system also detects occlusion, disconnect, and other alarm conditions. The system displays a real-time bar graph that indicates delivered pressure. Predicate Comparison The fundamental scientific technology of the NeoPAP System is unchanged from the predicate device (K040862). Children's Medical Ventures LLC has made the following changes to the previously cleared NeoPAP System to be considered for this submission: * Flow Mode -- Flow Mode for the previously cleared system only delivered flow into an oxygen hood, whereas the modified system enables the device to"
+  },
+  {
+   "stratum": "both",
+   "src": "K122560",
+   "dst": "K092264",
+   "dst_name": "ATLANTIS HYPERBARIC CHAMBER VENTILATOR",
+   "page": 1,
+   "context": "O.C. Tel: 886-7-733-5602 Contact Person: William Gates, RRT, Consultant Tel: 913 674 3118 Email: wmnooregates L~tatt.net Summary Date: July 30, 2012 2. Device Name: Versal Vent Model VI Hyperbaric Chamber Ventilator Proprietary: Versal Vent Model V I Hyperbaric Chamber Ventilator Common or Usual: Ventilator, Continuous, Facility Use Classification: Continuous Ventilator (21 C.F.R. § 868.5895) Product Code: CRK 3.Predicate Device: Providence Global Medical, Inc.'s Atlantis Hyperbaric Ventilator, K092264 4. Device Description: The Versal Vent Model V I Hyperbaric Chamber Ventilator provides ventilatory support for pediatric and adult patients who require mechanical ventilator support while undergoing hyperbaric chamber therapy under the direction of a physician. The Device is completely pneu"
+  },
+  {
+   "stratum": "both",
+   "src": "K102515",
+   "dst": "K061653",
+   "dst_name": "SOYALA FULL FACE MASK",
+   "page": 1,
+   "context": "Egenoif Phone: 01149 4054 70 2370 Fax: 01149 40 5470 2468 Device Name: Proprietary name: NP15 Common Name: Nasal mask Classification Name: Accessory to non-continuous ventilator Device Classification: 21 CFR 868.5905, Class 1I, Product Code BZD Predicate Device Equivalence: Substantial equivalence is claimed to Respironics ComfortLite Nasal Mask, cleared for commercial distribution per K082558. An additional predicate, the Weinmann SOYALA Full Face Mask, cleared for commercial distribution per K061653, is referred to in this submittal as a basis for comparison to certain features, as well as materials other than those used in K082558. 5-1"
+  },
+  {
+   "stratum": "both",
+   "src": "K071915",
+   "dst": "K002465",
+   "dst_name": "SPECTRUM 2 REUSABLE FULL FACE MASK, MODEL 1004884 AND 1004876",
+   "page": 3,
+   "context": "Non-Confidential Summary of Safety and Effectiveness Page 3 of 3 7-May-08 Features Predicates Proposed Device ResMed Quattro ARCimed CPAP mask Full Face Mask - K063122 Advanced Warming - Adhesive Mask - K950771 Respironics Full face mask - K002465 Vented and Yes - ResMed - K063122 Vented and Non-vented models Non-vented styles requires attachment to a circuit with requires anti- Offer a mask with optional anti- anti-asphyxia valve incorporated asphyxia valve in asphyxia valve demonstrated to activate AAV valve the circuit equivalent t"
+  },
+  {
+   "stratum": "both",
+   "src": "K100753",
+   "dst": "K992133",
+   "dst_name": "NEWPORT HT50 VENTILATOR WITH HUMIDIFIER HT50-H, NEWPORT HT50 VENTILATOR WITHOUT HUMIDIFIER, HT50-H1, NEWPORT HT50 VENTIL",
+   "page": 1,
+   "context": "r aline~flight-medical.com Contact Person:. Shoshana (Shosh) Friedman, RAC Address: .19141j N Pease PI., Charlotte, NC 28262 Telephone: 704-430-8695 or 704-899-0092 Fax: 704-899-0098 E-mail: shosh~pushmed.com Trade Name: FLIGHT 60 Ventilator Classification Name: Continuous Ventilator Classification: FDA has classified continuous ventilators as class 1I devices (product code 73 CBK and NOU) and they are reviewed by the Anesthesiology panel Predicate Devices: Newport HT50 Ventilator cleared under K992133 and K082724 Device Description: The FLIGHT 60 Ventilator is an electrically powered, microprocessor controlled ventilator with the following types of ventilatory support: A/CMV Voiume or Pressure Control, SIMV Volume or Pressure Control, Pressure Support & SPONT mode with Pressure Support. I"
+  },
+  {
+   "stratum": "both",
+   "src": "K060273",
+   "dst": "K043382",
+   "dst_name": "TMS FULL ADVANTAGE FULL FACE MASK, MODELS TMS-2820, TMS-2830, TMS-2840",
+   "page": 1,
+   "context": "ety and effectiveness information is being submitted in accordance with the requirements of SMDA 1990 and 21 CFR 807.92. Submitter Name: Sleepnet Corp. Submitter Address: 1050 Perimeter Rd. Manchester, NH 03103 Contact Person: Paul Chiesa Phone Number: (603) 624-1911 Fax Number: (603) 641-9440 Date Prepared: January, 2006 Device Trade Name: Sleepnet MoJo TM Device Common Name: Nasal Mask Classification Name: Ventilator, Noncontinuous (Respirator), 73BZD Predicate devices: TMS Full Advantage TM, K043382 Reason for submission: This device has not been previously marketed in the USA. Device Description: The Sleepnet MoJo TM Full Face Mask is an externally placed mask covering the nose and mouth of the patient. It provides a seal such that positive pressure from a positive pressure source is d"
+  },
+  {
+   "stratum": "both",
+   "src": "K032433",
+   "dst": "K900164",
+   "dst_name": "AIRWAY DELIVERY & MANAGEMENT (ADAM) NASAL VENTILA.",
+   "page": 1,
+   "context": "fication 3 5lO(K) SUMMARY 510(k) SUMMARY-Nasal Jacks Mask Submitter Name: ResMed Corp. Submitter Address: Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: 14040 Danielson Street, Poway CA 92064-6857 USA David D'Cruz, VP US Clinical & Regulatory Affairs (858) 746 2238 (858) 746 2900 August 1,2003 Not available at time of submission Nasal Jacks Mask Predicate Devices: Primary predicate: ADAM\" Interface System. K900164 Secondaw predicate: Mirage Nasal Mask (cleared in SULLIVANB AUTOSETB Nasal CPAP System K980721) Device Description: The Nasal Jacks Mask is designed for adult patients for the delivery of non-invasive ventilatory support using continuous positive airway pressure or bi-level therapy. It"
+  },
+  {
+   "stratum": "both",
+   "src": "K091238",
+   "dst": "K060647",
+   "dst_name": "LTV 1200 VENTILATOR",
+   "page": 2,
+   "context": "+ is intended for use by skilled care providers with knowledge of mechanical ventilation, emergency medical services (EMS) personnel with a basic knowledge of mechanical ventilation and by first responders under the direction of skilled medical care providers. Substantial Equivalence: The Impact, Model 73 1EMV+, is substantially equivalent to the predicate devices listed below: Predicate Devices: 1. Impact, Model 731EMV. 5 10(k) # K071526 2. Pulmonetic Systems, Inc. LTV 1200 Ventilator. 510(k) #K060647 Page 2 of 2"
+  },
+  {
+   "stratum": "both",
+   "src": "K131252",
+   "dst": "K092847",
+   "dst_name": "840 VENTILATOR SYSTEM WITH EXPANDED NEOMODE OPTION",
+   "page": 2,
+   "context": "flCOVIDIEN Predicate Devices: The Puritan BennettTm 980 Series Ventilator System is substantially equivalent to the previous 840 Ventilator System from Cdvidien and the AVEA Ventilator from CareFusion: \" K092847 - 840 Ventilator System with Expanded NeoMode Option \" K103211I - AVEA Ventilator Device Description: The Puritan Bennett 980 Series Ventilator System is a dual-microprocessor-based, touch- screen controlled, critical care ventilator intended to provide continuous ventilation for neonate to"
+  },
+  {
+   "stratum": "both",
+   "src": "K150365",
+   "dst": "K100121",
+   "dst_name": "MODEL 300157 CPAP SYSTEM",
+   "page": 5,
+   "context": "Page 5-2 5. Legally Marketed Predicate Device(s) Main Predicate K100121 AEIOMED Model 300157 CPAP System (now marketed by Somnetics as Transcend) K132013 Resmed Swift Air (now marketed as AirFit P10). 6. Device Description The Cloud9® System is a device for delivery of low levels of continuous positive airway pressure (CPAP) that can be used by people"
+  },
+  {
+   "stratum": "both",
+   "src": "K091919",
+   "dst": "K071689",
+   "dst_name": "DEVILBISS INTELLIPAP MODEL DV 5 SERIES",
+   "page": 1,
+   "context": "Proprietary name of new device: DeVilbiss Intellipap/SleepCube S Common or usual name of the device: DeVilbiss S DeVilbiss Model Number DV55 S Series Classification of the predicate device: Class II Classification of new device: Class II -Classification Panel: Anesthesiology Panel Code: BZD CFR Regulation Number: 21 CFR 868.5905 Ventilator, non- continuous respirator Predicate Device Name(s) and 5 10(k) Resmed VPAP ST - K080131 number(s): DeVilbiss 9055 Bilevel - K032056 DeVilbiss Intellipap - K071689 Section 5.0 Page 1 of 3"
+  },
+  {
+   "stratum": "both",
+   "src": "K241661",
+   "dst": "K190254",
+   "dst_name": "Mojo 2 Full Face Vented Mask, Veraseal 3 Full Face Vented Mask, V3 Full Face Vented Mask",
+   "page": 15,
+   "context": "K241661 510(k) Summary Page 10 of 10 Substantial Equivalence Discussion The table above compares the key features of the subject devices with the identified predicate – K190254. The subject and predicate devices are identical– the only difference between the devices within this submission is the addition of a contraindication and warning pertaining to the presence of permanent magnets within the mask. Indications for Use – The indications for use are identi"
+  },
+  {
+   "stratum": "both",
+   "src": "K110884",
+   "dst": "K081014",
+   "dst_name": "SOYALA GEL VENTED",
+   "page": 1,
+   "context": "WE!INM/AN N e ic Itchnology 11. 510(k) Summary JUL 12 W EasyFit Silk~el Nasal Mask June 07, 2011 Submitter Information: Weinmann - Gerate fur Medizin GmbH + Co. KG Kronsaalsweg 40 22525 Hamburg Germany Submitters Name: Dr. Ralf Egenoif Phone: 0114940 5470 2 -370 Fax: 0114940 5470 2 -468 Device Name: Proprietary name: EasyFit SilkGel Nasal Mask Common Name: Nasal Mask Classification Name: Accessory to non-continuous ventilator Device Classification: 21 CFR 868.5905, Class 11, Product Code BZD Predicate Device Equivalence: Substantial equivalence is claimed to SOYALA GEL vented, cleared for commercial distribution per K081 014. Device Description: The EasyFit SilkGel Nasal Mask is a molded plastic mask, including an exhalation system, far the delivery of CPAP or Bi-level Positive Pressure th"
+  },
+  {
+   "stratum": "both",
+   "src": "K140124",
+   "dst": "K083575",
+   "dst_name": "APNEALINK PLUS, MODEL: 22328",
+   "page": 1,
+   "context": "com.au Official Contact Mr Jim Cassi - Vice President - Quality Assurance Americas ResMed Corp. 9001 Spectrum Center Boulevard, San Diego, CA 92123 + 1 (858) 836 6081 (Phone) +1 (858) 836 5519 (FAX) Product Codes 73 BZD 73 MNR Class 11 Classification Referencd (21 CFR 868.5905 Product code 73 BZD) (21 CFR 868.2375 Product code 73 MNR) Common/Usual Name Non continuous ventilator (IPPB) Breathing Frequency Monitor Pro prietaty Name S9 Elouera Predicate Device(s) S8 Aspen (K091947) ApneaLink Plus (K083575) Reason for submission New Device"
+  },
+  {
+   "stratum": "both",
+   "src": "K063036",
+   "dst": "K042403",
+   "dst_name": "MIRAGE SWIFT",
+   "page": 1,
+   "context": "JII F. ...... SECTION 5 - 510K Summary (O0 o-53 ( Fisher& Ftykel HE-EALT-HCA.RE 15 Maurice Paykel Place, East Tamaki P 0 Box 14 348, Panmure Auckland, New Zealand DEC 2 2 Z01b Telephone: +64 9 574 0100 Facsimile: +64 9 574 0196 Website: www.fphcare.com Contact person Jayanti Karandikar Date prepared 3 0 th September 2006 Trade name Opus HC482 Direct Nasal Mask Common name Direct Nasal Mask Classification Non continuous ventilator IPPB name (21 CFR § 868.5905, product code BZD) Predicate devices K042403 Resmed Mirage Swift TM K061236 Fisher & Paykel Healthcare Flexifit HC432 Full Face Mask and K050904 HC238 Fisher & Paykel Healthcare Cpap Humidifier (predicates for material biocompatibility) Page 5-1"
+  },
+  {
+   "stratum": "both",
+   "src": "K041223",
+   "dst": "K040221",
+   "dst_name": "SERVO-I VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "page": 1,
+   "context": "Suite 202 Bridgewater, NJ 08807 Phone: 908-947-2311 Fax: 908-947-2301 Cellphone; 908-227-8807 Email: jamie.yieh~inaquet-inc.com Trade Names Servo-i Ventilator System article no.; 64 87 800 E407E NIV option article no.; 66 67 187 E407E Device Classification Common Name Classification Class Regulation Number Number Ventilator, Continuous (Respirator) 73 CBK II 868.5895 Predicate Device Identification Legally marketed devices to which equivalence is being claimed 510(k) Servo-i Ventilatory System K040221 Evita 4, NIV option K010093"
+  },
+  {
+   "stratum": "both",
+   "src": "K063122",
+   "dst": "K023306",
+   "dst_name": "MIRAGE FULL FACE MASK SERIES 2",
+   "page": 1,
+   "context": "RESMED ~ ot 31'A-2 510(k) SUMMARY FEB -2 2007 [As required by 21 CFR 807.92(c)) Date Prepared 251h, January, 2007 Official Contact Dr Lionel King, Vice-President, Global Quality Assurance and Regulatory Affairs Device Trade Name Mirage QuattroTm Full Face Mask Device Common Name/ Full Face Mask, Classification Name Accessory to Noncontinuous Ventilator (I PPB) Classification 21 CFR 868.5905, 73 BZD (Class 11) Predicate Device Mirage FFM Series 2 (K023244, K023284 and K023306), Mirage Swift (K042403). Description The Mirage Quattro FFM provides seal such that air flow from a positive pressure source is directed to the patients nose or mouth. The mask is held in place with adjustable headgear that straps the mask to the face. Mirage Quattro FFM is safe when used u"
+  },
+  {
+   "stratum": "both",
+   "src": "K080181",
+   "dst": "K041223",
+   "dst_name": "MODIFICATION TO SERVO-I VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "page": 1,
+   "context": "HAMILTON MEDICAL JUN 2 4 2008 510(k) Summary HAMILTON MEDICAL AG SUBMITTER: Via Crusch 8 7402 Bonaduz, Switzerland Joerg Schneider CONTACT PERSON: Phone: +41 81 660 64 79CONTACT PERSON:Fax: +41 81 660 60 20 e-mail: jschneider~hamilton-medical.ch PREPARATION DATE: April 08, 2008 TRADE NAME: GALILEO Gold COMMON NAME: Continuous Ventilator CLASSIFICATION NAME: Ventilator, Continuous, Facility Use (21 CFR 868.5895, Product Code CBK) HAMILTON GALILEO Gold ASV LEGALLY MARKETED 510(k) Number: K061090 DEVICES TO WHICH MAQUET Servo-i EQUIVALENCE IS 510(k) Number: K041 223 BEING CLAIMED: GE Datex-Ohmeda Engstr~m Carestation 510(k) Number: K062710 Page I of 2"
+  },
+  {
+   "stratum": "both",
+   "src": "K063650",
+   "dst": "K970460",
+   "dst_name": "NELLCOR PURITAN BENNETT, 840 VENTILATOR SYSTEM (MODEL 840)",
+   "page": 1,
+   "context": "510(k) Summary Submitted by: Puritan-Bennett Corporation FEB 1 5 2007 2200 Faraday Avenue Carlsbad, CA 92008 Company Contact: James Patrick Garvey II, RRT Regulatory Affairs Manager (925) 463-4479 (925) 463-4020 - FAX Date Summary Prepared: December 8, 2006 Product Name: 840 Ventilator System with Respiratory Mechanics Common Name: Ventilator Classification: Class II; Continuous Ventilator per 21 CFR §868.5895 Legally Marketed · Puritan-Bennett Corp. 840 Ventilator System, (Unmodified) Device: K970460 * Puritan-Bennett Corp. 840 Ventilator System with Bilevel Ventilation, K984535 * Puritan-Bennett Corp. 840 Ventilator System with Neomode Option, KOO 1646 a Puritan-Bennett Corp. 840 Ventilator System with Volume Ventilation Plus, K021573 a Puritan-Bennett Corp. 840 Ventilator System with P"
+  },
+  {
+   "stratum": "both",
+   "src": "K082558",
+   "dst": "K053352",
+   "dst_name": "COMFORTLITE NASAL MASK",
+   "page": 1,
+   "context": "ltwanger Manager, Regulatory Affairs Respironics Inc. 1740 Golden Mile Highway Monroeville, PA 15146 Phone: 724-387-7442 Fax: 724-387-7490 Andrew.zeltwanger@ Respironics.com Proprietary Name ComfortLite Nasal Mask Common/Usual Name Nasal Mask Device Classification Name Mask, Ventilator, Non-Continuous, Reprocessed Classification Reference 21 CFR 868.5905 Classification Class II Appropriate Classification Panel Anesthesiology Product Code BZD Predicate Devices Respironics ComfortLite Nasal Mask (K053352) Reason for submission Include a multi-patient re-use claim 02007 Respironics Inc. 02/27/09 Page"
+  },
+  {
+   "stratum": "both",
+   "src": "K112393",
+   "dst": "K050359",
+   "dst_name": "ULTRA MIRAGE II MASK",
+   "page": 1,
+   "context": "Tsa Traditional 510(k) Traditional 510(k) SUMMARY k /1) 3 c9 3 [As required by 21 OFF 807.92(c)] Date Prepared 16th Aug, 2011 Submitter Name Mr. Kim Kuan Lee Official Contact Mr. David D'Cruz V.P., Medical & Regulatory Affairs 9001 Spectrum Center Blvd San Diego CA 92123 USA Tel: (858) 836-5984 Device Trade Name Tasman Device Common Name Non continuous Ventilator (IPPB) Classification 21 CFR 868.5905 (Class 11) Product Cade 73 BZD Predicate Device S8 Prime (K033841) Ultra Mirage 11 Nasal Mask (K050359) Reason for submission New Device Intended Use The Tasman is indicated for the treatment of obstructive sleep apnea (OSA) in adult patients weighing more than 66 lb (>30 Kg). The Tasman mask system delivers airflow noninvasively to a user from the integrated Continuous Positive Airway (CPAP)"
+  },
+  {
+   "stratum": "both",
+   "src": "K061653",
+   "dst": "K060405",
+   "dst_name": "SOYALA, SOYALA BLUE",
+   "page": 1,
+   "context": "itter's Name: Eckhardt Albers Phone: 011 4940 54 70 2-180 Fax: 011 49 4054 70 2-468 Device Name: Proprietary name: Weinmann SOYALA Full Face Mask Common Name: Face mask Classification Name: Accessory to non-continuous ventilator Device Classification: 21 CFR 868.5905, Class 11, Product Code BZD Predicate Device Equivalence: Substantial equivalence is claimed to ResMed Mirage Full Face Mask Series 2, cleared for commercial distribution per K023244, Weinmann SOMNOmnask, K01 3738, Weinmann SOYALA, K060405, and Fisher & Paykel Flexifit Series HC431 Full Face Mask, K040506. 5-1"
+  },
+  {
+   "stratum": "both",
+   "src": "K042294",
+   "dst": "K021861",
+   "dst_name": "REMSTAR PRO WITH C-FLEX CPAP SYSTEM",
+   "page": 1,
+   "context": "ter Mailing P0 Box 567 Address: Milton-Freewater, OR 97862 Official Contact Person: Timothy J.S. Suiter, President 21230 SE 3 6 3 rd Street Auburn, WA 98092 Phone Number: 253-833-7418 Fax Number: 253-833-8387 E-Mail Address: SEI S LUM1IERGFEAR~dtmsit.com1 Date Prepared: August 8, 2004 Device Trade Name: SLUMBERGEARTM Device Common Name/ Headgear accessory to a non-continuous ventilator/mask Classification Name: (pet 21 CFR Section 868.5905) Predicate Devices: REMstar Pro with C-Flex CPAP System K02 1861 Mirage VistaTm Mask K03 1047 Reason for Submission: New Device Device Description: SLUMBERGEARTm is a one-piece headgear with an integrated chinstrap used to secure externally placed masks, nasal pillows, and cannulas to the face of the patient. The headgear is a single strap that splits to"
+  },
+  {
+   "stratum": "both",
+   "src": "K103803",
+   "dst": "K080181",
+   "dst_name": "MODIFICATION TO GALILEO GOLD",
+   "page": 1,
+   "context": "NOV 2 32011 510(k) Summary Submitter: HAMILTON MEDICAL AG Via Crusch 8 7402 Bonadluz, Switzerland Contact Person: Name: Frederike BrUhschwein Phone: +4181660 6568 Fax: +41 81 660 6020 Preparation Date: 2011-11-02 Trade Name: HAMILTON-G5 Common Name: Continuous Ventilator Classification Name: Ventilator, Continuous, Facility Use (21 CFR 868.5895, Product Code: CBK) Legally marketed devices to HAMILTON-C2 (K092148) HAMILTON-GALILEO (KO80l81) which equivalence is being Driger EvitaXL with NeoFlow and SpO2 clamed: options (K072412, K983219) ARM PYTON ETT Cuff Pressure Regulator (K092733) GE Datex-Ohmedla Engstrdm Carestation (K081842) Device Description The HAMILTON-G5 is an electronically controlled pneumatic intensive care ventilator ventilation system. it uses oxygen and air or heliox to ve"
+  },
+  {
+   "stratum": "both",
+   "src": "K140980",
+   "dst": "K022465",
+   "dst_name": "MODIFICATION TO NASAL-AIRE",
+   "page": 5,
+   "context": "e Masilunas Regulatory Affairs Engineer, Patient Interface Proprietary Name TI Nasal Mask Common/Usual Name Nasal Mask Classification Name / Product Code 21 CFR 868.5905, Product Code BZD – Ventilator, non-continuous (respirator) Predicate Device(s) Respironics Kangaroo Nasal Mask (K122847) Respironics Simple T Nasal Mask (K121631) Innomed Technologies Nasal Aire II (K022465) Indications for Use The TI Nasal Mask is intended to provide an interface for application of CPAP or bi-level therapy to patients. The mask is for single patient use in the home or multi-patient use in the hospital/institutional environment. The mask is to be used on patients (>66"
+  },
+  {
+   "stratum": "both",
+   "src": "K050759",
+   "dst": "K041010",
+   "dst_name": "REMSTAR AUTO WITH C-FLEX CPAP SYSTEM",
+   "page": 1,
+   "context": "ing facility Zita A. Yurko Manager, Regulatory Affairs Respironics Inc. 1001 Murry Ridge Lane Murrysville, PA 15668 Phone: 724-387-4120 Fax: 724-387-4216 Zita.Yurko~respironics.com Proprietary Name BiPAP Auto Common/Usual Name Ventilator, Non-Continuous (Respirator) Classification Reference 21 CFR 868.5905 Classification Class 1I Appropriate Classification Panel Anesthesiology Product Code RZD Predicate Devices Respironics BiPAP Pro 2 with Ri-Flex (K043607) Respironics REMstar Auto with C-Flex (K041010) Reason for submission Modified design Substantial Equivalence This premarket notification submission demonstrates that the BiPAP Auto is substantially equivalent to the combination of the Respironics BiPAP Pro 2 with Ri-Flex (K(043607) and the Respironics REMstar Auto with C-Flex (K(041010)"
+  },
+  {
+   "stratum": "both",
+   "src": "K243583",
+   "dst": "K200089",
+   "dst_name": "F&P Evora Nasal Mask Nasal A Model (Small, Medium, Large, Wide), F&P Evora Nasal Mask Nasal Fit Pack/ SML (Small/Medium/Large) A Model, F&P Evora Nasal Mask Nasal Sleep Lab (Small, Medium, Large, Wide), F&P Evora Nasal Mask Nasal Fit Pack / SML (Small/Medium/Large) Sleep Lab Model",
+   "page": 5,
+   "context": "ed and Submitted by Jung Yun Lee Regulatory Affairs Specialist Contact Person Reena Daken Regulatory Affairs Manager Telephone: +64 9 574 0100 Email: reena.daken@fphcare.co.nz Date Prepared 19 May 2025 II. DEVICE Name of Device F&P Nova Nasal Mask Common/Usual Name Nasal Mask Classification Name Non Continuous Ventilator (IPPB) Regulatory Class Class II (21 CFR §868.5905) Product Code BZD (Anaesthesiology) III. PREDICATE DEVICE Predicate device: F&P Evora Nasal Mask, K200089. Reference device: F&P Eson 2 Nasal Mask, K153505. IV. DEVICE DESCRIPTION The F&P Nova Nasal Mask is a non-invasive, Positive Airway Pressure (PAP) therapy nasal mask that features an over -the-nose cushion that seals the patient's nose, held in place by adjustable headgear straps. Th"
+  },
+  {
+   "stratum": "both",
+   "src": "K201620",
+   "dst": "K131982",
+   "dst_name": "REMSTAR AUTO A-FLEX HT",
+   "page": 6,
+   "context": "P mode in addition to the three therapy modes of the primary predicate device RESmart ® BPAP 25A (K133769). The AutoCPAP mode d elivers CPAP therapy and provides an air pressure no less than the prescribed one based on the patie nt’s needs. The auto adjusting CPAP algorithm of the AutoCPAP mode is identical to that of t he reference device Luna® CPAP and Auto CPAP System (K153387). It did not raise new safety or effectiveness questions. The predicate device DreamStation Auto BiPAP (K131982) comprises an optional heated tubing and an optional cellular modem. The basic f unctionality and performance characteristics of the two components of the subject device Luna ® G3 BPAP 25A are the same as those of the predicate device"
+  },
+  {
+   "stratum": "both",
+   "src": "K063268",
+   "dst": "K991648",
+   "dst_name": "REUSABLE CONTOUR II NASAL MASK",
+   "page": 1,
+   "context": "13, Tyan Shin St., Taya Hisiang Taichung Hsien, Taiwan, ROC FEB 2 3 2007 Phone: +886-4-25664306 Registration No.: 3003862188 Owner/Operator No.: 9053474 8.2. Name of Device Proprietary Name: CPAP/VPAP Masks Common Name: CPAP Mask Classification Name: Noncontinuous ventilator (IPPB) Product Code: BZD Regulation Number: 868.5905 Device Class 2 8.3. Substantially equivalent to: * Respironics ComfortFull Full-Face CPAP Mask (K002465, K961915) * Respironics Comfort Select Nasal CPAP Mask (KO000705, K99 1648) 8.4. Description of the device The Hsiner CPAP/VPAP Masks is used to administer various aerosol treatments in both the homecare and hospital settings. 8.5. Intended Use of the Device The Hsiner CPAP/VPAP masks are intended to be use in a home, hospital or Institutional environments for pat"
+  },
+  {
+   "stratum": "both",
+   "src": "K140939",
+   "dst": "K120670",
+   "dst_name": "HAMILTON-T1",
+   "page": 5,
+   "context": "rland Phone: +41 58 610 1568 Cell: +41 79 551 1151 Fax: +41 58 610 0020 Contact Person: Frederike Brühschwein, Senior Manager of Regulatory Affairs Date Prepared: 2015-07-24 II. DEVICE Name of Devices: HAMILTON-T1 and HAMILTON-C1 Common or Usual Name: Transport/ICU and +ICU ventilator Device Classification and Name: 21 CFR 868.5895 Continuous Ventilator Device Classification and Product Code: Class II CBK (incl. Class II DQA) III. PREDICATE DEVICES HAMILTON-T1 (K120670) 21 CFR 868.5895 Continuous Ventilator, Class II, CBK HAMILTON-C1 (K120574) 21 CFR 868.5895 Continuous Ventilator, Class II, CBK HAMILTON-C2 (K121225) for the neonatal modes. 21 CFR 868.5895 Continuous Ventilator, Class II, CBK HAMILTON-G5 (K131774) for the Masimo SpO2 board and sens"
+  },
+  {
+   "stratum": "both",
+   "src": "K243394",
+   "dst": "K101129",
+   "dst_name": "ESPRIT VENTILATOR WITH AF531 SE FULL FACE MASK",
+   "page": 6,
+   "context": "ry insufficiency, or obstructive sleep apnea. The mask is for single use in the hospital/institutional environment only. The mask is to be used on patients 7 years or older (>20 kg) who are appropriate candidates for noninvasive ventilation. Comparison Table 1: AF531 Oro-Nasal SE Face Mask Design Parameter or Feature Subject Device: AF531 Oro-Nasal SE Face Mask Primary Predicate AF541 SE Full Face Mask K150638 (September 18, 2015) Secondary Predicate: AF531 SE Full Face Mask K101129 (September 16, 2010) Comments Intended Use Classification Product Code CBK CBK CBK Identical Regulation Number 21 CFR§ 868.5895 21 CFR§ 868.5895 21 CFR§ 868.5895 Identical Classification II II II Identical Indications for Use Medium and Large: The AF531 Oro-Nasal SE Face Mask"
+  },
+  {
+   "stratum": "both",
+   "src": "K112914",
+   "dst": "K103167",
+   "dst_name": "STELLAR 150",
+   "page": 2,
+   "context": "7, the addition of EasyBreathe in S-mode, the addition of Mirage EX (1(102746) and Quattro FX (1(091129) masks, and the removal of CAD (Closed Airway Detection) in CPAP mode. The modified VPAP'Tx system comprises the flow generator, patient tubing, mask (patient interface) and optional HumidAire 2i humid ifier. The performance and functional characteristics of the modified VPAP Tx includes all the clinician and user friendly features of the predicate devices, VPAP Tx (K0921 86) and Stellar 150 (K103167). Conclusion The modified VPAP Tx is substantially equivalent to the predicate devices VPAP Tx (K(092186) and Stellar 150 (1(03167). 29 September 2011 Page 15"
+  },
+  {
+   "stratum": "both",
+   "src": "K030797",
+   "dst": "K013909",
+   "dst_name": "S7 ELITE CP AP SYSTEM",
+   "page": 1,
+   "context": "S7 TM Elite and AutoSeteSpiritT\" CPAP Systems with SomnoTraxx T ' SystemTM Date Prepared November 21, 2003 Official Contact David D'Cruz VP, US Clinical and Regulatory Affairs ResMed Corp. 14040 Danielson St Poway, CA 92064 (858) 746-2238 Classification Reference 21 CFR 868.5905 Product Code BZD - Non-Continuous Ventilator Common/Usual Name CPAP System Proprietary Name S7 TM Elite and AutoSet® SpiritTM CPAP Systems with SomnoTraxxTm System TM Predicate Device(s) ResMed, S7TM Elite CPAP System (K01 3909) ResMed, AutoSet® Spirit Tm CPAP System (K01 3843) HomMed Sentry III Patient Monitoring System with Card Reader K014025 HomMed Central Station K020184 Reason for Submission Modified design - additional accessory Indications for Use The SomnoTraxx System is intended to augment the standard f"
+  },
+  {
+   "stratum": "both",
+   "src": "K153563",
+   "dst": "K123979",
+   "dst_name": "QUATTRO AIR",
+   "page": 5,
+   "context": "tive airway pressure (CPAP) or bilevel system. The AirFit F20 is: • to be used by patients weighing more than 66lb (30kg) for whom positive airway pressure therapy has been prescribed • intended for single-patient reuse in the home environment and multi-patient reuse in the hospital/institutional environment. Similarities and Differences with the Predicate Device The AirFit F20 device has the following similarities to the previously cleared predicated device (Quattro Air (K123979):  same intended use  same operating principle  similar design and materials which incorporates: - a silicone interface providing a seal around the nose and the mouth; - vent holes providing continuous air leak to flush out and minimize the amount of CO2 re-breathed by the patie"
+  },
+  {
+   "stratum": "both",
+   "src": "K123557",
+   "dst": "K093684",
+   "dst_name": "EASYCARE ONLINE",
+   "page": 1,
+   "context": "fficial Contact Jim Cassi Vice President Quality Assurance Americas ResMed Corp 9001 Spectrum Center Boulevard San Diego, CA 92123 ±1 858 836 6081 Jim. Cassi@resrned.com Device name EasyCare Online Product code 73 MNS (Primary) 73 BZD (Secondary) Classification reference (Accessory to) Ventilator, Non-Continuous (Respirator) (21 CFR 868.5905, Product Code 73 BZD) (Accessory to) Ventilator, Continuous, Non-Life- Supporting (21 CER 868.5895, Product Code 73 MNS) Predicate devices EasyCare Online (K093684) ResScan (KI 13815) Reason for submission Indications for use have been expanded."
+  },
+  {
+   "stratum": "both",
+   "src": "K040574",
+   "dst": "K001686",
+   "dst_name": "GALILEO VENTILATOR",
+   "page": 1,
+   "context": "+41 81 660 60 10 Fax: +41 81 660 60 20 e-mail: ascheibe@hamilton-medical.ch APPLICANTS CONTACT PERSON Hamilton Medical Inc. IN THE USA Mr. David Thompson Post Office Box 30008 Reno, NV 89520 Phone: 775-858-3200, Extension 349 Fax: 775-856-5621 e-mail: thompson@hammedl.com Establishment Registration 2937708 DATE THE SUMMARY WAS PREPARED COMMON NAME Continuous Ventilator PROPRIETARY NAME GALILEO Gold PURPOSE OF SUBMISSION New features for existing, legally marketed instrument in the US (K982910, K001686) CLASSIFICATION Name: Ventilator, Continuous (per 21 CFR 868.5895) Panel: Anesthesiology Code: CBK REGULATORY STATUS 1. Current Device Class: Class 2 2. Performance Standards & Special Controls: None Exist C. Danuser Pale 2 of 7 2004-01-29 @ co lit b WAUILO ICAL;AG 77777coNFiDEnTiAL"
+  },
+  {
+   "stratum": "both",
+   "src": "K121225",
+   "dst": "K120670",
+   "dst_name": "HAMILTON-T1",
+   "page": 1,
+   "context": "PERSON: Ralph Aguita Regulatory Affairs / Quality Engineer Phone: +41 81 660 6845 Fax: +41 81 660 6020 e-mail: raapuilacbhamilton-medical.ch ESTABLISHMENT 3001421318 REGISTRATION #: PREPARATION DATE: 2012-10-23 TRADE NAME: HAMILTON-C2 COMMON NAME: Continuous Ventilator CLASSIFICATION NAME: Class 11 Ventilator, Continuou s REGULATION NUMBER: 21 CFR 868.5895 PRODUCT CODE: CBI( PREDICATE DEVICE: ~ HAMILTON-C2 (K1 02775) (PRIMARY) PREDICATE DEVICES: HAMILTON-G5 (K1<103803), (SECONDARY) HAMILTON-Ti (K120670), Draeger's infinity Acute Care System Workstation - Neonatal Care (K093632). I IbTPLIISYNC NEDI SJPagel1"
+  },
+  {
+   "stratum": "both",
+   "src": "K040540",
+   "dst": "K984056",
+   "dst_name": "LTV 1000",
+   "page": 2,
+   "context": "of ventilation. * Breath types including Volume, Pressure Control and Pressure Support. The ventilator is suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The LTV 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 510(k) Clearance Manufacturer LTV 1000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, Inc. Institutional and Transport Colton, CA/Mpls., MN settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. T-Bird AVS K981971 Bird Products, Palm Springs, CA"
+  },
+  {
+   "stratum": "old_only",
+   "src": "K040944",
+   "dst": "K971812",
+   "dst_name": "PRECISION QID BLOOD GLUCOSE TEST STRIP, PRECISION G BLOOD GLUCOSE TEST STRIP",
+   "page": 2,
+   "context": "uomTriunicathon protocol ResCoit.oif i displays data. relays data to a polysorinograph and acts as a rnanometer. PRes~ontrol II also provides functionaic-y for setting ficw generator parameters. Device Description The performance and functional characteristics of the ResCorrfroll ii systemn includes all thge user friendly features of the predicate device, UCU. ResControl 1t is designed to transfer data from a CPAP or bi evel Flow Generator to a polysomnograph display system such as Sonotlogica (K971812). ResControl! also provides parameter setting of Flow Generators within the hospital or sleep tab facilities. Dr Lionel King VIP. Regulatory Affairs ResMed, 30(; March, 2004"
+  },
+  {
+   "stratum": "old_only",
+   "src": "K070746",
+   "dst": "K062291",
+   "dst_name": "VPAP MALIBU WITH H2I",
+   "page": 2,
+   "context": "ResTraxx Sytem RESMED Traditional 510(k) Premarket Notification Substantial Equivalence The new device has the following similarities to the previously cleared predicate device. Similar intended use Same operating principle Same technologies - Same manufacturing process Design and Verification activities were performed on the ResTraxx System with the inclusion of theVPAP Malibu (K062291) as a result of the risk analysis and product requirements. All tests confirmed the product met the predetermined acceptance criteria. ResMed has determined that the new device isSubstantially Equivalent to the predicate device. The inclusion of the VPAP Malibu as another CPAP(73 BZD) device"
+  },
+  {
+   "stratum": "old_only",
+   "src": "K161412",
+   "dst": "K023559",
+   "dst_name": "FISHER & PAYKEL HEALTHECARE ORACLE ORAL MASK",
+   "page": 7,
+   "context": "subject device’s headgear is adjustable. These differences are intended to better fit a larger percentage of the patient population and have not been found to introduce any new risk to the patient. Accessories Oxygen/Pres sure Port (900HC452) Available as a separate part, not provided with device. Available as a separate part, not provided with device. Identical - The Oxygen/Pressure port is the same accessory used with the predicate device. This accessory was cleared under K023559 and has not been modified."
+  },
+  {
+   "stratum": "old_only",
+   "src": "K203601",
+   "dst": "K190254",
+   "dst_name": "Mojo 2 Full Face Vented Mask, Veraseal 3 Full Face Vented Mask, V3 Full Face Vented Mask",
+   "page": 8,
+   "context": "imilar Similar Similar Incorporates an Exhaust elbow SimilarNo No Components of the mask Similar* Mask shell * Gel bladder * Non-vented elbow * Headgear * Mask shell * Gel bladder * Non-vented elbow * Headgear * Tubing Shell design Rigid Soft Similar Shell geometry is similar for both devices. Soft shell incorporated in the predicate device for comfort feature, but the functionality is the same. Rigid shell in the subject device uses the same material as the Sleepnet V3 full face vented mask - K190254, which has a similar environment and duration of use."
+  },
+  {
+   "stratum": "old_only",
+   "src": "K242935",
+   "dst": "K160127",
+   "dst_name": "iCodeConnect",
+   "page": 8,
+   "context": "re 510(K) Summary 4 Operating System Microsoft Windows Microsoft Windows Equivalent Functionality Display of therapy data Generate reports Settings management Patient management Upload Data Display of therapy data Generate reports Settings management Patient management Most functions of the subject device are equivalent to the predicate device. The subject device includes a data upload function than the predicate device. Users can upload the data to the cloud platform (K160127). Software V&V testing and cybersecurity testing demonstrates safety and effectiveness of this function. Compatible flow generators BMC compatible therapy devices (BZD, MNS) ResMed compatible therapy devices (BZD, MNS, MNT and CBK) Both the subject device and predicate device"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023068",
+   "dst": "K984428",
+   "dst_name": "SULLIVAN AUTOSET NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "ntact Person Date of Submission Phone No. Fax No. Classification Reference Product Code Device Class C om mon/U sua I Name Proprietary Name Predicate Device Reason for submission MAP Medizin-Technologie GmbH Fraunhoferstrasse 16 82 152 Martinsried GERMANY Torsten Schlichtholz Manager QA and Regulatory Affairs 06 September 2002 +498989518723 +498989518820 21 CFR 868.5905 BZD - noncontinuous ventilator Class II nasal mask Papillon@ Mask Set Sullivan@ MirageTM Mask System (K984428) New Device - page 8 of 30"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023244",
+   "dst": "K982530",
+   "dst_name": "SULLIVAN MIRAGE FULL FACE MASK",
+   "page": 1,
+   "context": "REMARKET NOTIFICATION 510(k) SUMMARY [As required by 21 CFR 807.92(c)] Submitter Name: S u bm it t er Add ress : Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: Predicate devices: Device Description: Intended Use: ResMed Ltd 97 Waterloo Road, North Ryde NSW 21 13, Australia Roger Kotter (858) 746 2400 (858) 746 2282 September 2002 Mirage Full Face Mask (FFM) Series 2 Face mask Mirage Full Face Mask (FFM) K982530 Mirage Nasal Mask System K984428 Mirage FFM Series 2 is a respiratory mask covering the nose and the mouth. It is a patient interface accessory for use with CPAP and bi-level devices. Mirage Full Face Mask (FFM) Series 2 is intended for multiple- patient use for adult patients prescrib"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023244",
+   "dst": "K984428",
+   "dst_name": "SULLIVAN AUTOSET NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "ARY [As required by 21 CFR 807.92(c)] Submitter Name: S u bm it t er Add ress : Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: Predicate devices: Device Description: Intended Use: ResMed Ltd 97 Waterloo Road, North Ryde NSW 21 13, Australia Roger Kotter (858) 746 2400 (858) 746 2282 September 2002 Mirage Full Face Mask (FFM) Series 2 Face mask Mirage Full Face Mask (FFM) K982530 Mirage Nasal Mask System K984428 Mirage FFM Series 2 is a respiratory mask covering the nose and the mouth. It is a patient interface accessory for use with CPAP and bi-level devices. Mirage Full Face Mask (FFM) Series 2 is intended for multiple- patient use for adult patients prescribed continuous positive airway pre"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023306",
+   "dst": "K982530",
+   "dst_name": "SULLIVAN MIRAGE FULL FACE MASK",
+   "page": 1,
+   "context": "MED PREMARKET NOTIFICATION 51 O(k) SUMMARY [As required by 21 CFR 807.92(c)] Submitter Name: Submitter Address: Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: Predicate devices: Device Description: Intended Use: ResMed Ltd 97 Waterloo Road, North Ryde NSW 21 13, Australia Roger Kotter (858) 746 2400 (858) 746 2282 September 2002 Mirage Full Face Mask (FFM) Series 2 Face mask Mirage Full Face Mask (FFM) K982530 Mirage Nasal Mask System K984428 Mirage FFM Series 2 is a respiratory mask covering the nose and the mouth. It is a patient interface accessory for use with CPAP and bi-level devices. Mirage Full Face Mask (FFM) Series 2 is intended for multiple- patient use for adult patients prescrib"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023306",
+   "dst": "K984428",
+   "dst_name": "SULLIVAN AUTOSET NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "k) SUMMARY [As required by 21 CFR 807.92(c)] Submitter Name: Submitter Address: Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: Predicate devices: Device Description: Intended Use: ResMed Ltd 97 Waterloo Road, North Ryde NSW 21 13, Australia Roger Kotter (858) 746 2400 (858) 746 2282 September 2002 Mirage Full Face Mask (FFM) Series 2 Face mask Mirage Full Face Mask (FFM) K982530 Mirage Nasal Mask System K984428 Mirage FFM Series 2 is a respiratory mask covering the nose and the mouth. It is a patient interface accessory for use with CPAP and bi-level devices. Mirage Full Face Mask (FFM) Series 2 is intended for multiple- patient use for adult patients prescribed continuous positive airway pre"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023350",
+   "dst": "K902506",
+   "dst_name": "7200AE MICROPROCESSOR VENTILATOR W/ENHANCED HARD.",
+   "page": 1,
+   "context": "6 2002 6 510(k) SUMMARY Company Information: Contact: Date Prepared: Product Name: Classification: Predicate Devices: Respironics, California Inc. 2271 Cosmos Court Carlsbad, CA. 92009 Mary Funk Regulatory Affairs Project Manager Phone Number: (760) 918-7328 Fax Number: (760) 918-0169 November 5, 2002 Esprit Ventilator with Respiratory Mechanics Class I1 Continuous Ventilator (per 21 CFR 868.5895) Diagnostic Spirometer (per 21 CFR 868.1840) Puritan-Bennett 7200a Ventilator K902506 Puritan-Bennett 840 Ventilator K970460 lnfrasonics Adult Star Ventilator K905272 Drager Evita 4 Ventilator K961687 Respironics BiPAP Vision K982454 Description of Device Modification: Esprit Respiratory Mechanics is a diagnostic tool that enables a clinician to take dynamic and static"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023350",
+   "dst": "K905272",
+   "dst_name": "ADULT STAR, MODIFICATION",
+   "page": 1,
+   "context": "Name: Classification: Predicate Devices: Respironics, California Inc. 2271 Cosmos Court Carlsbad, CA. 92009 Mary Funk Regulatory Affairs Project Manager Phone Number: (760) 918-7328 Fax Number: (760) 918-0169 November 5, 2002 Esprit Ventilator with Respiratory Mechanics Class I1 Continuous Ventilator (per 21 CFR 868.5895) Diagnostic Spirometer (per 21 CFR 868.1840) Puritan-Bennett 7200a Ventilator K902506 Puritan-Bennett 840 Ventilator K970460 lnfrasonics Adult Star Ventilator K905272 Drager Evita 4 Ventilator K961687 Respironics BiPAP Vision K982454 Description of Device Modification: Esprit Respiratory Mechanics is a diagnostic tool that enables a clinician to take dynamic and static measurements of a patient’s lung parameters. The following maneuvers can be perfo"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023350",
+   "dst": "K961687",
+   "dst_name": "EVITA 4",
+   "page": 1,
+   "context": "Devices: Respironics, California Inc. 2271 Cosmos Court Carlsbad, CA. 92009 Mary Funk Regulatory Affairs Project Manager Phone Number: (760) 918-7328 Fax Number: (760) 918-0169 November 5, 2002 Esprit Ventilator with Respiratory Mechanics Class I1 Continuous Ventilator (per 21 CFR 868.5895) Diagnostic Spirometer (per 21 CFR 868.1840) Puritan-Bennett 7200a Ventilator K902506 Puritan-Bennett 840 Ventilator K970460 lnfrasonics Adult Star Ventilator K905272 Drager Evita 4 Ventilator K961687 Respironics BiPAP Vision K982454 Description of Device Modification: Esprit Respiratory Mechanics is a diagnostic tool that enables a clinician to take dynamic and static measurements of a patient’s lung parameters. The following maneuvers can be performed using Esprit Respiratory Mecha"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023350",
+   "dst": "K970460",
+   "dst_name": "NELLCOR PURITAN BENNETT, 840 VENTILATOR SYSTEM (MODEL 840)",
+   "page": 1,
+   "context": "mation: Contact: Date Prepared: Product Name: Classification: Predicate Devices: Respironics, California Inc. 2271 Cosmos Court Carlsbad, CA. 92009 Mary Funk Regulatory Affairs Project Manager Phone Number: (760) 918-7328 Fax Number: (760) 918-0169 November 5, 2002 Esprit Ventilator with Respiratory Mechanics Class I1 Continuous Ventilator (per 21 CFR 868.5895) Diagnostic Spirometer (per 21 CFR 868.1840) Puritan-Bennett 7200a Ventilator K902506 Puritan-Bennett 840 Ventilator K970460 lnfrasonics Adult Star Ventilator K905272 Drager Evita 4 Ventilator K961687 Respironics BiPAP Vision K982454 Description of Device Modification: Esprit Respiratory Mechanics is a diagnostic tool that enables a clinician to take dynamic and static measurements of a patient’s lung parame"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023350",
+   "dst": "K982454",
+   "dst_name": "BIPAP VISION VENTILATORY SUPPORT",
+   "page": 1,
+   "context": "Inc. 2271 Cosmos Court Carlsbad, CA. 92009 Mary Funk Regulatory Affairs Project Manager Phone Number: (760) 918-7328 Fax Number: (760) 918-0169 November 5, 2002 Esprit Ventilator with Respiratory Mechanics Class I1 Continuous Ventilator (per 21 CFR 868.5895) Diagnostic Spirometer (per 21 CFR 868.1840) Puritan-Bennett 7200a Ventilator K902506 Puritan-Bennett 840 Ventilator K970460 lnfrasonics Adult Star Ventilator K905272 Drager Evita 4 Ventilator K961687 Respironics BiPAP Vision K982454 Description of Device Modification: Esprit Respiratory Mechanics is a diagnostic tool that enables a clinician to take dynamic and static measurements of a patient’s lung parameters. The following maneuvers can be performed using Esprit Respiratory Mechanics: 0 Vital Capacity 0 Maximum"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K023559",
+   "dst": "K003894",
+   "dst_name": "ORACLE ORAL MASK",
+   "page": 1,
+   "context": "October 17,2002 I 51 O(k) Summary of Safety and Effectiveness Information I Trade Name: Model: HC451A Classification Name: Predicate Device: Fisher & Paykel Healthcare Oracle Oral Mask Accessorv to Noncontinuous ventilator (IPPB) - 73 BZD Anesthesiology Devices, 21 CFR 9868.5905 (Class II) Fisher & Paykel Healthcare, LTD., Oracle Oral Mask, Model 900HC451, KO03894 This summary of 510(k) safety and effectiveness information is being submitted in accordance with the requirements of 21 CFR 5807.92: (a)(l) - (a)(3) Refer to information above and concludinq this summaw, fa)(4) Description of the Device The Oracle Oral Mask is an accessory to a Noncontinuous ventilator (IPPB) according to 21 CFR 9868.5905. It constitutes the patient to ventilator interface in a noncontinuous ven"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K031047",
+   "dst": "K961783",
+   "dst_name": "SULLIVAN VPAP II ST NASAL VPAP SYSTEM",
+   "page": 1,
+   "context": "9 2003 Mirage Vista” Mask Traditional 51 O(k) Premarket Notification 3 510(K) SUMMARY Submitter Name: Submitter Address: Contact Person: Phone Number: Fax Number: Date Prepared: Device Trade Name: Device Common Name/ Classification Name: Predicate Devices: 510(k) SUMMARY-Mirage VistaTU Mask ResMed Corp. 14040 Danielson Street, Poway CA 92064-6857 USA Roger Kotter, QA&RA Director (858) 746 2400 (858) 746 2900 March 28, 2003 Mirage VistaTM Mask Nasal Mask Modular Nasal Mask K961783 Device Description: The Mirage VistaTM mask has an unobtrusive design, which increases the patient’s field of vision and allows wearing of glasses whilst the mask is in use. The new design reduces the perceived size and weight of the mask when compared to the predicate mask. Intended Us"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K031896",
+   "dst": "K022465",
+   "dst_name": "MODIFICATION TO NASAL-AIRE",
+   "page": 1,
+   "context": "NT 2. 868.5905 BZD Classification Name: 1. Ventilator, Continuous, Non-Life Supporting 2. Accessory to Continuous Ventilator Predicate Devices: K982454, BiPAP Vision Ventilatory Support System and Whisper Swivel exhalation port as cleared with use for this ventilator; Manufacturer: Respironics Inc. K003075, Knightstar 330 Ventilator and Breeze Sleepgear Interface with Nasal Pillows Assembly as interface recommended for use by the manufacturer with this ventilator; Manufacturer: Puritan-Bennett. K022465, Nasal-Aire II, Innomed Technologies K023244, Mirage Full Face Mask Series, ResMed, Inc. Device Description - Nasal-Aire Criticial Care is ventilator interface accessory intended for use with a CPAP or Bi-Level device to provide noninvasive ventilation in adult patients for the treatment of"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K031896",
+   "dst": "K023244",
+   "dst_name": "MIRAGE FULL FACE MASK SERIES 2",
+   "page": 1,
+   "context": "ntilator, Continuous, Non-Life Supporting 2. Accessory to Continuous Ventilator Predicate Devices: K982454, BiPAP Vision Ventilatory Support System and Whisper Swivel exhalation port as cleared with use for this ventilator; Manufacturer: Respironics Inc. K003075, Knightstar 330 Ventilator and Breeze Sleepgear Interface with Nasal Pillows Assembly as interface recommended for use by the manufacturer with this ventilator; Manufacturer: Puritan-Bennett. K022465, Nasal-Aire II, Innomed Technologies K023244, Mirage Full Face Mask Series, ResMed, Inc. Device Description - Nasal-Aire Criticial Care is ventilator interface accessory intended for use with a CPAP or Bi-Level device to provide noninvasive ventilation in adult patients for the treatment of respiratory insufficiencies or obstructive sl"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040540",
+   "dst": "K010608",
+   "dst_name": "MODIFICATION TO LAP TOP VENTILATOR (LTV)",
+   "page": 2,
+   "context": "ssure Control and Pressure Support. The ventilator is suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The LTV 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 510(k) Clearance Manufacturer LTV 1000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, Inc. Institutional and Transport Colton, CA/Mpls., MN settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. T-Bird AVS K981971 Bird Products, Palm Springs, CA"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K001646",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATOR SYSTEM WITH NEOMODE OPTION",
+   "page": 2,
+   "context": "on HAMILTON MEDICAL- AG Doe-No,: E3SSIO3Part 2 Dec-Title GALILEO Gold Ventilator Modification Part 10 -510(k) Summary Dec.-Version: 1.1I Doc~~~~~~~~~~~~~~~~~~~~~~~~~.-Veritle PREDICATE DEVICE IDENTIFICATION Legally marketed devices to which equivalence is being claimed Predicate Device Manufacturer 5 10(k) number(s) Classification DuoPAP and APRV modes RAPHAEL HAMILTON Medical K02267 Ventilator, Continuous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Ser"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K010093",
+   "dst_name": "NON-INVASIVE VENTILATION NIV OPTION, MODEL 84 14 474",
+   "page": 2,
+   "context": "ion Part 10 -510(k) Summary Dec.-Version: 1.1I Doc~~~~~~~~~~~~~~~~~~~~~~~~~.-Veritle PREDICATE DEVICE IDENTIFICATION Legally marketed devices to which equivalence is being claimed Predicate Device Manufacturer 5 10(k) number(s) Classification DuoPAP and APRV modes RAPHAEL HAMILTON Medical K02267 Ventilator, Continuous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Servo 300A Siemens-Elema AB K970839 Ventilator, Continuous, Facility Use per 21 CFR 868.5895"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K010925",
+   "dst_name": "SERVOI VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "page": 2,
+   "context": "marketed devices to which equivalence is being claimed Predicate Device Manufacturer 5 10(k) number(s) Classification DuoPAP and APRV modes RAPHAEL HAMILTON Medical K02267 Ventilator, Continuous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Servo 300A Siemens-Elema AB K970839 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Evita 4 Draeger K980642 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 TRC feature Evita 4 Draege"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K022132",
+   "dst_name": "SERVO VENTILATOR SYSTEM, MODEL 64 87 800 E407E",
+   "page": 2,
+   "context": "devices to which equivalence is being claimed Predicate Device Manufacturer 5 10(k) number(s) Classification DuoPAP and APRV modes RAPHAEL HAMILTON Medical K02267 Ventilator, Continuous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Servo 300A Siemens-Elema AB K970839 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Evita 4 Draeger K980642 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 TRC feature Evita 4 Draeger K992608"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K970839",
+   "dst_name": "SERVO VENTILATOR 300A",
+   "page": 2,
+   "context": "ication DuoPAP and APRV modes RAPHAEL HAMILTON Medical K02267 Ventilator, Continuous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Servo 300A Siemens-Elema AB K970839 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Evita 4 Draeger K980642 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 TRC feature Evita 4 Draeger K992608 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 C. Danuser Page 3 of7 200"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040574",
+   "dst": "K980642",
+   "dst_name": "EVITA 4 (8411900)",
+   "page": 2,
+   "context": "ous, AG Facility Use per 21 CFR 868.5895 Puritan Bennett 840 Nellcor Puritan-Bennett K984535, K001646 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 NIV mode Evita 4 Draeger K010093 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 MMV* mode Siemens Servo' Siemens-Elema AB K010925, K022132 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Siemens Servo 300A Siemens-Elema AB K970839 Ventilator, Continuous, Facility Use per 21 CFR 868.5895 Evita 4 Draeger K980642 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 TRC feature Evita 4 Draeger K992608 Ventilator, Continuous, Medizintechnik AG Facility Use per 21 CFR 868.5895 C. Danuser Page 3 of7 2004-01-29 CVC I hb V~HAMILO UWIC~ALAG CONFIDETA"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040790",
+   "dst": "K002881",
+   "dst_name": "VENTILATOR, CONTINUOUS (RESPIRATOR), MODEL LTV 1000",
+   "page": 2,
+   "context": "sure Control and Pressure Support. The ventilator is suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The L-V 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 510(k) Clearance Manufacturer LTV 1000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, Inc. with breathing Institutional and Transport Colton, CA/MpIs., MN circuits. settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. Allegiance Airlife K000697 Allegiance Healthcare Heated Ventilator Corporation Breathing Circuits The LTV 1000 Ventilator with breathing circuits, previously cleared for homecare use and for institutional and tran"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040790",
+   "dst": "K010608",
+   "dst_name": "MODIFICATION TO LAP TOP VENTILATOR (LTV)",
+   "page": 2,
+   "context": "e Support. The ventilator is suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The L-V 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 510(k) Clearance Manufacturer LTV 1000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, Inc. with breathing Institutional and Transport Colton, CA/MpIs., MN circuits. settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. Allegiance Airlife K000697 Allegiance Healthcare Heated Ventilator Corporation Breathing Circuits The LTV 1000 Ventilator with breathing circuits, previously cleared for homecare use and for institutional and transport settings, is now b"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K040790",
+   "dst": "K032226",
+   "dst_name": "LTV-1000 VENTILATOR",
+   "page": 2,
+   "context": "s suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The L-V 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 510(k) Clearance Manufacturer LTV 1000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, Inc. with breathing Institutional and Transport Colton, CA/MpIs., MN circuits. settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. Allegiance Airlife K000697 Allegiance Healthcare Heated Ventilator Corporation Breathing Circuits The LTV 1000 Ventilator with breathing circuits, previously cleared for homecare use and for institutional and transport settings, is now being submitted for clearanc"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K042403",
+   "dst": "K023284",
+   "dst_name": "MIRAGE FULL FACE MASK SERIES 2",
+   "page": 1,
+   "context": "VP US Clinical & Regulatory Affairs Phone Number: (858) 746 2238 Fax Number: (858) 746 2915 Date Prepared: September 1,2004 Device Trade Name: Mirage Swift Device Common Name/ Nasal Mask Classification Name: Predicate Devices: K032433 Mirage Swift (Nasal Jacks) K980721 Mirage Nasal Mask (cleared as part of the Sullivan Autoset Nasal CPAP Submission) K032916 Mirage Activa Multiple Patient Reuse K023244 MIRAGE FULL FACE SERIES 2 (Cidex Plus, Cidex OPA) K023306 MIRAGE FULL FACE SERIES 2 (Sterrad) K023284 MIRAGE FULL FACE SERIES 2 (High Level Thermal) Device Description: The Mirage Swift is designed for adult patients for the delivery of non-invasive ventilatorysupport using continuous positive airway pressure or bi-level therapy. It is intended for multiplepatient re-use and is minimally obt"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K042403",
+   "dst": "K023306",
+   "dst_name": "MIRAGE FULL FACE MASK SERIES 2",
+   "page": 1,
+   "context": "92064-6857 USA Contact Person: David D'Cruz, VP US Clinical & Regulatory Affairs Phone Number: (858) 746 2238 Fax Number: (858) 746 2915 Date Prepared: September 1,2004 Device Trade Name: Mirage Swift Device Common Name/ Nasal Mask Classification Name: Predicate Devices: K032433 Mirage Swift (Nasal Jacks) K980721 Mirage Nasal Mask (cleared as part of the Sullivan Autoset Nasal CPAP Submission) K032916 Mirage Activa Multiple Patient Reuse K023244 MIRAGE FULL FACE SERIES 2 (Cidex Plus, Cidex OPA) K023306 MIRAGE FULL FACE SERIES 2 (Sterrad) K023284 MIRAGE FULL FACE SERIES 2 (High Level Thermal) Device Description: The Mirage Swift is designed for adult patients for the delivery of non-invasive ventilatorysupport using continuous positive airway pressure or bi-level therapy. It is intended for"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K050171",
+   "dst": "K962517",
+   "dst_name": "MODEL 7700 QUANTUM PRESSURE SUPPORT VENTILATOR PSV",
+   "page": 1,
+   "context": "(After April 1, 2005): 506 Garden Street 6601 Lyons Road Suites 61-84 Greensburg, PA 15601 Coconut Creek, FL 33073 Classification Name 21 CFR 868.5895, 73 MNS Common/Usual Name Ventilator, continuous, non-life supporting (accessory to) Proprietary Name IT Nasal Mask Predicate Devices K991648 -- Respironics Contour Nasal Mask K974453 - Respironics Comfort Classic Nasal Mask K984428 -- ResMed Mirage Nasal Mask K984407 -- Respironics Bipap Harmony S/T, and accessories cleared with said ventilator K962517 - HealthDyne Model 7700 Quantum Pressure Support Ventilator and accessories cleared with said ventilator Page 1"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K051263",
+   "dst": "K021573",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATIOR SYSTEM WITH VOLUME VENTILATION PLUS OPTION",
+   "page": 3,
+   "context": "with active humidification. The patients should be haemodynamically stable with adequate oxygenation and spontaneous breathing. Predicate Devices: 510(k) Number Device Name Manufacturer K980642 Evita 4, Evita 2dura Drgtger Medical AG & Co. KGaA K(983219 Evita 4, Evita 2dura Drnger Medical AG & Co. KGaA K992608 Evita 4, Evita 2dura Drger Medical AG & Co. KGaA K010093 Evita 4, Evita 2dura Drfger Medical AG & Co. KGaA K040574 Galileo Gold Hamilton Medical AG K970839 Servo' Maquet Critical Care AB K021573 840 Tyco NPB Substantial Equivalence: The intended use of the SmartCare I PS option for the EvitaXL intensive care ventilator is comparable to the predicate devices. All devices offer functions that use measured respiratory data to directly interact with the patient and adjust certain parame"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K051263",
+   "dst": "K040574",
+   "dst_name": "GALILEO GOLD",
+   "page": 3,
+   "context": "15 and 35 kg (33.1 and 77.8 lbs) must be endotracheally intubated and ventilated with active humidification. The patients should be haemodynamically stable with adequate oxygenation and spontaneous breathing. Predicate Devices: 510(k) Number Device Name Manufacturer K980642 Evita 4, Evita 2dura Drgtger Medical AG & Co. KGaA K(983219 Evita 4, Evita 2dura Drnger Medical AG & Co. KGaA K992608 Evita 4, Evita 2dura Drger Medical AG & Co. KGaA K010093 Evita 4, Evita 2dura Drfger Medical AG & Co. KGaA K040574 Galileo Gold Hamilton Medical AG K970839 Servo' Maquet Critical Care AB K021573 840 Tyco NPB Substantial Equivalence: The intended use of the SmartCare I PS option for the EvitaXL intensive care ventilator is comparable to the predicate devices. All devices offer functions that use measured"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K051263",
+   "dst": "K970839",
+   "dst_name": "SERVO VENTILATOR 300A",
+   "page": 3,
+   "context": "endotracheally intubated and ventilated with active humidification. The patients should be haemodynamically stable with adequate oxygenation and spontaneous breathing. Predicate Devices: 510(k) Number Device Name Manufacturer K980642 Evita 4, Evita 2dura Drgtger Medical AG & Co. KGaA K(983219 Evita 4, Evita 2dura Drnger Medical AG & Co. KGaA K992608 Evita 4, Evita 2dura Drger Medical AG & Co. KGaA K010093 Evita 4, Evita 2dura Drfger Medical AG & Co. KGaA K040574 Galileo Gold Hamilton Medical AG K970839 Servo' Maquet Critical Care AB K021573 840 Tyco NPB Substantial Equivalence: The intended use of the SmartCare I PS option for the EvitaXL intensive care ventilator is comparable to the predicate devices. All devices offer functions that use measured respiratory data to directly interact wit"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K051767",
+   "dst": "K010608",
+   "dst_name": "MODIFICATION TO LAP TOP VENTILATOR (LTV)",
+   "page": 2,
+   "context": "Pressure Control and Pressure Support. The ventilator is suitable for use in institutional, home and transport settings. 1.6 EQUIVALENCE TO PREDICATE DEVICE(S) The LTV 1000 Ventilator listed modifications are substantially equivalent to the following listed devices: Predicate Device 10kClarance Manufacturer LTV 1 000 Ventilator K981371 - Initial clearance for Pulmonetic Systems, -Inc. Institutional and Transport Colton, CA/Mpls., MN settings. K984056 - Homecare settings. K002881 - Enhancements. K010608 - Lap Top Monitor. K032226 - 5 kg Patient Application. Engstrom K041775- Initial clearance GE Datex-Ohmedla Carestation The LTV 1 000 ventilator, previously cleared for homecare use and for institutional and transport settings, is now being submitted for clearance with the listed modificatio"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K060647",
+   "dst": "K051767",
+   "dst_name": "LTV 1000 VENTILATOR",
+   "page": 2,
+   "context": "ort. The ventilator is suitable for use in institutional, home and transport settings. EQUIVALENCE TO PREDICATE DEVICE(S) The modified LTV 1000 with the modifications listed is substantially equivalent to the predicate device(s) listed. Predicate Device 510(k) Clearance Manufacturer iVent 201 Portable K01 1957 Versamed Corporation Ventilator 2 Blue Hill Plaza Pearl River, NY 10965 AVEA Ventilator K022674 Bird Products Corporation 1100 Bird Center Drive Palm Springs, CA 92262 LTV 1000 Ventilator K051767 Pulmonetic Systems, Inc. 17400 Medina Road, Suite 100 Minneapolis, MN 55447"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K061653",
+   "dst": "K040506",
+   "dst_name": "FLEXIFIL SERIES HC431 FULL FACE MASK, MODEL HC431A",
+   "page": 1,
+   "context": "49 4054 70 2-468 Device Name: Proprietary name: Weinmann SOYALA Full Face Mask Common Name: Face mask Classification Name: Accessory to non-continuous ventilator Device Classification: 21 CFR 868.5905, Class 11, Product Code BZD Predicate Device Equivalence: Substantial equivalence is claimed to ResMed Mirage Full Face Mask Series 2, cleared for commercial distribution per K023244, Weinmann SOMNOmnask, K01 3738, Weinmann SOYALA, K060405, and Fisher & Paykel Flexifit Series HC431 Full Face Mask, K040506. 5-1"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K063404",
+   "dst": "K061627",
+   "dst_name": "MODIFICATION TO I VENT 201",
+   "page": 1,
+   "context": "te) 66 71 712 and (factory installed) 66 72 289 Device Classification ________ Common Name Classification Class Regulation Number Number _________ Ventilator, Continuous (Respirator) 73 CBK III 868.5895 Predicate Device Identification Legally marketed devices to which equivalence is being claimed 510(k) # SERVO-i Ventilatory System K041223 Aestiva/5 MR] GE, Datex-Ohineda Inc. K050055 IC-2A B ic-med Devices Inc. K896380 MVP-lIO Bio-rned Devices Inc. K896391 Vent 201 VersaMed Medical Systems Inc. K06 1627"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K063650",
+   "dst": "K001646",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATOR SYSTEM WITH NEOMODE OPTION",
+   "page": 1,
+   "context": "IJ ~ 2200 Faraday Avenue Carlsbad, CA 92008 Tele: 925 463-4427 Fax: 925 463-4020 510(k) Summary Submitted by: Puritan-Bennett Corporation FEB 1 5 2007 2200 Faraday Avenue Carlsbad, CA 92008 Company Contact: James Patrick Garvey II, RRT Regulatory Affairs Manager (925) 463-4479 (925) 463-4020 - FAX Date Summary Prepared: December 8, 2006 Product Name: 840 Ventilator System with Respiratory Mechanics Common Name: Ventilator Classification: Class II; Continuous Ventilator per 21 CFR §868.5895 Legally Marketed · Puritan-Bennett Corp. 840 Ventilator System, (Unmodified) Device: K970460 * Puritan-Bennett Corp. 840 Ventilator System with Bilevel Ventilation, K984535 * Puritan-Bennett Corp. 840 Ventilator System with Neomode Option, KOO 1646 a Puritan-Bennett Corp. 840 Ventilator System with Volum"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K063650",
+   "dst": "K021573",
+   "dst_name": "PURITAN-BENNETT 840 VENTILATIOR SYSTEM WITH VOLUME VENTILATION PLUS OPTION",
+   "page": 1,
+   "context": ": December 8, 2006 Product Name: 840 Ventilator System with Respiratory Mechanics Common Name: Ventilator Classification: Class II; Continuous Ventilator per 21 CFR §868.5895 Legally Marketed · Puritan-Bennett Corp. 840 Ventilator System, (Unmodified) Device: K970460 * Puritan-Bennett Corp. 840 Ventilator System with Bilevel Ventilation, K984535 * Puritan-Bennett Corp. 840 Ventilator System with Neomode Option, KOO 1646 a Puritan-Bennett Corp. 840 Ventilator System with Volume Ventilation Plus, K021573 a Puritan-Bennett Corp. 840 Ventilator System with Proportional Assist Ventilation, K053388 Predicate Devices: * Puritan-Bennett Corp. 840 Ventilator System, K970460 * Puritan Bennett 760 Ventilator, K984379 * Puritan Bennett 7200 Ventilator, K930017 * Infrasonics Adult Star Ventilator, K922"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K063650",
+   "dst": "K062093",
+   "dst_name": "AVEA VENTILATOR",
+   "page": 1,
+   "context": "tilation, K984535 * Puritan-Bennett Corp. 840 Ventilator System with Neomode Option, KOO 1646 a Puritan-Bennett Corp. 840 Ventilator System with Volume Ventilation Plus, K021573 a Puritan-Bennett Corp. 840 Ventilator System with Proportional Assist Ventilation, K053388 Predicate Devices: * Puritan-Bennett Corp. 840 Ventilator System, K970460 * Puritan Bennett 760 Ventilator, K984379 * Puritan Bennett 7200 Ventilator, K930017 * Infrasonics Adult Star Ventilator, K922654 * Viasys Avea Ventilator, K062093 DEVICE DESCRIPTION The Respiratory Mechanics Option enables the 840 Ventilator System to implement three new respiratory maneuvers, and permits the device to calculate and display ten additional measurements for use in the assessment of mechanical pulmonary functions of the patient's airways"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K070594",
+   "dst": "K021981",
+   "dst_name": "IVENT 201 PORTABLE VENTILATOR",
+   "page": 3,
+   "context": "ing (Bench testing) verified that the Palmtop Models PTV 8/10 meet specified performance requirements and that the devices are substantially equivalent to the predicate devices listed below. Predicate Device 510(k) Clearance Manufacturer LTV 1200 K060647 VIASYS Ventilator Healthcare/Pulmonetic Systems, Inc. 17400 Medina Road, Suite 100 Minneapolis, MN 55447 LTV 1000 K981371 VIASYS Ventilator K984056 Healthcare/Pulmonetic Systems, Inc. 17400 Medina Road, Suite 100 Minneapolis, MN 55447 iVent 201 K021981 Versamed Corporation Portable 2 Blue Hill Plaza Ventilator with Pearl River, NY 10965 Pulse Oximeter TBird VELA K032451 VIASYS Healthcare/Bird Ventilator Products Corporation 1100 Bird Center Drive Palm Springs, CA 92262"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K070594",
+   "dst": "K032451",
+   "dst_name": "BIRD TBIRD VELA VENTILATOR",
+   "page": 3,
+   "context": "es are substantially equivalent to the predicate devices listed below. Predicate Device 510(k) Clearance Manufacturer LTV 1200 K060647 VIASYS Ventilator Healthcare/Pulmonetic Systems, Inc. 17400 Medina Road, Suite 100 Minneapolis, MN 55447 LTV 1000 K981371 VIASYS Ventilator K984056 Healthcare/Pulmonetic Systems, Inc. 17400 Medina Road, Suite 100 Minneapolis, MN 55447 iVent 201 K021981 Versamed Corporation Portable 2 Blue Hill Plaza Ventilator with Pearl River, NY 10965 Pulse Oximeter TBird VELA K032451 VIASYS Healthcare/Bird Ventilator Products Corporation 1100 Bird Center Drive Palm Springs, CA 92262"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K071526",
+   "dst": "K032451",
+   "dst_name": "BIRD TBIRD VELA VENTILATOR",
+   "page": 2,
+   "context": "Description of Noninvasive Pulse Oximeter The Uni-Vent ~ Model 73 1 EMV internal pulse oximeter connects to the patient using noninvasive sensors to monitor oxygen saturation and pulse rate. Pulse oximeter specific alarms and instructions are presented to the operator through the user interface. Isolated DC power is provided to the pulse oximeter. Intended Use: The Model 73 1 EMV (EMV) is indicated for use in the management of adolescent and adult patients weighing Ž30 kg with acute or chronic respiratory failure or during resuscitation by providing continuous positive- pressure ventilation. It is appropriate for use in hospitals, outside the hospital, during transport, and in austere environments where it may be exposed to rain, dust, rough handling and extremes in temperature and humidit"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K071526",
+   "dst": "K061627",
+   "dst_name": "MODIFICATION TO I VENT 201",
+   "page": 2,
+   "context": "n and by first responders under the direction of skilled medical care providers. Substantial Equivalence: The Impact, Model 73 1 EMV, is substantially equivalent to the predicate devices listed below: Predicate Devices: 1 . Impact Uni-Vent- Eagle, Model 754. 5 10(k) #K870861/B and K93 1473. 2. Impact Uni-Vent Model 730. 5 10(k) #K032386 3. Impact Uni-Vent Model 73X. 5 10O(k) #K05 1476. 4. Masimo SET RAD 5 MS-l I PCB 5 10(k) #K033296, Masimo Corp, Irvine, CA 5. Versamed SmartVentTm 201, 5 10(k) #K06 1627, Versamed Medical Systems, Inc., Pearl River, NY 6. Vela - Bird Products, Palm Springs, CA, 5 10(k) # K03245 1 Page 2 of 2"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K072009",
+   "dst": "K071163",
+   "dst_name": "WEINMANNCOMFORT 2, MODEL WM 27600 AND WEINMANNAQUA, MODEL WM 27603",
+   "page": 1,
+   "context": "Dr. Ralf Egenolf Phone: 011 49 40 54 70 2 -370 Fax: 011 49 40 54 70 2 - 468 Device Name: Proprietary name: WEINMANNcompact Common Name: CPAP Device Classification Name: Noncontinuous ventilator Device Classification: 21 CFR 868.5905, Class II, Product Code BZD Predicate Device Equivalence: Substantial equivalence is claimed to ResMed S7 Elite CPAP System, cleared for commercial distribution per K013909 and WEINMANNcomfort 2, cleared for commercial distribution (since the original submittal) per K071163. Device Description: The WEINMANNcompact is a microprocessor controlled blower-based device that generates a Continuous Positive Airway Pressure (CPAP) from 4 to 20 cmH 20 for the treatment of Obstructive Sleep Apnea (OSA). The system includes the flow generator, patient tubing, external pow"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K072590",
+   "dst": "K062093",
+   "dst_name": "AVEA VENTILATOR",
+   "page": 1,
+   "context": "uality Assurance Phone: 949-360-8368 x232 Fax: 949-360-1924 Date Prepared: September 13, 2007 Device Trade Name: Inspiration® Ventilator System Common Name: Continuous Ventilator Device Class: Class 11 per 21 CFR 868.5895 Product Code: 73 CBK Predicate Device: The predicate devices are: Manufacturer/Product 510(k) Classification eVent Medical, Inc. K051550 Class 11, Inspiration® Ventilator System Continuous Ventilator (technological equivalence) Per 21 CFR 868.5895 VIASYS Respiratory Care, Inc. K062093 Class I1, AVEA Ventilator Continuous Ventilator (Heliox use equivalence) Per 21 CFR 868.5895 D-I"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K080439",
+   "dst": "K042184",
+   "dst_name": "GOODKNIGHT H20, MODEL M-114600-00",
+   "page": 3,
+   "context": "Predicate Device Equivalence The Puritan Bennett Sandman Info is equivalent to the Puritan Bennett GoodKnight 420S CPAP device (K020886), with the optional additive functionality of the Puritan Bennett GoodKnight H20 heated humidifier (K042184). The Puritan Bennett Sandman Auto is equivalent to the Puritan Bennett GoodKnight 420E CPAP device (K020886), with the optional additive functionality of the Puritan Bennett GoodKnight H20 heated humidifier (K042184). The Puritan Bennett Sandman Info and Puritan Bennett Sandman Auto, like t"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K082237",
+   "dst": "K041819",
+   "dst_name": "GOODKNIGHT 425, MODELM-114500-00",
+   "page": 1,
+   "context": "The Sandman Duo and Sandman Duo ST are designed to deliver Continuous Positive Airway Pressure to patients suffering from obstructive sleep apnea. They may be configured with optional humidification. Predicate Device Equivalence The Sandman Duo and the Sandman Duo ST are equivalent to the Puritan Bennett Sandman Intro (K071 575) for all aspects except the Bilevel mode, to the Puritan Bennett Sandman Info (K080439) only for detection of apneas and hypopneas, the Puritan Bennett GoodlKnight 425 (K041819) for the Bilevel mode. The Sandman Duo ST is equivalent to the Puritan Bennett GoodlKnight 425 ST (K050072) for the Bilevel mode including optional backup frequency. Covidien PROPRIETARY & CONFIDENTIAL Page 74"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090804",
+   "dst": "K072993",
+   "dst_name": "REUSABLE HEADREST WITH NASAL SEAL",
+   "page": 1,
+   "context": "de Name: Nasal-Aire II Pediatric Common/Usual Name: Accessory to Non-Continuous Ventilator Classification Name: Non-Continuous (Respirator) Ventilator (21 CFR 868.5905, Product Code BZD) Predicate Devices: 5 10(k) Number: K060105 Manufacturer: ResMed Trade Name: Kidsta Mask System 5 10(k) Number: K022465 Manufacturer: Innorned Technologies Inc.. Trade Name: Nasal-Aire II 5 1 0(k) Number: K(002001 Manufacturer: Puritan Bennett Corp. Trade Name: Breeze Sleepgear with Nasal Pillows 5 10(k) Number: K072993 Manufacturer: AEIOMed, Inc. Trade Name: Reusable Headrest® with Nasal Seal Page 5. 1"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K011957",
+   "dst_name": "IVENT 201 PORTABLE VENTILATOR",
+   "page": 1,
+   "context": "tor, Home Use Classification: II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K021981",
+   "dst_name": "IVENT 201 PORTABLE VENTILATOR",
+   "page": 1,
+   "context": "Use Classification: II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K042468",
+   "dst_name": "IVENT 201 PORTABLE VENTILATOR",
+   "page": 1,
+   "context": "ification: II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K052554",
+   "dst_name": "MODIFICATION TO: IVENT 201 PORTABLE VENTILATOR",
+   "page": 1,
+   "context": ": II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K053270",
+   "dst_name": "IVENT 201",
+   "page": 1,
+   "context": "uct Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K061627",
+   "dst_name": "MODIFICATION TO I VENT 201",
+   "page": 1,
+   "context": "CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K070594",
+   "dst_name": "PALMTOP VENTILATOR, MODELS PTV-8, PTV-10",
+   "page": 1,
+   "context": "etermined. Common: Ventilator, Continuous, Facility Use; Continuous, Ventilator, Home Use Classification: II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K073694",
+   "dst_name": "IVENT 2001 MRI CONDITIONAL",
+   "page": 1,
+   "context": "Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K090888",
+   "dst": "K981668",
+   "dst_name": "SMARTVENT 201 PORTABLE VENTILATOR",
+   "page": 1,
+   "context": ", Ventilator, Home Use Classification: II Product Code: CBK; NOU CFR Section: 868.5895 Ill. Predicate Devices The HT70 is substantially equivalent to the following legally marketed predicate devices: * NEWPORT HT50® Ventilator cleared under K992133 and K082724; · Pulmonetic Systems LTV® 1000 cleared under K981371, K984056, K002881, K010608, K032226, K040540, and K051767; a Pulmonetic Systems PALMTop PTV Models 8/10 cleared under K070594; and * Versarmed Medical Systems iVENTIM 201 cleared under K981668, K01 1957, K021981, K042468, K052554, K053270, K061627, and K073694. ht70sub -032609"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K093632",
+   "dst": "K072412",
+   "dst_name": "OPTION SMARTCARE FOR EVITAXL,SMARTCARE KIT CAPNO PACKAGE, CO2 SENSOR CAPNOSMART, MODELS 8415941, 8415942, 6871500",
+   "page": 2,
+   "context": "tem Workstation Neonatal Care is equivalent to Babylog 8000 and Evita XL Neo. Both intensive-therapy ventilators are intended to be used for neonates. The Evita XL ventilator is also used for the ventilation of pediatric patients. Legally Marketed Device to which Substantial Equivalence is claimed: 510(k) number Trade name _ Company K903089, Babylog 8000 plus Dr~ger Medical AG & Co. KG K926292, K9741 76 K961687, Evita XIL Dr~ger Medical AG & Co. KG K9832 19, K980642 K992608, KOI10093, KO0i1263, K072412 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Executive Summary This documentation covers the Infinity Acute Care System Workstation Neonatal Care as part of the Infinity Acute Care System (1ACS). The Infinity Acute Care System (IACS) is a modular and flexible solution for the ac"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K093632",
+   "dst": "K992608",
+   "dst_name": "ATC OPTION FOR EVITA 2 DURA AND EVITA 4",
+   "page": 2,
+   "context": "f the Infinity Acute Care System Workstation Neonatal Care is equivalent to Babylog 8000 and Evita XL Neo. Both intensive-therapy ventilators are intended to be used for neonates. The Evita XL ventilator is also used for the ventilation of pediatric patients. Legally Marketed Device to which Substantial Equivalence is claimed: 510(k) number Trade name _ Company K903089, Babylog 8000 plus Dr~ger Medical AG & Co. KG K926292, K9741 76 K961687, Evita XIL Dr~ger Medical AG & Co. KG K9832 19, K980642 K992608, KOI10093, KO0i1263, K072412 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Executive Summary This documentation covers the Infinity Acute Care System Workstation Neonatal Care as part of the Infinity Acute Care System (1ACS). The Infinity Acute Care System (IACS) is a modular and"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K102465",
+   "dst": "K024191",
+   "dst_name": "S7 ELITE AND AUTOSET SPIRIT CPAP SYSTEMS WITH RESLINK",
+   "page": 2,
+   "context": "nformation with Oximetry Module Proprietary name of new device: Philips Respironics BiPAP C Series (BiPAP AVAPS - BiPAP SIT) with Oximetry Module System Predicate Device Namne(s) and 5 10(k) I1. Respironics BiPAP AVAPS Ventilatory numbers: Support System (cleared under K092818 8- date of concurrence: January 22, 2010). 2. DeVilbiss DV5M SmartLink System (cleared under K082209 - date of concurrence: October 28, 2008). 3. Resmed S7 Elite and AutoSet Spirit CPAP Systems with ResLink (cleared under K024191 - date of concurrence: July 7, 2003). Reason for submission: IDevice modifications and additional accessories"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K103803",
+   "dst": "K081842",
+   "dst_name": "ENGSTROM CARESTATION, ENGSTROM PRO",
+   "page": 1,
+   "context": "BrUhschwein Phone: +4181660 6568 Fax: +41 81 660 6020 Preparation Date: 2011-11-02 Trade Name: HAMILTON-G5 Common Name: Continuous Ventilator Classification Name: Ventilator, Continuous, Facility Use (21 CFR 868.5895, Product Code: CBK) Legally marketed devices to HAMILTON-C2 (K092148) HAMILTON-GALILEO (KO80l81) which equivalence is being Driger EvitaXL with NeoFlow and SpO2 clamed: options (K072412, K983219) ARM PYTON ETT Cuff Pressure Regulator (K092733) GE Datex-Ohmedla Engstrdm Carestation (K081842) Device Description The HAMILTON-G5 is an electronically controlled pneumatic intensive care ventilator ventilation system. it uses oxygen and air or heliox to ventilate adults, pediatrics, infants, and neonates. It is powered by ac with battery backup to protect against power failure or uns"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K112271",
+   "dst": "K063036",
+   "dst_name": "OPUS HC482 DIRECT NASAL MASK",
+   "page": 1,
+   "context": "ducts, LLC 1142 N. Scenic Highway Lake Wales, FL 33853 Tel: (863) 676-5948 Email: aluc io?3 B products. corn Device Trade Name: 3B WillowTM Nasal Mask Device Common Name! Classification Name: Vented Nasal Mask Classification: 21 CFR §868.5905, 73 BZD (CLASS 11) Predicate Devices: Manufacturer: Resmed Trade Name: Mirage Swift 11 5 1 0(k) Number: K042403 Manufacturer: Respironics Trade Name: ComfortLite 2 5 1 0(k) Number: K082558 Manufacturer: Fisher & Paykel Trade Name: Opus 360 5 1 0(k) Number: K063036 Device Description: The 313WillowTM is a mask interface, of the nasal pillow variety, that directs airflow from a positive pressure device to the patient's nose. The mask is held in place with adjustable headgear that straps the mask to the face. The 313WillowTM is safe when used under the c"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K120726",
+   "dst": "K083526",
+   "dst_name": "TRILOGY 100 VENTILATOR",
+   "page": 1,
+   "context": "510(K) SUMMARY [as required by section 807.92(c)] FLIGHT 60 Ventilator 510(k) Number K IaO?2Z, JUL 6 2012 Date Prepared: March 7, 2012 Applicant's Name: Flight Medical Innovations Ltd. 13 Hamelacha Street North Industrial Park Lod 71520, Israel Tel: (972) 8-9235111 Fax:(972) 8-9236111 Company Contact: Yanir Shaked, RAQA Manager yanirs@flight-medical.com Contact Person: Shoshana (Shosh) Friedman, RAC Address: 1914 J N Pease P1., Charlotte, NC 28262 Telephone: 704-430-8695 or 704-899-0092 Fax: 704-899-0098 E-mail: shosh@pushmed.com Trade Name: FLIGHT 60 Ventilator Common & Classification Name: Continuous Ventilator Classification: Class II; product code 73 CBI( and NOU; regulation 21 CFR 868.5895 Classification and Review Panel: Anesthesiology Predicate Devices: * Flight 60 Ventilator, clear"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K121374",
+   "dst": "K013843",
+   "dst_name": "AUTOSET SPIRIT CPAP SYSTEM",
+   "page": 1,
+   "context": "rson: Ray Bruttomesso Tel: (617) 583-1375 Fax: (617) 401-3931 ray.brutomesso@Deshum.com Device Information: Trade Name: Zi Blower Common Name: CPAP System Classifcation Name: Non-Continuous (Respirator) Ventilator, 21 CFR § 868.5905 Device Class: Class II Predicate Devices: 5 10(k) Number: K100121 Manufacturer: AETOMed, Inc. Product Name: Model 300157 CPAP System 5 1 0(k) Number: K052597 Manufacturer: Hoffman Laboratories, LLC Product Name: Breathex Omega CPAP Device, Model 322 5 1 0(k) Number: K013843 Manufacturer: Resmed Corp. Product Name: Autoset Spirit CPAP System Device Description: The Z I Blower provides the patient with a continuous positive airway pressure (CPAP) flow ranging from 4-20 cndtO above ambient atmospheric pressure. The device consists of a flow generator and data inte"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K130171",
+   "dst": "K083526",
+   "dst_name": "TRILOGY 100 VENTILATOR",
+   "page": 1,
+   "context": "0098 E-mail: shosh~nushmed.com bosmatftlnushmed.com Trade Name: FLIGHT 60 Ventilator Common & Classification Name: Continuous Ventilator Classification: Class 11; product code 73 CBK and NOIJ; regulation 21 CFR 868.5895 Classification and Review Panel: Anesthesiology Predicate Devices: * Flight 60 Ventilator, cleared under K120726. manufactured by Flight Medical Innovations Ltd \" Vela Ventilator, cleared under K(032451, manufactured by Bird Products Corp. * Trilogy 100 Ventilator, cleared under K083526, manufactured by Respironics Inc. FLIGHT 60 Ventilator - Page 5-2"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K131901",
+   "dst": "K112271",
+   "dst_name": "3B WILLOW",
+   "page": 3,
+   "context": "jVolve Nasal Mask Series Section 6: 510(k) Summary Contraindications: None Clinical Test: None Technological Characteristics Comparison: A comparative table of the iVolvee alongside the three identified predicate devices indicates that the iVolve Mask Series is substantially equivalent with the other three with respect to the form, performance, materials, structures and the ventilation characteristics. The iVolve mask series, including the iVolve Nasal, iVolve Full Face, and iVolve N2, are identical to the identified predicate Willow device in material composition (i.e. silicone, molded plastic, and nylon fabric). Both the proposed devices and the predicate devices connect to a conventional air delivery hose between the mask and the positive airway pressure source via standard conical conn"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K143677",
+   "dst": "K082209",
+   "dst_name": "DEVILBISS DV5M SMARTLINK SYSTEM",
+   "page": 9,
+   "context": "Section 5.0 Page 6 of 11 Feature Predicate Device: Respironics A- Flex HT (K113068) Predicate Device: DeVilbiss DV53 Standard Plus CPAP, DeVilbiss DV54 Auto CPAP (K071689) Modified Device: DeVilbiss Intellipap2/DeVilbiss BLUE Remarks: Oximeter Function No oximeter option available The DeVilbiss DV53 Standard Plus CPAP, DeVilbiss DV54 Auto CPAP uses the DeVilbiss DV5M SmartLink Compliance Module (K082209) to connect an optional Nonin oximeter to log SpO2 and Pulse Rate at 4-second intervals. Not for diagnostic purposes. The modified DeVilbiss Intellipap2/DeVilbiss BLUE connects wirelessly (Bluetooth) to an optional Nonin Model 3150 WristOx2 oximeter (K102350) to log SpO"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K163127",
+   "dst": "K121225",
+   "dst_name": "HAMILTON-C2",
+   "page": 1,
+   "context": "bellavista A. General Company Information Date: 31-Jul-17 Trade Name: bellavista 1000 Common Name: Continuous ventilator, facility use Classification Name: Ventilator, continuous, facility use Submitter: IMTMEDICAL AG Gewerbestrasse 8 9470 Buchs SG Switzerland Name of contact: Mr. Beat Keller Phone: +41 81 750 66 99 FAX: +41 81 750 06 45 E-mail: keller@imt.ch Regulation Number: 21 CFR 868.5895 Class: II Product Code: CBK Predicate: HAMILTON-C2 (K121225) Reference devices: HAMILTON-G5 (K131774) COVIDIEN-PB 840 (K151252) DRAEGER-Oxylog 3000 plus (K103625) B. Device Description and Accessories The bellavista 1000 ventilator (hereafter referred to as “bellavista”) is designed for continuous ventilation of adult and pediatric patient"
+  },
+  {
+   "stratum": "new_only",
+   "src": "K201082",
+   "dst": "K183364",
+   "dst_name": "Bellavista",
+   "page": 5,
+   "context": "Predicate Device Manufacturer 510(k) Number Cleared Device TBird Vela Ventilator Bird Product Corporation (Vyaire Medical, Inc.) K032451 17 March 2004 PALMTop PTV Models 8/10 Pulmonetic Systems, Inc. (Vyaire Medical, Inc.) K070594 01 August 2007 bellavista 1000/1000e Imtmedical AG Gewerbestrasse 8 Buchs Sg, CH 9470 K183364 13 September 2019 4. Device Description [21 CFR § 807.92(a)(4)] The LTV2 Series ventilator supports adult and pediatric patients weighing at least 10 kg (22 lb) in professional healthcare facilities response with invasive or noninvasive ventilation pre- sets. These settings can be ea"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K973161",
+   "dst": "K930656",
+   "dst_name": "SULLIVAN III NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "r & Paykel Electronics Limited 25Carbine Road,Panmure,Auckland,NewZealand P.O.Box 14-348,Panmure,Auckland,New Zealand Tel:+64-9-574-0100 Fax:+64-9-574-0158 7 August, 1997 510(k) Summary of Safety and Effectiveness Information Model Number / Name: HC200 CPAP Humidifier Classification Name: Ventilator, Non-Continuous (Respirator) - 73 BZD Anesthesiology Devices, 21 CFR s868.5905 (Class I) PredicateDevices: Respironics Inc, Solo TM CPAP System, K961626 ResCare Ltd, Sullivan? IHl Nasal CPAP System, K930656 Fisher & Paykel, HC100 Respiratory Humidifier, K915460 accordance with the requirements of SMDA 1990 and 21 CFR §807.92. The Fisher & Paykel Healthcare HC2O0 CPAP Humidifier is a Continuous Positive Airway Pressure flow generator, as per 73 BZD, 21 CFR s868.5905. It includes a Heated Respira"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K961626",
+   "dst": "K952292",
+   "dst_name": "PURITAN-BENNETT COMPANION NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "SUMMARY OFSAFEI e RESPIRONICS INC. 9661 81 0C 1001 Murry Ridge Drive, Murrysville, PA 15668 April 23, 1996 Official Contact Francis X. Dobscha Manager, Regulatory Affairs Respironics, Inc. 1001 Murry Ridge Drive Murrysville, PA 15668 Classification Name 21 CFR 868.5905, 73 BZD Common/Usual Name Ventilator, Noncontinuous Proprietary Name Solo CPAP Systern Predicate Devices Aria CPAP Systern - K953341 Respironics, Inc. 1001 Murry Ridge Drive Murrysville, PA 15668 Companion 314 Nasal CPAP System - K952292 Nellcor Puritan-Bennett 10800 Pflumm Road Lenexa, KS 66215 @ 1996 Respironics, Inc. April 23, 1596 Section 12, Page 1"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K983981",
+   "dst": "K935788",
+   "dst_name": "BICORE SMARTCATH INTRATRACHEAL CATHETER",
+   "page": 10,
+   "context": "rolong esophageal balloon pressure alarm. External connection are used to connect Flow Transducers and various size Catheters identical to that used with the BICORE monitoring systems (k935788) (k900696b). CLEARED 510(k), K912619/A BEAR 7 now know as the BEAR 1000 (UNMODIFIED) device. Comparison to Predicate Device; Hamilton Veolar, with Leonardo Graphics. k901448 Hamilton Veolar, with Leonardo Graphics Comparison to Predicate Device; BEAR 1000 Ventilator and Bicore monitors CP-100 and CP-2000. K935788 SMARTCATHINTRATRACHEALCATHETER now known as the BICORE CP 2000 K900696B CP-100Pulmonary Monitor"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K011714",
+   "dst": "K000994",
+   "dst_name": "BIPAP DUET LX BI-LEVEL SYSTEM",
+   "page": 1,
+   "context": "ics BiPAP? Pro Bi-level System Premarket Notification - Special 510(k) ATTACHMENT3 510(K) SUMMARY OF SAFETY & EFFECTIVENESS Official Contact David J. Vanella Manager, Regulatory Affairs/Product Assurance Respironics, Inc. 1001 Murry Ridge Lane Murrysville, PA 15668 ClassificationReference 21 CFR 868.5905 Product Code BZD-Non-Continuous ventilator Common/Usual Name CPAP System Proprietary Name Respironics BiPAP? Pro Bi-level System Predicate Device(s) Respironics BiPAP@ Duet? LX Bi-level System (K000994) Reason for submission Modified design, enhanced mode @2001 Respironics Inc. 05/23/01 Summary, Page 1 of 2"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K963761",
+   "dst": "K905540",
+   "dst_name": "RESPIRONICS BIPAP REMOTE CONTROL UNIT",
+   "page": 1,
+   "context": "nical System Section 12 - Summary of Safety and Effectiveness RY OFSAFETY AND EFFECTIVENESS December 17, 1996 APR 1 8 1997 RESPIRONICS INC 1001 Murry Ridge Drive, Murrysville, PA 15668 Official Contact Francis X. Dobscha Manager, Regulatory Affairs Respironics, Inc. 1001 Murry Ridge Drive Murrysville, PA 15668 Classification Name Noncontinuous Ventilator Common/Usual Name CPAP System Proprietary Name Respironics Quartet Clinical System Predicate Device(s) Respironics BiPAP S-D System (K883825 & K905540), Innovative Medical Systems DPAP System (K933184). Predicate Device Information The technological characteristics of the Quartet Clinical System are equivalent to the predicate devices as listed above in terms of design, materials, energy source, and intended use. These devices provide CPA"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K122715",
+   "dst": "K113640",
+   "dst_name": "STELLAR 150",
+   "page": 1,
+   "context": "y Affairs ResMed Germany Inc. Fraunhoferstr. 16 82152 Martinsried Germany Tel: +49 89 9901 -1561 Fax: +49 89 9901-1441 Official contact Jim Cassi Vice President,QualityAssurance Americas ResMed Corp. 9001 Spectrum CenterBlvd., San Diego CA 92123 USA Tel: +1 858-836-6081 Fax: +1858-836-5522 Proprietary name Stellar 150 Common name Continuous ventilator Classification 21 CFR 868.5895. Product code MNT Ventilator, continuous, minimal ventilatory support, facility use Predicate Devices Stellar 150 (K113640) Respironics Trilogy series Remote Alarm (K111610) Reasonforsubmission NewRemoteAlarm accessory August 31, 2012 Stellar 150 510[k] Page 24"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K020777",
+   "dst": "K011714",
+   "dst_name": "BIPAP PRO BI-LEVEL SYSTEM",
+   "page": 1,
+   "context": "ffairs/Product Assurance Respironics, Inc. 1001 Murry Ridge Lane Murrysville, PA 15668 724-387-4120 724-387-4206 (fax) email: Zita.Yurko@ Respironics.com Classification Reference 21 CFR 868.5895 Product Code MNS -Non-Continuous ventilator Common/UsualName Ventilator, continuous, non-life supporting Proprietary Name Respironics BiPAP Synchrony Ventilatory Support System with Bi-Flex Predicate Device(s) Respironics BiPAP Synchrony Ventilatory Support System (K010263) Respironics BiPAP Pro System (K011714) Reason for submission Modified design, enhanced mode; change in environment of use. @2002 Respironics Inc. 3/8/2002 Page 27 of 73"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K982242",
+   "dst": "K930656",
+   "dst_name": "SULLIVAN III NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "io 44036-2125 Phone: (440) 329-6000 Facsimile: (440) 365-4558 Contact Person: Edward A. Kroll Director, TQM and Regulatory Affairs Date Prepared: June 24, 1998 Name of Device and Name/Address of Sponsor Invacare Corporation One Invacare Way P.O. B0x 4028 Elyria, 0hio 44036-2125 Phone: (440) 329-6000 Facsimile: (440) 365-4558 Common or Usual Name CPAP Classification Name Ventilator,Noncontinuous Predicate Devices The Invacare CPAP is substantially equivalent to the Resmed Sullivan V CPAP System (K930656, 3/15/94) and the Respironics Solo CPAP System (K961626, 7/18/96). Intended Use The intended function and use is of the Invacare CPAP is to treat Obstructive Sleep Apnea (OSA) in the home, in adults by delivering continuous positive airway pressure."
+  },
+  {
+   "stratum": "ocr",
+   "src": "K112754",
+   "dst": "K092135",
+   "dst_name": "MODIFICATION TO IVENT 101",
+   "page": 1,
+   "context": "rson: GE Heathcare, Datex-Ohmeda, Inc. 3030 Ohmeda Drive Madis0n, Wl 53718 Tel: 608-221-1551, Extension 3439 Fax: 608-646-7464 Email: Monica.Morrison@ge.com Pam Schaub US Agent: GE Healthcare 9900 w. innovation dr rp2138 wauwatosa, wl 53226 Phone: 414 7212584 ext Fax:262 9971160 Email: pam.schaub@ge.com Device: Irade iVent101 Name: Common/Usual PortableVentilator Name: Classification Names: 868-5895, Continuous Ventilator Product Code: 73 CBK, 73 NOU PredicateDevice(s): iVent101 [cleared under K092135] Trilogy 100 [cleared under K083526] GEHealthcare,VersaMed MedicalSystems 23 of 2739"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K130328",
+   "dst": "K040506",
+   "dst_name": "FLEXIFIL SERIES HC431 FULL FACE MASK, MODEL HC431A",
+   "page": 1,
+   "context": "ki P O Box 14 348, Panmure Auckland, New Zealand Telephone: +64 9 574 0100 Facsimile: +64 9 574 0148 Website:www.fphcare.com Date Prepared 7 February 2013 Contact Person Sue Cho Contact Details Address: 15 Maurice Paykel Place, East Tamaki PO Box 14 348, Panmure Auckland,NewZealand Telephone: +64 9 574 0100 Fax:+6495740148 Trade Name F&P Simplus TM Full Face Mask Common Name Full Face Mask Classification Name Non continuous ventilator IPPB (21 CFR § 868.5905, product code BZD) Predicate Devices K040506FlexifitTMSeriesHC431FullFaceMask,Fisher& Paykel Healthcare -- for performance K121597 Eson Nasal Mask, Fisher & Paykel Healthcare - for material biocompatibility Page 5-1"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K981412",
+   "dst": "K870976",
+   "dst_name": "ONGUARD 1000, CATALOG #043611-000 & 043611-001",
+   "page": 1,
+   "context": "K981412 NOV 231998 'EXHIBIT #1 Page 1 of 3 510 (K) SUMMARY This summary of 5lo(k) safety and effectiveness information is being submitted in accordance with the requirements of SMDA 1990 and 21 CFR S807.92. K581412 The assigned 51o(k) number is: 1. Submitter's Identification: clary Corporation 1960 So. Walker Avenue Monrovia, CA 91016-4847 Contact Person: Mr. David Fulton, Director, oEM Sales Date Summary Prepared: April 16, 1998 2. Name of the Device: M1145 (UPS1-1.25K-1G-MP)UPS 3. Predicate Device Information: Onguard 1000, Cata1og No. 04311-000 and 043611-011, Cobe Laboratories, Inc., K#870976 4. Device Description: The M1145 (UPS1-1.25K-1G-MP)Uninterruptible Power Supply (UPs)regenerates new clean, ultra precise Ac power to ensure reliable and accurate system operations. 1 It allows"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K960518",
+   "dst": "K952292",
+   "dst_name": "PURITAN-BENNETT COMPANION NASAL CPAP SYSTEM",
+   "page": 1,
+   "context": "-Bennet Corporation 9728 Pflurnm Road Lenexa, KS 66215 Registraticn Number 1933149 Official Correspondent: C. Marshall Smith Phone:913-495-4845 DirectDial913-495-4845 Fax:913-394-8764 Date of Summary Preparation: 2 Februar:1996 (2) Device Name: Proprietary Name: Puritan-Bennett 318 Plus Nasal CPAP System Common Name: CPAP Machine Classification Name: Noncontinuous Ventilator, per 21 CFR 868.5905 and 73 B2D (3) Equivalent Devices: Primary Predicate Device: Puritan-Bennett C314 Nasal CPAP System, K952292 Other Predicate Devices: Puritan-Bennett C318 Nasal CPAP System, K903764 Puritan-Bennett 335 Respiratory Support System;, K942210 (pending) Healthdyne Tranquility Quest Compact Nasal CPAP System Model 7300, K943509 35"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K013738",
+   "dst": "K002001",
+   "dst_name": "BREEZE SLEEPGEAR WITH DREAMSEAL",
+   "page": 1,
+   "context": "furMedizinund Arbeitsschutz GmbH+Co. Kronsaalsweg 40 22525 Hamburg Germany Submitter's Name: Eckhardt Albers Phone: 011 49 40 54 70 2 - 180 Device Name: Proprietary name: Weinmann SOMNOmask Common Name: Nasal mask Classification Name: Accessory tonon-continuousventilator Predicate Device Equivalence: Substantial equivalence is. claimed to the Respironics Reusable Contour ll Nasal Mask and to the Puritan-Bennett Breeze SleepGear with DreamSeal, cleared for commercial distribution per K991648 and K002001, respectively. Device Description: The Weinmann SOMNOmask comes in three sizes, small, medium and large. It has a removable mask seal. removing the CO2 buildup, an external exhalation device must be used."
+  },
+  {
+   "stratum": "ocr",
+   "src": "K951264",
+   "dst": "K883825",
+   "dst_name": "MODIFIED SANDERS BI-PAPEASY",
+   "page": 1,
+   "context": "cation, Part A BiPAP S/T-D System Section 16, 510(k) Summary JUL 2 9 1996 Section 16 - 510(k) Summary RESPIRONICS INC. 1001 Murry Ridge Drive, Murrysville, PA 15668 Date: July 22, 1996 Manufacturer: Respironics Inc. 1001 Murry Ridge Drive Murrysville, PA 15668 Phone: (412) 733-0200 Official Contact: Francis X. Dobscha Manager, Regulatory Affairs Device Name: BiPAP? S/T-D Common Name: Continuous Ventilator, Passive Exhalation Port, Critical Care Classification: 868.5895 Predicate Device: BiPAP? (K883825) Detachable Control Panel (K905540) Siemens Servo 900 (K81102) Puritan Bennett 7200 (K823958/B and K833786) Page 1"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K013738",
+   "dst": "K991648",
+   "dst_name": "REUSABLE CONTOUR II NASAL MASK",
+   "page": 1,
+   "context": "mann GeraetefurMedizinund Arbeitsschutz GmbH+Co. Kronsaalsweg 40 22525 Hamburg Germany Submitter's Name: Eckhardt Albers Phone: 011 49 40 54 70 2 - 180 Device Name: Proprietary name: Weinmann SOMNOmask Common Name: Nasal mask Classification Name: Accessory tonon-continuousventilator Predicate Device Equivalence: Substantial equivalence is. claimed to the Respironics Reusable Contour ll Nasal Mask and to the Puritan-Bennett Breeze SleepGear with DreamSeal, cleared for commercial distribution per K991648 and K002001, respectively. Device Description: The Weinmann SOMNOmask comes in three sizes, small, medium and large. It has a removable mask seal. removing the CO2 buildup, an external exhalation device must be used."
+  },
+  {
+   "stratum": "ocr",
+   "src": "K951264",
+   "dst": "K905540",
+   "dst_name": "RESPIRONICS BIPAP REMOTE CONTROL UNIT",
+   "page": 1,
+   "context": "ection 16, 510(k) Summary JUL 2 9 1996 Section 16 - 510(k) Summary RESPIRONICS INC. 1001 Murry Ridge Drive, Murrysville, PA 15668 Date: July 22, 1996 Manufacturer: Respironics Inc. 1001 Murry Ridge Drive Murrysville, PA 15668 Phone: (412) 733-0200 Official Contact: Francis X. Dobscha Manager, Regulatory Affairs Device Name: BiPAP? S/T-D Common Name: Continuous Ventilator, Passive Exhalation Port, Critical Care Classification: 868.5895 Predicate Device: BiPAP? (K883825) Detachable Control Panel (K905540) Siemens Servo 900 (K81102) Puritan Bennett 7200 (K823958/B and K833786) Page 1"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K110629",
+   "dst": "K012554",
+   "dst_name": "REMSTAR AUTO CPAP SYSTEM",
+   "page": 7,
+   "context": "RESmartO CPAP& APAP Section 5: 510(k) Summary K110629 5.5 INDICATIONSFOR USE The 3B and BMC RESmart CPAP and Auto-CPAP Systems are intended to deliver positive pressure for the treatment of Obstructive Sleep Apnea. The optional integrated humidifier is indicated for the humidification and warming of air from the flow generator device. These devices are hospital/institutional environment on adult patients. 5.5 PREDICATE DEVICE 5.5.1 Predicate Device Names: Respironics REMstar Auto CPAP (K012554) Resmed S7 Elite and Autoset Spirit CPAP (K024191) 5.6 SUBSTANTIAL EQUIVALENCE Both the RESmart CPAP and APAP devices have the following similarities to the previously cleared predicate devices: Same intended use Same operating principle Similar technologies Similar manufacturing process The"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K984379",
+   "dst": "K902506",
+   "dst_name": "7200AE MICROPROCESSOR VENTILATOR W/ENHANCED HARD.",
+   "page": 1,
+   "context": "obbie Walsh, Regulatory Affairs Manager Nellcor Puritan Bennett Ireland, Mervue, Galway, Ireland. Tel: + 353 91 753771 Fax: + 353 91 770156 CLASSIFICATION: Class II per 21 CFR 868.5895 Continuous Ventilator PREDICATE DEVICES: Puritan-Bennett Corp. is claiming substantial equivalence to the following three predicate medical devices: Predicate Device 510(k) Number Classification Puritan Bennett Corp., K964540 Class II, 740 Ventilator Continuous Ventilator per 21 CFR 868.5895 Puritan Bennett Corp. K902506B Class II, 7200 Series Ventilator Continuous Ventilator per 21 CFR 868.5895 Puritan Bennett Corp., K970460 Class II, 840 Ventilator Continuous Ventilator per 21 CFR 868.5895 14"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K981668",
+   "dst": "K943531",
+   "dst_name": "OXYLOG 2000",
+   "page": 5,
+   "context": "Predicate Devices: The SmartVenfTM 201 Portable Ventilator is substantially equivalent to: · TBIRD VS & AVS Ventilators (Bird Product Co.), cleared under K950484 · Oxylog 2000 (Drager, Inc.), cleared under K943531. Performance Standards: No performance standards have been established for such devices under Sections 514 of the Federal Food, Drug, and Cosmetic Act. However, the SmartVenTM 201 Portable Ventilator complies with the following voluntary standards: ASTM F1100-90, ASTM F1246-91, MIL-STD-810E,"
+  },
+  {
+   "stratum": "ocr",
+   "src": "K981744",
+   "dst": "K972061",
+   "dst_name": "TOA",
+   "page": 1,
+   "context": ", Suite 208 Dallas, TX 75225 Non-Confidential Summary of Safety and Effectiveness page 1 of 4 May 8, 1998 W. Keith Thornton, D.D.S. Tel - (214) 691-5621 6131 Luther LaneSuite208 Dallas, TX 75225 Fax - (214) 691-4934 Official Contact: Keith Thornton, D.D.S. Proprietary or Trade Name: Nasal Mask Holder Common/Usual Name: Nasal MaskHolder Classification Name: Accessory to Non-continuousVentilator Device: Universal Nasal Mask Holder and Combination Oral Appliance Predicate Devices: Thornton - TOA - K972061 Respironics, Inc. - Standard Head Gear for Nasal Mask - no K#. Device Descriptio 1. The Universal Nasal Mask Oral Appliance Hoider includes the Extension Bracket with Mask Flange which attaches to the upper tray of the Oral Appliance, approved under K972061. This device would be considered a"
+  }
+ ]
+}

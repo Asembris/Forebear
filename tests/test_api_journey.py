@@ -49,15 +49,17 @@ def test_recall_reach_of_philips_foam_recall(client):
     recalled = {x["k"] for x in r["recalled"]}
     assert {"K113053", "K131982", "K092818"} <= recalled and len(recalled) == 10
     after = {d["k"] for d in r["descendants"] if d["after_recall"]}
-    assert {"K252078", "K251770"} <= after and len(after) == 7
+    assert {"K252078", "K251770", "K212263"} <= after and len(after) == 7
     both = client.get("/api/recall-event/88058,88071").json()   # the same Philips recall, two openFDA events
-    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 19
+    # Phase 1: 19 -> 22 descendants. K183226 (cites K083526 only as a reference device) leaves; K112754,
+    # K120726, K130171, K122715 (Trilogy 100 rows recovered from predicate tables / OCR) join.
+    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 22
     assert sum(d["after_recall"] for d in both["descendants"]) == 8
 
 
 def test_watchlist_and_compare(client):
     w = client.get("/api/watchlist").json()
-    assert w["count"] == 106 and w["direct"] == 62
+    assert w["count"] == 114 and w["direct"] == 66          # Phase 1: recovered/OCR edges (was 106/62)
     rows = client.post("/api/compare", json={"ks": ["K200480", "K113053", "K999999"]}).json()
     v = {r["k"]: r.get("verdict") for r in rows}
     assert v == {"K200480": "REVIEW_LINEAGE", "K113053": "DESIGN_RECALL_ON_FILE", "K999999": None}
@@ -107,6 +109,14 @@ def test_curated_reviews_and_name_flags_are_in_the_shipped_store(client):
 
 
 def test_flagged_links_in_lineage_are_surfaced(client):
+    # K120562 -> K092043: 'PerforMax Youth EE mask' vs the FDA record 'BIPAP SYNCHRONY 2'; K092043's own summary
+    # says the mask was added in that clearance, so the audit keeps it as a variant (no longer a doubt).
     a = client.get("/api/assess/K120562").json()
-    sig = [s for s in a["signals"] if s["code"] == "NAME_MISMATCH_IN_LINEAGE"]
-    assert sig and any(e["dst"] == "K092043" for e in sig[0]["evidence"])
+    assert "K092043" in {x["k"] for x in a["ancestors"] if x["gen"] == 1}
+    # K120562 -> K093416 is still rejected by the curated review, and is reported as a missing predicate
+    sig = next(s for s in a["signals"] if s["code"] == "PREDICATE_CITATION_UNRESOLVED")
+    assert any(e["cited"] == "K093416" and e["reason"] == "rejected_by_reviewer" for e in sig["evidence"])
+    assert a["verdict_reason"].startswith("Provisional")
+    # an unresolved audit link is surfaced on the lineage it sits in
+    b = client.get("/api/assess/K040944").json()
+    assert any(s["code"] == "UNCERTAIN_LINK_IN_LINEAGE" for s in b["signals"])

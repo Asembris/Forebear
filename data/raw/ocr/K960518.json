@@ -1,0 +1,28 @@
+{
+"k": "K960518",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K960518.pdf",
+"source_sha256": "db057372b3ceadf174bf08f9ec36889b064efbf16661e7373feea60cd4837ef0",
+"ocr_at": "2026-11-17T08:15:09Z",
+"status": "ocr_ok",
+"pages": [
+"K960518\nSECTION 16. 510(k) SUMMARY\nMAY - 9 1996\n(1) Company Information\nOwner/Operator: Puritan-Bennett Corporation\nRegistraticn Number 9919005\nManufacturing Site: Puritan-Bennet Corporation\n9728 Pflurnm Road\nLenexa, KS 66215\nRegistraticn Number 1933149\nOfficial Correspondent: C. Marshall Smith\nPhone:913-495-4845\nDirectDial913-495-4845\nFax:913-394-8764\nDate of Summary Preparation: 2 Februar:1996\n(2) Device Name:\nProprietary Name: Puritan-Bennett 318 Plus Nasal CPAP System\nCommon Name: CPAP Machine\nClassification Name: Noncontinuous Ventilator, per 21 CFR 868.5905\nand 73 B2D\n(3) Equivalent Devices:\nPrimary Predicate Device: Puritan-Bennett C314 Nasal CPAP System,\nK952292\nOther Predicate Devices: Puritan-Bennett C318 Nasal CPAP System,\nK903764\nPuritan-Bennett 335 Respiratory Support\nSystem;, K942210 (pending)\nHealthdyne Tranquility Quest Compact Nasal\nCPAP System Model 7300, K943509\n35",
+"(4) Device Description:\nThe 318 Plus Nasal CPAP System is a device used to provide Continuous Positive\nAirway Pressure between 3 and 18 cm H20.\naddssomeadditionalfeatures.\nThe device is powered by AC Mains from 100 to 240 VAC, 50/60 Hz by utilizing a\nSupport System.\nThe device is set up for use by the homecare provider using the Set-up Instructions\nprovided with the device.It is operated using the Patient Guide.\nThe pressure is set to the prescription with the use of a patient circuit, with the pressure\nassociated with the patient circuit are compensated for and thus the device does not\nrequire apressure transducer.Themotormaintainsaconstantspeed through the\nfeedback loop from the motor to the motor drive circuit.\nare 0, 5, 10 or 20 minutes. The ramp duration is set up by the homecare provider by\nthe patient using the Ramp Starting Pressure Acjustment switches. The ramp feature\ncan be activated and deactivated by pressing the Ramp Button.\nBoth the prescription pressure and the ramp pressure can be seen in the Pressure\nDisplay on the top housing.\nThe optional Compliance Meter measures patient compliance by measuring changes in\nthe motor current as the patient breathes on the device.\nonesusedwiththeC314andPB335.\nThe device is not for life-supporting or life-sustaining situations.\nThe device is for prescription use.\nThe device itself, the air filter and the humidifier are for multiple use. The other\naccessories, i.e., the patient tube, nasal masks and headgear are for single patient use.\nThe device is not software-driven.\nNeither the device nor its accessories are sterile\n36",
+"(5) Intended Use:\nThe intended use of the 318 Plus Nasal CPAP System is to provide Continuous\nPositive Airway Pressure (CPAP) between 3 and 18 cm H2O to spontaneously\nbreathing adult patients for the treatment of Obstructive Sleep Apnea in a homecare\nenvironment. This is the same intended use as for the C314 Nasal CPAP System.\n(6) Technological Characteristics:\ninasmuch as the two devices use either the same or similar components and the two\ndevices function in the same manner.\n(7) Nonclinical TestsSubmitted:\n\"Mechanical and Environmental Testing\" sections of Appendix A of the \u201cDraft -\nStatic and dynamic pressure testing was also performed. The results of the testing\ndemonstrated that the 318 Plus performed in the same manner as the primary\npredicate device, the C314.\nThe device was also tested when powered by a 12 volt DC power supply using the\noptional DC to AC inverter. The results of the testing demonstrated that the device's\nperformancewas thesameaswhenpowered by ACMains.\n(8) Clinical Tests Submitted:\nNone.\n(9) Conclusions from Tests:\nAs stated in Section (7) above, all of the testing demonstrated that the 318 Plus is as\nsafe and effective and performs as well or better than the primary predicate device, the\nC314.\n37"
+],
+"page_confidence": [
+0.98,
+0.987,
+0.982
+],
+"page_boxes": [
+40,
+27,
+23
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

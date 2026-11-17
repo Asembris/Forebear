@@ -1,0 +1,31 @@
+{
+"k": "K961915",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K961915.pdf",
+"source_sha256": "648033bd320f8c0d20318c45db7ad9dee8d71d320afce5e7c96904b1c568bbb6",
+"ocr_at": "2026-11-17T08:15:47Z",
+"status": "ocr_ok",
+"pages": [
+"K9%1915\nAUG 1 5 1996\nRESPIRONICS INC.\nNon-Confidential Summary of Safety and Effectiveness\npage 1 of 4\nMay 13, 1996\nRespironics, Inc.\n1001 Murry Ridge Drive\nMurrysville,PA\nTel - (412) 733-5801\nFax -(412) 733-0299\nOfficial Contact: Francis X. Dobscha, Manager, Regulatory Affairs\nProprietary or Trade Name: Spectrum Reusable Full Face Mask\nCommon/Usual Name: Face Mask\nClassification Name: Noncontinuous Ventillator (IPPB) Accessory\nDevice: Respironics Spectrum Reusable Full Face Mask\nPredicate Devices: Respironics Spectrum Disposable Full Face Mask - K936047\nVacumed Comfo-Seal Reusable Full Face Mask - K# unknown\nDevice Description:\nThe Spectrum Reusable Full Face Mask is an externally placed mask covering the nose and\nmouth (full face) of a patient. It is intended to provide a seal so that positive pressure from a\npositive pressure source is directed to the patient's nose and mouth. It connects to a patient circuit\nthat contains an exhalation valve, tubing, and perhaps a humidifier and/or bacteria filter. It\nincorporates an Entrainment Valve which permits entrainment of ambient air when positive\npressure to the patient ceases. The entrainment valve opens and closes based upon positive\npressure being delivered to the patient. In addition, the mask incorporates a quick-release\nmechanism allowing the patient to quickly and easily remove the mask if desired. It is held in\nplace with an adjustable headgear system. It is intended to be cleaned with soap and water. The\ncleaning process requires limited disassembly.\nThe Spectrum Reusable Full Face Mask may be used with an optional thin, pliable flap which\nmay be used to improve the comfort and sealing of the basic unit. This accessory is referred to as\nthe Comfort Flap. It is available either with the mask or sold seperately as a replacement part.\npage 3 of 86\n1001 Murry Ridge Drive, Murrysville,PA 15668-8550\n412/733-0200Fax:412/733-0299",
+"Non-Confidential Sumimary of Safety and Effectiveness\n(continued)\npage 2 of 4\nMay 13, 1996\nIntended Use:\nIndicated Use -- Patient interface accessory for Respironics CPAP and BiPAP?\nSystems\nTargeted Population -- Adult\nEnvironment of Use -- Hospital and Home\nComparison to Predicate Devices:\nRespironics Respironics Vacumed\nAttribute Reusable Disposable Comfo-Seal\nSpectrum Full Face Reusable\nFull Face Mask Full Face\nMask Mask\nUse\nIntended Use -- Adult Obstructive Sleep Apnea Yes Yes Yes\n(OSA)\nIntended to be used with devices such as Yes Yes Yes\nRespironicsCPAPSystems andBiPAPSystems\nproducing positive pressures \u2265 3.0 cm H2O at the\nmask.\nIntended Environment-Hospital: Adult OSA Yes Yes Yes\nIntended Environment - Home: Adult OSA Yes Yes Yes\npage 4 of 86",
+"Non-Confidential Summary of Safety and Effectiveness\n(continued)\npage 3 of 4\nMay 13, 1996\nComparison to Predleate Devces: (contimued)\nRespironics Respironics Vacumed\nAttribute Reusable Disposable Comfo-Seal\nSpectrum Full Face Reusable\nFull Face Mask Full Face\nMask Mask\nDesign\nOffered in various sizes Yes Yes Yes\nIntended for single patient multi-use Yes No Yes\nMade to be cleanedwith soap and water Yes No Yes\nProvided non-sterile Yes Yes Yes\nIncorporates an Entrainment Valve Yes Yes No\nAdapts to headgear s Yes Yes\nPerformance Standards/Speclfeations\nEntrainmentvalve activationpressure of 3.0 cm Yes Yes Not Available\nH2O minimum\nMeets design requirements after cleaning Yes Yes Yes\npage 5 of 86",
+"Non-Confidential Summary of Safety and Effectiveness\n(continued)\npage 4 of 4\nMay 13, 1996\nPerformance Features:\nQualification tests were performed with samples of the intended device covering the following\nbasic areas:\nInitial performance characteristics of the device and components\nEnvironmental performance simulating shipping, storage and usage, including\ncleaning\nPerformance after environmental simulations of the device and components\nPerformance at extreme user conditions\nPerformance of repeated disassembly / reassembly of the Entrainment Valve\nTest results show that the Spectrum Reusable Full Face Mask meets all functional and key\nrequirements as defined in the product design specifications.\npage 6 of 86"
+],
+"page_confidence": [
+0.983,
+0.988,
+0.985,
+0.984
+],
+"page_boxes": [
+40,
+50,
+56,
+16
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

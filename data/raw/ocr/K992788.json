@@ -1,0 +1,31 @@
+{
+"k": "K992788",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K992788.pdf",
+"source_sha256": "8995b9384f04d5ec050d24d754487db9e80102520a5c4e76ab11c5d0ca3d16bb",
+"ocr_at": "2026-11-17T08:29:29Z",
+"status": "ocr_ok",
+"pages": [
+"K992788\nSEP 16 1999\n510(k) Summary\nBEARCub750PSVInfantVentilator\nBear Medical Systems, Inc.\n1100 Bird Center Drive\nPalm Springs, California 92262\nContact:\nNeil Battiste\nPhone Number (760) 778-7341\nFAX (760) 778-7288\nDate: August 13,1999\n1. TRADE/PROPRIETARY NAME: BEARCub750PSVInfantVentilator\nCLASSIFICATIONNAME: Ventilator, Continuous (Respirator)\nCOMMON/USUAL NAME: Neonatal/InfantVentilator\n2. ESTABLISHMENT REGISTRATION NUMBER:2022747\n3. PRODUCT CLASSIFICATION Class II\n4. ANESTHESIOLOGY DEVICE CLASSIFICATION PANEL (73 CBK)\nPredict Device\nSiemensServo300AVentilator (K970839)\nV.1.P.Bird Ventilator (K895541)\nBaby Log 8000 Plus Ventilator (K974176)\nDevice Description\nTheBEARCUB 750PSVInfant ventilators is a modificationfrom theBEAR CUB 750 vs.TheBEAR\nCUB 750 PSV Infant ventilators incorporate all previous (3) three modes with the addition of (4) four new\nmodes. The additional modes are, Flow Cycle Assist Control, Flow Cycle SIMV, SIMV/PSV, and PSV.\nThe BEAR CUB 750 PSV Infant ventilators incorporate all previous function for the Bear Cub 750vs with\nthe addition of, digital PEEP, monitored inspired tidal volume, a low minute volume alarm, an audible\nsilence for the volume limit,CPAP/PSV backupfunction and theLowInspiratoryPressure threshold was\nchanged to a calculated threshold function.\nStatement ofIntended use:\nThe BEAR CUB 750 PSV Infant Ventilator is intended to provide clinically accepted features for the\nsmall pediatric patient (up to 30 kilograms).\nThe etiologies to which these devices may be applied consistent with current clinical practices include:\nHyaline Membrane Disease\nRespiratory Distress Syndrome\nLow Surfactant Syndrome\nChronic LungDisease of theNeonate/PediatricPatient\nNeurological Impairment\nPulmonary Hypoplasia\nPersistent Pulmonary Hypertension\nMeconium Aspiration\n9-1",
+"DEPARTMENTOFHEALTH&HUMANSERVICES Public Health Service\nFood and Drug Administration\n9200CorporateBoulevard\nRockvilleMD 20850\nSEP 16 1999\nMr. Darryl L. Shelby\nBear Medical Systems, Inc.\n11o0 Bird Center Drive\nPalm Springs, CA 92262\nRe: K992788\nBEAR Cub750PSVInfant Ventilator\nRegulatory Class: II (two)\nProduct Code:73 CBK\nDated: August 1l 1999\nReceived: August 19, 1999\nDear Mr. Shelby:\nWe have reviewed your Section 5lo(k) notification of intent to market\nthe device referenced above and we have determined the device is\nsubstantially equivalent (for the indications for use stated in the\nenclosure) to legally marketed predicate devices marketed in\ninterstate commerce prior to May 28, 1976, the enactment date of the\nMedical Device Amendments, or to devices that have been reclassified\nin accordance with the provisions of the Federal Food, Drug, and\nCosmetic Act (Act). You may, therefore, market the device, subject to\nthe general controls provisions of the Act. The general controls\nprovisions of the Act include requirements for annual registration,\nlisting of devices, good manufacturing practice, labeling, and\nprohibitions against misbranding and adulteration.\nIf your device is classified (see above) into either class II (Special\nControls) or class III (Premarket Approval), it may be subject to such\nadditional controls. Existing major regulations affecting your device\ncan be found in the Code of Federal Regulations, Title 2l, Parts 800\nto 895. A substantially equivalent determination assumes compliance\nwith the Current Good Manufacturing Practice requirements, as set\nforth in the Quality System Regulation (QS) for Medical Devices:\nGeneral regulation (21 CFR Part 820) and that, through periodic QS\ninspections, the Food and Drug Administration (FDA) will verify such\nassumptions. Failure to comply with the GMP regulation may result in\nregulatory action.  I In addition, FDA may publish further announcements\nconcerning your device in the Federal Register. Please note: this\nresponse to your premarket notification submission does not .affect any\nobligation you might have under sections 531 through 542 of the Act\nfor devices under the Electronic Product Radiation Control provisions,\nor other Federal laws or regulations.",
+"Page 2 - Mr. Darryl L. Shelby\nin your 510(k) premarket notification. T The FDA finding of substantial\nequivalence of your device to a legally marketed predicate device\nresults in a classification for your device and thus, permits your\ndevice to proceed to the market.\nIf you desire specific advice for your device on our labeling\nregulation (21 CFR Part 801 and additionally 809.10 for in vitro\ndiagnostic devices) please contact the Office of Compliance at\n(301) 594-4648. Additionally, for questions on the promotion and\nadvertising of your device, please contact the Office of Compliance at\n(301) 594-4639. Also, please note the regulation entitled,\n\"Misbranding by reference to premarket notification\"(21 CFR 807.97).\n  r       \ntol1-free number (800) 638-2041 or (301 443-6597,or at its internet\naddress \"http://www.fda.gov/cdrh/dsma/dsmamain.html\".\nSincerely yours,\nmad J. CallsAsn\nThomas J. Callahan, Ph.D.\nDirector\nDivision of Cardiovascular,\nRespiratory, and Neurological Devices\nOfficeof DeviceEvaluation\nCenterfor Devicesand\nRadiological Health\nEnclosure",
+"BEAR MEDICAL SYSTEMS 002\n09/14/99 TUE13:09FAX7607787332\nStatement of Intended use:\nThe BEAR CUB 750 PSV Infant Ventilator is intended to provide ventilatory support for a patient\npopulation ranging from the small neonate 500 grams and larger to a small pediatric patient up to 30\nkilograms.\n(Division Sign-Off)\nDivision of Cardiovascular,Respiratory,\nand Neurological Devices\n510(k) Number. KGG2786\nPrescriphion Use JFO\n2-5"
+],
+"page_confidence": [
+0.985,
+0.975,
+0.952,
+0.974
+],
+"page_boxes": [
+56,
+49,
+27,
+16
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}

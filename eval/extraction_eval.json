@@ -1,0 +1,62 @@
+{
+ "about": "Stratified before/after estimate; labels are agent labels from full page text, not ground truth. 'strict' counts unclear as wrong, 'lenient' as right. The 'both' stratum is sampled, so its precision carries sampling error (see docs/EVIDENCE_QUALITY.md).",
+ "seed": 17,
+ "strata": {
+  "both": {
+   "population": 1074,
+   "sampled": 40,
+   "labelled": 40,
+   "predicate": 40,
+   "not_predicate": 0,
+   "unclear": 0
+  },
+  "old_only": {
+   "population": 5,
+   "sampled": 5,
+   "labelled": 5,
+   "predicate": 0,
+   "not_predicate": 5,
+   "unclear": 0
+  },
+  "new_only": {
+   "population": 67,
+   "sampled": 67,
+   "labelled": 67,
+   "predicate": 66,
+   "not_predicate": 1,
+   "unclear": 0
+  },
+  "ocr": {
+   "population": 88,
+   "sampled": 20,
+   "labelled": 20,
+   "predicate": 20,
+   "not_predicate": 0,
+   "unclear": 0
+  }
+ },
+ "estimates": {
+  "strict": {
+   "precision_before": 0.995,
+   "precision_after": 0.999,
+   "estimated_true_predicates_before": 1074,
+   "estimated_true_predicates_after": 1228,
+   "predicate_edges_before": 1079,
+   "predicate_edges_after": 1229
+  },
+  "lenient": {
+   "precision_before": 0.995,
+   "precision_after": 0.999,
+   "estimated_true_predicates_before": 1074,
+   "estimated_true_predicates_after": 1228,
+   "predicate_edges_before": 1079,
+   "predicate_edges_after": 1229
+  },
+  "both_stratum_precision_95pct_lower_bound": 0.912,
+  "link_audit_census": {
+   "not_predicate_found": 8,
+   "k_number_errors_found": 13,
+   "note": "Found by reading every flagged edge, mostly in the unchanged ('both') population: the sample's point estimate overstates precision; the census shows at least this many wrong edges remain in the extraction and are removed from lineage by the audit."
+  }
+ }
+}

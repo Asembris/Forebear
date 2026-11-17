@@ -1,0 +1,28 @@
+{
+"k": "K012177",
+"source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K012177.pdf",
+"source_sha256": "6e5d8edf1ea2ae628abfe41349168df44e2ca57f1416e94225fa0c9018b6a970",
+"ocr_at": "2026-11-17T08:05:19Z",
+"status": "ocr_ok",
+"pages": [
+"DEPARTMENTOFHEALTH&HUMANSERVICES PublicHealthService\nFood and Drug Administration\n9200CorporateBoulevard\nRockville MD 20850\nSEP - 4 2001\nMr. James J. Brennan\nDrager Medical AG & Co.KGaA\nc/o Drager Medical, Inc.\n3135 Quarry Road\nTelford, PA 18969\nRe:K012177\nVentView\nRegulation Number: 868.5895\nRegulatory Class: II (two)\nProduct Code: 73 CBK\nDated: August 15, 2001\nReceived: August 21, 2001\nDear Mr. Brennan:\nWe have reviewed your Section 51o(k) notification of intent to market the device referenced\nabove and we have determined the device is substantially equivalent (for the indications for use\nstated in the enclosure) to legally marketed predicate devices marketed in interstate commerce\nprior to May 28, 1976, the enactment date of the Medical Device Amendments, or to devices that\nhave been reclassified in accordance with the provisions of the Federal Food, Drug, and\nCosmetic Act (Act). You may, therefore, market the device, subject to the general controls\nprovisions of the Act. The general controls provisions of the Act include requirements for annual\nregistration, listing of devices, good manufacturing practice, labeling, and prohibitions against\nmisbranding and adulteration.\nIf your device is classified (see above) into either class I (Special Controls) or class III\n(Premarket Approval), it may be subject to such additional controls. Existing major regulations\nA substantially equivalent determination assumes compliance with the Current Good\nManufacturing Practice requirements, as set forth in the Quality System Regulation (QS) for\nMedical Devices: General regulation (21 CFR Part 820) and that, through periodic QS\ninspections, the Food and Drug Administration (FDA) will verify such assumptions. Failure to\ncomply with the GMP regulation may result in regulatory action. In addition, FDA may publish\nfurther announcements concerning your device in the Federal Register. Please note: this",
+"Page 2 - Mr. James J. Brennan\nresponse to your premarket notification submission does not affect any obligation you might\nhave under sections 531 through 542 of the Act for devices under the Electronic Product\nRadiation Control provisions, or other Federal laws or regulations.\nThis letter will allow you to begin marketing your device as described in your 510(k) premarket\nnotification. The FDA finding of substantial equivalence of your device to a legally marketed\npredicate device results in a classification for your device and thus, permits your device to\nproceed to the market.\nIf you desire specific advice for your device on our labeling regulation (21 CFR Part 801 and\nadditionally 809.10 for in vitro diagnostic devices), please contact the Office of Compliance at\n(301) 594-4646. Additionally, for questions on the promotion and advertising of your device,\nplease contact the Office of Compliance at (301) 594-4639. Also, please note the regulation\nentitled, \"Misbranding by reference to premarket notification\" (21CFR 807.97). Other general\ninformation on your responsibilities under the Act may be obtained from the Division of Small\nManufacturers, International and Consumer Assistance (DSMICA) at its toll-free number (800)\n638-2041 or (301) 443-6597 or at its internet address\n\"http://www.fda.gov/cdrh/dsma/dsmamain.html\".\nSincerely yours,\nJames E. Dillard III\nDirector\nDivision of Cardiovascular and\nRespiratory Devices\nOffice of Device Evaluation\nCenter for Devices and\nRadiological Health\nEnclosure",
+"Page_I_of 1\n510(k) Number(if known):_KO12 1\nDevice Name: VentView\nIndications For Use:\nVentView - a PC programm for displaying ventilation parameters and status messages in both\ngraphical and numerical form for the Drager ventilators Savina, Evita 2 dura and Evita 4.\n(PLEASE DO NOT WRITE BELOW THIS LINE-CONTINUE ON ANOTHER PAGE IF\nNEEDED)\nConcurrence of CDRH, Office of Device Evaluation (ODE)\nktu\nDivision Of Cardiovascular &,Respiratory Devices\n510(k) Number koartf\n(Optional Format 3-10-98)\nPrescription Use\n(Per 21 CFR 801.109)\n010"
+],
+"page_confidence": [
+0.99,
+0.989,
+0.935
+],
+"page_boxes": [
+36,
+26,
+18
+],
+"engine": "rapidocr-onnxruntime",
+"engine_version": "1.4.4",
+"renderer": "pypdfium2",
+"renderer_version": "5.15.2",
+"dpi": 300,
+"low_confidence_pages": []
+}
