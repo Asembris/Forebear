@@ -333,3 +333,51 @@ def test_shortened_strings_never_split_numbers():
 def test_event_numbers_are_not_counts():
     from forebear.investigation.verify import count_claims
     assert count_claims("K201620 was cleared before the 88058 recall began.") == []
+
+
+# ------------------------------------------------------------------ third review: wrongly rejected findings
+def test_direct_recall_titles_give_true_design_counts(tiny):
+    ctx = RunContext("I-x", "K000002")
+    run_tool(tiny, "check_predicate", {"k_number": "K000002", "generations": 2}, ctx)
+    assert {"events": 1, "records": 1, "design": 1, "basis": "signalled recalls"} in ctx.ledger.recall_totals["K000002"]
+    from forebear.investigation.tools import _signal_totals
+    assert _signal_totals("K1 itself has 2 recall event(s) (3 product record(s)), Class I (not design-related)") == \
+        {"events": 2, "records": 3, "design": 0, "class_i": 3}
+    assert _signal_totals("K1 itself has 1 recall event(s) (1 product record(s)), none design-related or Class I") == \
+        {"events": 1, "records": 1, "design": 0, "class_i": 0}
+
+
+def test_lineage_absence_may_name_the_predicate(tiny):
+    ctx = RunContext("I-x", "K000009")
+    run_tool(tiny, "check_predicate", {"k_number": "K000009", "generations": 2}, ctx)
+    run_tool(tiny, "list_citations", {"k_number": "K000009"}, ctx)
+    status = {k: c["coverage"]["evidence"] for k, c in ctx.ledger.assessments.items()}
+    v = verify_finding({"claim": "The lineage of K000009 through its predicate K000001 has no design-related recalls "
+                                 "within the readable ancestry (provisional).", "evidence": ["K000009->K000001"]},
+                       ctx.ledger, status, {}, {"K000009": "NO_DESIGN_RECALL_SIGNAL"})
+    assert v["status"] == "verified", v["reasons"]
+
+
+def test_compare_predicates_rows_are_shown_evidence(tiny):
+    ctx = RunContext("I-x", "K000005")
+    run_tool(tiny, "compare_predicates", {"k_numbers": ["K000002", "K000009"]}, ctx)
+    v = verify_finding({"claim": "K000002 has 1 recall record.", "evidence": ["K000002"]}, ctx.ledger, {})
+    assert v["status"] == "verified", v["reasons"]
+    v = verify_finding({"claim": "K000009 has no recall records (provisional).", "evidence": ["K000009"]},
+                       ctx.ledger, {})
+    assert v["status"] == "verified", v["reasons"]
+
+
+def test_replayed_results_are_compact(tiny, monkeypatch):
+    first = start(tiny, "K000005", depth=4, mode="deterministic")
+    runner.run(lambda fn: fn(tiny), first)
+    again = start(tiny, "K000005", depth=4)
+    again["resumed_from"] = first["id"]
+    sizes = []
+
+    def policy(turn, messages):
+        sizes.extend(len(m["content"]) for m in messages if m["role"] == "tool")
+        return [("submit_report", {"summary": "s", "findings": [{"claim": "K000005 was investigated.",
+                                                                  "evidence": ["K000005"]}]})]
+    runner.run(lambda fn: fn(tiny), again, client=Scripted(policy), prior=store.trace(tiny, first["id"]))
+    assert sizes and max(sizes) <= runner.REPLAY_RESULT_CHARS + 200
