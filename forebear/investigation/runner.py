@@ -263,7 +263,14 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
             else:
                 if not ctx.submission:
                     stop = "step budget exhausted"
-            if not ctx.submission:
+            if not ctx.submission and usage["turns"] == 0 and mode_req == "llm":
+                raise LLMUnavailable(f"mode 'llm' requested but inference failed: {llm_error or stop}")
+            if not ctx.submission and usage["turns"] == 0:
+                mode = "deterministic_fallback"
+                mode_note = ("Deterministic checklist, NOT an autonomous LLM investigation: NVIDIA inference failed "
+                             f"before the first model turn ({llm_error or stop}).")
+                fallback_plan(call_graph, ctx, k, depth, record, seen_calls)
+            elif not ctx.submission:
                 status = "incomplete"
                 mode_note = (f"The LLM agent did not finish ({stop}"
                              + (f": {llm_error}" if llm_error and stop == "inference failed" else "") +
