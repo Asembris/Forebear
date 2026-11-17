@@ -1,0 +1,642 @@
+{
+  "schema": "forebear-investigation-report/1",
+  "investigation_id": "I-26d4140be1bb",
+  "request": "Investigate K201620. An earlier audit treated its predicate K131982 as a K-number typo because the FDA device name differs from the name in the summary. Check the predicate link against the original FDA evidence and the recall records, trace recalled predicates, and prepare a documented due-diligence report.",
+  "disclaimer": "Evidence research, not a medical-device safety determination or regulatory advice. Forebear reports documented 510(k) predicate lineage and FDA recall records; recalls can be lot-, model- or software-specific, openFDA's root-cause field is coarse, and FDA recall records can cover product families. Machine-generated findings below have not been reviewed by a person.",
+  "status": "completed",
+  "mode": "llm_agent",
+  "mode_note": null,
+  "target": {
+    "k": "K201620",
+    "name": "Luna® G3 BPAP 25A",
+    "applicant": "3B Medical, Inc.",
+    "decision_date": "2021-01-29",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201620.pdf",
+    "summary_sha256": "6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf"
+  },
+  "conclusion": {
+    "stance": "recall_signal_documented",
+    "text": "A recall signal is documented in the predicate lineage (see recall summary and evidence paths).",
+    "verdict": "REVIEW_LINEAGE",
+    "verdict_reason": "A direct or grand-predicate has a design-related recall (Class I/II or unclassified), the direct predicate has a Class I recall, or the candidate has a Class I recall.",
+    "evidence": "complete",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "generations_traversed": 4,
+    "source": "deterministic (forebear rules), not the model"
+  },
+  "recall_summary": {
+    "by_device": [
+      {
+        "device": "K131982",
+        "generation": 1,
+        "chain": [
+          "K201620",
+          "K131982"
+        ],
+        "severity": "medium",
+        "title": "Direct predicate K131982 (REMSTAR AUTO A-FLEX HT) has 3 recall event(s) (5 product record(s)), 1 record(s) design-related",
+        "records": 5,
+        "events": 3,
+        "design_related_records": 1,
+        "class_i_records": 5,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-2229-2025",
+          "Z-2228-2025",
+          "Z-2227-2025",
+          "Z-1322-2023",
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K113068",
+        "generation": 2,
+        "chain": [
+          "K201620",
+          "K131982",
+          "K113068"
+        ],
+        "severity": "medium",
+        "title": "Grand-predicate K113068 (REMSTAR AUTO A-FLEX HT) has 2 recall event(s) (2 product record(s)), 2 record(s) design-related",
+        "records": 2,
+        "events": 2,
+        "design_related_records": 2,
+        "class_i_records": 2,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1817-2024",
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K091319",
+        "generation": 3,
+        "chain": [
+          "K201620",
+          "K131982",
+          "K113068",
+          "K091319"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K091319 (REMSTAR AUTO A-FLEX) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1974-2021"
+        ]
+      }
+    ],
+    "totals": {
+      "signalled_recall_records": 6,
+      "records_within_two_generations": 6,
+      "events_within_two_generations": 4,
+      "design_related_records_within_two_generations": 2
+    },
+    "note": "Counts are of recall records attached to the lineage by FDA's own k_numbers and selected by the severity rules; FDA files one record per product in an event. Computed from the graph, not by the model."
+  },
+  "evidence_paths": [
+    {
+      "chain": [
+        "K201620",
+        "K131982"
+      ],
+      "hops": [
+        {
+          "src": "K201620",
+          "dst": "K131982",
+          "page": 6,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201620.pdf",
+          "source_sha256": "6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf",
+          "text_source": "pdf_text_layer",
+          "audit": "variant",
+          "provenance": "audit_variant_machine",
+          "status": "verified",
+          "printed_k_number": "K131982",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15
+            ]
+          },
+          "untrusted_excerpt": "CPAP and Auto CPAP System (K153387). It did not raise new safety or effectiveness questions. The predicate device DreamStation Auto BiPAP (K131982) comprises an optional heated tubing and an optional cellular modem. The basic f unctionality and performance characteristics of the two co",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K201620",
+        "K131982",
+        "K113068"
+      ],
+      "hops": [
+        {
+          "src": "K201620",
+          "dst": "K131982",
+          "page": 6,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201620.pdf",
+          "source_sha256": "6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf",
+          "text_source": "pdf_text_layer",
+          "audit": "variant",
+          "provenance": "audit_variant_machine",
+          "status": "verified",
+          "printed_k_number": "K131982",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15
+            ]
+          },
+          "untrusted_excerpt": "CPAP and Auto CPAP System (K153387). It did not raise new safety or effectiveness questions. The predicate device DreamStation Auto BiPAP (K131982) comprises an optional heated tubing and an optional cellular modem. The basic f unctionality and performance characteristics of the two co",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        },
+        {
+          "src": "K131982",
+          "dst": "K113068",
+          "page": 1,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K131982.pdf",
+          "source_sha256": "979647df4d0aa081d7e18d3ec61f5fa50c6a91ab053b10455e1cf248e0d0ab6b",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K113068",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              1
+            ]
+          },
+          "untrusted_excerpt": "on Name Ventilator, non-continuous (respirator) (21 CFR 868.5905, Product Code BZD) Predicate Device(s) Respironics REMstar Auto A-Flex HT [K(113068) Reason for Submission The REMstar Auto A-Flex HT is the result of modifications made to the REMstar Auto A-Flex HT (K(113068) to include G",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K201620",
+        "K133769"
+      ],
+      "hops": [
+        {
+          "src": "K201620",
+          "dst": "K133769",
+          "page": 4,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201620.pdf",
+          "source_sha256": "6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K133769",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15
+            ]
+          },
+          "untrusted_excerpt": "ventilator Classification Panel Medical Device Products Code BZD Medical Specialties Anesthesiology Predicate Device(s) RESmart® BPAP 25A (K133769)",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "code": "LINEAGE_TRUNCATED",
+      "title": "Ancestry stops at 1 device(s) whose own summaries were not read"
+    }
+  ],
+  "missing_evidence": {
+    "k": "K201620",
+    "generations": 4,
+    "verdict": "REVIEW_LINEAGE",
+    "evidence": "complete",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "deeper_gaps": {
+      "missing_predicate_citations": 0,
+      "doubtful_links": 0,
+      "unread_ancestors": 0
+    },
+    "candidate_own_predicates_read": true,
+    "unread_ancestors": [
+      {
+        "k": "K021861",
+        "name": "REMSTAR PRO WITH C-FLEX CPAP SYSTEM",
+        "gen": 4,
+        "summary_status": "ok_no_predicate_found",
+        "in_family_dataset": true
+      }
+    ],
+    "unread_ancestors_total": 1,
+    "doubtful_links": [],
+    "doubtful_links_total": 0,
+    "unresolved_predicate_citations": [],
+    "unresolved_predicate_citations_total": 0,
+    "recalls_with_unknown_cause_or_class": [],
+    "unattributed_design_recalls_in_product_code": 0,
+    "verdict_window": 2
+  },
+  "agent": {
+    "summary": null,
+    "summary_withheld": "K201620 (Luna G3 BPAP 25A, 3B Medical) cites two direct predicates: K131982 (REMSTAR AUTO A-FLEX HT, Philips Respironics) and K133769 (RESMART BPAP 25A, 3B Medical/BMC). The K131982 link was flagged by an earlier audit as a possible typo because the FDA summary names the device \"DreamStation Auto BiPAP\" while openFDA lists it as \"REMSTAR AUTO A-FLEX HT\". Verification against the cached FDA summary (SHA-256 6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf, page 6) confirms the printed K-number is K131982 and the text reads \"DreamStation Auto BiPAP (K131982)\". The link is therefore valid; the name difference reflects a submission-era vs. marketing name. K131982 carries five Class I recall records across three events (Z-1974-2021, Z-1322-2023, Z-2227/8/9-2025). The 2021 event (88058) is design-related (PE-PUR foam degradation) and also links grand-predicate K113068 and great-grand-predicate K091319. A 2024 design-related recall (Z-1817-2024) also links K113068. The second direct predicate K133769 and its ancestry show no recalls. One generation-4 ancestor (K021861) has an unread summary (ok_no_predicate_found), leaving a minor gap. Verdict: REVIEW_LINEAGE due to design",
+    "summary_issues": [
+      "recall identifiers must be written in full to be checked: ['Z-2227/8/9-2025']",
+      "claims verification, but verify_citation did not pass for any named citation",
+      "states an absence as settled although the evidence is not complete for ['K133769']"
+    ],
+    "findings_verified": [
+      {
+        "claim": "The predicate citation K201620 -> K131982 is verified in the FDA summary (page 6, SHA-256 6526ad2f7f0eff1fef40d93c04b7559a477a3a0e0306d38c77b7def4f71202cf) with printed K-number K131982 and text 'DreamStation Auto BiPAP (K131982)'; the name mismatch is a submission-era vs. marketing name difference, not a typo.",
+        "kind": "citation",
+        "evidence": [
+          "K201620->K131982",
+          "verify_citation:K201620->K131982"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K131982",
+          "K201620"
+        ],
+        "id": "F-da1528d5dbe6"
+      },
+      {
+        "claim": "Grand-predicate K113068 carries two Class I design-related recalls (Z-1974-2021 event 88058 and Z-1817-2024 event 94487), extending the design-related recall signal one generation further.",
+        "kind": "recall_signal",
+        "evidence": [
+          "K113068",
+          "Z-1974-2021",
+          "Z-1817-2024",
+          "event:88058",
+          "event:94487"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K113068",
+          "Z-1817-2024",
+          "Z-1974-2021"
+        ],
+        "id": "F-67e22e8d503c"
+      },
+      {
+        "claim": "Great-grand-predicate K091319 is linked to the same 2021 design-related recall (Z-1974-2021) via FDA recall records.",
+        "kind": "recall_signal",
+        "evidence": [
+          "K091319",
+          "Z-1974-2021",
+          "event:88058"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K091319",
+          "Z-1974-2021"
+        ],
+        "id": "F-84c0f22b02e9"
+      },
+      {
+        "claim": "One generation-4 ancestor (K021861, REMSTAR PRO WITH C-FLEX CPAP SYSTEM) has an unread summary (status ok_no_predicate_found), creating a minor evidence gap beyond the verdict window.",
+        "kind": "gap",
+        "evidence": [
+          "K021861",
+          "coverage_gaps:K201620"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K021861",
+          "K201620"
+        ],
+        "id": "F-98bedb95e046"
+      },
+      {
+        "claim": "The check_predicate verdict for K201620 is REVIEW_LINEAGE, driven by the design-related Class I recalls in the K131982 lineage; evidence coverage is rated complete for the verdict window (candidate, direct predicates, grand-predicates).",
+        "kind": "other",
+        "evidence": [
+          "check_predicate:K201620"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K131982",
+          "K201620"
+        ],
+        "id": "F-9ebe912502f4"
+      }
+    ],
+    "findings_rejected": [
+      {
+        "claim": "Direct predicate K131982 has five Class I recall records across three FDA recall events (Z-1974-2021, Z-1322-2023, Z-2227/8/9-2025); the 2021 event (88058) is design-related (PE-PUR foam degradation) and also links grand-predicate K113068 and great-grand-predicate K091319.",
+        "kind": "recall_signal",
+        "evidence": [
+          "K131982",
+          "Z-1974-2021",
+          "Z-1322-2023",
+          "Z-2229-2025",
+          "event:88058"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "recall identifiers must be written in full to be checked: ['Z-2227/8/9-2025']"
+        ],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K091319",
+          "K113068",
+          "K131982",
+          "Z-1322-2023",
+          "Z-1974-2021",
+          "Z-2229-2025"
+        ],
+        "id": "F-db4a9dc6a95b"
+      },
+      {
+        "claim": "Second direct predicate K133769 and its ancestry through four generations show zero recall records.",
+        "kind": "lineage",
+        "evidence": [
+          "K133769",
+          "trace_ancestry:K201620"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "states an absence as settled although the evidence is not complete for ['K133769']"
+        ],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K133769",
+          "K201620"
+        ],
+        "id": "F-f2c140f634ee"
+      }
+    ],
+    "open_questions": [
+      "Whether the unread summary for K021861 (generation 4) contains additional predicate citations or recall-relevant information.",
+      "Whether any post-clearance modifications to K201620 or its predicates have introduced new recall signals not captured in the current FDA recall linkage."
+    ],
+    "open_questions_dropped": 0,
+    "note": "Machine-generated by the model named below; each finding was checked against this run's tool results. Rejected findings are shown with the reason and are not part of the conclusion."
+  },
+  "proposals": [],
+  "human_oversight": {
+    "lineage_writes_by_agent": 0,
+    "statement": "The agent cannot confirm, reject or edit citation links and did not; proposals await a person. Review status of each evidence hop is shown as its provenance.",
+    "evidence_hops_human_confirmed": 0,
+    "evidence_hops_machine_only": 4
+  },
+  "reproducibility": {
+    "rules_version": "forebear-rules-v3",
+    "agent_version": "forebear-agent-v1",
+    "prompt_sha256": "cd3bdedbc7378df66280b461e1f7711724c016c4b7593587f36fad9e28b00002",
+    "models_configured": [
+      "nvidia/nemotron-3-ultra-550b-a55b",
+      "mistralai/mistral-large-4-1t-a52b"
+    ],
+    "model_used": [
+      "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    "llm_errors": [],
+    "depth": 4,
+    "budget": {
+      "max_steps": 14,
+      "max_tool_calls": 26,
+      "max_calls_per_turn": 4,
+      "max_total_tokens": 220000,
+      "max_seconds": 360.0,
+      "max_invalid_turns": 3
+    },
+    "usage": {
+      "turns": 13,
+      "prompt_tokens": 102579,
+      "completion_tokens": 1939,
+      "tool_calls": 13,
+      "seconds": 74.4
+    },
+    "started_at": "2026-11-17T19:14:32Z",
+    "finished_at": "2026-11-17T19:15:47Z",
+    "graph": {
+      "ProductCode": 76,
+      "Device": 1187,
+      "Company": 301,
+      "Recall": 563,
+      "Investigation": 1,
+      "ToolCall": 13
+    },
+    "tool_calls": [
+      {
+        "seq": 1,
+        "tool": "get_device",
+        "args": {
+          "k_number": "K201620"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "d13e04677ccf17b0aa3df9b8990b5786c97751f1d1cbfa9413c0781761249987"
+      },
+      {
+        "seq": 2,
+        "tool": "list_citations",
+        "args": {
+          "k_number": "K201620"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "12c9559a623c8a620f3e615ce39d4ed53df380be57f39120199200a763f80874"
+      },
+      {
+        "seq": 3,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K201620",
+          "cited_k": "K131982"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "0deadef832b8048bf433bc7eeaa64682a58799b4564574c92ad163c02a8108b9"
+      },
+      {
+        "seq": 4,
+        "tool": "get_device",
+        "args": {
+          "k_number": "K131982"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "0e8b2c7d1003c54fcd36c9247ab0b45f3c670d73e37defd2875e7f0354a4b57d"
+      },
+      {
+        "seq": 5,
+        "tool": "trace_ancestry",
+        "args": {
+          "k_number": "K201620",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "791cf4ce5445fb61978c6e0c80ef10caae7866ad8e486f507b3976b5fedc3c5b"
+      },
+      {
+        "seq": 6,
+        "tool": "check_predicate",
+        "args": {
+          "k_number": "K201620",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "55d5cc1f43bbd5d1f6ca0bcde479783311a0bc24f9cb293f295bf0f5e5bbe1e4"
+      },
+      {
+        "seq": 7,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1974-2021"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e"
+      },
+      {
+        "seq": 8,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1817-2024"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "14399a1f2f4da9a710a682eaf73c1cf9918353da59cea6604f1c19784ee0db8e"
+      },
+      {
+        "seq": 9,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1322-2023"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "a1951bda553e8ff7027991c55c007bfd8cb4f85b4478e55cfb818674117713d3"
+      },
+      {
+        "seq": 10,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-2229-2025"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "7d37f1b8c2aea4591b6759c50f08f6cc6a231b8cb849b57b938e7840ac19279e"
+      },
+      {
+        "seq": 11,
+        "tool": "coverage_gaps",
+        "args": {
+          "k_number": "K201620",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "a27c676a42977379f9922f9d9e0db86322efacd54f0e83400ad0357dfc442e59"
+      },
+      {
+        "seq": 12,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K131982",
+          "cited_k": "K113068"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "897184555c89a21fc33eadbaafd24dab4904d85d351f018ff011d35f3e664158"
+      },
+      {
+        "seq": 13,
+        "tool": "submit_report",
+        "args": {
+          "findings": 7,
+          "note": "content verified above; raw text in the ToolCall node"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "bcc8e53f1ec36d6539ae22f9da6a15db0c81f82d84d8950522a71f17f8c31ade"
+      }
+    ],
+    "how_to_rerun": "POST /api/investigations {\"request\": ..., \"k\": \"K201620\", \"depth\": 4} or scripts/investigate.py --k K201620 --depth 4"
+  }
+}

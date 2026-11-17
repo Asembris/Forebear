@@ -1,0 +1,28 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_201656.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 1.96s -> ['check_predicate']
+  #1 llm: check_predicate({"k_number": "K251889", "generations": 4}) -> K251889 verdict NO_DESIGN_RECALL_SIGNAL, evidence partial, 7 signal(s), 4 generation(s)
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 1.8s -> ['trace_ancestry']
+  #2 llm: trace_ancestry({"k_number": "K251889", "generations": 4}) -> K251889: 26 ancestor(s) within 4 generation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 1.36s -> ['get_recall']
+  #3 llm: get_recall({"recall_id": "Z-1263-2009"}) -> Z-1263-2009 None / Software design initiated 2009-01-21, 1 linked device(s)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 1.52s -> ['verify_citation']
+  #4 llm: verify_citation({"citing_k": "K251889", "cited_k": "K200565"}) -> K251889->K200565 verified (page 6)
+
+[turn 5] nvidia/nemotron-3-ultra-550b-a55b 1.63s -> ['verify_citation']
+  #5 llm: verify_citation({"citing_k": "K103167", "cited_k": "K060705"}) -> K103167->K060705 verified (page 1)
+
+[turn 6] nvidia/nemotron-3-ultra-550b-a55b 4.24s -> ['coverage_gaps']
+  #6 llm: coverage_gaps({"k_number": "K251889", "generations": 4}) -> K251889 evidence partial: 3 unread ancestor(s), 2 doubtful link(s), 4 unresolved predicate citation(s)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 66.62s -> ['submit_report']
+  #7 llm: submit_report({"summary": "K251889 (myAir, ResMed Corp, cleared 2026-04-08) has a provisional NO_DESIGN_RECALL_SIGNAL verdict across 4) -> report submitted with 7 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-ff684a6f6a90: completed / llm_agent
+conclusion: provisional_no_signal (NO_DESIGN_RECALL_SIGNAL, evidence partial)
+findings: 6 verified, 1 rejected; proposals: 0

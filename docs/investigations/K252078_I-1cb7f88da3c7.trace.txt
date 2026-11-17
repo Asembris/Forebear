@@ -1,0 +1,46 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_201319.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 1.84s -> ['check_predicate']
+  #1 llm: check_predicate({"k_number": "K252078", "generations": 4}) -> K252078 verdict REVIEW_LINEAGE, evidence partial, 12 signal(s), 4 generation(s)
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 1.42s -> ['trace_ancestry']
+  #2 llm: trace_ancestry({"k_number": "K252078", "generations": 4}) -> K252078: 26 ancestor(s) within 4 generation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 1.98s -> ['verify_citation']
+  #3 llm: verify_citation({"citing_k": "K252078", "cited_k": "K113053"}) -> K252078->K113053 verified (page 6)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 1.2s -> ['verify_citation']
+  #4 llm: verify_citation({"citing_k": "K113053", "cited_k": "K082660"}) -> K113053->K082660 verified (page 2)
+
+[turn 5] nvidia/nemotron-3-ultra-550b-a55b 1.15s -> ['verify_citation']
+  #5 llm: verify_citation({"citing_k": "K113053", "cited_k": "K092818"}) -> K113053->K092818 verified (page 3)
+
+[turn 6] nvidia/nemotron-3-ultra-550b-a55b 2.09s -> ['verify_citation']
+  #6 llm: verify_citation({"citing_k": "K113053", "cited_k": "K103167"}) -> K113053->K103167 verified (page 2)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 1.62s -> ['verify_citation']
+  #7 llm: verify_citation({"citing_k": "K082660", "cited_k": "K981072"}) -> K082660->K981072 verified (page 3)
+
+[turn 8] nvidia/nemotron-3-ultra-550b-a55b 1.51s -> ['verify_citation']
+  #8 llm: verify_citation({"citing_k": "K092818", "cited_k": "K071509"}) -> K092818->K071509 verified (page 2)
+
+[turn 9] nvidia/nemotron-3-ultra-550b-a55b 1.58s -> ['verify_citation']
+  #9 llm: verify_citation({"citing_k": "K113053", "cited_k": "K071509"}) -> K113053->K071509 verified (page 3)
+
+[turn 10] nvidia/nemotron-3-ultra-550b-a55b 1.73s -> ['get_recall']
+  #10 llm: get_recall({"recall_id": "Z-1957-2021"}) -> Z-1957-2021 Class I / Device Design initiated 2021-06-14, 1 linked device(s)
+
+[turn 11] nvidia/nemotron-3-ultra-550b-a55b 1.53s -> ['get_recall']
+  #11 llm: get_recall({"recall_id": "Z-1958-2021"}) -> Z-1958-2021 Class I / Device Design initiated 2021-06-14, 2 linked device(s)
+
+[turn 12] nvidia/nemotron-3-ultra-550b-a55b 1.22s -> ['get_recall']
+  #12 llm: get_recall({"recall_id": "Z-1973-2021"}) -> Z-1973-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+
+[turn 13] nvidia/nemotron-3-ultra-550b-a55b 52.48s -> ['submit_report']
+  #13 llm: submit_report({"summary": "K252078 (BreathePal Bilevel, Compal Electronics) cites K113053 (BiPAP A30) as its sole direct predicate. Th) -> report submitted with 7 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-1cb7f88da3c7: completed / llm_agent
+conclusion: recall_signal_documented (REVIEW_LINEAGE, evidence partial)
+findings: 5 verified, 2 rejected; proposals: 0

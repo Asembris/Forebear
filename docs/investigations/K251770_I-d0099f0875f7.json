@@ -1,0 +1,717 @@
+{
+  "schema": "forebear-investigation-report/1",
+  "investigation_id": "I-d0099f0875f7",
+  "request": "Investigate K251770: trace its predicate lineage and recalled predicates, verify the FDA evidence, identify unresolved or unread lineage, and state clearly what the evidence does not cover.",
+  "disclaimer": "Evidence research, not a medical-device safety determination or regulatory advice. Forebear reports documented 510(k) predicate lineage and FDA recall records; recalls can be lot-, model- or software-specific, openFDA's root-cause field is coarse, and FDA recall records can cover product families. Machine-generated findings below have not been reviewed by a person.",
+  "status": "completed",
+  "mode": "llm_agent",
+  "mode_note": null,
+  "target": {
+    "k": "K251770",
+    "name": "SleepRes PAP System",
+    "applicant": "Sleepres, Inc.",
+    "decision_date": "2025-12-15",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf",
+    "summary_sha256": "73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1"
+  },
+  "conclusion": {
+    "stance": "recall_signal_documented",
+    "text": "A recall signal is documented in the predicate lineage (see recall summary and evidence paths).",
+    "verdict": "REVIEW_LINEAGE",
+    "verdict_reason": "A direct or grand-predicate has a design-related recall (Class I/II or unclassified), the direct predicate has a Class I recall, or the candidate has a Class I recall.",
+    "evidence": "complete",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "generations_traversed": 4,
+    "source": "deterministic (forebear rules), not the model"
+  },
+  "recall_summary": {
+    "by_device": [
+      {
+        "device": "K130077",
+        "generation": 2,
+        "chain": [
+          "K251770",
+          "K200480",
+          "K130077"
+        ],
+        "severity": "medium",
+        "title": "Grand-predicate K130077 (REMSTAR SE) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K131982",
+        "generation": 2,
+        "chain": [
+          "K251770",
+          "K200480",
+          "K131982"
+        ],
+        "severity": "medium",
+        "title": "Grand-predicate K131982 (REMSTAR AUTO A-FLEX HT) has 3 recall event(s) (5 product record(s)), 1 record(s) design-related",
+        "records": 5,
+        "events": 3,
+        "design_related_records": 1,
+        "class_i_records": 5,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-2229-2025",
+          "Z-2228-2025",
+          "Z-2227-2025",
+          "Z-1322-2023",
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K113068",
+        "generation": 3,
+        "chain": [
+          "K251770",
+          "K200480",
+          "K131982",
+          "K113068"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K113068 (REMSTAR AUTO A-FLEX HT) has 2 recall event(s) (2 product record(s)), 2 record(s) design-related",
+        "records": 2,
+        "events": 2,
+        "design_related_records": 2,
+        "class_i_records": 2,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1817-2024",
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K122769",
+        "generation": 3,
+        "chain": [
+          "K251770",
+          "K200480",
+          "K130077",
+          "K122769"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K122769 (REMSTAR SE) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K091319",
+        "generation": 4,
+        "chain": [
+          "K251770",
+          "K200480",
+          "K131982",
+          "K113068",
+          "K091319"
+        ],
+        "severity": "low",
+        "title": "Generation-4 ancestor K091319 (REMSTAR AUTO A-FLEX) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1974-2021"
+        ]
+      }
+    ],
+    "totals": {
+      "signalled_recall_records": 6,
+      "records_within_two_generations": 5,
+      "events_within_two_generations": 3,
+      "design_related_records_within_two_generations": 1
+    },
+    "note": "Counts are of recall records attached to the lineage by FDA's own k_numbers and selected by the severity rules; FDA files one record per product in an event. Computed from the graph, not by the model."
+  },
+  "evidence_paths": [
+    {
+      "chain": [
+        "K251770",
+        "K200480",
+        "K130077"
+      ],
+      "hops": [
+        {
+          "src": "K251770",
+          "dst": "K200480",
+          "page": 5,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf",
+          "source_sha256": "73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K200480",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              7,
+              8
+            ]
+          },
+          "untrusted_excerpt": "– 868.5905 - Noncontinuous Ventilator (IPPB) Secondary BZE – 868.5270 - Breathing System Heater Predicate Device: Philips DreamStation 2 - K200480 Common/Usual Name: CPAP Classification Name: BZD – 868.5905 - Noncontinuous Ventilator (IPPB) Reference Device: Exceleron Thermalite CPAP H",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        },
+        {
+          "src": "K200480",
+          "dst": "K130077",
+          "page": 4,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf",
+          "source_sha256": "923bbcfbbaea7deaf5a1b208872bda1afcf8433ff7c413ac5831cdc6c69bd1cb",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K130077",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              4,
+              6,
+              7,
+              8
+            ]
+          },
+          "untrusted_excerpt": "nuous (Respirator), 21 CFR 868.5905, BZD Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982) Secondary Predicate Device: REMSTAR SE (K130077) Submission Reason: New Device",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K251770",
+        "K200480",
+        "K131982"
+      ],
+      "hops": [
+        {
+          "src": "K251770",
+          "dst": "K200480",
+          "page": 5,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf",
+          "source_sha256": "73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K200480",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              7,
+              8
+            ]
+          },
+          "untrusted_excerpt": "– 868.5905 - Noncontinuous Ventilator (IPPB) Secondary BZE – 868.5270 - Breathing System Heater Predicate Device: Philips DreamStation 2 - K200480 Common/Usual Name: CPAP Classification Name: BZD – 868.5905 - Noncontinuous Ventilator (IPPB) Reference Device: Exceleron Thermalite CPAP H",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        },
+        {
+          "src": "K200480",
+          "dst": "K131982",
+          "page": 4,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf",
+          "source_sha256": "923bbcfbbaea7deaf5a1b208872bda1afcf8433ff7c413ac5831cdc6c69bd1cb",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K131982",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              4,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "untrusted_excerpt": "ication Name/ Product Code: Ventilator, Non-Continuous (Respirator), 21 CFR 868.5905, BZD Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982) Secondary Predicate Device: REMSTAR SE (K130077) Submission Reason: New Device",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K251770",
+        "K200480"
+      ],
+      "hops": [
+        {
+          "src": "K251770",
+          "dst": "K200480",
+          "page": 5,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf",
+          "source_sha256": "73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K200480",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              7,
+              8
+            ]
+          },
+          "untrusted_excerpt": "– 868.5905 - Noncontinuous Ventilator (IPPB) Secondary BZE – 868.5270 - Breathing System Heater Predicate Device: Philips DreamStation 2 - K200480 Common/Usual Name: CPAP Classification Name: BZD – 868.5905 - Noncontinuous Ventilator (IPPB) Reference Device: Exceleron Thermalite CPAP H",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "code": "LINEAGE_TRUNCATED",
+      "title": "Ancestry stops at 2 device(s) whose own summaries were not read"
+    }
+  ],
+  "missing_evidence": {
+    "k": "K251770",
+    "generations": 4,
+    "verdict": "REVIEW_LINEAGE",
+    "evidence": "complete",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "deeper_gaps": {
+      "missing_predicate_citations": 0,
+      "doubtful_links": 0,
+      "unread_ancestors": 0
+    },
+    "candidate_own_predicates_read": true,
+    "unread_ancestors": [
+      {
+        "k": "K010263",
+        "name": "REMSTAR PLUS CPAP SYSTEM",
+        "gen": 4,
+        "summary_status": "missing",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K091112",
+        "name": "RESPIRONICS SLEEPEASY CPAP SYSTEM",
+        "gen": 4,
+        "summary_status": "ok_no_predicate_found",
+        "in_family_dataset": true
+      }
+    ],
+    "unread_ancestors_total": 2,
+    "doubtful_links": [],
+    "doubtful_links_total": 0,
+    "unresolved_predicate_citations": [],
+    "unresolved_predicate_citations_total": 0,
+    "recalls_with_unknown_cause_or_class": [],
+    "unattributed_design_recalls_in_product_code": 0,
+    "verdict_window": 2
+  },
+  "agent": {
+    "summary": "K251770 (SleepRes PAP System, Sleepres Inc., cleared 2025-12-15) traces through one direct predicate (K200480 DreamStation 2) to two grand-predicate branches (K130077 REMSTAR SE and K131982 REMSTAR AUTO A-FLEX HT) and further back to eight ancestors within four generations. The lineage triggers a REVIEW_LINEAGE verdict because grand-predicates K130077 and K131982 each carry Class I design-related recalls (event 88058, PE-PUR foam degradation). Two generation-4 ancestors (K010263 and K091112) have unread summaries, so evidence beyond the verdict window is incomplete.",
+    "summary_withheld": null,
+    "summary_issues": [],
+    "findings_verified": [
+      {
+        "claim": "K251770 cites K200480 (DreamStation 2) as its sole direct predicate; the citation appears on page 5 of K251770's FDA summary.",
+        "kind": "lineage",
+        "evidence": [
+          "K251770->K200480"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K200480",
+          "K251770"
+        ],
+        "id": "F-771438c53bc0"
+      },
+      {
+        "claim": "K200480 cites two grand-predicates: K130077 (REMSTAR SE, page 4) and K131982 (REMSTAR AUTO A-FLEX HT, page 4).",
+        "kind": "lineage",
+        "evidence": [
+          "K200480->K130077",
+          "K200480->K131982"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K130077",
+          "K131982",
+          "K200480"
+        ],
+        "id": "F-823f2a618f43"
+      },
+      {
+        "claim": "Grand-predicate K130077 is linked to Class I recall Z-1974-2021 (event 88058) for PE-PUR foam degradation; the recall record lists K130077 as a linked device.",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1974-2021",
+          "K251770->K200480->K130077"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K130077",
+          "K200480",
+          "K251770",
+          "Z-1974-2021"
+        ],
+        "id": "F-f5258f28a7ca"
+      },
+      {
+        "claim": "Generation-3 ancestor K113068 carries Class I recall Z-1817-2024 (event 94487) for possible therapy interruption; the recall record lists K113068 with a name mismatch.",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1817-2024",
+          "K251770->K200480->K131982->K113068"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K113068",
+          "K131982",
+          "K200480",
+          "K251770",
+          "Z-1817-2024"
+        ],
+        "id": "F-2a0cc650dd42"
+      },
+      {
+        "claim": "Two generation-4 ancestors (K010263 summary missing, K091112 summary ok_no_predicate_found) have unread FDA summaries, so predicate citations beyond generation 4 are unknown; coverage_gaps reports zero doubtful links and zero unresolved predicate citations within the four-generation window.",
+        "kind": "uncertainty",
+        "evidence": [
+          "K010263",
+          "K091112"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K010263",
+          "K091112"
+        ],
+        "id": "F-13fe8e897bcb"
+      }
+    ],
+    "findings_rejected": [
+      {
+        "claim": "Grand-predicate K131982 is linked to the same Class I recall Z-1974-2021 plus four additional Class I recalls (Z-2229-2025, Z-2228-2025, Z-2227-2025, Z-1322-2023) spanning 2023-2025; all five recall records list K131982 as a linked device.",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1974-2021",
+          "Z-2229-2025",
+          "Z-2228-2025",
+          "Z-2227-2025",
+          "Z-1322-2023",
+          "K251770->K200480->K131982"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "recall counts for K131982 do not match the graph: stated ['4 class_i', '5 records'], graph has {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (all recalls) / {'events': 3, 'records': 5, 'design': 1, 'class_i': 5} (signalled recalls)"
+        ],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K131982",
+          "K200480",
+          "K251770",
+          "Z-1322-2023",
+          "Z-1974-2021",
+          "Z-2227-2025",
+          "Z-2228-2025",
+          "Z-2229-2025"
+        ],
+        "id": "F-4820792ebd1a"
+      },
+      {
+        "claim": "Generation-4 ancestor K091319 is linked to recall Z-1974-2021; generation-4 ancestor K010263 carries three older recalls (Z-1066-2008, Z-0447-2007, Z-0446-2007) none classified as Class I and none design-related.",
+        "kind": "recall_signal",
+        "evidence": [
+          "Z-1974-2021",
+          "Z-1066-2008",
+          "Z-0447-2007",
+          "Z-0446-2007",
+          "K251770->K200480->K131982->K113068->K091",
+          "K251770->K200480->K130077->K122769->K010"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "recall Z-0446-2007 is not classified by FDA, not Class I",
+          "recall Z-0447-2007 is not classified by FDA, not Class I",
+          "recall Z-1066-2008 is not classified by FDA, not Class I"
+        ],
+        "origin": "llm:nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K010263",
+          "K091319",
+          "K113068",
+          "K122769",
+          "K130077",
+          "K131982",
+          "K200480",
+          "K251770",
+          "Z-0446-2007",
+          "Z-0447-2007",
+          "Z-1066-2008",
+          "Z-1974-2021"
+        ],
+        "id": "F-06a94d3db481"
+      }
+    ],
+    "open_questions": [
+      "Whether the PE-PUR foam recall (Z-1974-2021) affects design elements shared with K251770 through the K200480->K130077/K131982 lineage.",
+      "Whether the therapy-interruption recall (Z-1817-2024) on K113068 reflects a design pattern that persists in K251770.",
+      "Full predicate chains for K010263 and K091112 beyond generation 4 remain unread."
+    ],
+    "open_questions_dropped": 0,
+    "note": "Machine-generated by the model named below; each finding was checked against this run's tool results. Rejected findings are shown with the reason and are not part of the conclusion."
+  },
+  "proposals": [],
+  "human_oversight": {
+    "lineage_writes_by_agent": 0,
+    "statement": "The agent cannot confirm, reject or edit citation links and did not; proposals await a person. Review status of each evidence hop is shown as its provenance.",
+    "evidence_hops_human_confirmed": 0,
+    "evidence_hops_machine_only": 5
+  },
+  "reproducibility": {
+    "rules_version": "forebear-rules-v3",
+    "agent_version": "forebear-agent-v1",
+    "prompt_sha256": "cd3bdedbc7378df66280b461e1f7711724c016c4b7593587f36fad9e28b00002",
+    "models_configured": [
+      "nvidia/nemotron-3-ultra-550b-a55b",
+      "mistralai/mistral-large-4-1t-a52b"
+    ],
+    "model_used": [
+      "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    "llm_errors": [],
+    "depth": 4,
+    "budget": {
+      "max_steps": 14,
+      "max_tool_calls": 26,
+      "max_calls_per_turn": 4,
+      "max_total_tokens": 220000,
+      "max_seconds": 360.0,
+      "max_invalid_turns": 3
+    },
+    "usage": {
+      "turns": 13,
+      "prompt_tokens": 97599,
+      "completion_tokens": 1852,
+      "tool_calls": 13,
+      "seconds": 67.4
+    },
+    "started_at": "2026-11-17T19:15:48Z",
+    "finished_at": "2026-11-17T19:16:55Z",
+    "graph": {
+      "ProductCode": 76,
+      "Device": 1187,
+      "Company": 301,
+      "Recall": 563,
+      "Investigation": 1,
+      "ToolCall": 13
+    },
+    "tool_calls": [
+      {
+        "seq": 1,
+        "tool": "trace_ancestry",
+        "args": {
+          "k_number": "K251770",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "73932a7d4f80c03d3ac74040221e8fdc6b84ea83ca2704a724ac4a58e2a999ab"
+      },
+      {
+        "seq": 2,
+        "tool": "check_predicate",
+        "args": {
+          "k_number": "K251770",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "7e39cc76009e13d85c07d046537ffb93d7378f4353b0ac97d933568eb31a97ea"
+      },
+      {
+        "seq": 3,
+        "tool": "coverage_gaps",
+        "args": {
+          "k_number": "K251770",
+          "generations": 4
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "e6dee894f13c630ff6da0b209f7d28af3fa58b38467199bdc9556e2df6276a65"
+      },
+      {
+        "seq": 4,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1974-2021"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e"
+      },
+      {
+        "seq": 5,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1817-2024"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "14399a1f2f4da9a710a682eaf73c1cf9918353da59cea6604f1c19784ee0db8e"
+      },
+      {
+        "seq": 6,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-2229-2025"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "7d37f1b8c2aea4591b6759c50f08f6cc6a231b8cb849b57b938e7840ac19279e"
+      },
+      {
+        "seq": 7,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-2228-2025"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "e14d953018f1b66d362c728ffb4de30462e1c40226bb5788accbedefecd3c5d0"
+      },
+      {
+        "seq": 8,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-2227-2025"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "e4177b637f5bffe2c885cea5ae21e3fb6339c9efc2e81b259bc1a8f7c37e12be"
+      },
+      {
+        "seq": 9,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1322-2023"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "a1951bda553e8ff7027991c55c007bfd8cb4f85b4478e55cfb818674117713d3"
+      },
+      {
+        "seq": 10,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1066-2008"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "f4977938c1aea9aa43ad4586dbabf8b685758e16a48cb5a5209f15a3710cce2b"
+      },
+      {
+        "seq": 11,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-0447-2007"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "f2356a4e583640fe887224630a9eb8bf31e5f17a5ca456a19dccd1a2605eaa95"
+      },
+      {
+        "seq": 12,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-0446-2007"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "e17349e793532e1c53f6ee47aa95d9218a564ff78c64032031eb4e679baf3ee6"
+      },
+      {
+        "seq": 13,
+        "tool": "submit_report",
+        "args": {
+          "findings": 7,
+          "note": "content verified above; raw text in the ToolCall node"
+        },
+        "ok": true,
+        "origin": "llm",
+        "result_sha256": "bcc8e53f1ec36d6539ae22f9da6a15db0c81f82d84d8950522a71f17f8c31ade"
+      }
+    ],
+    "how_to_rerun": "POST /api/investigations {\"request\": ..., \"k\": \"K251770\", \"depth\": 4} or scripts/investigate.py --k K251770 --depth 4"
+  }
+}

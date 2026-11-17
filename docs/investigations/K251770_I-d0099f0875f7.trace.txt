@@ -1,0 +1,46 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_201548.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 3.08s -> ['trace_ancestry']
+  #1 llm: trace_ancestry({"k_number": "K251770", "generations": 4}) -> K251770: 8 ancestor(s) within 4 generation(s)
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 2.66s -> ['check_predicate']
+  #2 llm: check_predicate({"k_number": "K251770", "generations": 4}) -> K251770 verdict REVIEW_LINEAGE, evidence complete, 6 signal(s), 4 generation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 7.9s -> ['coverage_gaps']
+  #3 llm: coverage_gaps({"k_number": "K251770", "generations": 4}) -> K251770 evidence complete: 2 unread ancestor(s), 0 doubtful link(s), 0 unresolved predicate citation(s)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 0.92s -> ['get_recall']
+  #4 llm: get_recall({"recall_id": "Z-1974-2021"}) -> Z-1974-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+
+[turn 5] nvidia/nemotron-3-ultra-550b-a55b 1.15s -> ['get_recall']
+  #5 llm: get_recall({"recall_id": "Z-1817-2024"}) -> Z-1817-2024 Class I / Device Design initiated 2024-04-01, 3 linked device(s)
+
+[turn 6] nvidia/nemotron-3-ultra-550b-a55b 6.49s -> ['get_recall']
+  #6 llm: get_recall({"recall_id": "Z-2229-2025"}) -> Z-2229-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 0.87s -> ['get_recall']
+  #7 llm: get_recall({"recall_id": "Z-2228-2025"}) -> Z-2228-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 8] nvidia/nemotron-3-ultra-550b-a55b 0.88s -> ['get_recall']
+  #8 llm: get_recall({"recall_id": "Z-2227-2025"}) -> Z-2227-2025 Class I / Process control initiated 2025-06-30, 1 linked device(s)
+
+[turn 9] nvidia/nemotron-3-ultra-550b-a55b 4.11s -> ['get_recall']
+  #9 llm: get_recall({"recall_id": "Z-1322-2023"}) -> Z-1322-2023 Class I / Software design (manufacturing process) initiated 2023-02-10, 1 linked device(s)
+
+[turn 10] nvidia/nemotron-3-ultra-550b-a55b 2.04s -> ['get_recall']
+  #10 llm: get_recall({"recall_id": "Z-1066-2008"}) -> Z-1066-2008 None / Environmental control initiated 2007-10-15, 1 linked device(s)
+
+[turn 11] nvidia/nemotron-3-ultra-550b-a55b 1.7s -> ['get_recall']
+  #11 llm: get_recall({"recall_id": "Z-0447-2007"}) -> Z-0447-2007 None / Other initiated 2006-10-25, 1 linked device(s)
+
+[turn 12] nvidia/nemotron-3-ultra-550b-a55b 0.83s -> ['get_recall']
+  #12 llm: get_recall({"recall_id": "Z-0446-2007"}) -> Z-0446-2007 None / Other initiated 2006-10-25, 1 linked device(s)
+
+[turn 13] nvidia/nemotron-3-ultra-550b-a55b 33.73s -> ['submit_report']
+  #13 llm: submit_report({"summary": "K251770 (SleepRes PAP System, Sleepres Inc., cleared 2025-12-15) traces through one direct predicate (K2004) -> report submitted with 7 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-d0099f0875f7: completed / llm_agent
+conclusion: recall_signal_documented (REVIEW_LINEAGE, evidence complete)
+findings: 5 verified, 2 rejected; proposals: 0
