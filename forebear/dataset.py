@@ -220,6 +220,45 @@ def unattributed_recalls(recs: list[dict], known: set[str]) -> list[dict]:
     return sorted(out, key=lambda r: r["id"])
 
 
+def link_recalls(recalls: list[dict], devices: dict[str, dict]) -> dict:
+    """Attach per-device link evidence to each recall row (stored on the SUBJECT_OF edge).
+
+    The join itself is FDA's: openFDA lists the 510(k) numbers of the recalled product. These checks
+    only say how well the rest of the record agrees with that join:
+      name_check        does the recall's product/reason text name the linked device?
+      before_clearance  the recall started before the linked device was cleared (FDA lists later
+                        clearances of the same product family on older recalls; the timing of such a
+                        recall relative to that device is not meaningful)"""
+    stats = {"links": 0, "name_mismatch": 0, "before_clearance": 0}
+    for r in recalls:
+        text = f"{r.get('product') or ''} {r.get('reason') or ''}"
+        links = []
+        for k in r["k_numbers"]:
+            d = devices.get(k)
+            if d is None:
+                continue
+            nc = evidence.name_check(text, d.get("name") or d.get("device_name"))
+            dd = d.get("decision_date")
+            before = bool(r.get("initiated") and dd and r["initiated"] < dd)
+            links.append({"k": k, "name_check": nc, "before_clearance": before})
+            stats["links"] += 1
+            stats["name_mismatch"] += nc == "mismatch"
+            stats["before_clearance"] += before
+        r["links"] = links
+    return stats
+
+
+def unattributed_recalls(recs: list[dict], known: set[str]) -> list[dict]:
+    """Recall records filed under a product code that name no 510(k) in the graph: they exist, but no
+    lineage query can see them. Kept on the ProductCode node so assessments can say so."""
+    out = []
+    for r in recall_rows(recs, []):
+        if not set(r["k_numbers"]) & known:
+            out.append({key: r[key] for key in ("id", "event", "root_cause", "design_related", "initiated",
+                                                "firm", "product", "url", "k_numbers")})
+    return sorted(out, key=lambda r: r["id"])
+
+
 def _bump(report: dict | None, key: str) -> None:
     if report is not None:
         report[key] = report.get(key, 0) + 1

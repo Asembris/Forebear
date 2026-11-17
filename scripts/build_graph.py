@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from forebear import audit, openfda  # noqa: E402
 from forebear.config import DATA, DB_PATH, DEFAULT_PRODUCT_CODES, use_raw_cache  # noqa: E402
-from forebear.dataset import (citation_rows, device_row, fetch_recalls_for, mark_no_predicate,  # noqa: E402
-                              mark_unresolved)
+from forebear.dataset import (citation_rows, device_row, fetch_recalls_for, link_recalls,  # noqa: E402
+                              mark_no_predicate, mark_unresolved, unattributed_recalls)
 from forebear.graph import open_graph  # noqa: E402
 from forebear.predicates import extract_from_summary  # noqa: E402
 from forebear import summaries  # noqa: E402
@@ -69,11 +69,16 @@ def _build(out: Path, codes: list[str]) -> dict:
     no_pred = mark_no_predicate(devices, citations)
     n_unresolved = mark_unresolved(devices, unresolved)
     recalls = fetch_recalls_for(sorted(known))
+    recall_links = link_recalls(recalls, {d["k"]: d for d in devices})
     reviews = json.loads(REVIEWS.read_text(encoding="utf-8"))["reviews"] if REVIEWS.exists() else []
     codes_meta = []
     for code in sorted({d["product_code"] for d in devices if d["product_code"]}):
         c = openfda.classification(code) if code in codes else None
+        un = unattributed_recalls(openfda.recalls_for_product_code(code), set(known)) if code in codes else []
         codes_meta.append({"code": code, "name": (c or {}).get("device_name"),
+                           "unattributed_recalls": json.dumps(un) if un else None,
+                           "unattributed_recalls_n": len(un),
+                           "unattributed_design_recalls_n": sum(1 for u in un if u["design_related"]),
                            "device_class": (c or {}).get("device_class"),
                            "regulation": (c or {}).get("regulation_number")})
 
@@ -120,6 +125,11 @@ def _build(out: Path, codes: list[str]) -> dict:
         "curated_reviews_applied": f"{applied}/{len(reviews)}",
         "recall_records_linked": len(recalls),
         "design_related_recalls": sum(r["design_related"] for r in recalls),
+        "recalls_without_classification": sum(1 for r in recalls if not r["classification"]),
+        "recall_links": recall_links,
+        "unattributed_recalls_by_code": {c["code"]: {"records": c["unattributed_recalls_n"],
+                                                     "design_related": c["unattributed_design_recalls_n"]}
+                                         for c in codes_meta if c["unattributed_recalls_n"]},
         "graph": stats,
     })
     return report

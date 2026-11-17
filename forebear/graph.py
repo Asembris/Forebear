@@ -80,7 +80,10 @@ class Graph:
     def upsert_product_codes(self, rows: list[dict]) -> None:
         self.conn.execute(
             "UNWIND $rows AS r MERGE (p:ProductCode {code: r.code}) "
-            "SET p.name = r.name, p.device_class = r.device_class, p.regulation = r.regulation",
+            "SET p.name = r.name, p.device_class = r.device_class, p.regulation = r.regulation, "
+            "p.unattributed_recalls = r.unattributed_recalls, "
+            "p.unattributed_recalls_n = coalesce(r.unattributed_recalls_n, 0), "
+            "p.unattributed_design_recalls_n = coalesce(r.unattributed_design_recalls_n, 0)",
             {"rows": rows})
 
     def upsert_devices(self, rows: list[dict]) -> None:
@@ -129,7 +132,12 @@ class Graph:
                 {"rows": rows[i:i + 500]})
 
     def upsert_recalls(self, rows: list[dict]) -> None:
-        """rows: recall dicts incl. k_numbers list; links each to the devices it names."""
+        """rows: recall dicts incl. k_numbers list; links each to the devices it names. Optional
+        `links` carry per-device evidence (dataset.link_recalls); existing evidence is kept otherwise."""
+        rows = [{**r, "links": r.get("links", []) + [{"k": k, "name_check": None, "before_clearance": None}
+                                                     for k in r["k_numbers"]
+                                                     if k not in {x["k"] for x in r.get("links", [])}]}
+                for r in rows]
         for i in range(0, len(rows), 500):
             self.conn.execute(
                 """UNWIND $rows AS r
@@ -141,9 +149,11 @@ class Graph:
                     x.status = r.status, x.firm = r.firm, x.reason = r.reason,
                     x.product = r.product, x.url = r.url, x.product_code = r.product_code
                 WITH x, r
-                UNWIND r.k_numbers AS k
-                MATCH (d:Device {k: k})
-                MERGE (d)-[:SUBJECT_OF]->(x)""",
+                UNWIND r.links AS l
+                MATCH (d:Device {k: l.k})
+                MERGE (d)-[s:SUBJECT_OF]->(x)
+                SET s.name_check = coalesce(l.name_check, s.name_check),
+                    s.before_clearance = coalesce(l.before_clearance, s.before_clearance)""",
                 {"rows": rows[i:i + 500]})
 
     def review_citation(self, src: str, dst: str, status: str, note: str | None,
@@ -196,10 +206,11 @@ class Graph:
     def device(self, k: str) -> dict | None:
         rows = self.q(
             """MATCH (d:Device {k:$k})
-            OPTIONAL MATCH (d)-[:SUBJECT_OF]->(x:Recall)
+            OPTIONAL MATCH (d)-[s:SUBJECT_OF]->(x:Recall)
             OPTIONAL MATCH (d)-[:IN_CODE]->(p:ProductCode)
             RETURN d {.*} AS device, p {.*} AS code,
-                   collect(DISTINCT x {.*}) AS recalls""", {"k": k})
+                   collect(DISTINCT x {.*, link_name_check: s.name_check,
+                                       linked_before_clearance: s.before_clearance}) AS recalls""", {"k": k})
         if not rows:
             return None
         r = rows[0]
@@ -241,8 +252,9 @@ class Graph:
             WHERE a.k <> $k AND all(r IN relationships(p) WHERE {LINEAGE_EDGE})
             WITH a, p ORDER BY length(p)
             WITH a, collect(p)[0] AS p, count(p) AS routes
-            OPTIONAL MATCH (a)-[:SUBJECT_OF]->(x:Recall)
-            WITH a, p, routes, collect(DISTINCT x {{.*}}) AS recalls
+            OPTIONAL MATCH (a)-[s:SUBJECT_OF]->(x:Recall)
+            WITH a, p, routes, collect(DISTINCT x {{.*, link_name_check: s.name_check,
+                                                   linked_before_clearance: s.before_clearance}}) AS recalls
             RETURN a {{.*}} AS device, length(p) AS gen, routes,
                    [n IN nodes(p) | n.k] AS chain,
                    [r IN relationships(p) | {{src: startNode(r).k, dst: endNode(r).k, page: r.page,

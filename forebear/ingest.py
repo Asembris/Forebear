@@ -19,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from . import audit, openfda, summaries
-from .dataset import (citation_rows, device_row, fetch_recalls_for, mark_no_predicate,
+from .dataset import (citation_rows, device_row, fetch_recalls_for, link_recalls, mark_no_predicate,
                       mark_unresolved)
 from .graph import Graph
 from .predicates import extract_from_summary
@@ -107,6 +107,7 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
     cits += audit.apply(cits, rel.known, audit.load(), {f.k: f.rec.get("decision_date") or f.rec.get("date_received")})
     mark_no_predicate(devices[:1], cits)
     mark_unresolved(devices[:1], unresolved)
+    link_recalls(rel.recalls, {**rel.known, **{d["k"]: d for d in devices}})
     g.conn.autocommit = False
     try:
         g.upsert_devices(devices)

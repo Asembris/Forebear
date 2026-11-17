@@ -21,7 +21,8 @@ def _recall_ev(x: dict) -> dict:
     return {"type": "recall", "id": x["id"], "event": x.get("event"), "classification": x.get("classification"),
             "root_cause": x.get("root_cause"), "design_related": x.get("design_related"),
             "initiated": x.get("initiated"), "firm": x.get("firm"), "reason": x.get("reason"),
-            "url": x.get("url"), "status": x.get("status")}
+            "url": x.get("url"), "status": x.get("status"),
+            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance")}
 
 
 def _count(recs: list[dict]) -> str:
@@ -125,6 +126,15 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                         "title": f"{len(missing)} predicate citation(s) in the summaries of {k} or its direct predicates "
                                  f"could not be resolved to a device in this graph, so part of the ancestry is missing",
                         "evidence": missing[:20], "chain": []})
+
+    # R: recalls filed under the candidate's product code that name no 510(k): no lineage query sees them
+    pc = dev.get("product") or {}
+    if pc.get("unattributed_design_recalls_n"):
+        un = [u for u in json.loads(pc.get("unattributed_recalls") or "[]") if u.get("design_related")]
+        signals.append({"code": "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE", "severity": "info",
+                        "title": f"{len(un)} design-related recall record(s) under product code {pc.get('code')} name no "
+                                 f"510(k) number, so they cannot be attributed to this or any device's lineage",
+                        "evidence": [{"type": "recall", **u} for u in un[:12]], "chain": []})
 
     # F: how the family downstream has fared (context, not a verdict input)
     recalled_desc = [d for d in descendants if d["recalls"]]
