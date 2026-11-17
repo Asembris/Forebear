@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 import time
 from pathlib import Path
@@ -16,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from forebear import audit, openfda  # noqa: E402
-from forebear.config import DATA, DB_PATH, DEFAULT_PRODUCT_CODES, use_raw_cache  # noqa: E402
+from forebear.config import DATA, DB_PATH, DEFAULT_PRODUCT_CODES, NOT_A_PERSON, use_raw_cache  # noqa: E402
 from forebear.dataset import (citation_rows, device_row, fetch_recalls_for, link_recalls,  # noqa: E402
                               mark_no_predicate, mark_unresolved, unattributed_recalls)
 from forebear.graph import open_graph  # noqa: E402
@@ -26,9 +25,7 @@ from forebear import summaries  # noqa: E402
 
 REVIEWS = DATA / "reviews.json"
 # A human review needs a reviewer who is a person: an explicit attestation ("human": true) and a name that is not
-# a role, tool or model.
-NOT_A_PERSON = re.compile(r"^\s*$|curat|audit|agent|\bai\b|llm|claude|gpt|gemini|nemotron|mistral|model|\bbot\b|"
-                          r"automat|script|pipeline|mcp|^\s*(user|system|admin|reviewer)\s*$", re.I)
+# a role, tool or model (forebear.config.NOT_A_PERSON, shared with the API's proposal decisions).
 
 
 def load_human_reviews(path: Path = REVIEWS) -> tuple[list[dict], list[dict]]:

@@ -1,0 +1,1065 @@
+{
+  "schema": "forebear-investigation-report/1",
+  "investigation_id": "I-ce598786bd48",
+  "request": "Investigate K252078, trace recalled predicates, verify the original FDA evidence, identify unresolved lineage, and prepare a documented due-diligence report.",
+  "disclaimer": "Evidence research, not a medical-device safety determination or regulatory advice. Forebear reports documented 510(k) predicate lineage and FDA recall records; recalls can be lot-, model- or software-specific, openFDA's root-cause field is coarse, and FDA recall records can cover product families. Machine-generated findings below have not been reviewed by a person.",
+  "status": "completed",
+  "mode": "llm_agent",
+  "mode_note": null,
+  "target": {
+    "k": "K252078",
+    "name": "BreathePal Bilevel  (GFM50-MD2201)",
+    "applicant": "Compal Electronics, Inc.",
+    "decision_date": "2026-03-17",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf",
+    "summary_sha256": "0937162c18501f49c036857784b92eba98ae437a113c2df69864ba24c434641f"
+  },
+  "conclusion": {
+    "stance": "recall_signal_documented",
+    "text": "A recall signal is documented in the predicate lineage (see recall summary and evidence paths).",
+    "verdict": "REVIEW_LINEAGE",
+    "verdict_reason": "A direct or grand-predicate has a design-related recall (Class I/II or unclassified), the direct predicate has a Class I recall, or the candidate has a Class I recall.",
+    "evidence": "partial",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "generations_traversed": 4,
+    "source": "deterministic (forebear rules), not the model"
+  },
+  "recall_summary": {
+    "by_device": [
+      {
+        "device": "K113053",
+        "generation": 1,
+        "chain": [
+          "K252078",
+          "K113053"
+        ],
+        "severity": "medium",
+        "title": "Direct predicate K113053 (BIPAP A 30 VENTILATORY SUPPORT SYSTEM) has 4 recall event(s) (5 product record(s)), 4 record(s) design-related",
+        "records": 5,
+        "events": 4,
+        "design_related_records": 4,
+        "class_i_records": 5,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-2036-2025",
+          "Z-1654-2022",
+          "Z-1958-2021",
+          "Z-1957-2021",
+          "Z-1973-2021"
+        ]
+      },
+      {
+        "device": "K082660",
+        "generation": 2,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K082660"
+        ],
+        "severity": "medium",
+        "title": "Grand-predicate K082660 (V60 VENTILATOR, MODEL V8000) has 7 recall event(s) (38 product record(s)), 37 record(s) design-related",
+        "records": 38,
+        "events": 7,
+        "design_related_records": 37,
+        "class_i_records": 3,
+        "earliest_initiated": "2009-10-26",
+        "recall_ids": [
+          "Z-0917-2021",
+          "Z-0916-2021",
+          "Z-0915-2021",
+          "Z-0914-2021",
+          "Z-0913-2021",
+          "Z-0912-2021",
+          "Z-0911-2021",
+          "Z-0910-2021",
+          "Z-0909-2021",
+          "Z-0908-2021",
+          "Z-0907-2021",
+          "Z-0906-2021",
+          "Z-0905-2021",
+          "Z-0904-2021",
+          "Z-0903-2021",
+          "Z-0902-2021",
+          "Z-0901-2021",
+          "Z-0900-2021",
+          "Z-0899-2021",
+          "Z-0898-2021",
+          "Z-0897-2021",
+          "Z-0896-2021",
+          "Z-0895-2021",
+          "Z-0894-2021",
+          "Z-0893-2021",
+          "Z-0892-2021",
+          "Z-0891-2021",
+          "Z-0890-2021",
+          "Z-0889-2021",
+          "Z-0888-2021",
+          "Z-0887-2021",
+          "Z-0886-2021",
+          "Z-0885-2021",
+          "Z-2061-2017",
+          "Z-1537-2013",
+          "Z-2260-2012",
+          "Z-0457-2011",
+          "Z-0176-2010"
+        ]
+      },
+      {
+        "device": "K092818",
+        "generation": 2,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K092818"
+        ],
+        "severity": "medium",
+        "title": "Grand-predicate K092818 (BIPAP AVAPS VENTILATORY SUPPORT SYSTEM) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1973-2021"
+        ]
+      },
+      {
+        "device": "K981072",
+        "generation": 3,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K082660",
+          "K981072"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K981072 (ESPRIT VENTILATOR) has 5 recall event(s) (7 product record(s)), 6 record(s) design-related",
+        "records": 7,
+        "events": 5,
+        "design_related_records": 6,
+        "class_i_records": 1,
+        "earliest_initiated": "2007-10-29",
+        "recall_ids": [
+          "Z-0485-2015",
+          "Z-0008-2015",
+          "Z-1813-2009",
+          "Z-2004-2008",
+          "Z-2003-2008",
+          "Z-2002-2008",
+          "Z-2084-2013"
+        ]
+      },
+      {
+        "device": "K060705",
+        "generation": 3,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K103167",
+          "K060705"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K060705 (CARINA HOME) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 0,
+        "earliest_initiated": "2009-01-21",
+        "recall_ids": [
+          "Z-1263-2009"
+        ]
+      },
+      {
+        "device": "K091319",
+        "generation": 3,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K092818",
+          "K091319"
+        ],
+        "severity": "low",
+        "title": "Generation-3 ancestor K091319 (REMSTAR AUTO A-FLEX) has 1 recall event(s) (1 product record(s)), 1 record(s) design-related",
+        "records": 1,
+        "events": 1,
+        "design_related_records": 1,
+        "class_i_records": 1,
+        "earliest_initiated": "2021-06-14",
+        "recall_ids": [
+          "Z-1974-2021"
+        ]
+      },
+      {
+        "device": "K970839",
+        "generation": 4,
+        "chain": [
+          "K252078",
+          "K113053",
+          "K103167",
+          "K060705",
+          "K970839"
+        ],
+        "severity": "low",
+        "title": "Generation-4 ancestor K970839 (SERVO VENTILATOR 300A) has 3 recall event(s) (3 product record(s)), 3 record(s) design-related",
+        "records": 3,
+        "events": 3,
+        "design_related_records": 3,
+        "class_i_records": 0,
+        "earliest_initiated": "2008-12-19",
+        "recall_ids": [
+          "Z-0588-2010",
+          "Z-1252-2009",
+          "Z-0872-2009"
+        ]
+      }
+    ],
+    "totals": {
+      "signalled_recall_records": 55,
+      "records_within_two_generations": 43,
+      "events_within_two_generations": 11,
+      "design_related_records_within_two_generations": 41
+    },
+    "note": "Counts are of recall records attached to the lineage by FDA's own k_numbers and selected by the severity rules; FDA files one record per product in an event. Computed from the graph, not by the model."
+  },
+  "evidence_paths": [
+    {
+      "chain": [
+        "K252078",
+        "K113053"
+      ],
+      "hops": [
+        {
+          "src": "K252078",
+          "dst": "K113053",
+          "page": 6,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf",
+          "source_sha256": "0937162c18501f49c036857784b92eba98ae437a113c2df69864ba24c434641f",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K113053",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              6,
+              7
+            ]
+          },
+          "untrusted_excerpt": "ate that the BreathePal Bilevel is substantially equivalent to the legally marketed predicate device, BiPAP A30 Ventilatory support system (K113053).",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K252078",
+        "K113053",
+        "K082660"
+      ],
+      "hops": [
+        {
+          "src": "K252078",
+          "dst": "K113053",
+          "page": 6,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf",
+          "source_sha256": "0937162c18501f49c036857784b92eba98ae437a113c2df69864ba24c434641f",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K113053",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              6,
+              7
+            ]
+          },
+          "untrusted_excerpt": "ate that the BreathePal Bilevel is substantially equivalent to the legally marketed predicate device, BiPAP A30 Ventilatory support system (K113053).",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        },
+        {
+          "src": "K113053",
+          "dst": "K082660",
+          "page": 2,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K113053.pdf",
+          "source_sha256": "24a0d1d2668efb6634e041854aeb4629bfc7c344ea3eced7269ac2aea31935b1",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K082660",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              2
+            ]
+          },
+          "untrusted_excerpt": "____________ System Predicate Device Name(s) and a BiPAP C Series Ventilatory Support System 5 10O(k) numbers: (K0928 18) * V60 Ventilator (K082660) * ResMed Stellar 150/100 ____ ____ ___ ____ ___ ____ ___(K 103 167) Reason for submission: Device modifications and additionalacesrs",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    },
+    {
+      "chain": [
+        "K252078",
+        "K113053",
+        "K092818"
+      ],
+      "hops": [
+        {
+          "src": "K252078",
+          "dst": "K113053",
+          "page": 6,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf",
+          "source_sha256": "0937162c18501f49c036857784b92eba98ae437a113c2df69864ba24c434641f",
+          "text_source": "pdf_text_layer",
+          "audit": null,
+          "provenance": "extracted_machine",
+          "status": "verified",
+          "printed_k_number": "K113053",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              5,
+              6,
+              7
+            ]
+          },
+          "untrusted_excerpt": "ate that the BreathePal Bilevel is substantially equivalent to the legally marketed predicate device, BiPAP A30 Ventilatory support system (K113053).",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        },
+        {
+          "src": "K113053",
+          "dst": "K092818",
+          "page": 3,
+          "kind": "predicate",
+          "in_lineage": true,
+          "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K113053.pdf",
+          "source_sha256": "24a0d1d2668efb6634e041854aeb4629bfc7c344ea3eced7269ac2aea31935b1",
+          "text_source": "pdf_text_layer",
+          "audit": "variant",
+          "provenance": "audit_variant_machine",
+          "status": "verified",
+          "printed_k_number": "K092818",
+          "checks": {
+            "sha256_matches_edge": true,
+            "url_matches_edge": true,
+            "page_exists": true,
+            "k_number_on_page": true,
+            "quote_on_page": true,
+            "pages_naming_k_number": [
+              2,
+              3
+            ]
+          },
+          "untrusted_excerpt": "ory system with integrated heated humidifier. The device platform being used as the key topic for this submission was previously cleared in K09281 8. The same ventilation modalities and therapy features, previously cleared in K071 509 is also included in the BiPAP A30 Ventilatory Support",
+          "method": "cached FDA summary text (pdf text layer), SHA-256 compared with the value recorded when the PDF was fetched"
+        }
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "code": "LINEAGE_TRUNCATED",
+      "title": "Ancestry stops at 6 device(s) whose own summaries were not read"
+    },
+    {
+      "code": "PREDICATE_CITATION_UNRESOLVED",
+      "title": "1 predicate citation(s) in the summaries of K252078 or its ancestors could not be resolved to a device in this graph, so part of the ancestry is missing (1 within two generations)"
+    },
+    {
+      "code": "DEEPER_ANCESTRY_GAPS",
+      "title": "Beyond two generations (up to the requested 4): 0 unresolved predicate citation(s), 0 doubtful link(s), 2 ancestor(s) whose own summaries were not read. Recalls there would only be lower-severity signals, and some may be missing."
+    },
+    {
+      "code": "UNATTRIBUTED_RECALLS_IN_PRODUCT_CODE",
+      "title": "4 design-related recall record(s) under product code MNS name no 510(k) number, so they cannot be attributed to this or any device's lineage"
+    },
+    {
+      "code": "RECALL_CAUSE_OR_CLASS_UNKNOWN",
+      "title": "6 recall record(s) on the candidate or its direct/grand-predicates have no stated root cause or no FDA classification, so they cannot be ruled out as design-related or Class I"
+    }
+  ],
+  "missing_evidence": {
+    "k": "K252078",
+    "generations": 4,
+    "verdict": "REVIEW_LINEAGE",
+    "evidence": "partial",
+    "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
+    "deeper_gaps": {
+      "missing_predicate_citations": 0,
+      "doubtful_links": 0,
+      "unread_ancestors": 2
+    },
+    "candidate_own_predicates_read": true,
+    "unread_ancestors": [
+      {
+        "k": "K982454",
+        "name": "BIPAP VISION VENTILATORY SUPPORT",
+        "gen": 3,
+        "summary_status": "statement_only",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K981072",
+        "name": "ESPRIT VENTILATOR",
+        "gen": 3,
+        "summary_status": "statement_only",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K970839",
+        "name": "SERVO VENTILATOR 300A",
+        "gen": 4,
+        "summary_status": "statement_only",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K991648",
+        "name": "REUSABLE CONTOUR II NASAL MASK",
+        "gen": 4,
+        "summary_status": "ocr_no_predicate_found",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K003068",
+        "name": "SAVINA",
+        "gen": 4,
+        "summary_status": "missing",
+        "in_family_dataset": true
+      },
+      {
+        "k": "K033008",
+        "name": "AIR SAFETY HEPA AND NON-HEPA FILTERS",
+        "gen": 4,
+        "summary_status": "not_expanded",
+        "in_family_dataset": false
+      }
+    ],
+    "unread_ancestors_total": 6,
+    "doubtful_links": [],
+    "doubtful_links_total": 0,
+    "unresolved_predicate_citations": [
+      {
+        "src": "K113053",
+        "cited": "K071509",
+        "reason": "audit_not_predicate",
+        "gen": 2,
+        "page": 3
+      }
+    ],
+    "unresolved_predicate_citations_total": 1,
+    "recalls_with_unknown_cause_or_class": [
+      {
+        "id": "Z-1622-2020",
+        "gen": 2,
+        "root_cause": "Under Investigation by firm",
+        "classification": "Class II"
+      },
+      {
+        "id": "Z-1155-2020",
+        "gen": 2,
+        "root_cause": "Other",
+        "classification": "Class II"
+      },
+      {
+        "id": "Z-1154-2020",
+        "gen": 2,
+        "root_cause": "Other",
+        "classification": "Class II"
+      },
+      {
+        "id": "Z-1153-2020",
+        "gen": 2,
+        "root_cause": "Other",
+        "classification": "Class II"
+      },
+      {
+        "id": "Z-1152-2020",
+        "gen": 2,
+        "root_cause": "Other",
+        "classification": "Class II"
+      },
+      {
+        "id": "Z-1137-2021",
+        "gen": 2,
+        "root_cause": "Under Investigation by firm",
+        "classification": "Class II"
+      }
+    ],
+    "unattributed_design_recalls_in_product_code": 4,
+    "verdict_window": 2
+  },
+  "agent": {
+    "summary": null,
+    "summary_withheld": "K252078 (BreathePal Bilevel, Compal Electronics) cites a single direct predicate K113053 (BiPAP A30, Philips Respironics). The predicate chain extends 4 generations with 26 ancestors. Multiple ancestors carry design-related recalls, notably the direct predicate K113053 (5 Class I recalls including PE-PUR foam degradation and motor off-gassing), grand-predicate K082660 (V60 Ventilator, 38 recall records, 37 design-related), and grand-predicate K092818 (BiPAP AVAPS, 1 Class I recall). Six ancestors have unread summaries (statement_only or missing), leaving evidence partial. One predicate citation in K113053 (to K071509) remains unresolved (audit_not_predicate). All verified citation links match the cached FDA PDF text.",
+    "summary_issues": [
+      "claims verification, but verify_citation did not pass for [('K113053', 'K071509')]"
+    ],
+    "findings_verified": [
+      {
+        "claim": "K252078 cites K113053 as its sole direct predicate on page 6 of its FDA summary; the citation is verified against the cached PDF (SHA-256 0937162c18501f49c036857784b92eba98ae437a113c2df69864ba24c434641f).",
+        "kind": "citation",
+        "evidence": [
+          "K252078->K113053"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "certainty_note": "downgraded from 'established': evidence for ['K113053', 'K252078'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K113053",
+          "K252078"
+        ],
+        "id": "F-211d7808db6b"
+      },
+      {
+        "claim": "Grand-predicate K092818 (BiPAP AVAPS) shares Class I recall Z-1973-2021 (PE-PUR foam) with K113053, linking both through the same foam degradation issue.",
+        "kind": "recall_signal",
+        "evidence": [
+          "K092818",
+          "Z-1973-2021"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "certainty_note": "downgraded from 'established': evidence for ['K092818', 'K113053'] is not complete",
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K092818",
+          "K113053",
+          "Z-1973-2021"
+        ],
+        "id": "F-ac45c813b190"
+      },
+      {
+        "claim": "Generation-3 ancestor K981072 (Esprit Ventilator) has 11 recall records (9 events, 6 design-related, 1 Class I) but its summary was not read (statement_only), leaving its predicate chain unexamined.",
+        "kind": "gap",
+        "evidence": [
+          "K981072"
+        ],
+        "certainty": "provisional",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K981072"
+        ],
+        "id": "F-8e8dbda5efeb"
+      },
+      {
+        "claim": "Six ancestors across generations 3-4 have unread summaries (K982454, K981072, K970839, K991648, K003068, K033008), creating deeper_gaps with 2 unread ancestors in the verdict window and 4 beyond.",
+        "kind": "uncertainty",
+        "evidence": [
+          "K982454",
+          "K981072",
+          "K970839",
+          "K991648",
+          "K003068",
+          "K033008"
+        ],
+        "certainty": "established",
+        "status": "verified",
+        "reasons": [],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K003068",
+          "K033008",
+          "K970839",
+          "K981072",
+          "K982454",
+          "K991648"
+        ],
+        "id": "F-ef60ccaa6afc"
+      }
+    ],
+    "findings_rejected": [
+      {
+        "claim": "Direct predicate K113053 (BiPAP A30) has 5 Class I recall records across 4 events (Z-2036-2025, Z-1957-2021, Z-1958-2021, Z-1654-2022, Z-1973-2021), all design-related, including PE-PUR foam degradation and motor off-gassing.",
+        "kind": "recall_signal",
+        "evidence": [
+          "K113053",
+          "Z-2036-2025",
+          "Z-1957-2021",
+          "Z-1958-2021",
+          "Z-1654-2022",
+          "Z-1973-2021"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "recall Z-1654-2022 is not design-related (root cause Process control)"
+        ],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K113053",
+          "Z-1654-2022",
+          "Z-1957-2021",
+          "Z-1958-2021",
+          "Z-1973-2021",
+          "Z-2036-2025"
+        ],
+        "id": "F-f81fa1123f01"
+      },
+      {
+        "claim": "Grand-predicate K082660 (V60 Ventilator) carries 38 recall records across 10 events, 37 design-related (3 Class I), including navigation ring interface issues (Z-0917-2021).",
+        "kind": "recall_signal",
+        "evidence": [
+          "K082660",
+          "Z-0917-2021"
+        ],
+        "certainty": "established",
+        "status": "rejected",
+        "reasons": [
+          "recall Z-0917-2021 is Class II, not Class I",
+          "recall counts for K082660 do not match the graph: stated ['38 records', '10 events', '37 design', '3 class_i'], graph has {'events': 10, 'records': 44, 'design': 37, 'class_i': 3} (all recalls) / {'events': 7, 'records': 38, 'design': 37, 'class_i': 3} (signalled recalls)"
+        ],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K082660",
+          "Z-0917-2021"
+        ],
+        "id": "F-42aaf912cbcb"
+      },
+      {
+        "claim": "One predicate citation in K113053 (to K071509 on page 3) is flagged unresolved with reason audit_not_predicate, meaning the lineage may omit a valid predicate or include a non-predicate reference.",
+        "kind": "citation",
+        "evidence": [
+          "K113053->K071509"
+        ],
+        "certainty": "provisional",
+        "status": "rejected",
+        "reasons": [
+          "makes a safety, approval or regulatory determination, which this evidence cannot support"
+        ],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K071509",
+          "K113053"
+        ],
+        "id": "F-a242ca7c768e"
+      },
+      {
+        "claim": "Three recalls on K082660 (Z-1622-2020, Z-1155-2020, Z-1154-2020, Z-1153-2020, Z-1152-2020, Z-1137-2021) have root cause listed as 'Under Investigation by firm' or 'Other' with Class II classification, leaving their design-relatedness uncertain.",
+        "kind": "uncertainty",
+        "evidence": [
+          "Z-1622-2020",
+          "Z-1155-2020",
+          "Z-1154-2020",
+          "Z-1153-2020",
+          "Z-1152-2020",
+          "Z-1137-2021"
+        ],
+        "certainty": "provisional",
+        "status": "rejected",
+        "reasons": [
+          "recall Z-1137-2021 is attributed to K082660, but FDA links it to []",
+          "recall counts for K082660 do not match the graph: stated ['3 recalls'], graph has {'events': 10, 'records': 44, 'design': 37, 'class_i': 3} (all recalls) / {'events': 7, 'records': 38, 'design': 37, 'class_i': 3} (signalled recalls)"
+        ],
+        "origin": "llm:mistralai/mistral-large-4-1t-a52b,nvidia/nemotron-3-ultra-550b-a55b",
+        "human_approved": false,
+        "refs": [
+          "K082660",
+          "Z-1137-2021",
+          "Z-1152-2020",
+          "Z-1153-2020",
+          "Z-1154-2020",
+          "Z-1155-2020",
+          "Z-1622-2020"
+        ],
+        "id": "F-572d66d6572b"
+      }
+    ],
+    "open_questions": [
+      "Should the unresolved citation K113053->K071509 be confirmed or rejected by human review?",
+      "Should the three statement_only ancestors (K981072, K982454, K970839) be ingested to extend lineage coverage?",
+      "Do the Class II recalls on K082660 with unknown root cause represent design-related risks that should be investigated further?"
+    ],
+    "open_questions_dropped": 0,
+    "note": "Machine-generated by the model named below; each finding was checked against this run's tool results. Rejected findings are shown with the reason and are not part of the conclusion."
+  },
+  "proposals": [
+    {
+      "kind": "ingest_clearance",
+      "k": "K981072",
+      "reason": "Generation-3 ancestor with 9 recall events (11 records, 6 design-related, 1 Class I) whose summary was not read; needed to extend lineage beyond statement_only status.",
+      "status": "pending_human_decision",
+      "created_by": "investigation agent (machine)",
+      "id": "P-ace90047c1dd"
+    },
+    {
+      "kind": "ingest_clearance",
+      "k": "K982454",
+      "reason": "Generation-3 ancestor with statement_only summary status; reading its predicates would extend lineage coverage.",
+      "status": "pending_human_decision",
+      "created_by": "investigation agent (machine)",
+      "id": "P-3ffad921aaf4"
+    },
+    {
+      "kind": "ingest_clearance",
+      "k": "K970839",
+      "reason": "Generation-4 ancestor with 4 recall events (4 records, 3 design-related) whose summary was not read; needed to extend lineage beyond statement_only status.",
+      "status": "pending_human_decision",
+      "created_by": "investigation agent (machine)",
+      "id": "P-3b482ded811b"
+    }
+  ],
+  "human_oversight": {
+    "lineage_writes_by_agent": 0,
+    "statement": "The agent cannot confirm, reject or edit citation links and did not; proposals await a person. Review status of each evidence hop is shown as its provenance.",
+    "evidence_hops_human_confirmed": 0,
+    "evidence_hops_machine_only": 5
+  },
+  "reproducibility": {
+    "rules_version": "forebear-rules-v3",
+    "agent_version": "forebear-agent-v1",
+    "prompt_sha256": "cd3bdedbc7378df66280b461e1f7711724c016c4b7593587f36fad9e28b00002",
+    "models_configured": [
+      "nvidia/nemotron-3-ultra-550b-a55b",
+      "mistralai/mistral-large-4-1t-a52b"
+    ],
+    "model_used": [
+      "mistralai/mistral-large-4-1t-a52b",
+      "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    "llm_errors": [
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429",
+      "nvidia/nemotron-3-ultra-550b-a55b: RateLimitError: Error code: 429"
+    ],
+    "depth": 4,
+    "budget": {
+      "max_steps": 14,
+      "max_tool_calls": 26,
+      "max_calls_per_turn": 4,
+      "max_total_tokens": 220000,
+      "max_seconds": 360.0,
+      "max_invalid_turns": 3
+    },
+    "usage": {
+      "turns": 12,
+      "prompt_tokens": 119668,
+      "completion_tokens": 2197,
+      "tool_calls": 21,
+      "seconds": 134.0
+    },
+    "started_at": "2026-11-17T20:22:39Z",
+    "finished_at": "2026-11-17T20:24:53Z",
+    "graph": {
+      "ProductCode": 76,
+      "Device": 1187,
+      "Company": 301,
+      "Recall": 563,
+      "Investigation": 1,
+      "ToolCall": 21
+    },
+    "tool_calls": [
+      {
+        "seq": 1,
+        "tool": "check_predicate",
+        "args": {
+          "k_number": "K252078",
+          "generations": 4
+        },
+        "ok": true,
+        "shown_sha256": "cc0f57753c5ff13f924383184dccab03a61f369007ec508646a17c7c77b07ade",
+        "shown_truncated": true,
+        "origin": "llm",
+        "result_sha256": "a5ac0e40a556f3325f4c7e0e20b5adeb278686eb6ac4541cc3de4565581714e8"
+      },
+      {
+        "seq": 2,
+        "tool": "trace_ancestry",
+        "args": {
+          "k_number": "K252078",
+          "generations": 4
+        },
+        "ok": true,
+        "shown_sha256": "5516caf516a32b58ea4dacaecce4011077b769dc26228a3df2d180a2e104b026",
+        "shown_truncated": true,
+        "origin": "llm",
+        "result_sha256": "f27c1350c75ac788b14b97f0e087c6e80be605f263ea3afa6728605d4d60b22b"
+      },
+      {
+        "seq": 3,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K252078",
+          "cited_k": "K113053"
+        },
+        "ok": true,
+        "shown_sha256": "ca8647a85f7eec974e70e30c55729842f0a36ac0c8c96eab1175c6c5e4923b02",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "ca8647a85f7eec974e70e30c55729842f0a36ac0c8c96eab1175c6c5e4923b02"
+      },
+      {
+        "seq": 4,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K113053",
+          "cited_k": "K082660"
+        },
+        "ok": true,
+        "shown_sha256": "8bd9c4de77849d76906abbe7adf2b6b7b9207da14167f8780fd7236ef8c7d0fa",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "8bd9c4de77849d76906abbe7adf2b6b7b9207da14167f8780fd7236ef8c7d0fa"
+      },
+      {
+        "seq": 5,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K113053",
+          "cited_k": "K092818"
+        },
+        "ok": true,
+        "shown_sha256": "4d454e587420986523aa95f4b36a9933d03cf105ddb30b02e1b6d253f58e4baa",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "4d454e587420986523aa95f4b36a9933d03cf105ddb30b02e1b6d253f58e4baa"
+      },
+      {
+        "seq": 6,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K113053",
+          "cited_k": "K103167"
+        },
+        "ok": true,
+        "shown_sha256": "9fde565301e54cec05a68d6c0c831af9d6a5b189e951f07551f045394feb9831",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "9fde565301e54cec05a68d6c0c831af9d6a5b189e951f07551f045394feb9831"
+      },
+      {
+        "seq": 7,
+        "tool": "verify_citation",
+        "args": {
+          "citing_k": "K082660",
+          "cited_k": "K981072"
+        },
+        "ok": true,
+        "shown_sha256": "e457ac960037c6089285189e146a45a1bb84ffe61cfca73a2c5e039e736e32a5",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "e457ac960037c6089285189e146a45a1bb84ffe61cfca73a2c5e039e736e32a5"
+      },
+      {
+        "seq": 8,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-2036-2025"
+        },
+        "ok": true,
+        "shown_sha256": "82277ea492ed1976f867ffe4d7bad70db155ca609ea7d9a90fb9917acac890f6",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "82277ea492ed1976f867ffe4d7bad70db155ca609ea7d9a90fb9917acac890f6"
+      },
+      {
+        "seq": 9,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1957-2021"
+        },
+        "ok": true,
+        "shown_sha256": "c7225a3ae3833e75257d17e193afaca241fda2d3b8d2ab94f6e37636eb8fda4e",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "c7225a3ae3833e75257d17e193afaca241fda2d3b8d2ab94f6e37636eb8fda4e"
+      },
+      {
+        "seq": 10,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1958-2021"
+        },
+        "ok": true,
+        "shown_sha256": "7f9f9914f744ef6605d77385ac2224a1f96325f0db4f48f790827ec3c91e5a09",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "7f9f9914f744ef6605d77385ac2224a1f96325f0db4f48f790827ec3c91e5a09"
+      },
+      {
+        "seq": 11,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1654-2022"
+        },
+        "ok": true,
+        "shown_sha256": "20d082edf76802137e0ba1d461d0da3cfc3b6db6f8a47d010010b62912e09ea6",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "20d082edf76802137e0ba1d461d0da3cfc3b6db6f8a47d010010b62912e09ea6"
+      },
+      {
+        "seq": 12,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1973-2021"
+        },
+        "ok": true,
+        "shown_sha256": "bb719c120e1e7244d7c1ac79669a8291f9e4693367018d20e6f7b1ad840ba232",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "bb719c120e1e7244d7c1ac79669a8291f9e4693367018d20e6f7b1ad840ba232"
+      },
+      {
+        "seq": 13,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1974-2021"
+        },
+        "ok": true,
+        "shown_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "2dcca6e1b486dcff048ac07d50ef24d3337ccaa8f9f78418522fb7d726a2f52e"
+      },
+      {
+        "seq": 14,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-1263-2009"
+        },
+        "ok": true,
+        "shown_sha256": "1fa880293f48add6767dad9ae1648bcf1159caef36f6a338cbf30084b3dd2127",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "1fa880293f48add6767dad9ae1648bcf1159caef36f6a338cbf30084b3dd2127"
+      },
+      {
+        "seq": 15,
+        "tool": "get_recall",
+        "args": {
+          "recall_id": "Z-0917-2021"
+        },
+        "ok": true,
+        "shown_sha256": "e6ead5b24698626a56b003bfbecbb21a34e6b2baa18f5a3af93d01079699a975",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "e6ead5b24698626a56b003bfbecbb21a34e6b2baa18f5a3af93d01079699a975"
+      },
+      {
+        "seq": 16,
+        "tool": "list_citations",
+        "args": {
+          "k_number": "K252078"
+        },
+        "ok": true,
+        "shown_sha256": "3af8b87d014906665e4fe15a31038f3bad250b76f5bd1512b01a8d31b681e38b",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "3af8b87d014906665e4fe15a31038f3bad250b76f5bd1512b01a8d31b681e38b"
+      },
+      {
+        "seq": 17,
+        "tool": "coverage_gaps",
+        "args": {
+          "generations": 4,
+          "k_number": "K252078"
+        },
+        "ok": true,
+        "shown_sha256": "00370d5061e0f209b979c5736cd8adfb0d1dd84a4bbbd3c8a8038ec03a624ba9",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "00370d5061e0f209b979c5736cd8adfb0d1dd84a4bbbd3c8a8038ec03a624ba9"
+      },
+      {
+        "seq": 18,
+        "tool": "propose_ingest",
+        "args": {
+          "k_number": "K981072",
+          "reason": "Generation-3 ancestor with 9 recall events (11 records, 6 design-related, 1 Class I) whose summary was not read; needed to extend lineage beyond statement_only status."
+        },
+        "ok": true,
+        "shown_sha256": "fa3a0645127073f9e504dc3fce20b7271239909236ef659f2130c84fee483eac",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "fa3a0645127073f9e504dc3fce20b7271239909236ef659f2130c84fee483eac"
+      },
+      {
+        "seq": 19,
+        "tool": "propose_ingest",
+        "args": {
+          "k_number": "K982454",
+          "reason": "Generation-3 ancestor with statement_only summary status; reading its predicates would extend lineage coverage."
+        },
+        "ok": true,
+        "shown_sha256": "7be35550144362acd8392a28c4f99a232e30e668967e38cf0cb5ddf298ab843f",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "7be35550144362acd8392a28c4f99a232e30e668967e38cf0cb5ddf298ab843f"
+      },
+      {
+        "seq": 20,
+        "tool": "propose_ingest",
+        "args": {
+          "k_number": "K970839",
+          "reason": "Generation-4 ancestor with 4 recall events (4 records, 3 design-related) whose summary was not read; needed to extend lineage beyond statement_only status."
+        },
+        "ok": true,
+        "shown_sha256": "cb1e1f8ea09058fd8dc75f1e95ce35975c9aacbd62960c9ced143d54f759ade5",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "cb1e1f8ea09058fd8dc75f1e95ce35975c9aacbd62960c9ced143d54f759ade5"
+      },
+      {
+        "seq": 21,
+        "tool": "submit_report",
+        "args": {
+          "findings": 8,
+          "note": "content verified above; raw text in the ToolCall node"
+        },
+        "ok": true,
+        "shown_sha256": "fff367eb221e67b3262a2d64344b4fd844b4d243bd95bdbd4b8cc69dbb3e2f4e",
+        "shown_truncated": false,
+        "origin": "llm",
+        "result_sha256": "fff367eb221e67b3262a2d64344b4fd844b4d243bd95bdbd4b8cc69dbb3e2f4e"
+      }
+    ],
+    "how_to_rerun": "POST /api/investigations {\"request\": ..., \"k\": \"K252078\", \"depth\": 4} or scripts/investigate.py --k K252078 --depth 4"
+  }
+}

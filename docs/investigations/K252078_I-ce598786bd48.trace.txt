@@ -1,0 +1,52 @@
+working on a copy: D:\Forebear\data\live\investigation_20261117_212238.rl
+
+[turn 1] nvidia/nemotron-3-ultra-550b-a55b 1.21s -> ['check_predicate']
+  #1 llm: check_predicate({"k_number": "K252078", "generations": 4}) -> K252078 verdict REVIEW_LINEAGE, evidence partial, 12 signal(s), 4 generation(s)
+
+[turn 2] nvidia/nemotron-3-ultra-550b-a55b 1.19s -> ['trace_ancestry']
+  #2 llm: trace_ancestry({"k_number": "K252078", "generations": 4}) -> K252078: 26 ancestor(s) within 4 generation(s)
+
+[turn 3] nvidia/nemotron-3-ultra-550b-a55b 1.41s -> ['verify_citation']
+  #3 llm: verify_citation({"citing_k": "K252078", "cited_k": "K113053"}) -> K252078->K113053 verified (page 6)
+
+[turn 4] nvidia/nemotron-3-ultra-550b-a55b 1.43s -> ['verify_citation']
+  #4 llm: verify_citation({"citing_k": "K113053", "cited_k": "K082660"}) -> K113053->K082660 verified (page 2)
+
+[turn 5] nvidia/nemotron-3-ultra-550b-a55b 1.46s -> ['verify_citation']
+  #5 llm: verify_citation({"citing_k": "K113053", "cited_k": "K092818"}) -> K113053->K092818 verified (page 3)
+
+[turn 6] nvidia/nemotron-3-ultra-550b-a55b 1.39s -> ['verify_citation']
+  #6 llm: verify_citation({"citing_k": "K113053", "cited_k": "K103167"}) -> K113053->K103167 verified (page 2)
+
+[turn 7] nvidia/nemotron-3-ultra-550b-a55b 1.16s -> ['verify_citation']
+  #7 llm: verify_citation({"citing_k": "K082660", "cited_k": "K981072"}) -> K082660->K981072 verified (page 3)
+
+[turn 8] mistralai/mistral-large-4-1t-a52b 7.02s -> ['get_recall', 'get_recall', 'get_recall', 'get_recall']
+  #8 llm: get_recall({"recall_id": "Z-2036-2025"}) -> Z-2036-2025 Class I / Device Design initiated 2025-05-09, 1 linked device(s)
+  #9 llm: get_recall({"recall_id": "Z-1957-2021"}) -> Z-1957-2021 Class I / Device Design initiated 2021-06-14, 1 linked device(s)
+  #10 llm: get_recall({"recall_id": "Z-1958-2021"}) -> Z-1958-2021 Class I / Device Design initiated 2021-06-14, 2 linked device(s)
+  #11 llm: get_recall({"recall_id": "Z-1654-2022"}) -> Z-1654-2022 Class I / Process control initiated 2022-08-26, 1 linked device(s)
+
+[turn 9] mistralai/mistral-large-4-1t-a52b 9.0s -> ['get_recall', 'get_recall', 'get_recall', 'get_recall']
+  #12 llm: get_recall({"recall_id": "Z-1973-2021"}) -> Z-1973-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+  #13 llm: get_recall({"recall_id": "Z-1974-2021"}) -> Z-1974-2021 Class I / Device Design initiated 2021-06-14, 5 linked device(s)
+  #14 llm: get_recall({"recall_id": "Z-1263-2009"}) -> Z-1263-2009 None / Software design initiated 2009-01-21, 1 linked device(s)
+  #15 llm: get_recall({"recall_id": "Z-0917-2021"}) -> Z-0917-2021 Class II / Device Design initiated 2020-11-02, 1 linked device(s)
+
+[turn 10] mistralai/mistral-large-4-1t-a52b 1.35s -> ['list_citations', 'coverage_gaps']
+  #16 llm: list_citations({"k_number": "K252078"}) -> K252078: 1 citation(s)
+  #17 llm: coverage_gaps({"generations": 4, "k_number": "K252078"}) -> K252078 evidence partial: 6 unread ancestor(s), 0 doubtful link(s), 1 unresolved predicate citation(s)
+
+[turn 11] nvidia/nemotron-3-ultra-550b-a55b 3.93s -> ['propose_ingest', 'propose_ingest', 'propose_ingest']
+  #18 llm: propose_ingest({"k_number": "K981072", "reason": "Generation-3 ancestor with 9 recall events (11 records, 6 design-related, 1 Class I) ) -> proposal recorded (pending a person)
+  #19 llm: propose_ingest({"k_number": "K982454", "reason": "Generation-3 ancestor with statement_only summary status; reading its predicates woul) -> proposal recorded (pending a person)
+  #20 llm: propose_ingest({"k_number": "K970839", "reason": "Generation-4 ancestor with 4 recall events (4 records, 3 design-related) whose summar) -> proposal recorded (pending a person)
+
+[turn 12] nvidia/nemotron-3-ultra-550b-a55b 60.91s -> ['submit_report']
+  #21 llm: submit_report({"summary": "K252078 (BreathePal Bilevel, Compal Electronics) cites a single direct predicate K113053 (BiPAP A30, Philip) -> report submitted with 8 finding(s)
+
+done: {'status': 'completed', 'mode': 'llm_agent'}
+
+I-ce598786bd48: completed / llm_agent
+conclusion: recall_signal_documented (REVIEW_LINEAGE, evidence partial)
+findings: 4 verified, 4 rejected; proposals: 3

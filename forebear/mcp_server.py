@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 
 import httpx
 
@@ -48,7 +49,41 @@ TOOLS = [
                                                       "note": {"type": "string"}}, "required": ["src", "dst", "status"]}},
     {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls.",
      "inputSchema": {"type": "object", "properties": {"k_number": K, "note": {"type": "string"}}, "required": ["k_number"]}},
+    {"name": "investigate", "description": "Run Forebear's autonomous investigation agent (NVIDIA-hosted LLM over the graph tools; labelled "
+                                           "deterministic fallback if inference is unavailable) on one device and wait for the report. "
+                                           "Returns the deterministic conclusion, recall totals, uncertainties, verified and rejected agent "
+                                           "findings, and proposals awaiting a person. Evidence research, not a safety determination.",
+     "inputSchema": {"type": "object", "properties": {"request": {"type": "string"}, "k_number": K,
+                                                      "generations": {"type": "integer", "minimum": 1, "maximum": 6},
+                                                      "mode": {"type": "string", "enum": ["auto", "llm", "deterministic"]}},
+                     "required": ["request"]}},
+    {"name": "get_investigation", "description": "Status, tool trace and (when finished) the report of a saved investigation.",
+     "inputSchema": {"type": "object", "properties": {"id": {"type": "string", "pattern": "^I-[0-9a-f]{12}$"}}, "required": ["id"]}},
 ]
+INVESTIGATION_WAIT_S = float(os.environ.get("FOREBEAR_MCP_INVESTIGATION_WAIT", "420"))
+
+
+def _compact_report(r: dict) -> dict:
+    return {"id": r["investigation_id"], "status": r["status"], "mode": r["mode"], "mode_note": r.get("mode_note"),
+            "disclaimer": r["disclaimer"], "conclusion": r["conclusion"], "recall_totals": r["recall_summary"]["totals"],
+            "uncertainties": r["uncertainties"],
+            "findings_verified": [{k: f.get(k) for k in ("claim", "kind", "certainty", "evidence")}
+                                  for f in r["agent"]["findings_verified"]],
+            "findings_rejected": [{k: f.get(k) for k in ("claim", "reasons")} for f in r["agent"]["findings_rejected"]],
+            "proposals": r["proposals"], "report_markdown": f"/api/investigations/{r['investigation_id']}/report?format=markdown"}
+
+
+def _investigation(inv_id: str, wait: float = 0.0):
+    deadline = time.time() + wait
+    while True:
+        st = _http("GET", f"/api/investigations/{inv_id}")
+        if st["status"] not in ("queued", "running") or time.time() >= deadline:
+            break
+        time.sleep(2)
+    out = {"status": st, "trace": _http("GET", f"/api/investigations/{inv_id}/trace")}
+    if st.get("has_report"):
+        out["report"] = _compact_report(_http("GET", f"/api/investigations/{inv_id}/report"))
+    return out
 
 
 def _http(method: str, path: str, **kw):
@@ -103,6 +138,14 @@ def call_tool(name: str, args: dict):
                                                            "via": "mcp-client"})
     if name == "save_assessment":
         return _http("POST", "/api/assessments", json={"k": up(args["k_number"]), "note": args.get("note")})
+    if name == "investigate":
+        body = {"request": args["request"], "depth": int(args.get("generations", 4)), "mode": args.get("mode", "auto")}
+        if args.get("k_number"):
+            body["k"] = up(args["k_number"])
+        started = _http("POST", "/api/investigations", json=body)
+        return _investigation(started["id"], INVESTIGATION_WAIT_S)
+    if name == "get_investigation":
+        return _investigation(str(args["id"]))
     raise KeyError(name)
 
 

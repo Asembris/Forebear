@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -47,6 +48,11 @@ DEFAULT_PRODUCT_CODES = ["BZD", "MNS", "MNT", "CBK"]
 SUMMARY_MIN_YEAR = 1996
 
 USER_AGENT = "Forebear-research-prototype/0.1 (public FDA data)"
+
+# A decision that only a person may make (a human review in data/reviews.json, approving an agent's proposal)
+# must name that person: not empty, not a role, tool, agent or model.
+NOT_A_PERSON = re.compile(r"^\s*$|curat|audit|agent|\bai\b|llm|claude|gpt|gemini|nemotron|mistral|model|\bbot\b|"
+                          r"automat|script|pipeline|mcp|^\s*(user|system|admin|reviewer)\s*$", re.I)
 
 
 def is_design_related(root_cause: str | None) -> bool:
