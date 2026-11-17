@@ -22,7 +22,7 @@ from ..graph import Graph
 from . import report as report_mod
 from . import store
 from .llm import ChatClient, LLMUnavailable
-from .tools import TOOLS, RunContext, canonical_args, run_tool, to_message, untrusted
+from .tools import TOOLS, RunContext, canonical_args, canonical_json, run_tool, to_message, untrusted
 
 AGENT_VERSION = "forebear-agent-v1"
 
@@ -100,10 +100,15 @@ def summarize(name: str, ok: bool, res: dict) -> str:
     return ", ".join(f"{k}" for k in list(res)[:6])
 
 
-def timed(call_graph: GraphCall, name: str, args: dict, ctx: RunContext) -> tuple[bool, dict, int]:
+def timed(call_graph: GraphCall, name: str, args: dict, ctx: RunContext) -> tuple[bool, dict, int, object, list]:
+    """(ok, shown, ms, full, omitted): `shown` is what the model sees, `full` the internal result."""
     t = time.time()
-    ok, res = call_graph(lambda g: run_tool(g, name, args, ctx))
-    return ok, res, int((time.time() - t) * 1000)
+
+    def call(g):
+        ok, shown = run_tool(g, name, args, ctx)
+        return ok, shown, ctx.last_full, list(ctx.last_omitted)
+    ok, shown, full, omitted = call_graph(call)
+    return ok, shown, int((time.time() - t) * 1000), full, omitted
 
 
 def fallback_plan(call_graph: GraphCall, ctx: RunContext, k: str, depth: int, record, done: set) -> None:
@@ -116,9 +121,9 @@ def fallback_plan(call_graph: GraphCall, ctx: RunContext, k: str, depth: int, re
         if key in done:
             return None
         done.add(key)
-        ok, res, ms = timed(call_graph, name, args, ctx)
-        record(name, args, ok, res, "deterministic_fallback", None, None, ms=ms)
-        return res if ok else None
+        ok, shown, ms, full, omitted = timed(call_graph, name, args, ctx)
+        record(name, args, ok, shown, "deterministic_fallback", None, None, ms=ms, full=full, omitted=omitted)
+        return full if ok else None           # the checklist plans from the full result; evidence is what was shown
 
     a = call("check_predicate", {"k_number": k, "generations": depth}) or ctx.ledger.assessments.get(k)
     call("coverage_gaps", {"k_number": k, "generations": depth})
@@ -156,11 +161,13 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
     def agent_calls() -> int:
         return sum(1 for t in trace if t["origin"] == "llm")
 
-    def record(name, args, ok, res, origin, rationale, model, step=0, ms=0):
-        c = {"seq": len(trace) + 1, "step": step, "tool": name, "args": args, "ok": ok, "result": res,
-             "summary": summarize(name, ok, res), "duration_ms": ms, "origin": origin, "rationale": rationale,
-             "model": model}
-        c["result_sha256"] = hashlib.sha256(json.dumps(res, default=str, ensure_ascii=False).encode()).hexdigest()
+    def record(name, args, ok, shown, origin, rationale, model, step=0, ms=0, full=None, omitted=None):
+        full = shown if full is None else full
+        c = {"seq": len(trace) + 1, "step": step, "tool": name, "args": args, "ok": ok, "result": full,
+             "shown": shown, "omitted": omitted or [], "summary": summarize(name, ok, full), "duration_ms": ms,
+             "origin": origin, "rationale": rationale, "model": model}
+        c["result_sha256"] = hashlib.sha256(canonical_json(full).encode()).hexdigest()
+        c["shown_sha256"] = hashlib.sha256(canonical_json(shown).encode()).hexdigest()
         call_graph(lambda g: store.add_tool_call(g, inv_id, c))
         trace.append(c)
         emit("tool", c)
@@ -177,8 +184,9 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
                 key = canonical_args(p["tool"], p["args"])
                 if (p.get("ok") and p["tool"] in TOOLS and not TOOLS[p["tool"]].writes and p["tool"] != "submit_report"
                         and key not in seen_calls and replayed < budget.max_tool_calls):
-                    ok, res, ms = timed(call_graph, p["tool"], p["args"], ctx)
-                    record(p["tool"], p["args"], ok, res, "resume_replay", None, None, ms=ms)
+                    ok, shown, ms, full, omitted = timed(call_graph, p["tool"], p["args"], ctx)
+                    record(p["tool"], p["args"], ok, shown, "resume_replay", None, None, ms=ms, full=full,
+                           omitted=omitted)
                     seen_calls.add(key)
                     replayed += 1
         if mode_req != "deterministic":
@@ -250,7 +258,7 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
                     except json.JSONDecodeError:
                         args = None
                     key = canonical_args(c["name"], args)
-                    ms = 0
+                    ms, full, omitted = 0, None, []
                     if args is None:
                         ok, res = False, {"error": "arguments were not valid JSON"}
                     elif key in seen_calls and c["name"] != "submit_report":
@@ -259,11 +267,11 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
                         ok, res = False, {"error": "tool-call budget exhausted: call submit_report now"}
                     else:
                         seen_calls.add(key)
-                        ok, res, ms = timed(call_graph, c["name"], args, ctx)
+                        ok, res, ms, full, omitted = timed(call_graph, c["name"], args, ctx)
                     if not ok:
                         invalid += 1
                     record(c["name"], args if isinstance(args, dict) else {"raw": c["arguments"][:300]}, ok, res,
-                           "llm", turn.content, turn.model, step, ms=ms)
+                           "llm", turn.content, turn.model, step, ms=ms, full=full, omitted=omitted)
                     messages.append({"role": "tool", "tool_call_id": c["id"], "content": to_message(res)})
                 if ctx.submission:
                     break

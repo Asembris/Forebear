@@ -209,7 +209,8 @@ def build(g: Graph, ctx: RunContext, meta: dict) -> dict:
                             "args": (t["args"] if t["tool"] != "submit_report" else
                                      {"findings": len((t["args"] or {}).get("findings") or []),
                                       "note": "content verified above; raw text in the ToolCall node"}),
-                            "ok": t["ok"],
+                            "ok": t["ok"], "shown_sha256": t.get("shown_sha256"),
+                            "shown_truncated": bool(t.get("omitted")),
                             "origin": t["origin"], "result_sha256": t.get("result_sha256")}
                            for t in meta.get("trace", [])],
             "how_to_rerun": f"POST /api/investigations {{\"request\": ..., \"k\": \"{k}\", \"depth\": {depth}}} "
@@ -288,8 +289,10 @@ def markdown(r: dict) -> str:
           f"- Rules `{rep['rules_version']}`, agent `{rep['agent_version']}`, prompt sha256 `{str(rep.get('prompt_sha256'))[:16]}`",
           f"- Model used: {rep.get('model_used') or 'none'}; configured: {rep.get('models_configured')}",
           f"- Usage: {rep.get('usage')}; budget: {rep.get('budget')}",
-          f"- {rep['started_at']} to {rep['finished_at']}", "", "| # | Tool | Arguments | OK | Origin |", "|---|---|---|---|---|"]
+          f"- {rep['started_at']} to {rep['finished_at']}", "", "| # | Tool | Arguments | OK | Origin | Shown to model |", "|---|---|---|---|---|---|"]
     for tc in rep["tool_calls"]:
-        L.append(f"| {tc['seq']} | {tc['tool']} | `{_md_escape(str(tc['args'])[:90])}` | {tc['ok']} | {tc['origin']} |")
+        seen = "shortened (omitted items are not evidence)" if tc.get("shown_truncated") else "complete"
+        L.append(f"| {tc['seq']} | {tc['tool']} | `{_md_escape(str(tc['args'])[:90])}` | {tc['ok']} | {tc['origin']} "
+                 f"| {seen} |")
     L.append(f"\nRe-run: {rep['how_to_rerun']}")
     return "\n".join(L) + "\n"
