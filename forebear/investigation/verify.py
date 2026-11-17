@@ -21,6 +21,7 @@ from .tools import Ledger
 
 K_ANY = re.compile(r"\bK\d{6}\b")
 RECALL_ANY = re.compile(r"\bZ-\d{4}-\d{4}\b")
+RECALL_LIKE = re.compile(r"\bZ-\d{2,4}(?:[/\-]\d{1,4})+\b")
 PAIR = re.compile(r"\b(K\d{6})\s*(?:->|→|-+>)\s*(K\d{6})\b")
 EVENT_ANY = re.compile(r"\bevent[:\s#]*(\d{4,7})\b", re.I)
 DATE_ANY = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
@@ -68,6 +69,8 @@ def count_claims(claim: str) -> list[tuple[str | None, str, int]]:
         kind = ("events" if noun.startswith("event") else "records" if noun.startswith("record") else
                 "recalls" if noun.startswith("recall") else "design" if noun.startswith("design") else "class_i")
         before = re.split(r"(?<=[.;])\s", claim[:m.start()])[-1]
+        while re.search(r"\([^()]*\)", before):           # "K113068 (cited by K131982) has 2": skip asides
+            before = re.sub(r"\([^()]*\)", " ", before)
         ks = list(K_ANY.finditer(before))
         subject = None
         if ks:
@@ -123,6 +126,9 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
         reasons.append(f"identifiers not returned by any tool in this run: {unknown}")
     if not (ks | rids) and not EVENT_ANY.search(text):
         reasons.append("cites no evidence identifier")
+    shorthand = [t for t in RECALL_LIKE.findall(text) if not RECALL_ANY.fullmatch(t)]
+    if shorthand:
+        reasons.append(f"recall identifiers must be written in full to be checked: {shorthand}")
     for ev in EVENT_ANY.findall(text):
         if ev not in ledger.events:
             reasons.append(f"recall event {ev} was not returned by any tool")

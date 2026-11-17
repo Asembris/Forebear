@@ -126,6 +126,8 @@ def _ledger(real):
     ("K113053 has a Class I design recall, Z-1957-2021.", ["K113053", "Z-1957-2021"], True, None),
     ("K252078 cites K113053. The link was verified.", ["K252078->K113053"], True, None),
     ("K252078 is a safe predicate choice.", ["K252078"], False, "safety"),
+    ("K113053 has recalls Z-1957/58-2021.", ["K113053"], False, "written in full"),
+    ("Grand-predicate K092818 (cited by K113053) has 1 recall record.", ["K092818"], True, None),
     ("Some devices were recalled.", [], False, "no evidence identifier"),
 ])
 def test_verifier_accepts_grounded_and_rejects_unsupported(real, claim, evidence, ok, why):
