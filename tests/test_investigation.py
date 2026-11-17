@@ -74,6 +74,8 @@ def test_verify_citation_against_cached_fda_text(real):
     assert 5 in v["checks"]["pages_naming_k_number"] and v["source_url"].endswith("pdf25/K252078.pdf")
     # the PDF text layer splits this K-number ("K09281 8"); still found on the recorded page
     assert verify_citation_facts(real, "K113053", "K092818")["status"] == "verified"
+    # ... and prints this one as "K(113068)"
+    assert verify_citation_facts(real, "K131982", "K113068")["status"] == "verified"
     # an audit correction: the printed (wrong) K-number is on the page, and the status says it was corrected
     assert verify_citation_facts(real, "K080079", "K013909")["status"] == "verified_audit_correction"
 

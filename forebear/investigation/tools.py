@@ -362,8 +362,9 @@ def verify_citation_facts(g: Graph, src: str, dst: str) -> dict:
     text = pages[page - 1] if page and 1 <= page <= len(pages) else ""
     norm = " ".join(text.split())
     printed = e["corrected_from"] or dst            # an audit correction's printed K-number is the wrong one
-    # PDF text layers split numbers ("K09281 8"), as the extractor tolerates; nothing may follow the last digit
-    pat = re.compile(r"K\s?" + r"\s?".join(printed[1:]) + r"(?!\d)")
+    # The same tolerance as the extractor (predicates.K_PATTERN): "K(113068)", "K09281 8", OCR O/I/l for 0/1
+    ocr = {"0": "[0O]", "1": "[1Il]"}
+    pat = re.compile(r"(?<![A-Za-z0-9])K[\s(\[#:]{0,3}" + r"\s?".join(ocr.get(c, c) for c in printed[1:]) + r"(?![0-9])")
     checks["page_exists"] = bool(text)
     checks["k_number_on_page"] = bool(pat.search(norm))
     q = " ".join((e["quote"] or "").split())
