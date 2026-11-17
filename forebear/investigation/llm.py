@@ -53,8 +53,11 @@ class ChatClient:
     def usable(self) -> list[str]:
         return [m for m in self.models if self.failures.get(m, 0) < 2]
 
-    def _once(self, model: str, messages: list[dict], tools: list[dict], max_tokens: int):
-        r = self._client.chat.completions.create(
+    def _once(self, model: str, messages: list[dict], tools: list[dict], max_tokens: int, deadline: float | None):
+        timeout = self.timeout if deadline is None else min(self.timeout, deadline - time.time())
+        if timeout < 10:
+            raise TimeoutError("run time budget exhausted before the request")
+        r = self._client.with_options(timeout=timeout).chat.completions.create(
             model=model, messages=messages, tools=tools, tool_choice="auto", temperature=0,
             max_tokens=max_tokens, extra_body={"chat_template_kwargs": {"enable_thinking": False}})
         ch = r.choices[0]
@@ -62,19 +65,23 @@ class ChatClient:
                  for c in (ch.message.tool_calls or [])]
         return r, ch, calls
 
-    def chat(self, messages: list[dict], tools: list[dict]) -> Turn:
+    def chat(self, messages: list[dict], tools: list[dict], deadline: float | None = None) -> Turn:
+        """One model turn. `deadline` (epoch seconds) caps every request so a run cannot overrun its time budget."""
         for model in self.usable():
             t0 = time.time()
             try:
-                r, ch, calls = self._once(model, messages, tools, self.max_tokens)
+                r, ch, calls = self._once(model, messages, tools, self.max_tokens, deadline)
                 if not calls and not (ch.message.content or "").strip() and ch.finish_reason == "length":
                     # a long tool call (submit_report) cut off by max_tokens: one retry with more room
-                    r, ch, calls = self._once(model, messages, tools, self.max_tokens * 3)
+                    r, ch, calls = self._once(model, messages, tools, self.max_tokens * 3, deadline)
                 if not calls and not (ch.message.content or "").strip():
                     raise ValueError(f"empty reply (finish_reason={ch.finish_reason})")
                 u = getattr(r, "usage", None)
                 return Turn(ch.message.content or "", calls, model, round(time.time() - t0, 2),
                             getattr(u, "prompt_tokens", 0) or 0, getattr(u, "completion_tokens", 0) or 0)
+            except TimeoutError as e:       # out of run time: no point trying another model
+                self.errors.append(f"{model}: {e}")
+                break
             except Exception as e:          # timeout, 4xx/5xx, malformed reply: count it, try the next model
                 self.failures[model] = self.failures.get(model, 0) + 1
                 self.errors.append(f"{model}: {type(e).__name__}: {str(e)[:160]}")
