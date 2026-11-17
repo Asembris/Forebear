@@ -87,7 +87,7 @@ Other endpoints: `GET /api/investigations?k=K113053` (runs that examined a devic
 `GET /api/investigations/{id}/findings`, `POST /api/investigations/{id}/resume`, and
 `POST /api/proposals/{id}/decision` with `{"decision": "approve"|"dismiss", "reviewer": "<your name>", "human": true}`.
 
-Agent tests (scripted model, no network): `.venv\Scripts\python.exe -m pytest tests\test_investigation.py tests\test_investigation_api.py`
+Agent tests (scripted model, no network): `.venv\Scripts\python.exe -m pytest tests\test_investigation.py tests\test_investigation_api.py tests\test_bounded_results.py`
 
 ## How it uses Relate
 - **Mode: single file** (`data/forebear.rl`, about 4 MB, committed).
