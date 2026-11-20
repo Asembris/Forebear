@@ -85,6 +85,11 @@ WORDS = {w: str(i) for i, w in enumerate("zero one two three four five six seven
 COUNT = re.compile(r"\b(all\s+)?(\d+|" + "|".join(WORDS) + r")\s+(?:(?:distinct|separate|fda|product|recall|"
                    r"additional|more|other|further|known|linked|total)\s+)*"
                    r"(events?|records?|recalls?|times\b|design[- ]related|class\s+i\b(?!i))", re.I)
+# A count explicitly equated to a single event ID, optionally followed by its initiation date.
+SINGLE_EVENT_TOTAL = re.compile(r"\b(\d+|" + "|".join(WORDS) + r")\s+"
+                                r"(?:(?:class (?:iii|ii|i)|design[- ]related|fda|distinct|separate)\s+){0,4}"
+                                r"recall events?\s*\(\s*(?:FDA\s+)?event\s+(\d{4,7})"
+                                r"(?:,\s*initiated\s+\d{4}-\d{2}-\d{2})?\s*\)", re.I)
 POSSESSIVE = re.compile(r"\b(has|have|had|having|with|carries|carry|carrying|lists|shows|accounts? for)\b", re.I)
 VIA = re.compile(r"\b(predicate|ancestor|through|via|lineage|inherit\w*|trac\w*|descend\w*|cites?|cited|chain)\b",
                  re.I)
@@ -186,6 +191,9 @@ def verify_finding(f: dict, ledger: Ledger, evidence_status: dict[str, str],
     for ev in EVENT_ANY.findall(text):
         if ev not in ledger.events:
             reasons.append(f"recall event {ev} was not returned by any tool")
+    for total, event in SINGLE_EVENT_TOTAL.findall(claim):
+        if int(WORDS.get(total.lower(), total)) != 1 and event in ledger.events:
+            reasons.append(f"recall event {event} is one event, even when it has multiple product records")
     pairs = set(PAIR.findall(text))
     for src, dst in sorted(pairs):
         if (src, dst) not in ledger.citations:
