@@ -29,9 +29,11 @@ def template_memo(a: dict) -> dict:
         recs = [e for e in s["evidence"] if e.get("type") == "recall"]
         rec = next((e for e in recs if e.get("design_related")), recs[0] if recs else None)
         ids = [i for i in (s.get("chain") or [])[-1:]] + ([rec["id"]] if rec else [])
-        txt = s["title"] + (f"; e.g. {rec.get('classification') or 'unclassified'} recall {rec['id']} "
+        txt = s["title"].rstrip(".") + (f". For example, {rec.get('classification') or 'unclassified'} recall {rec['id']} "
                             f"({rec.get('root_cause')}, initiated {rec.get('initiated')})." if rec else ".")
-        paras.append({"text": txt + " Document how this is addressed in the predicate rationale.", "cites": ids})
+        follow_up = (" Resolve the citation role before relying on this route." if s.get("conditional")
+                     else " Document how this is addressed in the predicate rationale.")
+        paras.append({"text": txt + follow_up, "cites": ids})
     cov = a["coverage"]
     if cov["ancestors_lineage_unknown"] or not cov["candidate_lineage_known"]:
         paras.append({"text": f"Coverage: {cov['ancestors_lineage_unknown']} of {cov['ancestors']} ancestors "

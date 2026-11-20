@@ -15,18 +15,19 @@ never in `review`/`reviewer`, and a human review in the app always overrides the
                  difference, the name sits elsewhere on the page, or a cross-panel secondary predicate
                  whose name matches): the edge stays and is no longer treated as doubtful.
   unresolved     the evidence does not settle it: the edge stays, flagged, and is listed in the queue.
+  role_corrected the original PDF establishes a different citation role from the extractor.
 """
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from . import evidence
+from . import evidence, summaries
 from .config import AUDIT
 
 DECISIONS = AUDIT / "link_decisions.json"
 OUT_OF_LINEAGE = ("error", "not_predicate")
-STATUSES = ("error", "not_predicate", "variant", "unresolved")
+STATUSES = ("error", "not_predicate", "variant", "unresolved", "role_corrected")
 
 
 def load(path: Path = DECISIONS) -> dict:
@@ -38,7 +39,25 @@ def load(path: Path = DECISIONS) -> dict:
             raise ValueError(f"bad audit decision {d}")
         if d.get("correct_to") and d["decision"] != "error":
             raise ValueError(f"correct_to only allowed on 'error': {d}")
+        if d["decision"] == "role_corrected" and (d.get("kind") not in ("predicate", "reference")
+                                                     or not d.get("source")):
+            raise ValueError(f"role correction requires a kind and a source anchor: {d}")
+        if "kind" in d and d["decision"] != "role_corrected":
+            raise ValueError(f"kind override only allowed on 'role_corrected': {d}")
     return data
+
+
+def _apply_source(row: dict, source: dict) -> None:
+    """Bind a source-reviewed audit to the checked PDF and its literal page text."""
+    rec = summaries.load_text(row["src"])
+    pages = rec["pages"] if rec else []
+    page = source["page"]
+    quote = source["quote"]
+    if (not rec or rec["sha256"] != source["sha256"] or row["source_sha256"] != source["sha256"]
+            or not 1 <= page <= len(pages) or row["dst"] not in quote
+            or quote not in " ".join(pages[page - 1].split())):
+        raise ValueError(f"{row['src']}->{row['dst']} audit source changed or quote missing on PDF page {page}")
+    row.update(page=page, quote=quote, snippet=quote)
 
 
 def apply(rows: list[dict], known: dict[str, dict], data: dict, decided: dict[str, str | None],
@@ -53,7 +72,12 @@ def apply(rows: list[dict], known: dict[str, dict], data: dict, decided: dict[st
         if r is None:
             stats["unmatched"].append(f"{d['src']}->{d['dst']}")
             continue
-        r.update(audit=d["decision"], audit_note=d["note"], audit_by=by, audit_date=d.get("date"))
+        if d.get("source"):
+            _apply_source(r, d["source"])
+        if d["decision"] == "role_corrected":
+            r.update(kind=d["kind"], explicit_label=True)
+        r.update(audit=d["decision"], audit_note=d["note"], audit_by=d.get("auditor") or by,
+                 audit_date=d.get("date"))
         stats["applied"] += 1
         tgt = d.get("correct_to")
         if not tgt:

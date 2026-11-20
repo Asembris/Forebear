@@ -152,7 +152,7 @@ def _provenance(h: dict) -> str:
         return "human_confirmed" if h.get("reviewer") not in ("mcp-client",) else "client_confirmed_not_human"
     if h.get("audit") == "corrected":
         return "audit_correction_machine"
-    if h.get("audit") in ("variant", "unresolved"):
+    if h.get("audit") in ("variant", "unresolved", "role_corrected"):
         return f"audit_{h['audit']}_machine"
     if h.get("kind") != "predicate" and h.get("ai_label") == "predicate":
         return "llm_label_machine"
@@ -167,6 +167,8 @@ def compact_assessment(a: dict) -> dict:
         unres = [e for e in s["evidence"] if e.get("type") == "unresolved_citation"]
         dev = [e for e in s["evidence"] if e.get("type") == "device"]
         sig = {"code": s.get("code"), "severity": s["severity"], "title": s["title"], "chain": s.get("chain") or None}
+        if s.get("conditional"):
+            sig["conditional"] = True
         if recs:
             sig["recall_ids"] = [e["id"] for e in recs][:10]
             sig["recall_records"] = len(recs)
@@ -312,7 +314,8 @@ def t_recall_reach(g: Graph, args: dict, ctx: RunContext) -> dict:
     desc = r["descendants"]
     return {"event": ev, "initiated": r.get("initiated"), "recalled": r["recalled"][:20],
             "descendants_total": len(desc), "descendants_cleared_after_recall": sum(d["after_recall"] for d in desc),
-            "descendants": [{k: d[k] for k in ("k", "name", "decision_date", "gen", "via", "after_recall")}
+            "descendants": [{k: d[k] for k in ("k", "name", "decision_date", "gen", "via", "conditional_via",
+                                              "after_recall")}
                             for d in desc][:25]}
 
 
@@ -323,7 +326,8 @@ def verify_citation_facts(g: Graph, src: str, dst: str) -> dict:
     rows = g.q(f"""MATCH (a:Device {{k:$s}})-[r:CITES]->(b:Device {{k:$d}})
         RETURN r.page AS page, r.quote AS quote, r.snippet AS snippet, r.source_url AS source_url,
                r.source_sha256 AS sha, r.kind AS kind, r.corrected_from AS corrected_from, r.audit AS audit,
-               r.text_source AS text_source, r.review AS review, r.reviewer AS reviewer, r.ai_label AS ai_label,
+               r.audit_note AS audit_note, r.text_source AS text_source, r.review AS review,
+               r.reviewer AS reviewer, r.ai_label AS ai_label,
                ({LINEAGE_EDGE}) AS in_lineage""", {"s": src, "d": dst})
     if not rows:
         return {"src": src, "dst": dst, "status": "no_such_citation"}
@@ -331,6 +335,8 @@ def verify_citation_facts(g: Graph, src: str, dst: str) -> dict:
     base = {"src": src, "dst": dst, "page": e["page"], "kind": e["kind"], "in_lineage": e["in_lineage"],
             "source_url": e["source_url"], "source_sha256": e["sha"], "text_source": e["text_source"],
             "audit": e["audit"], "provenance": _provenance(e)}
+    if e["audit"] in ("unresolved", "role_corrected") and e["audit_note"]:
+        base["untrusted_audit_note"] = untrusted(e["audit_note"])
     rec = summaries.load_text(src)
     if not rec or not rec.get("pages"):
         return base | {"status": "source_text_unavailable",
@@ -368,7 +374,7 @@ def t_verify_citation(g: Graph, args: dict, ctx: RunContext) -> dict:
     if v["status"] == "no_such_citation":
         raise ToolError(f"there is no extracted citation {src} -> {dst}")
     ctx.examined.update({src, dst})
-    _flag_injection(ctx, f"summary text {src}", v.get("untrusted_excerpt"))
+    _flag_injection(ctx, f"summary text {src}", v.get("untrusted_excerpt"), v.get("untrusted_audit_note"))
     return v
 
 

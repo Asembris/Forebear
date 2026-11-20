@@ -51,18 +51,21 @@ def test_recall_reach_of_philips_foam_recall(client):
     after = {d["k"] for d in r["descendants"] if d["after_recall"]}
     assert {"K252078", "K251770", "K212263"} <= after and len(after) == 7
     both = client.get("/api/recall-event/88058,88071").json()   # the same Philips recall, two openFDA events
-    # Phase 1: 19 -> 25 descendants. K183226 (cites K083526 only as a reference device) leaves; K112754,
-    # K120726, K130171, K122715 (Trilogy 100 rows recovered from predicate tables / OCR) join; and K120562,
-    # K120639, K151120 cite K093416 (Trilogy 200), whose earlier AI-generated rejections are no longer applied
-    # as human reviews (the links are audit-unresolved, so they count and are flagged).
-    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 25
-    assert {"K120562", "K120639", "K151120"} <= {d["k"] for d in both["descendants"]}
+    # K183226's reference/predicate conflict restores a conditional route to Trilogy 100.
+    assert len(both["recalled"]) == 14 and len(both["descendants"]) == 26
+    descendants = {d["k"]: d for d in both["descendants"]}
+    assert {"K120562", "K120639", "K151120"} <= set(descendants)
+    assert descendants["K183226"]["conditional_via"] == ["K083526"]
+    assert descendants["K252078"]["conditional_via"] == []
     assert sum(d["after_recall"] for d in both["descendants"]) == 8
 
 
 def test_watchlist_and_compare(client):
     w = client.get("/api/watchlist").json()
-    assert w["count"] == 117 and w["direct"] == 69          # Phase 1: recovered/OCR edges, K093416 links (was 106/62)
+    assert w["count"] == 118 and w["direct"] == 70
+    disputed = next(d for d in w["rows"] if d["k"] == "K183226")
+    assert disputed["recalls"] and all(r["conditional"] for r in disputed["recalls"])
+    assert "Z-1956-2021" not in {r["recall_id"] for r in disputed["recalls"]}  # began after K183226 cleared
     rows = client.post("/api/compare", json={"ks": ["K200480", "K113053", "K999999"]}).json()
     v = {r["k"]: r.get("verdict") for r in rows}
     assert v == {"K200480": "REVIEW_LINEAGE", "K113053": "DESIGN_RECALL_ON_FILE", "K999999": None}
@@ -127,3 +130,39 @@ def test_flagged_links_in_lineage_are_surfaced(client):
     # an unresolved audit link is surfaced on the lineage it sits in
     b = client.get("/api/assess/K040944").json()
     assert any(s["code"] == "UNCERTAIN_LINK_IN_LINEAGE" for s in b["signals"])
+
+
+def test_phase35_source_corrected_assessments(client):
+    a = client.get("/api/assess/K183226").json()
+    assert a["verdict"] == "REVIEW_LINEAGE" and a["coverage"]["evidence"] == "partial"
+    assert "conditional" in a["verdict_reason"]
+    conflict = next(e for s in a["signals"] if s["code"] == "UNCERTAIN_LINK_IN_LINEAGE"
+                    for e in s["evidence"] if (e["src"], e["dst"]) == ("K183226", "K083526"))
+    assert conflict["page"] == 15 and conflict["review"] is None
+    assert "Pages 4 and 6" in conflict["audit_note"] and "page 15" in conflict["audit_note"]
+    signal = next(s for s in a["signals"] if s["chain"] == ["K183226", "K083526"])
+    assert signal["conditional"] and signal["severity"] == "medium"
+    assert any(e.get("id") == "Z-1956-2021" and e["classification"] == "Class I" for e in signal["evidence"])
+    assert not a["device"]["recalls"]
+    assert any("Resolve the citation role" in p["text"] for p in a["memo"]["paragraphs"])
+
+    airvo = client.get("/api/assess/K233643").json()
+    cs = {c["dst"]: c for c in airvo["citations"]}
+    assert cs["K033008"]["kind"] == "reference" and cs["K033008"]["page"] == 6
+    assert {x["k"] for x in airvo["ancestors"] if x["gen"] == 1} == {"K090113", "K221338"}
+    assert not any(s["code"] == "PREDICATE_CITATION_UNRESOLVED" for s in airvo["signals"])
+    assert airvo["verdict_reason"].startswith("Provisional")
+
+    nivairo = client.get("/api/assess/K191624").json()
+    assert nivairo["coverage"]["evidence"] == "partial" and nivairo["verdict_reason"].startswith("Provisional")
+    assert next(c for c in nivairo["citations"] if c["dst"] == "K060044")["kind"] == "reference"
+    by_k = {x["k"]: x for x in nivairo["ancestors"]}
+    assert by_k["K170367"]["lineage_known"]
+    assert by_k["K060044"]["chain"] == ["K191624", "K170367", "K060044"]
+    assert by_k["K040506"]["gen"] == 3
+    assert {r["event"] for r in by_k["K040506"]["recalls"]} == {"36955"}
+    assert by_k["K002465"]["summary_status"] == "missing"
+    rt045 = client.get("/api/device/K170367").json()
+    assert {c["dst"]: c["kind"] for c in rt045["citations"]} == {
+        "K060044": "predicate", "K130328": "reference", "K023135": "reference",
+    }

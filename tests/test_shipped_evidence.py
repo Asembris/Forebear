@@ -11,6 +11,8 @@ from conftest import ROOT
 from forebear import openfda, summaries
 from forebear.config import use_raw_cache
 from forebear.graph import open_graph
+from forebear.investigation import report
+from forebear.investigation.tools import RunContext, verify_citation_facts
 from forebear.lineage import assess
 from forebear.predicates import extract_from_summary
 
@@ -123,3 +125,32 @@ def test_reviews_file_keeps_the_ai_decisions_for_the_record_only():
     assert set(kept) == {("K120562", "K093416"), ("K120639", "K093416"), ("K151120", "K093416"), ("K092835", "K991646")}
     for x in kept.values():
         assert x["applied_as_human_review"] is False and "AI-generated" in x["provenance"] and x["note"]
+
+
+def test_source_corrections_are_verifiable_as_printed(shipped):
+    for src, dst, kind, page in [
+        ("K183226", "K083526", "predicate", 15),
+        ("K233643", "K033008", "reference", 6),
+        ("K170367", "K060044", "predicate", 4),
+    ]:
+        hop = verify_citation_facts(shipped, src, dst)
+        assert (hop["status"], hop["kind"], hop["page"]) == ("verified", kind, page)
+        assert hop["untrusted_audit_note"] and hop["provenance"].endswith("_machine")
+
+
+def test_deterministic_report_preserves_conditional_recall_attribution(shipped):
+    meta = {"id": "test", "request": "Check FDA citation evidence", "target_k": "K183226", "depth": 4,
+            "mode": "deterministic_fallback", "status": "completed", "agent_version": "test"}
+    r = report.build(shipped, RunContext("test", "K183226"), meta)
+    signal = next(row for row in r["recall_summary"]["by_device"] if row["device"] == "K083526")
+    assert signal["conditional"] and "Z-1956-2021" in signal["recall_ids"]
+    assert all(row["device"] != "K183226" for row in r["recall_summary"]["by_device"])
+    assert "conditional" in r["conclusion"]["text"].lower()
+    md = report.markdown(r)
+    assert "Pages 4 and 6" in md and "page 15" in md and "medium (conditional)" in md
+    assert r["human_oversight"]["evidence_hops_human_confirmed"] == 0
+
+    mixed = assess(shipped, "K151120")
+    signals = {s["chain"][-1]: s for s in mixed["signals"] if s["code"] == "ANCESTOR_RECALL"}
+    assert signals["K093416"]["conditional"] and not signals["K140268"]["conditional"]
+    assert any(e.get("id") == "Z-1783-2022" for e in signals["K140268"]["evidence"])
