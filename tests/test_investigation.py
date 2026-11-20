@@ -17,6 +17,20 @@ from forebear.investigation.verify import count_claims, verify_finding
 from forebear.lineage import assess
 
 
+@pytest.mark.parametrize(("claim", "status"), [
+    ("Two Class I design-related recall events (FDA event 93499, initiated 2023-11-20) were documented.",
+     "rejected"),
+    ("One Class I recall event (FDA event 93499) was documented.", "verified"),
+    ("Two recall records are grouped in one recall event (FDA event 93499).", "verified"),
+    ("Two Class I recall events (FDA event 93499 and FDA event 90705) were documented.", "verified"),
+    ("We examined 4 generations and one recall event (FDA event 93499).", "verified"),
+])
+def test_explicit_single_event_count(claim, status):
+    ledger = Ledger(events={"93499", "90705"}, dates={"2023-11-20"}, numbers={"4", "93499", "90705"})
+    result = verify_finding({"claim": claim, "evidence": []}, ledger, {})
+    assert result["status"] == status
+
+
 class Scripted:
     """Stands in for ChatClient. policy(turn_no, messages) -> [(tool, args)] or an Exception to raise."""
 

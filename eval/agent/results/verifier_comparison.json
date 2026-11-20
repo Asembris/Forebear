@@ -1,0 +1,813 @@
+{
+  "run": {
+    "mode": "llm",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "graph_sha256": "3ef2fab4317a3854a9e72c9f7b9c5be031dc90aceb32fd4233ba94341d3ffd20",
+    "cases_sha256": "7e3ad7b328c8ae095ac3d4f9a93ef08d7879bbf8cef582d055a5ccb5d968cee4",
+    "protocol_sha256": "04d24aaf33a41fa393352c67d607e3824140950af17f18bc08857b05abacadd3",
+    "budget": {
+      "max_requests": 180,
+      "max_requested_output": 216000,
+      "max_total": 1800000,
+      "interval": 4.0,
+      "attempts": [],
+      "requested_output": 0,
+      "accounted": 0,
+      "next_start": 0,
+      "stop": null
+    }
+  },
+  "additional_inference_requests": 0,
+  "cases": [
+    {
+      "k": "K211274",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence as settled although the evidence is not complete for ['K021534']"
+        ],
+        "accepted": [
+          "K211274 cites K021534 as its sole predicate on page 4 of its FDA summary; the citation is verified against the cached PDF (SHA-256 371ad05caa6dcb7b4d21ca9bcc7d074ad9f5014ed9addeddf049ba4e06a15160).",
+          "K211274 has two Class I recall records (Z-1357-2024, Z-1356-2024) from FDA event 94169, both with root cause Device Design and design_related=true, initiated 2024-03-01.",
+          "The recall reason for event 94169 is 'Update to contraindications and warning language due to CPAP masks containing magnets' and the recalled products are the iQ 2 and Phantom 2 nasal vented masks under K211274.",
+          "Recall event 94169 also covers four other Sleepnet clearances (K063806, K120463, K190254, K190533) and has five descendant clearances after the recall date, including K241469 which cites K211274 directly.",
+          "Predicate lineage stops at generation 1 because K021534's summary was not read (statement_only); its own predicates are unknown.",
+          "Evidence is partial: the unread ancestor K021534 means the full 4-generation ancestry cannot be assessed; a proposal to ingest K021534's summary has been recorded for human decision."
+        ],
+        "rejected": [
+          {
+            "claim": "K021534 has no recall records in the FDA data.",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K021534']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence as settled although the evidence is not complete for ['K021534']"
+        ],
+        "accepted": [
+          "K211274 cites K021534 as its sole predicate on page 4 of its FDA summary; the citation is verified against the cached PDF (SHA-256 371ad05caa6dcb7b4d21ca9bcc7d074ad9f5014ed9addeddf049ba4e06a15160).",
+          "K211274 has two Class I recall records (Z-1357-2024, Z-1356-2024) from FDA event 94169, both with root cause Device Design and design_related=true, initiated 2024-03-01.",
+          "The recall reason for event 94169 is 'Update to contraindications and warning language due to CPAP masks containing magnets' and the recalled products are the iQ 2 and Phantom 2 nasal vented masks under K211274.",
+          "Recall event 94169 also covers four other Sleepnet clearances (K063806, K120463, K190254, K190533) and has five descendant clearances after the recall date, including K241469 which cites K211274 directly.",
+          "Predicate lineage stops at generation 1 because K021534's summary was not read (statement_only); its own predicates are unknown.",
+          "Evidence is partial: the unread ancestor K021534 means the full 4-generation ancestry cannot be assessed; a proposal to ingest K021534's summary has been recorded for human decision."
+        ],
+        "rejected": [
+          {
+            "claim": "K021534 has no recall records in the FDA data.",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K021534']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K210386",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall Z-1783-2022 is attributed to K210386, but FDA links it to ['K121631', 'K140268']"
+        ],
+        "accepted": [
+          "K210386 cites K140268 as its sole direct predicate; the citation appears on page 4 of the K210386 FDA summary and is verified against the cached PDF (SHA-256 2156677e6c9a51d863ef3b7ad5aa77b1a867794fdd8cc5a9f211aaa5d8b39dab).",
+          "K210386 is subject to FDA Class I recall Z-1784-2022 (event 90705, initiated 2022-09-06) for labeling error — missing magnetic-component contraindications/warnings; the recall record links to K210386 (name check mismatch).",
+          "Direct predicate K140268 is subject to the same FDA Class I recall event 90705 via recall Z-1783-2022 (initiated 2022-09-06) for the same labeling error; the recall record links to K140268 (name check match).",
+          "Ancestry terminates at K140268 (generation 1) because its summary was not read (statement_only); no grand-predicates or further ancestors are known within the 4-generation window.",
+          "Evidence coverage is partial: K140268's own predicates are unread, so any recall signals or design issues in earlier generations are unknown.",
+          "Two descendant devices cleared after the recall initiation (K231313 via K210386 and K140268; K253166 via K121631 and K140980) share the recalled lineage; their own recall status is not flagged in the current signal index."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall Z-1783-2022 is attributed to K210386, but FDA links it to ['K121631', 'K140268']"
+        ],
+        "accepted": [
+          "K210386 cites K140268 as its sole direct predicate; the citation appears on page 4 of the K210386 FDA summary and is verified against the cached PDF (SHA-256 2156677e6c9a51d863ef3b7ad5aa77b1a867794fdd8cc5a9f211aaa5d8b39dab).",
+          "K210386 is subject to FDA Class I recall Z-1784-2022 (event 90705, initiated 2022-09-06) for labeling error — missing magnetic-component contraindications/warnings; the recall record links to K210386 (name check mismatch).",
+          "Direct predicate K140268 is subject to the same FDA Class I recall event 90705 via recall Z-1783-2022 (initiated 2022-09-06) for the same labeling error; the recall record links to K140268 (name check match).",
+          "Ancestry terminates at K140268 (generation 1) because its summary was not read (statement_only); no grand-predicates or further ancestors are known within the 4-generation window.",
+          "Evidence coverage is partial: K140268's own predicates are unread, so any recall signals or design issues in earlier generations are unknown.",
+          "Two descendant devices cleared after the recall initiation (K231313 via K210386 and K140268; K253166 via K121631 and K140980) share the recalled lineage; their own recall status is not flagged in the current signal index."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K253166",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence in the lineage of K253166, whose assessment is REVIEW_LINEAGE",
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K253166 cites two direct predicates, K210844 and K234134, both verified on page 7 of the K253166 summary.",
+          "Grand-predicate K183512 (via K234134) has a Class I design-related recall Z-0542-2024 (event 93499) for magnetic interference with active medical implants.",
+          "Grand-predicate K140980 (via K210844) has a Class I labeling recall Z-1782-2022 (event 90705) for missing magnet contraindications.",
+          "Generation-3 ancestor K121631 (via K140980) is linked to the same event 90705 via recall Z-1783-2022.",
+          "All citation links in the chains to the recalled ancestors are verified against the cached FDA summary text (SHA-256 match, page, printed K-number, quote present).",
+          "Two ancestors beyond generation 2 (K022465 gen-3, K120145 gen-4) have only statement-only summaries, so their predicate citations are unread; this is the only evidence gap in the four-generation trace."
+        ],
+        "rejected": [
+          {
+            "claim": "No recalls are directly associated with K253166 or its direct predicates K210844 and K234134.",
+            "reasons": [
+              "states an absence in the lineage of K253166, whose assessment is REVIEW_LINEAGE",
+              "states an absence as settled although the evidence is not complete for ['K210844', 'K234134']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence in the lineage of K253166, whose assessment is REVIEW_LINEAGE",
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K253166 cites two direct predicates, K210844 and K234134, both verified on page 7 of the K253166 summary.",
+          "Grand-predicate K183512 (via K234134) has a Class I design-related recall Z-0542-2024 (event 93499) for magnetic interference with active medical implants.",
+          "Grand-predicate K140980 (via K210844) has a Class I labeling recall Z-1782-2022 (event 90705) for missing magnet contraindications.",
+          "Generation-3 ancestor K121631 (via K140980) is linked to the same event 90705 via recall Z-1783-2022.",
+          "All citation links in the chains to the recalled ancestors are verified against the cached FDA summary text (SHA-256 match, page, printed K-number, quote present).",
+          "Two ancestors beyond generation 2 (K022465 gen-3, K120145 gen-4) have only statement-only summaries, so their predicate citations are unread; this is the only evidence gap in the four-generation trace."
+        ],
+        "rejected": [
+          {
+            "claim": "No recalls are directly associated with K253166 or its direct predicates K210844 and K234134.",
+            "reasons": [
+              "states an absence in the lineage of K253166, whose assessment is REVIEW_LINEAGE",
+              "states an absence as settled although the evidence is not complete for ['K210844', 'K234134']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K261262",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K261262 cites K242547 as its sole direct predicate on page 6 of its FDA summary; the citation is verified (SHA-256 match, K242547 printed on page).",
+          "The predicate chain K261262 → K242547 → K170924 → K153563 → K123979 is fully verified across 4 generations; all four citation links are confirmed against cached FDA summary text.",
+          "Grand-predicate K170924 (AirFit F20) is subject to two Class I design-related recall records (Z-0541-2024, Z-0537-2024) under FDA event 93499, initiated 2023-11-20, for magnetic interference with active medical implants.",
+          "Generation-3 ancestor K153563 (AirFit F20) is subject to one Class I design-related recall record (Z-0538-2024) under the same FDA event 93499 for magnetic interference with active medical implants.",
+          "Generation-4 ancestor K123979 (QUATTRO AIR) has a Class II recall (Z-2550-2016, event 74736) for a packaging mix-up (vented vs non-vented mask), which is not design-related.",
+          "No FDA recall records are directly linked to K261262 or its direct predicate K242547.",
+          "Evidence coverage for the 4-generation predicate window is complete: all ancestor summaries read, zero doubtful links, zero unresolved predicate citations, zero unread ancestors."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall event 93499 is one event, even when it has multiple product records"
+        ],
+        "accepted": [
+          "K261262 cites K242547 as its sole direct predicate on page 6 of its FDA summary; the citation is verified (SHA-256 match, K242547 printed on page).",
+          "The predicate chain K261262 → K242547 → K170924 → K153563 → K123979 is fully verified across 4 generations; all four citation links are confirmed against cached FDA summary text.",
+          "Grand-predicate K170924 (AirFit F20) is subject to two Class I design-related recall records (Z-0541-2024, Z-0537-2024) under FDA event 93499, initiated 2023-11-20, for magnetic interference with active medical implants.",
+          "Generation-3 ancestor K153563 (AirFit F20) is subject to one Class I design-related recall record (Z-0538-2024) under the same FDA event 93499 for magnetic interference with active medical implants.",
+          "Generation-4 ancestor K123979 (QUATTRO AIR) has a Class II recall (Z-2550-2016, event 74736) for a packaging mix-up (vented vs non-vented mask), which is not design-related.",
+          "No FDA recall records are directly linked to K261262 or its direct predicate K242547.",
+          "Evidence coverage for the 4-generation predicate window is complete: all ancestor summaries read, zero doubtful links, zero unresolved predicate citations, zero unread ancestors."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K253647",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall counts for K093633 do not match the graph: stated ['6 events', '5 class_i', '4 design', '8 design'], graph has {'events': 6, 'records': 6, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+        ],
+        "accepted": [
+          "K253647 cites K222024 as its direct predicate on page 5 of its FDA summary; the citation is verified against the cached PDF (SHA-256 ad49f2fd779175fb67b9c40ad4da193c79dc6433bd329d87330431f160c299cb).",
+          "K222024 cites K093633 as its predicate on page 7 of its FDA summary; the citation is verified against the cached PDF (SHA-256 f3a3926dffe2244fbb01faa381d8fbc231abd267e9ba481dee2df7fe38bf45f7).",
+          "None of the six K093633 recall records list K253647 or K222024 as affected devices; the recalls are linked by FDA to K093633 (and K093632) only."
+        ],
+        "rejected": [
+          {
+            "claim": "Grand-predicate K093633 has six recall events (Z-1298-2014, Z-0436-2016, Z-0827-2016, Z-2343-2015, Z-0108-2022, Z-0870-2022), four of which are design-related Class I recalls involving battery/power-supply charging algorithms and software-induced ventilator restarts.",
+            "reasons": [
+              "recall Z-0108-2022 is Class II, not Class I",
+              "recall Z-0870-2022 is Class II, not Class I"
+            ]
+          },
+          {
+            "claim": "Lineage evidence is partial: K093633's own predicates were not read (summary status ok_no_predicate_found), so ancestry beyond generation 2 is unknown; eight design-related recalls under product code CBK lack 510(k) numbers and cannot be attributed to this lineage.",
+            "reasons": [
+              "recall counts for K093633 do not match the graph: stated ['8 design'], graph has {'events': 6, 'records': 6, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall counts for K093633 do not match the graph: stated ['6 events', '5 class_i', '4 design', '8 design'], graph has {'events': 6, 'records': 6, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+        ],
+        "accepted": [
+          "K253647 cites K222024 as its direct predicate on page 5 of its FDA summary; the citation is verified against the cached PDF (SHA-256 ad49f2fd779175fb67b9c40ad4da193c79dc6433bd329d87330431f160c299cb).",
+          "K222024 cites K093633 as its predicate on page 7 of its FDA summary; the citation is verified against the cached PDF (SHA-256 f3a3926dffe2244fbb01faa381d8fbc231abd267e9ba481dee2df7fe38bf45f7).",
+          "None of the six K093633 recall records list K253647 or K222024 as affected devices; the recalls are linked by FDA to K093633 (and K093632) only."
+        ],
+        "rejected": [
+          {
+            "claim": "Grand-predicate K093633 has six recall events (Z-1298-2014, Z-0436-2016, Z-0827-2016, Z-2343-2015, Z-0108-2022, Z-0870-2022), four of which are design-related Class I recalls involving battery/power-supply charging algorithms and software-induced ventilator restarts.",
+            "reasons": [
+              "recall Z-0108-2022 is Class II, not Class I",
+              "recall Z-0870-2022 is Class II, not Class I"
+            ]
+          },
+          {
+            "claim": "Lineage evidence is partial: K093633's own predicates were not read (summary status ok_no_predicate_found), so ancestry beyond generation 2 is unknown; eight design-related recalls under product code CBK lack 510(k) numbers and cannot be attributed to this lineage.",
+            "reasons": [
+              "recall counts for K093633 do not match the graph: stated ['8 design'], graph has {'events': 6, 'records': 6, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K230173",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for [('K070328', 'K012323'), ('K070328', 'K020777'), ('K070328', 'K992530')]"
+        ],
+        "accepted": [
+          "K230173 cites K102985 as its sole direct predicate; the citation appears on page 5 of the K230173 summary and is verified against the cached FDA PDF (SHA-256 8b455f76bedaf5431eee8b0989f49df25d8bbd88abdb4ff30e74039fe7d6a5f8).",
+          "The predicate chain K230173 → K102985 → K082660 → K981072 and K230173 → K102985 → K082660 → K982454 is verified through pages 1 and 3 of the K082660 summary (SHA-256 dae8c1e45d8a784df5512d5e93b7216488a9458ad9e97c55983de25b1c697d2f).",
+          "Direct predicate K102985 has 9 recall records (7 events), including 5 design-related records and 8 Class I records; notable Class I design-related recalls Z-0908-2022 and Z-0907-2022 (event 89767) cite an internal electrical circuit issue that can cause the ventilator to cease operating.",
+          "Grand-predicate K082660 has 44 recall records (10 events), including 37 design-related records and 3 Class I records; multiple Class II design-related recalls (e.g., Z-0917-2021, Z-0916-2021, event 86697) describe navigation ring interface and liquid ingress issues.",
+          "Generation-3 ancestor K981072 (Esprit Ventilator) has 11 recall records (9 events) with 6 design-related records and 1 Class I record; its summary was not read (statement_only), so its own predicates and any deeper recalls are unexamined.",
+          "Generation-3 ancestor K982454 (BiPAP Vision) has 2 recall records (1 event) with no design-related or Class I records; its summary was not read (statement_only), leaving its predicates and deeper recalls unexamined.",
+          "Four design-related recall records under product code MNT (Z-0909-2022, Z-1813-2024, Z-2073-2021, Z-2074-2021) carry no 510(k) number and cannot be attributed to this or any device's lineage."
+        ],
+        "rejected": [
+          {
+            "claim": "Six recall records on K230173, K102985, or K082660 lack stated root cause or FDA classification (Z-1622-2020, Z-1155-2020, Z-1154-2020, Z-1153-2020, Z-1152-2020, Z-1137-2021) and cannot be ruled out as design-related or Class I.",
+            "reasons": [
+              "recall Z-1137-2021 is attributed to K082660, but FDA links it to []"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for [('K070328', 'K012323'), ('K070328', 'K020777'), ('K070328', 'K992530')]"
+        ],
+        "accepted": [
+          "K230173 cites K102985 as its sole direct predicate; the citation appears on page 5 of the K230173 summary and is verified against the cached FDA PDF (SHA-256 8b455f76bedaf5431eee8b0989f49df25d8bbd88abdb4ff30e74039fe7d6a5f8).",
+          "The predicate chain K230173 → K102985 → K082660 → K981072 and K230173 → K102985 → K082660 → K982454 is verified through pages 1 and 3 of the K082660 summary (SHA-256 dae8c1e45d8a784df5512d5e93b7216488a9458ad9e97c55983de25b1c697d2f).",
+          "Direct predicate K102985 has 9 recall records (7 events), including 5 design-related records and 8 Class I records; notable Class I design-related recalls Z-0908-2022 and Z-0907-2022 (event 89767) cite an internal electrical circuit issue that can cause the ventilator to cease operating.",
+          "Grand-predicate K082660 has 44 recall records (10 events), including 37 design-related records and 3 Class I records; multiple Class II design-related recalls (e.g., Z-0917-2021, Z-0916-2021, event 86697) describe navigation ring interface and liquid ingress issues.",
+          "Generation-3 ancestor K981072 (Esprit Ventilator) has 11 recall records (9 events) with 6 design-related records and 1 Class I record; its summary was not read (statement_only), so its own predicates and any deeper recalls are unexamined.",
+          "Generation-3 ancestor K982454 (BiPAP Vision) has 2 recall records (1 event) with no design-related or Class I records; its summary was not read (statement_only), leaving its predicates and deeper recalls unexamined.",
+          "Four design-related recall records under product code MNT (Z-0909-2022, Z-1813-2024, Z-2073-2021, Z-2074-2021) carry no 510(k) number and cannot be attributed to this or any device's lineage."
+        ],
+        "rejected": [
+          {
+            "claim": "Six recall records on K230173, K102985, or K082660 lack stated root cause or FDA classification (Z-1622-2020, Z-1155-2020, Z-1154-2020, Z-1153-2020, Z-1152-2020, Z-1137-2021) and cannot be ruled out as design-related or Class I.",
+            "reasons": [
+              "recall Z-1137-2021 is attributed to K082660, but FDA links it to []"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K122715",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall Z-0785-2022 is attributed to K093416, but FDA links it to ['K111610']",
+          "recall Z-0884-2023 is attributed to K111610, but FDA links it to ['K083526']",
+          "recall Z-0882-2023 is attributed to K111610, but FDA links it to ['K083526']",
+          "recall Z-0883-2023 is attributed to K111610, but FDA links it to ['K093416']",
+          "claims verification, but verify_citation did not pass for [('K060705', 'K970839'), ('K103167', 'K060705'), ('K113640', 'K103167')]"
+        ],
+        "accepted": [
+          "K122715 itself has a Class I design-related recall (Z-0915-2020, event 84551) for audible alarm failure after prolonged battery depletion, initiated 2019-12-12.",
+          "Direct predicate K111610 (Trilogy Series Ventilator with Oximetry) has two Class I design-related recalls: Z-1956-2021 (event 88071, PE-PUR foam degradation, 2021) and Z-0785-2022 (event 89584, 2018 foam correction), both linked by FDA to K111610.",
+          "The Stellar lineage (K113640 → K103167 → K060705 → K970839) carries design-related recalls at K060705 (Z-1263-2009) and K970839 (Z-0588-2010, Z-1252-2009, Z-0872-2009), but none at K113640 or K103167.",
+          "All traced citation links (K122715→K111610, K122715→K113640, K111610→K083526, K111610→K093416) are verified against the cached FDA summary PDFs with matching SHA-256, page, and printed K-number."
+        ],
+        "rejected": [
+          {
+            "claim": "Grand-predicate K083526 (Trilogy 100) is linked to five recall events including the 2021 PE-PUR foam recall (Z-1956-2021) and three 2022-23 Class I process-design recalls for replacement foam separation (Z-0884-2023, Z-0882-2023, event 91293).",
+            "reasons": [
+              "recall counts for K083526 do not match the graph: stated ['5 events', '23 class_i'], graph has {'events': 7, 'records': 8, 'design': 4, 'class_i': 5} (all recalls) / {'events': 5, 'records': 6, 'design': 4, 'class_i': 5} (signalled recalls)"
+            ]
+          },
+          {
+            "claim": "Grand-predicate K093416 (Trilogy 200) is linked to the same 2021 PE-PUR foam recall (Z-1956-2021) and a 2022-23 Class I process-design recall for replacement foam separation (Z-0883-2023, event 91293).",
+            "reasons": [
+              "recall counts for K093416 do not match the graph: stated ['23 class_i'], graph has {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+            ]
+          },
+          {
+            "claim": "Evidence is partial: 11 of 34 ancestors have unknown lineage, 2 ancestors beyond generation 2 are unread (K022750, K093905), and 5 additional recall signals were omitted from the check_predicate output; the 'no signal' conclusion for unread branches is provisional.",
+            "reasons": [
+              "states an absence, but K022750 has 2 recall record(s) in the graph",
+              "states an absence in the lineage of K022750, but no assessment of ['K022750', 'K093905'] was shown",
+              "states an absence, but K093905 has 3 recall record(s) in the graph",
+              "states an absence in the lineage of K093905, but no assessment of ['K022750', 'K093905'] was shown"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "recall Z-0785-2022 is attributed to K093416, but FDA links it to ['K111610']",
+          "recall Z-0884-2023 is attributed to K111610, but FDA links it to ['K083526']",
+          "recall Z-0882-2023 is attributed to K111610, but FDA links it to ['K083526']",
+          "recall Z-0883-2023 is attributed to K111610, but FDA links it to ['K093416']",
+          "claims verification, but verify_citation did not pass for [('K060705', 'K970839'), ('K103167', 'K060705'), ('K113640', 'K103167')]"
+        ],
+        "accepted": [
+          "K122715 itself has a Class I design-related recall (Z-0915-2020, event 84551) for audible alarm failure after prolonged battery depletion, initiated 2019-12-12.",
+          "Direct predicate K111610 (Trilogy Series Ventilator with Oximetry) has two Class I design-related recalls: Z-1956-2021 (event 88071, PE-PUR foam degradation, 2021) and Z-0785-2022 (event 89584, 2018 foam correction), both linked by FDA to K111610.",
+          "The Stellar lineage (K113640 → K103167 → K060705 → K970839) carries design-related recalls at K060705 (Z-1263-2009) and K970839 (Z-0588-2010, Z-1252-2009, Z-0872-2009), but none at K113640 or K103167.",
+          "All traced citation links (K122715→K111610, K122715→K113640, K111610→K083526, K111610→K093416) are verified against the cached FDA summary PDFs with matching SHA-256, page, and printed K-number."
+        ],
+        "rejected": [
+          {
+            "claim": "Grand-predicate K083526 (Trilogy 100) is linked to five recall events including the 2021 PE-PUR foam recall (Z-1956-2021) and three 2022-23 Class I process-design recalls for replacement foam separation (Z-0884-2023, Z-0882-2023, event 91293).",
+            "reasons": [
+              "recall counts for K083526 do not match the graph: stated ['5 events', '23 class_i'], graph has {'events': 7, 'records': 8, 'design': 4, 'class_i': 5} (all recalls) / {'events': 5, 'records': 6, 'design': 4, 'class_i': 5} (signalled recalls)"
+            ]
+          },
+          {
+            "claim": "Grand-predicate K093416 (Trilogy 200) is linked to the same 2021 PE-PUR foam recall (Z-1956-2021) and a 2022-23 Class I process-design recall for replacement foam separation (Z-0883-2023, event 91293).",
+            "reasons": [
+              "recall counts for K093416 do not match the graph: stated ['23 class_i'], graph has {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (all recalls) / {'events': 5, 'records': 5, 'design': 4, 'class_i': 4} (signalled recalls)"
+            ]
+          },
+          {
+            "claim": "Evidence is partial: 11 of 34 ancestors have unknown lineage, 2 ancestors beyond generation 2 are unread (K022750, K093905), and 5 additional recall signals were omitted from the check_predicate output; the 'no signal' conclusion for unread branches is provisional.",
+            "reasons": [
+              "states an absence, but K022750 has 2 recall record(s) in the graph",
+              "states an absence in the lineage of K022750, but no assessment of ['K022750', 'K093905'] was shown",
+              "states an absence, but K093905 has 3 recall record(s) in the graph",
+              "states an absence in the lineage of K093905, but no assessment of ['K022750', 'K093905'] was shown"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K993071",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K993071 itself has a Class I design-related recall (Z-0611-2014, event 67108) with root cause Software design, initiated 2013-12-16.",
+          "K993071's FDA summary is statement_only; its own predicates could not be read and no predicate ancestry could be traced for up to 4 generations.",
+          "Recall event 67108 (Z-0611-2014) is linked by FDA to five Model 840 clearances including K993071, K984535, K970460, K053388, and K001646.",
+          "The recall event 67108 has 56 descendant clearances in the graph, 8 of which were cleared after the recall initiation date (2013-12-16).",
+          "Eight design-related recall records under product code CBK lack 510(k) numbers and cannot be attributed to this or any device's lineage.",
+          "Evidence coverage for K993071 is partial because its own predicates are unread; a proposal to ingest the full FDA summary has been recorded."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K993071 itself has a Class I design-related recall (Z-0611-2014, event 67108) with root cause Software design, initiated 2013-12-16.",
+          "K993071's FDA summary is statement_only; its own predicates could not be read and no predicate ancestry could be traced for up to 4 generations.",
+          "Recall event 67108 (Z-0611-2014) is linked by FDA to five Model 840 clearances including K993071, K984535, K970460, K053388, and K001646.",
+          "The recall event 67108 has 56 descendant clearances in the graph, 8 of which were cleared after the recall initiation date (2013-12-16).",
+          "Eight design-related recall records under product code CBK lack 510(k) numbers and cannot be attributed to this or any device's lineage.",
+          "Evidence coverage for K993071 is partial because its own predicates are unread; a proposal to ingest the full FDA summary has been recorded."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K241216",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence as settled although the evidence is not complete for ['K083575', 'K091947', 'K140124', 'K160836', 'K200565', 'K200656', 'K241216', 'K905404']"
+        ],
+        "accepted": [
+          "K241216 (myAir) has no FDA recall records directly linked to its clearance.",
+          "None of the six readable ancestors (K200565, K160836, K905404, K140124, K083575, K091947) have FDA recall records linked to their clearances.",
+          "The check_predicate verdict for K241216 is NO_DESIGN_RECALL_SIGNAL, but it is provisional because evidence coverage is partial.",
+          "Two ancestors in the lineage have unread summaries: K905404 (gen 3, statement_only) and K083575 (gen 4, not_expanded), so their predicates and any recall records are unknown.",
+          "K241216 cites K200656 as a predicate on page 13 of its FDA summary, but this citation could not be resolved in the graph; K200656 is an orthopedic device (Delta Multihole TT Pro Acetabular System, product code LPH) unrelated to the sleep-therapy product code BZD.",
+          "Proposals to ingest the unread ancestors K905404 and K083575 have been recorded for human decision to extend the lineage."
+        ],
+        "rejected": [
+          {
+            "claim": "No design-related recall signals were found in the readable ancestry within the two-generation verdict window (K241216, K200565, K160836).",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K160836', 'K200565', 'K241216']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence as settled although the evidence is not complete for ['K083575', 'K091947', 'K140124', 'K160836', 'K200565', 'K200656', 'K241216', 'K905404']"
+        ],
+        "accepted": [
+          "K241216 (myAir) has no FDA recall records directly linked to its clearance.",
+          "None of the six readable ancestors (K200565, K160836, K905404, K140124, K083575, K091947) have FDA recall records linked to their clearances.",
+          "The check_predicate verdict for K241216 is NO_DESIGN_RECALL_SIGNAL, but it is provisional because evidence coverage is partial.",
+          "Two ancestors in the lineage have unread summaries: K905404 (gen 3, statement_only) and K083575 (gen 4, not_expanded), so their predicates and any recall records are unknown.",
+          "K241216 cites K200656 as a predicate on page 13 of its FDA summary, but this citation could not be resolved in the graph; K200656 is an orthopedic device (Delta Multihole TT Pro Acetabular System, product code LPH) unrelated to the sleep-therapy product code BZD.",
+          "Proposals to ingest the unread ancestors K905404 and K083575 have been recorded for human decision to extend the lineage."
+        ],
+        "rejected": [
+          {
+            "claim": "No design-related recall signals were found in the readable ancestry within the two-generation verdict window (K241216, K200565, K160836).",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K160836', 'K200565', 'K241216']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K183226",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence, but K083526 has 4 design-related recall record(s) in the graph",
+          "states an absence as settled although the evidence is not complete for ['K083526', 'K083575', 'K091947', 'K183226', 'K835511']"
+        ],
+        "accepted": [
+          "The predicate lineage extends to 11 ancestors across four generations; the deepest readable chains reach K033276, K050775, K093684, K103167, K113288 (gen 4).",
+          "Ancestor K083575 (APNEALINK PLUS, gen 3) has an unread FDA summary (summary_status=not_expanded, in_family_dataset=false); its own predicates are unknown.",
+          "Three predicate citations in the readable summaries could not be resolved to devices in the graph: K183226→K083526 (page 6, audit=not_predicate), K132371→K835511 (page 3, not_in_openfda), K123557→K091947 (page 2, audit=not_predicate).",
+          "Verification of K123557 page 2 confirms the printed K-number K091947 (S8 Aspen with H4i Plus, ResMed) appears in a compatibility statement; the audit flagged it as not a predicate, so the link needs human review.",
+          "Because evidence is partial (unread ancestor K083575, three unresolved citations, and deeper gaps beyond two generations), the NO_DESIGN_RECALL_SIGNAL verdict is provisional; a recall in the missing branches would not be detected."
+        ],
+        "rejected": [
+          {
+            "claim": "K183226 cites K152356 (Sapphire) as its sole direct predicate; K152356's own predicates (K132371, K140054) were read and show no recall events.",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K132371', 'K140054', 'K152356', 'K183226']"
+            ]
+          },
+          {
+            "claim": "Verification of K183226 page 6 confirms the printed K-number K083526 (Trilogy 100 Ventilator) appears under 'Reference Device' for predicate K152356; the audit flagged it as not a predicate, so the link needs human review.",
+            "reasons": [
+              "claims verification, but verify_citation did not pass for [('K183226', 'K152356')]"
+            ]
+          },
+          {
+            "claim": "No design-related recall signals were found on any readable ancestor in the lineage (0 recall events, 0 design-related records, 0 Class I records across 11 ancestors).",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K033276', 'K050775', 'K093684', 'K103167', 'K113288', 'K113815', 'K123557', 'K132371', 'K140054', 'K152356', 'K183226']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "states an absence, but K083526 has 4 design-related recall record(s) in the graph",
+          "states an absence as settled although the evidence is not complete for ['K083526', 'K083575', 'K091947', 'K183226', 'K835511']"
+        ],
+        "accepted": [
+          "The predicate lineage extends to 11 ancestors across four generations; the deepest readable chains reach K033276, K050775, K093684, K103167, K113288 (gen 4).",
+          "Ancestor K083575 (APNEALINK PLUS, gen 3) has an unread FDA summary (summary_status=not_expanded, in_family_dataset=false); its own predicates are unknown.",
+          "Three predicate citations in the readable summaries could not be resolved to devices in the graph: K183226→K083526 (page 6, audit=not_predicate), K132371→K835511 (page 3, not_in_openfda), K123557→K091947 (page 2, audit=not_predicate).",
+          "Verification of K123557 page 2 confirms the printed K-number K091947 (S8 Aspen with H4i Plus, ResMed) appears in a compatibility statement; the audit flagged it as not a predicate, so the link needs human review.",
+          "Because evidence is partial (unread ancestor K083575, three unresolved citations, and deeper gaps beyond two generations), the NO_DESIGN_RECALL_SIGNAL verdict is provisional; a recall in the missing branches would not be detected."
+        ],
+        "rejected": [
+          {
+            "claim": "K183226 cites K152356 (Sapphire) as its sole direct predicate; K152356's own predicates (K132371, K140054) were read and show no recall events.",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K132371', 'K140054', 'K152356', 'K183226']"
+            ]
+          },
+          {
+            "claim": "Verification of K183226 page 6 confirms the printed K-number K083526 (Trilogy 100 Ventilator) appears under 'Reference Device' for predicate K152356; the audit flagged it as not a predicate, so the link needs human review.",
+            "reasons": [
+              "claims verification, but verify_citation did not pass for [('K183226', 'K152356')]"
+            ]
+          },
+          {
+            "claim": "No design-related recall signals were found on any readable ancestor in the lineage (0 recall events, 0 design-related records, 0 Class I records across 11 ancestors).",
+            "reasons": [
+              "states an absence as settled although the evidence is not complete for ['K033276', 'K050775', 'K093684', 'K103167', 'K113288', 'K113815', 'K123557', 'K132371', 'K140054', 'K152356', 'K183226']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K071702",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K071702 cites two direct predicates: K053607 (BREAS VIVO 40 SYSTEM, cleared 2006-03-16) and K982454 (BIPAP VISION VENTILATORY SUPPORT, cleared 1998-11-03).",
+          "Both K071702 and K053607 cite K982454 as a predicate, but the FDA summary text prints K982545 on the cited page; the links are flagged with audit_correction doubt.",
+          "K982454 has two recall records (Z-1057-2008, Z-1085-2008, event 45545) for glass fragments in shipping bags; root cause is Environmental control, design_related=false, and FDA classification is null.",
+          "Grand-predicate K003075 (KNIGHTSTAR 330 VENTILATOR) has one recall record (Z-0444-2007, event 36306) for service interval and exhalation filter directions; root cause is Other, design_related=false, and FDA classification is null.",
+          "No design-related recall signals were found on K071702 or its direct/grand-predicates within the readable ancestry; the verdict is NO_DESIGN_RECALL_SIGNAL (provisional).",
+          "Evidence is partial: 7 of 10 ancestors in the 4-generation tree have unread summaries (statement_only or not_expanded), including K982454, K974539, K002454, K003075, K961783, K971260, K980721.",
+          "Four design-related recall records in product code MNT (Z-0909-2022, Z-1813-2024, Z-2073-2021, Z-2074-2021) carry no 510(k) number and cannot be attributed to this lineage.",
+          "Beyond two generations the ancestry has gaps: 4 unread ancestors (K961783, K971260, K980721, plus one more at gen 3/4) mean lower-severity recall signals there may be missing."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K071702 cites two direct predicates: K053607 (BREAS VIVO 40 SYSTEM, cleared 2006-03-16) and K982454 (BIPAP VISION VENTILATORY SUPPORT, cleared 1998-11-03).",
+          "Both K071702 and K053607 cite K982454 as a predicate, but the FDA summary text prints K982545 on the cited page; the links are flagged with audit_correction doubt.",
+          "K982454 has two recall records (Z-1057-2008, Z-1085-2008, event 45545) for glass fragments in shipping bags; root cause is Environmental control, design_related=false, and FDA classification is null.",
+          "Grand-predicate K003075 (KNIGHTSTAR 330 VENTILATOR) has one recall record (Z-0444-2007, event 36306) for service interval and exhalation filter directions; root cause is Other, design_related=false, and FDA classification is null.",
+          "No design-related recall signals were found on K071702 or its direct/grand-predicates within the readable ancestry; the verdict is NO_DESIGN_RECALL_SIGNAL (provisional).",
+          "Evidence is partial: 7 of 10 ancestors in the 4-generation tree have unread summaries (statement_only or not_expanded), including K982454, K974539, K002454, K003075, K961783, K971260, K980721.",
+          "Four design-related recall records in product code MNT (Z-0909-2022, Z-1813-2024, Z-2073-2021, Z-2074-2021) carry no 510(k) number and cannot be attributed to this lineage.",
+          "Beyond two generations the ancestry has gaps: 4 unread ancestors (K961783, K971260, K980721, plus one more at gen 3/4) mean lower-severity recall signals there may be missing."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K252338",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K252338 cites K160836 (Menai System, 2016) as its sole direct predicate; the citation is verified on page 6 of the K252338 summary.",
+          "The readable ancestry traces through K160836 to two generation-2 predicates: K905404 (Medtronic Sullivan Nasal CPAP, 1991) and K140124 (S9 Elouera, 2014); both citations in K160836 are verified on pages 7 and 5 respectively.",
+          "K140124 cites two generation-3 predicates, K083575 (ApneaLink Plus, 2009) and K091947 (S8 Aspen, 2009); both citations are verified on page 1 of the K140124 summary.",
+          "K091947 cites two generation-4 predicates, K080131 (VPAP ST, 2008) and K082605 (VPAP Auto, 2009); both citations are verified on page 1 of the K091947 summary.",
+          "Two ancestors beyond the verdict window have unread FDA summaries: K905404 (statement_only) and K083575 (not_expanded). Their own predicates and any recall history are unknown, so lower-severity recall signals in those branches may be missing.",
+          "Proposals to ingest the missing summaries for K905404 and K083575 have been recorded for human decision."
+        ],
+        "rejected": [
+          {
+            "claim": "No design-related recall signals were found on K252338, K160836, K140124, K091947, K080131, or K082605 (the verdict-window devices).",
+            "reasons": [
+              "states an absence of recalls for K252338, but no zero count for K252338 was shown",
+              "states an absence as settled although the evidence is not complete for ['K080131', 'K082605', 'K091947', 'K140124', 'K160836']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "withheld",
+        "summary_issues": [
+          "claims verification, but verify_citation did not pass for any named citation"
+        ],
+        "accepted": [
+          "K252338 cites K160836 (Menai System, 2016) as its sole direct predicate; the citation is verified on page 6 of the K252338 summary.",
+          "The readable ancestry traces through K160836 to two generation-2 predicates: K905404 (Medtronic Sullivan Nasal CPAP, 1991) and K140124 (S9 Elouera, 2014); both citations in K160836 are verified on pages 7 and 5 respectively.",
+          "K140124 cites two generation-3 predicates, K083575 (ApneaLink Plus, 2009) and K091947 (S8 Aspen, 2009); both citations are verified on page 1 of the K140124 summary.",
+          "K091947 cites two generation-4 predicates, K080131 (VPAP ST, 2008) and K082605 (VPAP Auto, 2009); both citations are verified on page 1 of the K091947 summary.",
+          "Two ancestors beyond the verdict window have unread FDA summaries: K905404 (statement_only) and K083575 (not_expanded). Their own predicates and any recall history are unknown, so lower-severity recall signals in those branches may be missing.",
+          "Proposals to ingest the missing summaries for K905404 and K083575 have been recorded for human decision."
+        ],
+        "rejected": [
+          {
+            "claim": "No design-related recall signals were found on K252338, K160836, K140124, K091947, K080131, or K082605 (the verdict-window devices).",
+            "reasons": [
+              "states an absence of recalls for K252338, but no zero count for K252338 was shown",
+              "states an absence as settled although the evidence is not complete for ['K080131', 'K082605', 'K091947', 'K140124', 'K160836']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K151120",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K151120 cites K140268 (Simple T Youth Nasal Mask) as primary predicate and K093416 as secondary predicate, but K093416 is recorded as TRILOGY 200 VENTILATOR not Profile Lite Small Child, creating a name mismatch.",
+          "The K151120→K093416 citation is verified on page 6 of the FDA summary (SHA-256 451435704b4f962885cf0dbb66f65cb5abd5ddb09072129ab583d03f6fc7ed21) but audit status is unresolved with name_mismatch doubt.",
+          "Direct predicate K140268 (Simple T Youth Nasal Mask) has a Class I labeling recall (Z-1783-2022, event 90705) for missing magnetic component warnings, but this recall is not design-related.",
+          "Grand-predicate K083526 (Trilogy 100 Ventilator) has 7 recall events with 5 Class I design-related records, sharing the PE-PUR foam recall (Z-1956-2021) with K093416.",
+          "Evidence is partial: 8 ancestors have unread summaries (including direct predicate K140268 with statement_only status), the K093416 link has unresolved audit status with name mismatch, and lineage beyond 2 generations has gaps.",
+          "No FDA recall records are directly linked to K151120 itself; all recall signals apply to predicate and ancestor devices in the ventilator and mask lineages."
+        ],
+        "rejected": [
+          {
+            "claim": "Direct predicate K093416 (Trilogy 200 Ventilator) has 5 FDA recall events including 4 Class I design-related recalls (Z-0883-2023, Z-1956-2021, Z-1065-2016, Z-1143-2014, Z-2024-2012), with the PE-PUR foam degradation recall (Z-1956-2021, event 88071) also linking to grand-predicate K083526 (Trilogy 100).",
+            "reasons": [
+              "recall Z-1065-2016 is not classified by FDA, not Class I",
+              "recall Z-1143-2014 is not classified by FDA, not Class I",
+              "recall Z-2024-2012 is not classified by FDA, not Class I"
+            ]
+          },
+          {
+            "claim": "Generation-3 and 4 ventilator ancestors (K984056 LTV 1000, K981371 LTV 1000, K002881 LTV 1000) each have 8 design-related recall records from 2008 (Z-1463-2008 through Z-1470-2008), but these are separated by multiple generations from K151120.",
+            "reasons": [
+              "recall Z-1463-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1464-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1465-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1466-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1467-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1468-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1469-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1470-2008 was called design-related, but its root cause was not shown",
+              "numbers not found in trusted tool output: ['2008']"
+            ]
+          }
+        ]
+      },
+      "after": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K151120 cites K140268 (Simple T Youth Nasal Mask) as primary predicate and K093416 as secondary predicate, but K093416 is recorded as TRILOGY 200 VENTILATOR not Profile Lite Small Child, creating a name mismatch.",
+          "The K151120→K093416 citation is verified on page 6 of the FDA summary (SHA-256 451435704b4f962885cf0dbb66f65cb5abd5ddb09072129ab583d03f6fc7ed21) but audit status is unresolved with name_mismatch doubt.",
+          "Direct predicate K140268 (Simple T Youth Nasal Mask) has a Class I labeling recall (Z-1783-2022, event 90705) for missing magnetic component warnings, but this recall is not design-related.",
+          "Grand-predicate K083526 (Trilogy 100 Ventilator) has 7 recall events with 5 Class I design-related records, sharing the PE-PUR foam recall (Z-1956-2021) with K093416.",
+          "Evidence is partial: 8 ancestors have unread summaries (including direct predicate K140268 with statement_only status), the K093416 link has unresolved audit status with name mismatch, and lineage beyond 2 generations has gaps.",
+          "No FDA recall records are directly linked to K151120 itself; all recall signals apply to predicate and ancestor devices in the ventilator and mask lineages."
+        ],
+        "rejected": [
+          {
+            "claim": "Direct predicate K093416 (Trilogy 200 Ventilator) has 5 FDA recall events including 4 Class I design-related recalls (Z-0883-2023, Z-1956-2021, Z-1065-2016, Z-1143-2014, Z-2024-2012), with the PE-PUR foam degradation recall (Z-1956-2021, event 88071) also linking to grand-predicate K083526 (Trilogy 100).",
+            "reasons": [
+              "recall Z-1065-2016 is not classified by FDA, not Class I",
+              "recall Z-1143-2014 is not classified by FDA, not Class I",
+              "recall Z-2024-2012 is not classified by FDA, not Class I"
+            ]
+          },
+          {
+            "claim": "Generation-3 and 4 ventilator ancestors (K984056 LTV 1000, K981371 LTV 1000, K002881 LTV 1000) each have 8 design-related recall records from 2008 (Z-1463-2008 through Z-1470-2008), but these are separated by multiple generations from K151120.",
+            "reasons": [
+              "recall Z-1463-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1464-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1465-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1466-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1467-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1468-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1469-2008 was called design-related, but its root cause was not shown",
+              "recall Z-1470-2008 was called design-related, but its root cause was not shown",
+              "numbers not found in trusted tool output: ['2008']"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "k": "K040944",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K040944 cites K961783 as its sole direct predicate on page 1 of its FDA summary.",
+          "The citation text names the predicate 'ResMed UCU' while FDA records name K961783 'SULLIVAN VPAP II ST NASAL VPAP SYSTEM', creating a name mismatch.",
+          "The K040944→K961783 link is flagged audit_unresolved and name_mismatch; the predicate summary was never read (statement_only).",
+          "No FDA recall records are associated with K040944 or its predicate K961783.",
+          "Lineage evidence is uncertain and truncated at generation 1; the check_predicate verdict is INSUFFICIENT_LINEAGE.",
+          "A proposal to ingest K961783's FDA summary and a proposal for human review of the K040944→K961783 link have been recorded."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K040944 cites K961783 as its sole direct predicate on page 1 of its FDA summary.",
+          "The citation text names the predicate 'ResMed UCU' while FDA records name K961783 'SULLIVAN VPAP II ST NASAL VPAP SYSTEM', creating a name mismatch.",
+          "The K040944→K961783 link is flagged audit_unresolved and name_mismatch; the predicate summary was never read (statement_only).",
+          "No FDA recall records are associated with K040944 or its predicate K961783.",
+          "Lineage evidence is uncertain and truncated at generation 1; the check_predicate verdict is INSUFFICIENT_LINEAGE.",
+          "A proposal to ingest K961783's FDA summary and a proposal for human review of the K040944→K961783 link have been recorded."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K972605",
+      "live_status": "completed",
+      "comparison": "live submission replayed",
+      "before": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K972605 cites K883825 as its sole predicate on page 1 of its FDA summary; the K-number K883825 is present in the OCR text.",
+          "The citation K972605->K883825 carries audit_unresolved and name_mismatch doubts: the summary text describes 'Respironics Silicone Contour Nasal CPAP mask' while openFDA records K883825 as 'MODIFIED SANDERS BI-PAPEASY'.",
+          "K883825's FDA summary has not been read (summary_status=not_expanded), so its own predicates are unknown and the lineage cannot be traced beyond generation 1.",
+          "No FDA recall records are linked to K972605 or K883825 in the current dataset.",
+          "Predicate due-diligence verdict for K972605 is INSUFFICIENT_LINEAGE with uncertain evidence because the only direct predicate link rests on unresolved audit and name mismatch.",
+          "Coverage is uncertain: one unread ancestor (K883825) and one doubtful link (K972605->K883825) prevent a complete 4-generation assessment."
+        ],
+        "rejected": []
+      },
+      "after": {
+        "summary_status": "visible",
+        "summary_issues": [],
+        "accepted": [
+          "K972605 cites K883825 as its sole predicate on page 1 of its FDA summary; the K-number K883825 is present in the OCR text.",
+          "The citation K972605->K883825 carries audit_unresolved and name_mismatch doubts: the summary text describes 'Respironics Silicone Contour Nasal CPAP mask' while openFDA records K883825 as 'MODIFIED SANDERS BI-PAPEASY'.",
+          "K883825's FDA summary has not been read (summary_status=not_expanded), so its own predicates are unknown and the lineage cannot be traced beyond generation 1.",
+          "No FDA recall records are linked to K972605 or K883825 in the current dataset.",
+          "Predicate due-diligence verdict for K972605 is INSUFFICIENT_LINEAGE with uncertain evidence because the only direct predicate link rests on unresolved audit and name mismatch.",
+          "Coverage is uncertain: one unread ancestor (K883825) and one doubtful link (K972605->K883825) prevent a complete 4-generation assessment."
+        ],
+        "rejected": []
+      }
+    },
+    {
+      "k": "K023068",
+      "live_status": "incomplete",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K240778",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K993449",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K993307",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K191624",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K243583",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K253939",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K233643",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    },
+    {
+      "k": "K260251",
+      "live_status": "unattempted",
+      "comparison": "no captured submission"
+    }
+  ]
+}
