@@ -1,0 +1,1127 @@
+{
+  "schema": 1,
+  "graph_sha256": "3ef2fab4317a3854a9e72c9f7b9c5be031dc90aceb32fd4233ba94341d3ffd20",
+  "depth": 4,
+  "request": "Investigate {k} for predicate due diligence. Trace the lineage, document serious FDA recall signals with their source records and routes, resolve citation roles where supported, and explain uncertainty and the most useful follow-up. Distinguish what applies to the target from what applies to related devices.",
+  "demos": [
+    "K252078",
+    "K251770",
+    "K251889",
+    "K201620"
+  ],
+  "cases": [
+    {
+      "k": "K211274",
+      "product_code": "BZD",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "Two Class I Sleepnet mask product records belong to one recall event. The predicate summary was not read.",
+      "clearance_records": [
+        {
+          "k": "K211274",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "iQ 2 Nasal Mask, Phantom 2 Nasal Mask",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K211274"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K211274",
+          "printed": "K021534",
+          "page": 4,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf21/K211274.pdf",
+          "pdf_sha256": "371ad05caa6dcb7b4d21ca9bcc7d074ad9f5014ed9addeddf049ba4e06a15160",
+          "text_cache": "data/raw/summaries/K211274.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K211274",
+          "event": "94169",
+          "records": [
+            {
+              "id": "Z-1357-2024",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=206511",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            },
+            {
+              "id": "Z-1356-2024",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=206510",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K210386",
+      "product_code": "BZD",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "The target and its direct predicate each have a separate Class I record in the same event. FDA lists Error in labeling as the cause.",
+      "clearance_records": [
+        {
+          "k": "K210386",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Magneto Nasal Mask",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K210386"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K210386",
+          "printed": "K140268",
+          "page": 4,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf21/K210386.pdf",
+          "pdf_sha256": "2156677e6c9a51d863ef3b7ad5aa77b1a867794fdd8cc5a9f211aaa5d8b39dab",
+          "text_cache": "data/raw/summaries/K210386.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K210386",
+          "event": "90705",
+          "records": [
+            {
+              "id": "Z-1784-2022",
+              "classification": "Class I",
+              "cause": "Error in labeling",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=195533",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        },
+        {
+          "holder": "K140268",
+          "event": "90705",
+          "records": [
+            {
+              "id": "Z-1783-2022",
+              "classification": "Class I",
+              "cause": "Error in labeling",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=195532",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K253166",
+      "product_code": "BZD",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "A recalled grand-predicate is reachable through the AirFit F30i NM clearance. The recall is for the prior AirFit F30i and its user guide, with a specified guide version.",
+      "clearance_records": [
+        {
+          "k": "K253166",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "F6S Full Face Mask (F6S); P6S Nasal Pillows Interface (P6S)",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K253166"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K253166",
+          "printed": "K234134",
+          "page": 7,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253166.pdf",
+          "pdf_sha256": "ca8b1fb46e290e039c076ce3264705ea164820ef7e062f689028c05bd4f21d30",
+          "text_cache": "data/raw/summaries/K253166.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K234134",
+          "printed": "K183512",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K234134.pdf",
+          "pdf_sha256": "816274d2cee35395878739fe050be0cb3bf16ba6175b284cdf53755e3ecb7a53",
+          "text_cache": "data/raw/summaries/K234134.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K183512",
+          "event": "93499",
+          "records": [
+            {
+              "id": "Z-0542-2024",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=204523",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K261262",
+      "product_code": "BZD",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "The isolated target clearance gives no inherited recall. Following two predicate links reaches the AirFit F20 records within one event.",
+      "clearance_records": [
+        {
+          "k": "K261262",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Altis Full Face Mask",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K261262"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K261262",
+          "printed": "K242547",
+          "page": 6,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf26/K261262.pdf",
+          "pdf_sha256": "73c4b8c557c982f054f7a7a2bee0f66732ced928bce55db4ad69c90f7f6598a4",
+          "text_cache": "data/raw/summaries/K261262.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K242547",
+          "printed": "K170924",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K242547.pdf",
+          "pdf_sha256": "a59ab69531b824d2b3fbab37ffa46765d83bd46d58e0a63869f3e80fdb7400b3",
+          "text_cache": "data/raw/summaries/K242547.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K170924",
+          "event": "93499",
+          "records": [
+            {
+              "id": "Z-0541-2024",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=204522",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            },
+            {
+              "id": "Z-0537-2024",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=204518",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K253647",
+      "product_code": "CBK",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "Two predicate hops reach recalled Evita Infinity devices. K180098 fills a reference-only role.",
+      "clearance_records": [
+        {
+          "k": "K253647",
+          "cache": "data/raw/openfda/510k_1b3e487027cae324.json",
+          "device_name": "Evita (V800); Evita (V600)",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K253647"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K253647",
+          "printed": "K222024",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253647.pdf",
+          "pdf_sha256": "ad49f2fd779175fb67b9c40ad4da193c79dc6433bd329d87330431f160c299cb",
+          "text_cache": "data/raw/summaries/K253647.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K222024",
+          "printed": "K093633",
+          "page": 4,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K222024.pdf",
+          "pdf_sha256": "f3a3926dffe2244fbb01faa381d8fbc231abd267e9ba481dee2df7fe38bf45f7",
+          "text_cache": "data/raw/summaries/K222024.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K253647",
+          "printed": "K180098",
+          "page": 5,
+          "role": "reference",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253647.pdf",
+          "pdf_sha256": "ad49f2fd779175fb67b9c40ad4da193c79dc6433bd329d87330431f160c299cb",
+          "text_cache": "data/raw/summaries/K253647.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K093633",
+          "event": "73241",
+          "records": [
+            {
+              "id": "Z-0827-2016",
+              "classification": "Class I",
+              "cause": "Software design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=143615",
+              "recall_cache": "data/raw/openfda/recall_4a6568d1c09e69bf.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_4f194a25002e4421.json"
+            }
+          ]
+        },
+        {
+          "holder": "K093633",
+          "event": "72754",
+          "records": [
+            {
+              "id": "Z-0436-2016",
+              "classification": "Class I",
+              "cause": "Software design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=142153",
+              "recall_cache": "data/raw/openfda/recall_4a6568d1c09e69bf.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_4f194a25002e4421.json"
+            }
+          ]
+        },
+        {
+          "holder": "K093633",
+          "event": "71702",
+          "records": [
+            {
+              "id": "Z-2343-2015",
+              "classification": "Class I",
+              "cause": "Nonconforming Material/Component",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=138784",
+              "recall_cache": "data/raw/openfda/recall_4a6568d1c09e69bf.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_4f194a25002e4421.json"
+            }
+          ]
+        },
+        {
+          "holder": "K093633",
+          "event": "67502",
+          "records": [
+            {
+              "id": "Z-1298-2014",
+              "classification": "Class I",
+              "cause": "Component design/selection",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=125580",
+              "recall_cache": "data/raw/openfda/recall_4a6568d1c09e69bf.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_4f194a25002e4421.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K230173",
+      "product_code": "MNT",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "Respironics V60 is a recalled direct predicate. Class I recalls have different FDA causes and must stay attached to the relevant clearance.",
+      "clearance_records": [
+        {
+          "k": "K230173",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "Servo-air Lite Ventilator System",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K230173"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K230173",
+          "printed": "K102985",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K230173.pdf",
+          "pdf_sha256": "8b455f76bedaf5431eee8b0989f49df25d8bbd88abdb4ff30e74039fe7d6a5f8",
+          "text_cache": "data/raw/summaries/K230173.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K102985",
+          "printed": "K082660",
+          "page": 1,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf10/K102985.pdf",
+          "pdf_sha256": "d44014f36d1c029acf65fda18509e364a4c43cdd4c6ffd9c2c48a446eac09a06",
+          "text_cache": "data/raw/summaries/K102985.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K102985",
+          "event": "93015",
+          "records": [
+            {
+              "id": "Z-2631-2023",
+              "classification": "Class I",
+              "cause": "Nonconforming Material/Component",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=203284",
+              "recall_cache": "data/raw/openfda/recall_8b164b15e977a9de.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_82297bbdb8d7c18b.json"
+            }
+          ]
+        },
+        {
+          "holder": "K102985",
+          "event": "89767",
+          "records": [
+            {
+              "id": "Z-0908-2022",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=192391",
+              "recall_cache": "data/raw/openfda/recall_8b164b15e977a9de.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        },
+        {
+          "holder": "K102985",
+          "event": "77084",
+          "records": [
+            {
+              "id": "Z-2061-2017",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=154944",
+              "recall_cache": "data/raw/openfda/recall_714a391e8b12c584.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_87e2fb34b27c5791.json"
+            }
+          ]
+        },
+        {
+          "holder": "K102985",
+          "event": "65376",
+          "records": [
+            {
+              "id": "Z-1537-2013",
+              "classification": "Class I",
+              "cause": "Software design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=118739",
+              "recall_cache": "data/raw/openfda/recall_714a391e8b12c584.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_079593592f3ea49c.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K122715",
+      "product_code": "MNT",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "Stellar 150 itself has a Class I recall. The scanned summary names both a Stellar 150 and a Trilogy Remote Alarm predicate.",
+      "clearance_records": [
+        {
+          "k": "K122715",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "STELLAR 150",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K122715"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K122715",
+          "printed": "K111610",
+          "page": 1,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K122715.pdf",
+          "pdf_sha256": "e3cff4f21cde6ccc02059c4690dde8807315e931b36240caae0d4156739cb75c",
+          "text_cache": "data/raw/ocr/K122715.json",
+          "source_review": "hash-matched PDF and cached OCR"
+        },
+        {
+          "citing": "K122715",
+          "printed": "K113640",
+          "page": 1,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf12/K122715.pdf",
+          "pdf_sha256": "e3cff4f21cde6ccc02059c4690dde8807315e931b36240caae0d4156739cb75c",
+          "text_cache": "data/raw/ocr/K122715.json",
+          "source_review": "hash-matched PDF and cached OCR"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K122715",
+          "event": "84551",
+          "records": [
+            {
+              "id": "Z-0915-2020",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=178585",
+              "recall_cache": "data/raw/openfda/recall_23a8abaf28c74347.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        },
+        {
+          "holder": "K111610",
+          "event": "88071",
+          "records": [
+            {
+              "id": "Z-1956-2021",
+              "classification": "Class I",
+              "cause": "Device Design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187816",
+              "recall_cache": "data/raw/openfda/recall_4a6568d1c09e69bf.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K993071",
+      "product_code": "CBK",
+      "stratum": "recall",
+      "label_status": "agent-reviewed",
+      "label": "The target has a Class I software design recall even though the graph could not establish its predicate lineage.",
+      "clearance_records": [
+        {
+          "k": "K993071",
+          "cache": "data/raw/openfda/510k_1b3e487027cae324.json",
+          "device_name": "PURITAN-BENNETT VENTILATOR SYSTEM WITH ET/TRACHEOSTOMY TUBE COMPENSATION, TC, OPTION, MODEL 840",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K993071"
+        }
+      ],
+      "citations": [],
+      "critical": [
+        {
+          "holder": "K993071",
+          "event": "67108",
+          "records": [
+            {
+              "id": "Z-0611-2014",
+              "classification": "Class I",
+              "cause": "Software design",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=124713",
+              "recall_cache": "data/raw/openfda/recall_1adad2f93ff5710c.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_4f194a25002e4421.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "K241216",
+      "product_code": "BZD",
+      "stratum": "naming",
+      "label_status": "agent-reviewed",
+      "label": "The summary explicitly names Galapagos K200565 on page 5. The conclusion prints K200656, an acetabular system. Do not traverse that unrelated number.",
+      "clearance_records": [
+        {
+          "k": "K241216",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "myAir",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K241216"
+        },
+        {
+          "k": "K200565",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Galapogos",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K200565"
+        },
+        {
+          "k": "K200656",
+          "cache": "data/raw/openfda/510k_5c9c548c4a717c63.json",
+          "device_name": "Delta Multihole TT Pro Acetabular System",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K200656"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K241216",
+          "printed": "K200565",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K241216.pdf",
+          "pdf_sha256": "8edbe67f84b2752b749b5475bdeb9e442045bb0e004a0edc82dbece096fc483c",
+          "text_cache": "data/raw/summaries/K241216.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K241216",
+          "printed": "K200656",
+          "page": 13,
+          "role": "exclude",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K241216.pdf",
+          "pdf_sha256": "8edbe67f84b2752b749b5475bdeb9e442045bb0e004a0edc82dbece096fc483c",
+          "text_cache": "data/raw/summaries/K241216.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K183226",
+      "product_code": "BZD",
+      "stratum": "naming",
+      "label_status": "unresolved",
+      "label": "Pages 4 and 6 label DirectView K083526 a reference. Page 15 calls it a predicate. K152356 is explicitly a primary predicate. Do not resolve the inconsistent role definitively from this PDF.",
+      "clearance_records": [
+        {
+          "k": "K183226",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Care Orchestrator Essence",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K183226"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K183226",
+          "printed": "K152356",
+          "page": 4,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf18/K183226.pdf",
+          "pdf_sha256": "37500dfa72019ba3d17cfdb317818a6aba2e6758b9b0569d49754cb89ea5aa36",
+          "text_cache": "data/raw/summaries/K183226.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K183226",
+          "printed": "K083526",
+          "page": 6,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf18/K183226.pdf",
+          "pdf_sha256": "37500dfa72019ba3d17cfdb317818a6aba2e6758b9b0569d49754cb89ea5aa36",
+          "text_cache": "data/raw/summaries/K183226.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K183226",
+          "printed": "K083526",
+          "page": 15,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf18/K183226.pdf",
+          "pdf_sha256": "37500dfa72019ba3d17cfdb317818a6aba2e6758b9b0569d49754cb89ea5aa36",
+          "text_cache": "data/raw/summaries/K183226.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K071702",
+      "product_code": "MNT",
+      "stratum": "naming",
+      "label_status": "unresolved",
+      "label": "The source prints K982545 for Respironics Vision. FDA names that number BMP Cable System. K982454 names BiPAP Vision and is a plausible audit correction, which remains an inferred link.",
+      "clearance_records": [
+        {
+          "k": "K071702",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "BREAS VIVO BILEVEL SYSTEM, MODEL VIVO 40",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K071702"
+        },
+        {
+          "k": "K982545",
+          "cache": "data/raw/openfda/510k_8c712e31bce42547.json",
+          "device_name": "BMP CABLE SYSTEM",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K982545"
+        },
+        {
+          "k": "K982454",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "BIPAP VISION VENTILATORY SUPPORT",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K982454"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K071702",
+          "printed": "K053607",
+          "page": 1,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K071702.pdf",
+          "pdf_sha256": "a4424311d330e71d1cb6cd71be5a001d4d58903d2f9280b8bf8babb66d9528fd",
+          "text_cache": "data/raw/summaries/K071702.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K071702",
+          "printed": "K982545",
+          "page": 1,
+          "role": "exclude",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf7/K071702.pdf",
+          "pdf_sha256": "a4424311d330e71d1cb6cd71be5a001d4d58903d2f9280b8bf8babb66d9528fd",
+          "text_cache": "data/raw/summaries/K071702.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K252338",
+      "product_code": "BZD",
+      "stratum": "naming",
+      "label_status": "agent-reviewed",
+      "label": "The PDF calls Monte Carlo the mobile application in the Menai System. Menai System is the FDA name under the same K-number, so the name difference alone does not invalidate the link.",
+      "clearance_records": [
+        {
+          "k": "K252338",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "MySleepDash",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K252338"
+        },
+        {
+          "k": "K160836",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Menai System",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K160836"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K252338",
+          "printed": "K160836",
+          "page": 6,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252338.pdf",
+          "pdf_sha256": "9ed04e39a7e5252fb6a56610604723266f4dcf25ca6c07f7cdcc5baff2cf52ec",
+          "text_cache": "data/raw/summaries/K252338.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K151120",
+      "product_code": "BZD",
+      "stratum": "uncertain",
+      "label_status": "unresolved",
+      "label": "The summary prints K093416 both for the small-child mask and as the Trilogy 200 reference. FDA registers K093416 as Trilogy 200. The mask identity is unresolved. K140268 is a separately supported, recalled primary predicate.",
+      "clearance_records": [
+        {
+          "k": "K151120",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "Simple T Pediatric Nasal Mask",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K151120"
+        },
+        {
+          "k": "K093416",
+          "cache": "data/raw/openfda/510k_1b3e487027cae324.json",
+          "device_name": "TRILOGY 200 VENTILATOR",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K093416"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K151120",
+          "printed": "K140268",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf15/K151120.pdf",
+          "pdf_sha256": "451435704b4f962885cf0dbb66f65cb5abd5ddb09072129ab583d03f6fc7ed21",
+          "text_cache": "data/raw/summaries/K151120.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K151120",
+          "printed": "K093416",
+          "page": 6,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf15/K151120.pdf",
+          "pdf_sha256": "451435704b4f962885cf0dbb66f65cb5abd5ddb09072129ab583d03f6fc7ed21",
+          "text_cache": "data/raw/summaries/K151120.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [
+        {
+          "holder": "K140268",
+          "event": "90705",
+          "records": [
+            {
+              "id": "Z-1783-2022",
+              "classification": "Class I",
+              "cause": "Error in labeling",
+              "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=195532",
+              "recall_cache": "data/raw/openfda/recall_11d988a4111cb1cc.json",
+              "enforcement_cache": "data/raw/openfda/enforcement_476514ec0968eaf4.json"
+            }
+          ]
+        }
+      ],
+      "additional_fda_pdf": {
+        "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf9/K093416.pdf",
+        "sha256": "4f06ffe64a854c075f4036a361e8763a4a7cd5d23504d7234643ef368bd0c904"
+      }
+    },
+    {
+      "k": "K040944",
+      "product_code": "BZD",
+      "stratum": "uncertain",
+      "label_status": "unresolved",
+      "label": "ResMed UCU is the name next to K961783. FDA lists that number as a Sullivan VPAP II ST nasal system. Keep the printed number and device identity distinct.",
+      "clearance_records": [
+        {
+          "k": "K040944",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "RESCONTROL II",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K040944"
+        },
+        {
+          "k": "K961783",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "SULLIVAN VPAP II ST NASAL VPAP SYSTEM",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K961783"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K040944",
+          "printed": "K961783",
+          "page": 1,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf4/K040944.pdf",
+          "pdf_sha256": "3482ffabaf34d13311f96a83162bbb30ba59f156844e05b3abd718111fcfe52b",
+          "text_cache": "data/raw/summaries/K040944.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K972605",
+      "product_code": "BZD",
+      "stratum": "uncertain",
+      "label_status": "unresolved",
+      "label": "The OCR-backed summary cites the Respironics Silicone Contour Nasal CPAP mask as K883825. The FDA number identifies a Modified Sanders Bi-Papeasy. The correct mask clearance remains unresolved.",
+      "clearance_records": [
+        {
+          "k": "K972605",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "EMS NASAL CPAP MASK",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K972605"
+        },
+        {
+          "k": "K883825",
+          "cache": "data/raw/openfda/510k_60d6b462bd6d36df.json",
+          "device_name": "MODIFIED SANDERS BI-PAPEASY",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K883825"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K972605",
+          "printed": "K883825",
+          "page": 1,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K972605.pdf",
+          "pdf_sha256": "38bb3927b5ef0c9fcb18106625f2f03b889e8980a81930968c5f44fa58d2e44c",
+          "text_cache": "data/raw/ocr/K972605.json",
+          "source_review": "hash-matched PDF and cached OCR"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K023068",
+      "product_code": "BZD",
+      "stratum": "uncertain",
+      "label_status": "unresolved",
+      "label": "The page calls K984428 a Sullivan Mirage Mask System. The FDA record names a Sullivan AutoSet Nasal CPAP System. Shared name fragments do not resolve the conflict.",
+      "clearance_records": [
+        {
+          "k": "K023068",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "PAPILLON MASK SET",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K023068"
+        },
+        {
+          "k": "K984428",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "SULLIVAN AUTOSET NASAL CPAP SYSTEM",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K984428"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K023068",
+          "printed": "K984428",
+          "page": 1,
+          "role": "disputed",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf2/K023068.pdf",
+          "pdf_sha256": "56756f56f7ce48872f95a60751213e434bbf15c1e6ea7134822e3c4ff2eeac05",
+          "text_cache": "data/raw/summaries/K023068.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K240778",
+      "product_code": "MNS",
+      "stratum": "incomplete",
+      "label_status": "agent-reviewed",
+      "label": "The FDA clearance exists, but its linked summary PDF returned HTTP 404. There is no source basis for a clean lineage.",
+      "clearance_records": [
+        {
+          "k": "K240778",
+          "cache": "data/raw/openfda/510k_9b116e4c2f131704.json",
+          "device_name": "Vivo 1, Vivo 2",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K240778"
+        }
+      ],
+      "citations": [],
+      "critical": []
+    },
+    {
+      "k": "K993449",
+      "product_code": "CBK",
+      "stratum": "incomplete",
+      "label_status": "agent-reviewed",
+      "label": "The graph lacks readable ancestry and labels the device statement-only. The current FDA listing offers a four-page image PDF, so avoid claiming there is no public PDF.",
+      "clearance_records": [
+        {
+          "k": "K993449",
+          "cache": "data/raw/openfda/510k_1b3e487027cae324.json",
+          "device_name": "BIRD V.I.P. GOLD/STERLING",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K993449"
+        }
+      ],
+      "citations": [],
+      "critical": [],
+      "additional_fda_pdf": {
+        "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K993449.pdf",
+        "sha256": "8ed05e45d3638c59a42aea2b55f346a8a63cd35194d2bfa374406455a1df3c2c"
+      }
+    },
+    {
+      "k": "K993307",
+      "product_code": "BZD",
+      "stratum": "incomplete",
+      "label_status": "agent-reviewed",
+      "label": "The cached OCR and one-page scanned clearance letter do not identify the predicate by number. Abstain on lineage.",
+      "clearance_records": [
+        {
+          "k": "K993307",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "ARIA LX CPAP SYSTEM",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K993307"
+        }
+      ],
+      "citations": [],
+      "critical": [],
+      "additional_fda_pdf": {
+        "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf/K993307.pdf",
+        "sha256": "5c80ee01b26da48c5bfae36a5d065cdb3c3ff06b8dacf0eaeb594a6bffb267e6"
+      }
+    },
+    {
+      "k": "K191624",
+      "product_code": "MNT",
+      "stratum": "incomplete",
+      "label_status": "agent-reviewed",
+      "label": "K170367 is the explicit direct predicate. Its ancestry was unread in the graph, although FDA now serves its summary. Suggest reading/ingesting this exact clearance before drawing a clean conclusion.",
+      "clearance_records": [
+        {
+          "k": "K191624",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "F&P Nivairo RT047 Vented Hospital Full Face Mask, Anti-Asphyxiation Valve Version",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K191624"
+        },
+        {
+          "k": "K170367",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "Nivairo RT045 Non-Vented Hospital Full Face Mask Anti-Asphyxiation Valve - Large, Nivairo RT045 Non-Vented Hospital Full Face Mask Anti-Asphyxiation Valve - Medium, Nivairo RT045 Non-Vented Hospital Full Face Mask Anti-Asphyxiation Valve - Small, Nivairo RT045 Non-Vented Hospital Full Face Mask Anti-Asphyxiation Valve - Extra Small",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K170367"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K191624",
+          "printed": "K170367",
+          "page": 4,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf19/K191624.pdf",
+          "pdf_sha256": "c0b99f3095dfdee9506d073a5b72f4d0c8155389aa4f09562150356d760e8422",
+          "text_cache": "data/raw/summaries/K191624.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": [],
+      "additional_fda_pdf": {
+        "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf17/K170367.pdf",
+        "sha256": "334129a77364ad7ed9aeabda2004b4a1ed463f28089cb39fcbe857ecabea610f"
+      }
+    },
+    {
+      "k": "K243583",
+      "product_code": "BZD",
+      "stratum": "scope",
+      "label_status": "agent-reviewed",
+      "label": "K200089 serves as predicate and K153505 as reference. A no-signal result applies to the scoped search, with the reference outside predicate ancestry.",
+      "clearance_records": [
+        {
+          "k": "K243583",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "F&P Nova Nasal Mask",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K243583"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K243583",
+          "printed": "K200089",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K243583.pdf",
+          "pdf_sha256": "749d4bc645c3ac7457d3209a5496d07659d4f62c705739198ad62fe62a87d7ae",
+          "text_cache": "data/raw/summaries/K243583.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K243583",
+          "printed": "K153505",
+          "page": 5,
+          "role": "reference",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K243583.pdf",
+          "pdf_sha256": "749d4bc645c3ac7457d3209a5496d07659d4f62c705739198ad62fe62a87d7ae",
+          "text_cache": "data/raw/summaries/K243583.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K253939",
+      "product_code": "BZD",
+      "stratum": "scope",
+      "label_status": "agent-reviewed",
+      "label": "The FDA summary conclusion explicitly distinguishes predicate K233415 and reference K210844. Its local name discrepancy is not a lineage conflict.",
+      "clearance_records": [
+        {
+          "k": "K253939",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "DeltaWave Nasal Pillow System",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K253939"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K253939",
+          "printed": "K233415",
+          "page": 11,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253939.pdf",
+          "pdf_sha256": "2893bb96f3db564f9ae53816b287c456e067a2e1b383c072eeb0e9da07a0c99b",
+          "text_cache": "data/raw/summaries/K253939.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K253939",
+          "printed": "K210844",
+          "page": 5,
+          "role": "reference",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K253939.pdf",
+          "pdf_sha256": "2893bb96f3db564f9ae53816b287c456e067a2e1b383c072eeb0e9da07a0c99b",
+          "text_cache": "data/raw/summaries/K253939.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K233643",
+      "product_code": "MNT",
+      "stratum": "scope",
+      "label_status": "agent-reviewed",
+      "label": "The V60 K082660 is a reference for substantial-equivalence comparisons, not a predicate in this filing. Partial graph coverage still precludes a clean lineage claim.",
+      "clearance_records": [
+        {
+          "k": "K233643",
+          "cache": "data/raw/openfda/510k_b14704362c7b9802.json",
+          "device_name": "F&P Airvo 3 NIV (PT311US)",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K233643"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K233643",
+          "printed": "K090113",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K233643.pdf",
+          "pdf_sha256": "12f6cb1abfd03e73ba6a460aea79b83bf1e52dfd0527ca59280190d4cceeb5b5",
+          "text_cache": "data/raw/summaries/K233643.json",
+          "source_review": "original FDA PDF text layer"
+        },
+        {
+          "citing": "K233643",
+          "printed": "K082660",
+          "page": 6,
+          "role": "reference",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K233643.pdf",
+          "pdf_sha256": "12f6cb1abfd03e73ba6a460aea79b83bf1e52dfd0527ca59280190d4cceeb5b5",
+          "text_cache": "data/raw/summaries/K233643.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    },
+    {
+      "k": "K260251",
+      "product_code": "BZD",
+      "stratum": "scope",
+      "label_status": "agent-reviewed",
+      "label": "The summary lists K203126 as predicate. Unread deeper ancestry limits the four-generation investigation even though the two-generation verdict window is complete in the snapshot.",
+      "clearance_records": [
+        {
+          "k": "K260251",
+          "cache": "data/raw/openfda/510k_d98550230036eeea.json",
+          "device_name": "BreathCare PAP III (YH-390N)",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K260251"
+        },
+        {
+          "k": "K083575",
+          "cache": "data/raw/openfda/510k_c1ff3583a24bda56.json",
+          "device_name": "APNEALINK PLUS, MODEL: 22328",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K083575"
+        }
+      ],
+      "citations": [
+        {
+          "citing": "K260251",
+          "printed": "K203126",
+          "page": 5,
+          "role": "predicate",
+          "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf26/K260251.pdf",
+          "pdf_sha256": "7f9d0ee216967665d9263258341063db38dc92108d9604a0f49e5b2286bd844c",
+          "text_cache": "data/raw/summaries/K260251.json",
+          "source_review": "original FDA PDF text layer"
+        }
+      ],
+      "critical": []
+    }
+  ]
+}
