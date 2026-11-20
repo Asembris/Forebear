@@ -165,6 +165,8 @@ The graph returned this result in the deterministic arm. A person could reconstr
 
 ## Reproduce
 
+Use checkout `13b31bf` for the frozen Phase 3 graph and evaluation commands. The Phase 3.5 build changes the shipped graph SHA-256 and keeps these historical cases and observations intact. [Phase 3.5 provenance](../data/PROVENANCE.md#phase-35-source-corrections)
+
 ```powershell
 .venv\Scripts\python.exe -m pytest
 .venv\Scripts\python.exe scripts\evaluate_agent.py --mode deterministic --out data/live/phase3/repro-baseline
@@ -175,7 +177,7 @@ The graph returned this result in the deterministic arm. A person could reconstr
 
 The repeat reproduced 24/24 report projections and checklist result hashes. The repository suite passed 239 tests, including an offline rebuild on a temporary store, the budget tests and the targeted count check. The summary command also checks frozen FDA cache fields and page anchors without opening Relate or using the application verifier.
 
-The separate live command spends NVIDIA inference quota. It needs the existing NVIDIA variables and the official hosted endpoint. The original capture ran at `2a84668`. A fresh run on the current branch uses the revised verifier, and the hosted model can vary across runs. Run directories must be new. Each contains the full reports, tool results, model-visible payloads, elapsed time, usage from every SDK attempt and a working graph copy. The exported observations preserve submitted content, verification outcomes, decision and gap data, tool calls and trace hashes.
+The separate live command spends NVIDIA inference quota. It needs the existing NVIDIA variables and the official hosted endpoint. The original capture ran at `2a84668`. A fresh run at `13b31bf` uses the revised Phase 3 verifier, and the hosted model can vary across runs. Run directories must be new. Each contains the full reports, tool results, model-visible payloads, elapsed time, usage from every SDK attempt and a working graph copy. The exported observations preserve submitted content, verification outcomes, decision and gap data, tool calls and trace hashes.
 
 ```powershell
 .venv\Scripts\python.exe scripts\evaluate_agent.py --mode llm --out data/live/phase3/repro-live
