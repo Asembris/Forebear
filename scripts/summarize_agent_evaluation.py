@@ -81,15 +81,16 @@ def critical_detection(case: dict, report: dict) -> list[dict]:
     return results
 
 
-def citation_observations(case: dict, run: dict) -> list[dict]:
-    report = run.get("report", {})
+def citation_observations(case: dict, run: dict, model_only: bool = False) -> list[dict]:
     observations = []
-    for path in report.get("evidence_paths", []):
-        observations.extend(path["hops"])
+    if not model_only:
+        for path in run.get("report", {}).get("evidence_paths", []):
+            observations.extend(path["hops"])
+    origin = "llm" if model_only else "deterministic_fallback"
     for event in run.get("trace", []):
-        if event.get("origin") != "deterministic_fallback" or not event.get("ok"):
+        if event.get("origin") != origin or not event.get("ok"):
             continue
-        value = event["result"]
+        value = event["shown"] if model_only else event["result"]
         if event["tool"] == "list_citations":
             observations.extend({"src": value["k"], **row} for row in value["citations"])
         elif event["tool"] == "verify_citation":
@@ -103,7 +104,8 @@ def citation_observations(case: dict, run: dict) -> list[dict]:
             (role == "predicate" and bool(o.get("in_lineage", o.get("counts_in_lineage")))
              and o.get("kind") == "predicate" and o.get("audit") != "unresolved")
             or (role == "reference" and o.get("kind") == "reference")
-            or (role == "exclude" and o.get("audit") == "error" and not o.get("counts_in_lineage"))
+            or (role == "exclude" and o.get("audit") == "error"
+                and not o.get("in_lineage", o.get("counts_in_lineage")))
             or (role == "disputed" and o.get("audit") == "unresolved")
             for o in matching
         )
@@ -116,7 +118,7 @@ def citation_observations(case: dict, run: dict) -> list[dict]:
     return results
 
 
-def observation(case: dict, raw: dict) -> dict:
+def observation(case: dict, raw: dict, live: bool = False) -> dict:
     report = raw.get("report", {})
     # Hash the deterministic projection without timing, generated IDs, or the growing report-store counters.
     projection = {key: report.get(key) for key in (
@@ -133,7 +135,7 @@ def observation(case: dict, raw: dict) -> dict:
         for event in raw.get("trace", []) if event["kind"] == "tool"
     ]
     reproducibility = report.get("reproducibility", {})
-    return {
+    result = {
         "k": case["k"], "status": raw["status"], "seconds": raw.get("seconds"), "error": raw.get("error"),
         "investigation_id": report.get("investigation_id"), "mode": report.get("mode"),
         "mode_note": report.get("mode_note"), "usage": reproducibility.get("usage"),
@@ -152,6 +154,9 @@ def observation(case: dict, raw: dict) -> dict:
         "agent": report.get("agent"), "proposals": report.get("proposals"), "tools": trace,
         "projection_sha256": hashlib.sha256(json.dumps(projection, sort_keys=True).encode()).hexdigest(),
     }
+    if live:
+        result["model_tool_citations"] = citation_observations(case, raw, model_only=True)
+    return result
 
 
 def review_projection(agent: dict) -> dict:
@@ -199,7 +204,8 @@ def summarize(directory: Path, destination: Path, repeat: Path | None, archive: 
     cases = frozen["cases"]
     manifest = read_json(directory / "run.json")
     raw = [read_json(directory / f"{case['k']}.json") for case in cases]
-    rows = [observation(case, result) for case, result in zip(cases, raw, strict=True)]
+    rows = [observation(case, result, live=manifest["mode"] == "llm")
+            for case, result in zip(cases, raw, strict=True)]
     if repeat is not None:
         assert manifest == read_json(repeat / "run.json"), "repeat used different inputs"
         for case, row in zip(cases, rows, strict=True):
