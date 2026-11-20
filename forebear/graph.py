@@ -46,9 +46,13 @@ FULLTEXT = "CREATE FULLTEXT INDEX device_text IF NOT EXISTS FOR (d:Device) ON EA
 # Rule: a human confirmed it, OR (the extractor says predicate, or the LLM triage labelled an ambiguous
 # mention as predicate, quote-checked) and the extraction audit did not find it wrong - unless a human
 # rejected it. Humans always win; the audit outranks the extractor and the LLM.
-LINEAGE_EDGE = ("coalesce(r.review, '') <> 'rejected' AND "
-                "(r.review = 'confirmed' OR (NOT coalesce(r.audit, '') IN ['error', 'not_predicate'] AND "
-                "(r.kind = 'predicate' OR r.ai_label = 'predicate')))")
+SOURCE_ROLE_MCP_REVIEW = "(coalesce(r.audit, '') = 'role_corrected' AND coalesce(r.reviewer, '') = 'mcp-client')"
+LINEAGE_EDGE = (f"(coalesce(r.review, '') <> 'rejected' OR {SOURCE_ROLE_MCP_REVIEW}) AND "
+                f"((r.review = 'confirmed' AND NOT {SOURCE_ROLE_MCP_REVIEW}) OR "
+                "(NOT coalesce(r.audit, '') IN ['error', 'not_predicate'] AND "
+                "(r.kind = 'predicate' OR (r.ai_label = 'predicate' AND coalesce(r.audit, '') <> 'role_corrected'))))")
+DISPUTED_EDGE = ("coalesce(r.audit, '') = 'unresolved' AND "
+                 "(coalesce(r.review, '') <> 'confirmed' OR coalesce(r.reviewer, '') = 'mcp-client')")
 
 
 class Graph:
@@ -316,17 +320,21 @@ class Graph:
 
     def cited_after_recall(self, design_only: bool = True, limit: int = 200) -> list[dict]:
         """Clearances whose (direct or 2nd-generation) predicate was already under a recall
-        when the new device was cleared - the pattern Kadakia et al. (JAMA 2023) studied."""
+        when the new device was cleared. A row is conditional if every shortest path
+        to that recall holder contains an unresolved audit link."""
         flt = "AND x.design_related" if design_only else ""
         rows = self.q(
             f"""MATCH p = (d:Device)-[:CITES*1..2]->(a:Device)-[:SUBJECT_OF]->(x:Recall)
             WHERE all(r IN relationships(p) WHERE type(r) = 'SUBJECT_OF' OR ({LINEAGE_EDGE}))
               AND d.decision_date IS NOT NULL AND x.initiated IS NOT NULL
               AND x.initiated < d.decision_date {flt}
-            WITH d, a, x, min(length(p)) - 1 AS gen
+            WITH d, a, x, min(length(p)) - 1 AS gen,
+                 min(CASE WHEN all(r IN relationships(p) WHERE NOT ({DISPUTED_EDGE}))
+                          THEN length(p) ELSE null END) AS supported_length
             RETURN d.k AS k, d.name AS name, d.applicant AS applicant,
                    toString(d.decision_date) AS decision_date, toString(d.received_date) AS received_date,
                    a.k AS ancestor, a.name AS ancestor_name, gen,
+                   (supported_length IS NULL OR supported_length > gen + 1) AS conditional,
                    x.id AS recall_id, x.event AS event, x.classification AS classification,
                    x.root_cause AS root_cause, toString(x.initiated) AS initiated, x.firm AS firm,
                    x.reason AS reason, x.url AS url
@@ -337,7 +345,8 @@ class Graph:
         """For one recall event (or several, comma-separated): the recalled devices and every
         later clearance that descends from them. `after_recall` compares each descendant's
         clearance date with the earliest recall start among the recalled devices it actually
-        descends from (events can start on different dates)."""
+        descends from. `conditional_via` lists holders reached exclusively through unresolved
+        audit links."""
         events = [e.strip() for e in str(event).split(",") if e.strip()]
         devs = self.q("""MATCH (d:Device)-[:SUBJECT_OF]->(x:Recall) WHERE x.event IN $es
             RETURN d.k AS k, d.name AS name, min(x.initiated) AS initiated""", {"es": events})
@@ -347,16 +356,20 @@ class Graph:
         desc = self.q(
             f"""MATCH p = (s:Device)<-[:CITES*1..{max(1, min(depth, 6))}]-(d:Device)
             WHERE s.k IN $ks AND NOT d.k IN $ks AND all(r IN relationships(p) WHERE {LINEAGE_EDGE})
-            WITH d, min(length(p)) AS gen, collect(DISTINCT s.k) AS via
+            WITH d, min(length(p)) AS gen, collect(DISTINCT s.k) AS via,
+                 collect(DISTINCT CASE WHEN all(r IN relationships(p) WHERE NOT ({DISPUTED_EDGE}))
+                                       THEN s.k ELSE null END) AS supported_via
             RETURN d.k AS k, d.name AS name, d.applicant AS applicant,
-                   d.decision_date AS decided, gen, via
+                   d.decision_date AS decided, gen, via, supported_via
             ORDER BY d.decision_date DESC""", {"ks": list(start)})
         out = []
         for r in desc:
             first = min((start[v] for v in r["via"] if start.get(v)), default=None)
+            conditional_via = sorted(set(r["via"]) - set(r["supported_via"]))
             out.append({"k": r["k"], "name": r["name"], "applicant": r["applicant"],
                         "decision_date": str(r["decided"]) if r["decided"] else None, "gen": r["gen"],
-                        "via": r["via"], "recall_started": str(first) if first else None,
+                        "via": r["via"], "conditional_via": conditional_via,
+                        "recall_started": str(first) if first else None,
                         "after_recall": bool(first and r["decided"] and r["decided"] > first)})
         initiated = min((v for v in start.values() if v), default=None)
         return {"event": event, "initiated": str(initiated) if initiated else None,

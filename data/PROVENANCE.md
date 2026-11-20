@@ -11,18 +11,18 @@ All data is US federal government work, which is public domain in the US. It was
 | FDA 510(k) summary PDFs | `https://www.accessdata.fda.gov/cdrh_docs/pdf{YY}/{K}.pdf` | Text per page, source URL, SHA-256 of the PDF bytes, fetch time and status. The PDF itself is not kept. | `data/raw/summaries/{K}.json` |
 | Recovered text of image-only summaries | Same PDF, downloaded again by `fetch_data.py ocr` and used only if its SHA-256 equals the recorded one | Local OCR text (RapidOCR, engine version, 300 dpi, per-page confidence), or for a PDF Portfolio the embedded summary PDF's text layer (attachment name and SHA-256) | `data/raw/ocr/{K}.json` |
 
-Every cache file records `_fetched` (endpoint, query, time).
+openFDA cache files record `_fetched` (endpoint, query, time). PDF cache records carry `fetched_at`.
 
 ## Coverage of the four product codes
 From `data/build_report.json`; 1,040 clearances in total:
-- **533:** summary text layer read and at least one predicate found.
+- **534:** summary text layer read and at least one predicate established.
 - **45 + 1:** image-only summary recovered (45 by OCR, 1 from a PDF Portfolio's embedded summary) and at least one predicate found (`ocr`, `attachment_text`).
-- **38 + 22:** summary read (text layer / OCR) but no predicate citation found (`ok_no_predicate_found`, `ocr_no_predicate_found`). Treated as unknown lineage.
-- **354:** a "510(k) Statement" was filed instead of a summary, so no predicates are public.
+- **37 + 22:** summary read (text layer / OCR) but no predicate citation found (`ok_no_predicate_found`, `ocr_no_predicate_found`). Treated as unknown lineage.
+- **354:** cache status `statement_only` from the publication-type metadata, including blank values. FDA may still serve individual documents.
 - **35:** no summary PDF online.
 - **12:** cleared before 1996.
 
-Another 147 out-of-family predicates carry metadata and recalls, but their own summaries were not read. Their lineage stops there unless someone ingests them.
+Another 147 cited devices carry metadata and recalls. Their own summaries were outside the bulk build.
 
 Citations that could not become edges (cited K-number not in openFDA, or cleared after the citing device) are recorded on the citing device (`unresolved_citations`) instead of being dropped silently.
 
@@ -31,6 +31,23 @@ Citations that could not become edges (cited K-number not in openFDA, or cleared
 
 ## Extraction audit
 `data/audit/link_decisions.json` holds the extraction-audit decisions on every flagged predicate link, each with quoted evidence. They were made by an AI agent reading the cached text, are stored in the edges' `audit*` properties (never in the human review fields) and are overridden by any human review. Method and results: `docs/EVIDENCE_QUALITY.md`.
+
+### Phase 3.5 source corrections
+
+On 2026-11-20, coding agents checked the original FDA PDFs, including the rendered table layouts, and independently reviewed the rebuilt graph. The source PDFs matched the cached SHA-256 values. Three audit decisions now pin the printed clearance number, page, quote and PDF hash. The bulk rebuild and live ingestion both apply these decisions. A source mismatch requires review before a pinned correction can be used. There were zero human attestations and the raw FDA cache required zero changes.
+
+| Assessment | Before | After |
+|---|---|---|
+| K183226 Care Orchestrator Essence | Provisional no design-recall signal, 11 ancestors | Review lineage with partial evidence, 29 ancestors at depth four. The K083526 branch is conditional. |
+| K233643 F&P Airvo 3 NIV | Provisional no design-recall signal, 10 ancestors | Same provisional verdict, nine ancestors. K033008 remains a reference citation. |
+| K191624 Nivairo RT047 | Provisional no design-recall signal, one ancestor | Same provisional verdict, seven ancestors. RT040 K060044 is reached at generation two through K170367. |
+| K170367 Nivairo RT045 | Lineage not checkable, zero ancestors | Provisional no design-recall signal, nine ancestors. |
+
+- **K183226 → K083526.** FDA PDF pages 4 and 6 label DirectView a reference. Page 6's comparison language and the conclusion on page 15 also use predicate language for it. The audit preserves the unresolved role and anchors the displayed path at page 15. FDA lists K083526 on Class I recall Z-1956-2021, which began after K183226 cleared. The assessment and deterministic report expose the recall as conditional on the disputed citation, with K083526 as the FDA-listed holder. The post-recall watchlist marks qualifying earlier recalls on that path as conditional. The recall-reach API lists holders reached only through disputed paths in `conditional_via`. The existing watchlist and recall-reach screens count those candidates without displaying the new markers. [K183226 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf18/K183226.pdf), [FDA recall Z-1956-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187816)
+- **K233643 → K033008.** Page 6 puts the filter clearance in the reference table. Page 5 identifies K090113 and K221338 as the predicates. The corrected reference leaves predicate ancestry without creating an unresolved predicate gap. [K233643 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf23/K233643.pdf)
+- **K191624 → K170367 → K060044.** The RT045 summary was already in the committed cache. Its page 4 table aligns RT040 K060044 with the predicate heading. Flattened text interleaves that heading with the reference heading, which previously produced `ok_no_predicate_found`. Pages 5–6 confirm the RT040 role by name. K130328 and K023135 remain RT045 references. K191624 also directly references K060044, and its predicate path to K060044 runs through K170367. At depth four the K002465 summary is still missing. The recovered branch exposes six older FDA Class II records from event 36955 on K040506 and K033087, at generations three and four respectively. The cache lacks their class fields and FDA's cause is `Other`. These records sit outside the two-generation verdict window. [K191624 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf19/K191624.pdf), [K170367 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf17/K170367.pdf), [K060044 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf6/K060044.pdf), [FDA event 36955 record](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=49659)
+
+The rebuild changed the three citation rows and K170367's summary and lineage status. The graph still contains 1,187 devices, 1,602 citations, 563 recall records and 762 recall links. The related K151120 assessment keeps the Trilogy route conditional and retains the independent Class I signal on its mask predicate K140268. The K993449 scanned summary lists clearance numbers without clear roles, so the graph has no supported K993449 lineage path to K970839. [K151120 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf15/K151120.pdf), [K993449 PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf/K993449.pdf)
 
 ## Live data
 Anything the running app fetches (via "Add a clearance") goes to `data/live/`, which is gitignored and never read by the build.

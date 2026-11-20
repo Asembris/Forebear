@@ -42,6 +42,7 @@ def test_audit_file_is_valid_and_never_claims_a_human_reviewer():
     for d in data["decisions"]:
         assert d["decision"] in audit.STATUSES and d["note"]
         assert not d.get("correct_to") or d["decision"] == "error"
+        assert not d.get("auditor") or "not human" in d["auditor"]
     with pytest.raises(ValueError):
         bad = {"decisions": [{"src": "K1", "dst": "K2", "decision": "variant", "correct_to": "K3", "note": "x"}]}
         p = audit.AUDIT / "_bad_test.json"
@@ -50,6 +51,36 @@ def test_audit_file_is_valid_and_never_claims_a_human_reviewer():
             audit.load(p)
         finally:
             p.unlink(missing_ok=True)
+
+
+@pytest.mark.parametrize("source_change", [{"sha256": "changed"}, {"page": 2},
+                                          {"quote": "K000001 different device"}])
+def test_source_audit_requires_matching_pdf_and_literal_page(monkeypatch, source_change):
+    row = _row("K000002", "K000001", "reference")
+    source = {"sha256": "h", "page": 1, "quote": "Predicate device K000001"}
+    monkeypatch.setattr(audit.summaries, "load_text",
+                        lambda k: {"sha256": "h", "pages": ["Predicate device\nK000001"]})
+    decision = {"src": row["src"], "dst": row["dst"], "decision": "role_corrected",
+                "kind": "predicate", "note": "FDA table", "source": source | source_change}
+    with pytest.raises(ValueError, match="audit source changed or quote missing"):
+        audit.apply([row], {}, {"decisions": [decision]}, {})
+    assert row["kind"] == "reference"
+
+
+def test_source_role_corrections_outrank_machine_labels_and_reviews(tiny):
+    src, dst = "K000007", "K000004"
+    tiny.review_citation(src, dst, "confirmed", "automated", reviewer="mcp-client")
+    assert [a["k"] for a in tiny.ancestors(src, 1)] == [dst]       # unchanged behavior for an ordinary mention
+    tiny.upsert_citations([{**cite(src, dst, "reference"), "audit": "role_corrected"}])
+    tiny.set_triage(src, dst, "predicate", "machine triage", "test")
+    tiny.review_citation(src, dst, "confirmed", "automated", reviewer="mcp-client")
+    assert tiny.ancestors(src, 1) == []
+    tiny.review_citation(src, dst, "confirmed", "page reviewed", reviewer="Reviewer Name")
+    assert [a["k"] for a in tiny.ancestors(src, 1)] == [dst]
+
+    tiny.upsert_citations([{**cite(src, dst), "audit": "role_corrected"}])
+    tiny.review_citation(src, dst, "rejected", "automated", reviewer="mcp-client")
+    assert [a["k"] for a in tiny.ancestors(src, 1)] == [dst]
 
 
 def test_lineage_honours_audit_and_humans_override_it(tiny):

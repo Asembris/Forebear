@@ -51,6 +51,7 @@ def _recall_summary(a: dict) -> dict:
         gen = s.get("gen", 0)
         rows.append({"device": (s.get("chain") or [a["k"]])[-1], "generation": gen, "chain": s.get("chain"),
                      "severity": s["severity"], "title": s["title"], "records": len(recs),
+                     "conditional": bool(s.get("conditional")),
                      "events": len({x.get("event") or x["id"] for x in recs}),
                      "design_related_records": sum(1 for x in recs if x.get("design_related")),
                      "class_i_records": sum(1 for x in recs if x.get("classification") == "Class I"),
@@ -68,9 +69,9 @@ def _recall_summary(a: dict) -> dict:
                        "records_within_two_generations": len(window_ids),
                        "events_within_two_generations": len(window_events),
                        "design_related_records_within_two_generations": len(design_window)},
-            "note": "Counts are of recall records attached to the lineage by FDA's own k_numbers and selected by "
-                    "the severity rules; FDA files one record per product in an event. Computed from the graph, "
-                    "not by the model."}
+            "note": "The graph counts records that FDA's k_numbers associate with each cited device and that "
+                    "the severity rules select. Counts include any routes marked conditional. FDA files one "
+                    "record per product in an event."}
 
 
 def _evidence_paths(g: Graph, a: dict, cap: int = 14) -> list[dict]:
@@ -124,6 +125,10 @@ def build(g: Graph, ctx: RunContext, meta: dict) -> dict:
         raise ValueError(f"{k} is not in the graph")
     gaps = coverage_gap_facts(g, k, depth)
     stance = stance_of(a)
+    conclusion_text = STANCE_TEXT[stance]
+    if a["verdict"] == "REVIEW_LINEAGE" and any(s.get("conditional") and s["severity"] == "medium"
+                                              for s in a["signals"]):
+        conclusion_text = "Recall evidence warrants review. Conditional signals depend on unresolved predicate links."
     paths = _evidence_paths(g, a)
     unverified_hops = [h for p in paths for h in p["hops"] if not str(h.get("status", "")).startswith("verified")]
 
@@ -176,7 +181,7 @@ def build(g: Graph, ctx: RunContext, meta: dict) -> dict:
         "target": {"k": k, "name": a["device"].get("name"), "applicant": a["device"].get("applicant"),
                    "decision_date": a["device"].get("decision_date"),
                    "summary_url": a["device"].get("summary_url"), "summary_sha256": a["device"].get("summary_sha256")},
-        "conclusion": {"stance": stance, "text": STANCE_TEXT[stance], "verdict": a["verdict"],
+        "conclusion": {"stance": stance, "text": conclusion_text, "verdict": a["verdict"],
                        "verdict_reason": a["verdict_reason"], "evidence": a["coverage"]["evidence"],
                        "evidence_scope": a["coverage"]["evidence_scope"], "generations_traversed": depth,
                        "source": "deterministic (forebear rules), not the model"},
@@ -239,11 +244,14 @@ def markdown(r: dict) -> str:
     L.append(f"Within two generations: {tot['records_within_two_generations']} recall record(s) in "
              f"{tot['events_within_two_generations']} event(s), {tot['design_related_records_within_two_generations']}"
              f" design-related. All signalled records: {tot['signalled_recall_records']}.")
+    if any(row.get("conditional") for row in r["recall_summary"]["by_device"]):
+        L.extend(["", "Totals include conditional paths. FDA associates each recall with its listed device."])
     if r["recall_summary"]["by_device"]:
         L += ["", "| Device | Gen | Severity | Records | Events | Design | Class I | Recall ids |", "|---|---|---|---|---|---|---|---|"]
         for x in r["recall_summary"]["by_device"]:
             ids = ", ".join(x["recall_ids"][:6]) + (" ..." if len(x["recall_ids"]) > 6 else "")
-            L.append(f"| {x['device']} | {x['generation']} | {x['severity']} | {x['records']} | {x['events']} | "
+            severity = x["severity"] + (" (conditional)" if x.get("conditional") else "")
+            L.append(f"| {x['device']} | {x['generation']} | {severity} | {x['records']} | {x['events']} | "
                      f"{x['design_related_records']} | {x['class_i_records']} | {ids} |")
     L += ["", "## Evidence paths (each hop checked against the cached FDA summary text)", ""]
     for p in r["evidence_paths"]:
@@ -251,6 +259,8 @@ def markdown(r: dict) -> str:
         for h in p["hops"]:
             L.append(f"  - {h['src']} -> {h['dst']}: **{h.get('status')}**, page {h.get('page')}, "
                      f"{h.get('provenance', '')}, {h.get('source_url') or ''} (sha256 {str(h.get('source_sha256'))[:12]}...)")
+            if h.get("untrusted_audit_note"):
+                L.append(f"    - Source audit: {h['untrusted_audit_note']}")
     L += ["", "## Uncertainties", ""] + ([f"- `{u['code']}` {u['title']}" for u in r["uncertainties"]] or ["- none reported"])
     m = r["missing_evidence"] or {}
     L += ["", "## Missing evidence", "",

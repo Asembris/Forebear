@@ -5,15 +5,15 @@
   "MNT",
   "CBK"
  ],
- "built_at": "2026-11-17T09:04:49Z",
- "seconds": 1.9,
+ "built_at": "2026-11-20T21:05:37Z",
+ "seconds": 4.2,
  "in_family_devices": 1040,
  "out_of_family_predicates": 147,
  "in_family_summary_status": {
   "statement_only": 354,
-  "ok": 533,
+  "ok": 534,
   "pre_1996": 12,
-  "ok_no_predicate_found": 38,
+  "ok_no_predicate_found": 37,
   "missing": 35,
   "ocr": 45,
   "ocr_no_predicate_found": 22,
@@ -28,21 +28,22 @@
   "dropped_future": 3,
   "dropped_unresolved": 8
  },
- "in_family_summary_read_but_no_predicate_found": 60,
+ "in_family_summary_read_but_no_predicate_found": 59,
  "in_family_text_from_ocr": 67,
  "in_family_text_from_pdf_attachment": 1,
  "citations_not_resolved": 11,
  "devices_with_unresolved_predicate_citations": 4,
  "audit": {
-  "applied": 140,
+  "applied": 142,
   "unmatched": [],
   "corrections_added": 6,
   "corrections_refused": [],
   "edges_by_audit": {
    "error": 13,
-   "not_predicate": 8,
+   "not_predicate": 7,
    "variant": 98,
-   "unresolved": 21,
+   "unresolved": 22,
+   "role_corrected": 2,
    "corrected": 6
   }
  },

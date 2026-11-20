@@ -171,7 +171,7 @@ async def watchlist(design_only: bool = True):
         d["ancestors"].add(r["ancestor"])
         d["events"].add(r["event"])
         if len(d["recalls"]) < 6:
-            d["recalls"].append({k: r[k] for k in ("recall_id", "ancestor", "gen", "classification",
+            d["recalls"].append({k: r[k] for k in ("recall_id", "ancestor", "gen", "conditional", "classification",
                                                    "root_cause", "initiated", "firm", "url")})
     out = sorted(by.values(), key=lambda d: d["decision_date"] or "", reverse=True)
     for d in out:

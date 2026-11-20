@@ -366,6 +366,8 @@ still visible, overridable, and an LLM-only link now counts as doubtful in asses
   117 devices, 69 with a direct predicate (was 106/62). `build_report.json` reports `human_reviews_applied: 0/0` and
   `ai_generated_reviews_not_applied: 4` instead of `curated_reviews_applied`.
 
+Phase 3.5 revisited K183226 against the original FDA PDF. Its K083526 path now appears as conditional because the filing uses both roles. The counts above describe the Phase 1 snapshot. [Phase 3.5 source corrections](../data/PROVENANCE.md#phase-35-source-corrections)
+
 ## Reproduce
 From the repository root (Windows, PowerShell; stop the app first so the store is not locked):
 ```powershell

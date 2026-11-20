@@ -74,10 +74,14 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         recs = sorted((h[1] for h in hits), key=lambda x: x.get("initiated") or "", reverse=True)
         n_design = sum(1 for x in recs if x.get("design_related"))
         gen_word = {1: "Direct predicate", 2: "Grand-predicate"}.get(a["gen"], f"Generation-{a['gen']} ancestor")
+        conditional = any("audit_unresolved" in doubt(hop) for hop in a["hops"])
+        holder = f"{'Cited device' if conditional else gen_word} {a['k']}"
         signals.append({
-            "code": "ANCESTOR_RECALL", "severity": sev,
-            "title": f"{gen_word} {a['k']} ({a.get('name') or 'unnamed'}) has {_count(recs)}"
-                     f"{f', {n_design} record(s) design-related' if n_design else ''}",
+            "code": "ANCESTOR_RECALL", "severity": sev, "conditional": conditional,
+            "title": f"{holder} ({a.get('name') or 'unnamed'}) has {_count(recs)}"
+                     f"{f', {n_design} record(s) design-related' if n_design else ''}"
+                     + (". Its connection to this lineage is conditional on an unresolved citation."
+                        if conditional else ""),
             "evidence": [_recall_ev(x) for x in recs] + [{"type": "citation", **h} for h in a["hops"]],
             "chain": a["chain"], "gen": a["gen"]})
 
@@ -113,10 +117,12 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                                  f"the result.", "evidence": flagged, "chain": []})
     other = [d for d in doubtful if d["doubt"] != ["name_mismatch"]]
     if other:
+        unresolved = ", ".join(f"{d['src']} → {d['dst']}" for d in other if "audit_unresolved" in d["doubt"])
+        title = f"{len(other)} link(s) in this ancestry rest on uncertain evidence."
+        if unresolved:
+            title += f" Unresolved predicate evidence for {unresolved}. Recall signals through these links are conditional."
         signals.append({"code": "UNCERTAIN_LINK_IN_LINEAGE", "severity": "info",
-                        "title": f"{len(other)} link(s) in this ancestry rest on uncertain evidence (unresolved in the "
-                                 f"extraction audit, cited device from another FDA panel, or labelled only by the LLM "
-                                 f"and not confirmed by a person)", "evidence": other, "chain": []})
+                        "title": title, "evidence": other, "chain": []})
 
     # C: predicate citations in the own summary of the candidate or of any ancestor whose predicates fall inside
     # the requested depth, that did not become lineage edges: K-number not in openFDA, cleared later, or removed
@@ -225,6 +231,9 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         "INSUFFICIENT_LINEAGE": insufficient,
         "NO_DESIGN_RECALL_SIGNAL": clear,
     }
+    if any(s.get("conditional") and s["severity"] == "medium" for s in signals):
+        reasons["REVIEW_LINEAGE"] = ("FDA recall records warrant review. Signals marked conditional depend on "
+                                     "unresolved predicate evidence.")
     return {
         "k": k, "device": dev, "verdict": verdict, "verdict_reason": reasons[verdict],
         "signals": signals, "depth": depth,
@@ -240,7 +249,7 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     }
 
 
-RULES_VERSION = "forebear-rules-v3"
+RULES_VERSION = "forebear-rules-v4"
 EVIDENCE_WINDOW = 2
 MACHINE_REVIEWERS = ("mcp-client",)       # reviews recorded through an automated client, not a person      # generations within which a recall can raise a verdict above "no signal"
 
