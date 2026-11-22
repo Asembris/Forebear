@@ -145,9 +145,10 @@ export function WatchlistView({ go }) {
   const [err, setErr] = useState(null)
   const [filter, setFilter] = useState('all')
   useEffect(() => { api.watchlist().then(setData).catch((e) => setErr(e.message)) }, [])
-  const rows = useMemo(() => (data?.rows || []).map((r) => ({ ...r, conditional: r.recalls.length > 0 && r.recalls.every((x) => x.conditional) })), [data])
-  const shown = rows.filter((r) => filter === 'all' || (filter === 'direct' && r.min_gen === 1) || (filter === 'supported' && !r.conditional) || (filter === 'conditional' && r.conditional))
-  const nCond = rows.filter((r) => r.conditional).length
+  // conditional and supported_min_gen are computed by the API over every recall route, not the six it lists
+  const rows = data?.rows || []
+  const shown = rows.filter((r) => filter === 'all' || (filter === 'direct' && r.supported_min_gen === 1) || (filter === 'supported' && !r.conditional) || (filter === 'conditional' && r.conditional))
+  const nCond = data?.conditional ?? rows.filter((r) => r.conditional).length
   return (
     <div>
       <Head eyebrow="Recall evidence" title="Watchlist: cited after a recall began">
@@ -161,7 +162,7 @@ export function WatchlistView({ go }) {
         <section className="panel">
           <div className="bigstats">
             <div><b>{data.count}</b><span>clearances in the dataset match</span></div>
-            <div className="amber"><b>{data.direct}</b><span>cite a directly recalled predicate</span></div>
+            <div className="amber"><b>{data.direct_supported ?? data.direct}</b><span>cite a directly recalled predicate through a supported citation</span></div>
             <div className="violet"><b>{nCond}</b><span>conditional: every route runs through an unresolved citation</span></div>
           </div>
           <div className="seg" role="group" aria-label="Filter" style={{ marginTop: 14 }}>
@@ -179,8 +180,8 @@ export function WatchlistView({ go }) {
                 <tr key={r.k} className={'click' + (r.conditional ? ' is-conditional' : '')} tabIndex={0} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
                   <td><span className="k mono">{r.k}</span> {r.conditional && <span className="chip tone-violet">conditional</span>}<div className="sub">{r.name}</div><div className="sub">{r.applicant}</div></td>
                   <td className="num">{fmtDate(r.received_date)}<div className="sub">{fmtDate(r.decision_date)}</div></td>
-                  <td><span className="mono">{r.ancestors.join(', ')}</span><div className="sub">{r.min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
-                  <td className="sub">{r.recalls.slice(0, 2).map((x) => (
+                  <td><span className="mono">{r.ancestors.join(', ')}</span><div className="sub">{r.conditional ? 'cited device · citation unresolved' : r.supported_min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
+                  <td className="sub">{r.recall_count > 2 && <div className="muted">{r.recall_count} recall routes; first two:</div>}{r.recalls.slice(0, 2).map((x) => (
                     <div key={x.recall_id + x.ancestor}>{x.recall_id} · {x.classification || 'unclassified'} · {x.root_cause} · {fmtDate(x.initiated)}
                       {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}</div>))}</td>
                 </tr>))}</tbody>

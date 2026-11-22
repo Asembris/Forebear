@@ -66,6 +66,12 @@ def test_watchlist_and_compare(client):
     disputed = next(d for d in w["rows"] if d["k"] == "K183226")
     assert disputed["recalls"] and all(r["conditional"] for r in disputed["recalls"])
     assert "Z-1956-2021" not in {r["recall_id"] for r in disputed["recalls"]}  # began after K183226 cleared
+    # row-level conditional is computed over every route, not the six listed
+    assert disputed["conditional"] and disputed["supported_min_gen"] is None
+    assert disputed["recall_count"] >= len(disputed["recalls"])
+    assert w["conditional"] == sum(1 for d in w["rows"] if d["conditional"])
+    assert w["direct_supported"] <= w["direct"]
+    assert all(d["conditional"] == (d["supported_min_gen"] is None) for d in w["rows"])
     rows = client.post("/api/compare", json={"ks": ["K200480", "K113053", "K999999"]}).json()
     v = {r["k"]: r.get("verdict") for r in rows}
     assert v == {"K200480": "REVIEW_LINEAGE", "K113053": "DESIGN_RECALL_ON_FILE", "K999999": None}
