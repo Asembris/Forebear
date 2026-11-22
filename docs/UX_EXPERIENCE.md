@@ -112,11 +112,30 @@ All old hash links still resolve, including `#/check/K…`, `#/compare/…`, `#/
 
 ## Engineering
 
-- **One lightweight renderer.** The film is a single fixed Canvas2D (`renderer.js`, 4.6 kB gzip), lazy-loaded with the
-  landing page. Three.js was not needed: the story is documents and threads, which 2D draws more crisply and more
-  cheaply. Scene time is anchored to where each chapter's words measure in the document and follows a closed-form,
-  critically damped spring. One rAF loop reads scroll once, then draws, and pauses while the tab is hidden. Scroll is
-  never hijacked.
+- **Two layers, one loop, no Three.js.** The film is lazy-loaded with the landing page and draws two fixed canvases
+  from one rAF loop.
+  - **The field** (`field-gl.js`) is raw WebGL2 with no library. It draws a moving nebula with film grain, about 1,200
+    bright clearance-points (the store's device count) and 4,600 dust points drifting through a flow field, links between
+    neighbours, and about 900 signals travelling along those links. It also draws a pointer lamp and an amber recall
+    shockwave that pushes and tints the field. All motion is computed in shaders from uniforms, so nothing is uploaded
+    per frame.
+  - **Fallback.** Weak or software GPUs (`failIfMajorPerformanceCaveat`, a SwiftShader/llvmpipe check) and a lost
+    context fall back to a lighter Canvas2D field. `?gl=1` forces WebGL for testing.
+  - **The story** (`renderer.js`) is Canvas2D on top: the real lineage, the thread with its travelling year readout and
+    comets, the recall diamond, and the measured gap. Labels are chips at a constant screen size, so they stay legible
+    at every zoom.
+  - **Framing.** Every scene is fitted into the space its chapter's copy leaves free; the copy's position is measured in
+    the document. Picture and words cannot collide at any viewport.
+  - **Phones** get a vertical schematic: newest at the top, dates labelled, and no compressed ruler pretending to be to
+    scale. A scene plays while its copy rises from below.
+  - **Scroll timing.** Scene time follows a closed-form, critically damped spring anchored to the chapters. `dt` is
+    clamped, the loop pauses while the tab is hidden, and scroll is never hijacked.
+  - **Re-renders.** Scene changes update only the readout and chapter index, through an external store, never the whole
+    page.
+- **Dossier framing.** A fine grid, numbered chapters (`01 / 03`), a mono scene readout (`[02 / 04] THE CONNECTION
+  K252078 → K113053 · 2026 → 2012 · webgl field · illustrative`), and corner marks on evidence. In the workspace, amber
+  signals travel along the critical chain, in both the graph and the chain strip, so the film's language continues into
+  the product. Reduced motion stops all of it.
 - **Honest content.** Every node, date, page, quote and recall id in the film comes from `web/src/story/facts.json`, and
   `tests/test_story_facts.py` checks each value against the shipped Relate store. That test caught three wrong
   grand-predicate dates while this phase was being built. The background field is labelled illustrative; its point
@@ -154,17 +173,21 @@ A separate reviewer audited the branch for design, usability, evidence honesty a
 
 - `pytest`: 250 passed, including the 4 new story-fact checks and the new watchlist assertions.
 - `npm run build`: passes.
-- Playwright (`cd web; npm run test:e2e`): 34 passed. The suite starts the real API on a throwaway copy of the store
+- Playwright (`cd web; npm run test:e2e`): 37 passed. The suite starts the real API on a throwaway copy of the store
   (`web/e2e/serve.mjs` → `data/live/e2e.rl`), so its reviews and saved assessments never touch `data/forebear.rl`. It
   covers the opening (once per session, about 3 s, Skip, Escape, replay), deep links, the canvas film and its chapter
   index, the handoff, reduced motion, the finding and critical chain, keyboard access to provenance with the `#page=6`
-  PDF link, node recall records, conditional-route wording (K120562), progressive disclosure, a reject → verdict change → restore write, saving an assessment
+  PDF link, node recall records, conditional-route wording (K120562), progressive disclosure, the two-canvas film with its scene readout, forced WebGL without page errors, a reject → verdict change → restore write, saving an assessment
   into history, search, recall reach, the watchlist conditional filter, and compare. Overflow and screenshot checks run
   at desktop 1440×900, tablet 820×1180 and mobile (Pixel 7). Screenshots are written to `web/test-results/shots/`
   (gitignored).
-- Film frame times in headless Chromium while scrolling the whole page (160 steps): median 16.7 ms, p95 16.8 ms, and no
-  frame over 33 ms at 1440×900 or 390×844 in two repeat runs. One earlier cold run at 1440×900 had 10 long frames (worst
-  417 ms) that did not reproduce. This is a software-rendered headless measurement, not a GPU benchmark.
+- Film frame times while scrolling the whole page (160 steps) on the real GPU (GTX 1660, ANGLE D3D11, WebGL path) at
+  1920×950: median 16.7 ms and p95 16.7–16.8 ms. Two warm runs had no frame over 33 ms. The cold first run had two
+  33 ms frames (one dropped frame each).
+  - Before two fixes, the cold run had frames of up to 50 ms where the header turned solid. The fixes were removing a
+    full-screen backdrop blur over the canvas, and keeping scene changes out of the page's React state.
+  - The Canvas2D fallback measured median 16.7 ms with no frame over 33 ms at 1440×900 and 390×844 in software-rendered
+    headless Chromium.
 
 ## Known limitations
 
@@ -173,4 +196,6 @@ A separate reviewer audited the branch for design, usability, evidence honesty a
 - The View Transition crossfade from the film to the workspace needs a browser with `document.startViewTransition`.
   Elsewhere the switch is an instant cut.
 - The film tells one fixed, verified case (K252078). It is not generated per device.
+- WebGL frame times were measured on one desktop GPU. Phones get a reduced field (about 2,200 points) and a 1.5× pixel
+  ratio cap, but were checked only in emulation.
 - The workspace is dark only, by design.
