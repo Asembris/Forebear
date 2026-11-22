@@ -47,7 +47,8 @@ export default function Intro({ onDone }) {
   if (gone) return null
   const word = 'Forebear'.split('')
   return (
-    <div className={'intro' + (leaving ? ' is-leaving' : '')} data-testid="intro" onClick={finish}>
+    <div className={'intro' + (leaving ? ' is-leaving' : '')} data-testid="intro" onClick={finish}
+      role="dialog" aria-modal="true" aria-label="Forebear opening">
       <div className="intro-lockup" aria-hidden="true">
         <Mark className="intro-mark" size={116} />
         <div className="intro-word">

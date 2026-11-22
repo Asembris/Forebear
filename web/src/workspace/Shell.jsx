@@ -59,7 +59,7 @@ export default function Shell({ route, go, stats, statsErr, refreshStats, onRepl
         ))}
         <div className="rail-foot">
           Verdicts are deterministic documentation signals from FDA records, not safety findings.
-          <div style={{ marginTop: 10 }}><button onClick={onReplay}>Replay the film</button></div>
+          {!matchMedia('(prefers-reduced-motion: reduce)').matches && <div style={{ marginTop: 10 }}><button onClick={onReplay}>Replay the film</button></div>}
         </div>
       </nav>
       <main className="ws-main" id="main" ref={main} tabIndex={-1} style={{ outline: 'none' }}>
@@ -93,7 +93,9 @@ function Search({ go }) {
   useEffect(() => {
     clearTimeout(timer.current)
     if (q.trim().length < 2) { setRes([]); return }
-    timer.current = setTimeout(() => api.search(q).then((r) => { setRes(r); setSel(0) }).catch(() => setRes([])), 160)
+    let live = true                    // drop responses for a query the user has already changed
+    timer.current = setTimeout(() => api.search(q).then((r) => { if (live) { setRes(r); setSel(0) } }).catch(() => live && setRes([])), 160)
+    return () => { live = false }
   }, [q])
   useEffect(() => {
     const on = (e) => {

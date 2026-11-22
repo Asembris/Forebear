@@ -10,6 +10,7 @@ const Landing = lazy(() => import('./film/Landing.jsx'))
 const ALIASES = { about: 'method' }
 
 export function parseHash(h = window.location.hash) {
+  if (!h.startsWith('#/')) return { tab: 'film', arg: '' }   // "#the-filing" etc. are anchors inside the film
   const raw = h.replace(/^#\/?/, '')
   if (!raw) return { tab: 'film', arg: '' }
   const [tab, ...rest] = raw.split('/')
@@ -74,7 +75,12 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus() }}>Skip to content</a>
-      {intro && <Intro onDone={() => { setIntroDone('bloom'); setTimeout(() => setIntro(false), 700) }} />}
+      {intro && <Intro onDone={() => {
+        setIntroDone('bloom')
+        setTimeout(() => setIntro(false), 700)
+        requestAnimationFrame(() => document.getElementById('hero-title')?.focus({ preventScroll: true }))
+      }} />}
+      <div inert={intro && introDone === 'pending' ? '' : undefined} style={{ display: 'contents' }}>
       {route.tab === 'film' ? (
         <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
           <Landing go={go} stats={stats} introDone={introDone} onReplay={replay} reduced={reduced} />
@@ -82,6 +88,7 @@ export default function App() {
       ) : (
         <Shell route={route} go={go} stats={stats} statsErr={statsErr} refreshStats={refreshStats} onReplay={replay} />
       )}
+      </div>
     </>
   )
 }

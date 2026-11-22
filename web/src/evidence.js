@@ -43,8 +43,8 @@ export function doubt(h) {
   if (h.audit === 'corrected') why.push('audit_correction')
   if (h.name_check === 'mismatch' && !['variant', 'corrected'].includes(h.audit)) why.push('name_mismatch')
   if (h.panel_check === 'different' && !['variant', 'corrected'].includes(h.audit)) why.push('different_fda_panel')
-  if (h.kind && h.kind !== 'predicate' && h.ai_label === 'predicate') why.push('llm_label_only')
-  if (h.kind && h.kind !== 'predicate' && h.review === 'confirmed' && MACHINE_REVIEWERS.includes(h.reviewer))
+  if (h.kind != null && h.kind !== 'predicate' && h.ai_label === 'predicate') why.push('llm_label_only')
+  if (h.kind != null && h.kind !== 'predicate' && h.review === 'confirmed' && MACHINE_REVIEWERS.includes(h.reviewer))
     why.push('client_confirmation_only')
   return why
 }

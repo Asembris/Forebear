@@ -152,11 +152,11 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
       <main id="main">
         <section className="hero" data-scene="0" data-align="top" aria-labelledby="hero-title">
           <p className="eyebrow">510(k) predicate due diligence</p>
-          <h1 id="hero-title">Every clearance has <em>a past.</em></h1>
+          <h1 id="hero-title" tabIndex={-1} style={{ outline: 'none' }}>Every clearance has <em>a past.</em></h1>
           <p className="hero-lede">
             Forebear reads the predicates out of FDA 510(k) summaries, stores the family tree in a <b>Relate graph</b> joined
             to FDA recall records, and shows in one query whether a predicate, or any of its ancestors, was recalled for a
-            design problem: <b>with the page and quote behind every link.</b>
+            design problem, as far back as their summaries can be read: <b>with the page and quote behind every link.</b>
           </p>
           <div className="hero-actions">
             <a className="btn btn-primary" href={`#/check/${c.k}`} data-testid="hero-investigate"
@@ -202,7 +202,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
         </Chapter>
 
         <Chapter id="the-discovery" scene={3} mark="03" label="The discovery" place="left"
-          statement={['The predicate', <em key="e">was recalled.</em>]}
+          statement={['FDA recalls name', <em key="e">the predicate.</em>]}
           foot="A recall on a predicate is not a finding about the new device. It is a question the predicate rationale should answer.">
           <p className="chapter-body">
             On {fmtDate(r.initiated)} a <b>{r.classification}</b> recall of the BiPAP A30 began, root cause <b>{r.root_cause}</b>:
@@ -219,7 +219,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
 
         <section id="handoff" className="handoff" aria-labelledby="handoff-title">
           <div ref={handoff} className="reveal" data-scene="4" id="handoff-copy">
-            <p className="lead" id="handoff-title"><Line>Every frame was real evidence.</Line><Line><em>Now work with it.</em></Line></p>
+            <p className="lead" id="handoff-title"><Line>Every fact above is real evidence.</Line><Line><em>Now work with it.</em></Line></p>
             <a className="btn btn-primary" href={`#/check/${c.k}`} data-testid="handoff-investigate"
               onClick={(e) => { e.preventDefault(); go('check', c.k, { transition: true }) }}>
               Open the investigation <span className="arr" aria-hidden="true">→</span>
@@ -244,7 +244,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
           lineage and recall history; it does not judge device safety. Not regulatory advice.</p>
         <p style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
           <Mark size={18} />
-          <button className="btn btn-quiet btn-sm" onClick={onReplay} data-testid="replay">Replay opening</button>
+          {!reduced && <button className="btn btn-quiet btn-sm" onClick={onReplay} data-testid="replay">Replay opening</button>}
         </p>
       </footer>
     </div>

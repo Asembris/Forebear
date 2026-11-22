@@ -153,6 +153,15 @@ test.describe('investigation workspace', () => {
     await expect(page.locator('.tbl').first()).toContainText('K252078')
   })
 
+  test('a conditional route is never called a predicate', async ({ page }) => {
+    await page.goto('/#/check/K120562')
+    const sentence = page.getByTestId('finding-sentence')
+    await expect(sentence).toContainText('could not resolve')
+    await expect(sentence).toContainText('conditional')
+    await expect(sentence).not.toContainText('That predicate')
+    await expect(page.getByTestId('critical-chain')).toContainText('citation unresolved')
+  })
+
   test('search finds a device by name and opens it', async ({ page }) => {
     await page.goto('/#/check')
     await expect(page.getByRole('heading', { name: /Check a predicate/ })).toBeVisible()

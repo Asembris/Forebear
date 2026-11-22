@@ -10,7 +10,8 @@ import ReviewQueue, { reviewItems } from './Review.jsx'
 
 /* The single most important chain: the highest-severity signal that walks the lineage. */
 function topChain(a) {
-  return a.signals.find((s) => (s.severity === 'high' || s.severity === 'medium') && s.chain?.length > 1) || null
+  const strong = a.signals.filter((s) => (s.severity === 'high' || s.severity === 'medium') && s.chain?.length > 1)
+  return strong.find((s) => !s.conditional) || strong[0] || null     // a supported route before a conditional one
 }
 
 /* The recall a reviewer should read first: the earliest design-related one that began before the clearance. */
@@ -46,11 +47,12 @@ function FindingSentence({ a }) {
     return (
       <p className="finding-sentence" data-testid="finding-sentence">
         {shortName(d.name, 48)} cites <span className="k">{sig.chain[1]}</span>{first?.page ? <> on page {first.page} of its summary</> : null}.
-        {' '}{sig.chain.length > 2 ? <>Through it, {sig.gen === 2 ? 'grand-predicate' : `generation-${sig.gen} ancestor`} <span className="k">{holder?.k}</span></> : <>That predicate</>}
+        {' '}{sig.conditional ? <>The cited device <span className="k">{holder?.k}</span>, reached through a citation the audit could not resolve,</>
+          : sig.chain.length > 2 ? <>Through it, {sig.gen === 2 ? 'grand-predicate' : `generation-${sig.gen} ancestor`} <span className="k">{holder?.k}</span></> : <>That predicate</>}
         {' '}({shortName(holder?.name, 52)}) has {ev.events} recall event{ev.events === 1 ? '' : 's'} in this signal
         {r && <>, including a <span className="amber">{r.classification || 'unclassified'} {r.root_cause}</span> recall that began {fmtDate(r.initiated)}
           {gap > 0 ? <>, <span className="amber">{spanText(gap)} before</span> {a.k} was cleared</> : gap != null ? <>, after {a.k} was cleared</> : null}</>}.
-        {sig.conditional && <> This route is <b style={{ color: 'var(--violet)' }}>conditional</b> on an unresolved citation.</>}
+        {sig.conditional && <> This route is <b style={{ color: 'var(--violet)' }}>conditional</b>: it holds only if that citation is a predicate.</>}
       </p>
     )
   }
@@ -75,7 +77,8 @@ function CriticalChain({ a, onSelect }) {
       <div className="chain">
         {sig.chain.map((k, i) => {
           const n = deviceIn(a, k) || { k }
-          const role = i === 0 ? 'Candidate' : i === 1 ? 'Direct predicate' : i === 2 ? 'Grand-predicate' : `Generation ${i}`
+          const role = i === 0 ? 'Candidate' : sig.conditional ? 'Cited device · citation unresolved'
+            : i === 1 ? 'Direct predicate' : i === 2 ? 'Grand-predicate' : `Generation ${i}`
           const isHolder = k === holderK
           const tone = isHolder ? nodeTone({ recalls: recs }) : 'none'
           const hop = i > 0 ? hopOf(sig.chain[i - 1], k) : null
@@ -175,6 +178,9 @@ export default function Investigation({ k, go, onChanged }) {
           <div className={`verdict tone-${v.tone}`} data-testid="verdict">
             <div className="verdict-label"><i aria-hidden="true" />{v.label}</div>
             <p className="verdict-reason">{a.verdict_reason}</p>
+            <div className="verdict-actions">
+              <button className="btn btn-line btn-sm" onClick={() => go('compare', a.k)}>Compare with other candidates</button>
+            </div>
             <div className="authority">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M8 1.5l5.5 2v4.2c0 3.3-2.3 5.8-5.5 6.8-3.2-1-5.5-3.5-5.5-6.8V3.5z M5.5 8l1.8 1.8L10.8 6.3" /></svg>
               <span><b>Deterministic assessment</b> · {a.rules_version}. Authoritative within its documented scope: {cov.evidence_scope}, from
@@ -305,12 +311,15 @@ function Citations({ a, reload, go, onSelect }) {
       {msg && <p className={msg.ok ? 'ok' : 'err'} role="status">{msg.text}</p>}
       {a.citations.map((c) => {
         const hop = { ...c, src: a.k }
+        const inLineage = c.kind === 'predicate' || c.ai_label === 'predicate'
         return (
           <div key={c.dst} className={'cit' + (c.review === 'rejected' ? ' is-rejected' : '')}>
             <div className="cit-h">
               <button className="k mono" onClick={() => onSelect({ type: 'edge', id: a.k + '>' + c.dst, hop })}>{c.dst}</button>
               <span className={`chip ${c.kind === 'predicate' ? 'tone-blue' : 'tone-muted'}`}>{c.kind}</span>
-              <span className={`status status-${edgeStatus(hop).key}`}><span className="line" />{EDGE_STATUS[edgeStatus(hop).key].short}</span>
+              {inLineage
+                ? <span className={`status status-${edgeStatus(hop).key}`}><span className="line" />{EDGE_STATUS[edgeStatus(hop).key].short}</span>
+                : <span className="status status-rejected" title="Reference devices and mentions are not lineage links">Not a lineage link</span>}
               {c.ai_label && <span className="chip tone-violet" title={c.ai_quote}>LLM: {c.ai_label}</span>}
               <span className="muted small">{shortName(c.name, 34)} · {year(c.dst_decision_date)}</span>
             </div>

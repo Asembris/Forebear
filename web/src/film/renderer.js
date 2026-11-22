@@ -246,7 +246,7 @@ export function createFilm(canvas, { facts, deviceCount = 1187, compact = false,
       for (let i = 0; i < 9; i++) if (i !== 5) ctx.fillRect(dx + 8 * zr, dy + (12 + i * 7.2) * zr, w - (i % 3 === 2 ? 26 : 16) * zr, 2.2 * zr)
       ctx.fillStyle = 'rgba(91,130,240,0.9)'; ctx.fillRect(dx + 8 * zr, dy + (12 + 5 * 7.2) * zr - 0.6, w - 14 * zr, 3.4 * zr)
       ctx.fillStyle = '#6c6656'; ctx.font = `600 ${Math.round(7.5 * zr)}px Inter Variable, Inter, system-ui`
-      ctx.textAlign = 'left'; ctx.fillText('p. 6', dx + 7 * zr, dy + h - 6 * zr)
+      ctx.textAlign = 'left'; ctx.fillText(`p. ${facts.citation.page}`, dx + 7 * zr, dy + h - 6 * zr)
       ctx.globalAlpha = 1
       // the thread is born at the highlighted line, then hands its origin to the node
       const hx = dx + w - 6 * zr, hy = dy + (12 + 5 * 7.2) * zr + 1
@@ -302,7 +302,7 @@ export function createFilm(canvas, { facts, deviceCount = 1187, compact = false,
       ctx.globalAlpha = smooth(0.5, 0.9, threadP) * (1 - mix * 2)
       ctx.font = `500 ${Math.round(10.5 * zr)}px Inter Variable, Inter, system-ui`
       ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(236,230,216,0.7)'
-      ctx.fillText('cites · page 6', lx, ly - 9 * zr)
+      ctx.fillText(`cites · page ${facts.citation.page}`, lx, ly - 9 * zr)
       ctx.globalAlpha = 1
     }
 
