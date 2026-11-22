@@ -37,8 +37,9 @@ export default function App() {
     addEventListener('hashchange', on)
     return () => removeEventListener('hashchange', on)
   }, [])
-  const refreshStats = useCallback(() => api.stats().then((s) => { setStats(s); setStatsErr(null) })
-    .catch((e) => setStatsErr(e.message)), [])
+  // the API may still be opening the store: retry a few times before reporting it unavailable
+  const refreshStats = useCallback((attempt = 0) => api.stats().then((s) => { setStats(s); setStatsErr(null) })
+    .catch((e) => { if (attempt < 5) setTimeout(() => refreshStats(attempt + 1), 800 * (attempt + 1)); else setStatsErr(e.message) }), [])
   useEffect(() => { refreshStats() }, [refreshStats])
 
   useEffect(() => {
