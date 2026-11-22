@@ -1,4 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+
+/* The current scene lives outside React state, so a scene change re-renders only the readout and the
+   chapter index, never the whole page mid-scroll. */
+const sceneStore = (() => {
+  let v = 0
+  const subs = new Set()
+  return {
+    set(n) { if (n !== v) { v = n; subs.forEach((f) => f()) } },
+    get: () => v,
+    subscribe(f) { subs.add(f); return () => subs.delete(f) },
+  }
+})()
+const useScene = () => useSyncExternalStore(sceneStore.subscribe, sceneStore.get)
 import facts from '../story/facts.json'
 import { Wordmark, Mark } from '../brand/Mark.jsx'
 import { fmtDate, monthsBetween, pdfAt } from '../evidence.js'
@@ -125,7 +138,8 @@ const SCENES = [
 ]
 
 /* A dossier readout of what the picture is showing: plain facts, updated per scene. */
-function Hud({ scene, renderer }) {
+function Hud({ renderer }) {
+  const scene = useScene()
   const s = SCENES[scene] || SCENES[0]
   return (
     <div className="film-hud" aria-hidden="true">
@@ -152,6 +166,20 @@ function Stat({ v }) {
   return <b>{shown.toLocaleString('en-US')}</b>
 }
 
+function FilmIndex({ reduced }) {
+  const scene = useScene()
+  return (
+    <nav className="film-index" aria-label="Film chapters">
+      {INDEX.map(([id, label], i) => (
+        <a key={id} href={`#${id}`} className={scene === i ? 'on' : ''} aria-current={scene === i ? 'step' : undefined}
+          onClick={(e) => { e.preventDefault(); document.getElementById(id === 'top' ? 'top' : `${id}-copy`)?.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' }) }}>
+          <span>{label}</span><i />
+        </a>
+      ))}
+    </nav>
+  )
+}
+
 const Line = ({ children }) => <span className="ln"><span>{children}</span></span>
 
 function Chapter({ id, scene, mark, label, place, statement, children, foot }) {
@@ -175,7 +203,6 @@ const INDEX = [
 
 export default function Landing({ go, stats, introDone, onReplay, reduced }) {
   const [solid, setSolid] = useState(false)
-  const [scene, setScene] = useState(0)
   const [kind, setKind] = useState(null)
   const handoff = useReveal()
   useEffect(() => {
@@ -189,8 +216,8 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
   const quote = cit.quote.split(cit.dst)
   return (
     <div className="film" id="top">
-      <FilmStage reduced={reduced} introDone={introDone} stats={stats} onScene={setScene} onKind={setKind} />
-      {kind && <Hud scene={scene} renderer={kind} />}
+      <FilmStage reduced={reduced} introDone={introDone} stats={stats} onScene={sceneStore.set} onKind={setKind} />
+      {kind && <Hud renderer={kind} />}
       <header className={'film-top' + (solid ? ' is-solid' : '')}>
         <a href="#/" aria-label="Forebear, start of film" onClick={(e) => { e.preventDefault(); scrollTo({ top: 0 }) }}><Wordmark size={26} /></a>
         <span className="spacer" />
@@ -203,14 +230,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
         <a className="btn btn-primary btn-sm" href="#/check" data-testid="open-workspace">Open workspace <span className="arr" aria-hidden="true">→</span></a>
       </header>
 
-      <nav className="film-index" aria-label="Film chapters">
-        {INDEX.map(([id, label], i) => (
-          <a key={id} href={`#${id}`} className={scene === i ? 'on' : ''} aria-current={scene === i ? 'step' : undefined}
-            onClick={(e) => { e.preventDefault(); document.getElementById(id === 'top' ? 'top' : `${id}-copy`)?.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' }) }}>
-            <span>{label}</span><i />
-          </a>
-        ))}
-      </nav>
+      <FilmIndex reduced={reduced} />
 
       <main id="main">
         <section className="hero" data-scene="0" data-align="top" aria-labelledby="hero-title">

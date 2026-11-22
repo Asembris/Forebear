@@ -668,3 +668,5 @@ html[data-film="off"] .handoff { min-height: 60svh; }
   .chain-link::after { animation: none !important; display: none; }
   .finding::after { animation: none; }
 }
+/* a live backdrop blur over the WebGL canvas costs whole frames: the film header uses an opaque wash instead */
+.film-top.is-solid { backdrop-filter: none; background: rgba(8, 13, 24, 0.92); }
