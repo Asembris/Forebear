@@ -144,6 +144,7 @@ export default function EvidenceGraph({ a, depth, onDepth, descendants, selected
                 onClick={() => onSelect({ type: 'edge', id: e.id, hop: e.hop })} onKeyDown={key(() => onSelect({ type: 'edge', id: e.id, hop: e.hop }))}>
                 <path d={path} className={`g-edge st-${st}${e.critical ? ' is-critical' : ''}${dim ? ' is-dim' : ''}`}
                   style={isSel ? { opacity: 1, strokeWidth: 3.2 } : undefined} />
+                {e.critical && !dim && <path d={path} className="g-flow" />}
                 <path d={path} className="g-edge-hit" />
                 <rect x={mx - 22} y={(s.y + d.y) / 2 - 9} width={44} height={18} rx={9} fill="transparent" style={{ cursor: 'pointer' }} />
                 <title>{`${e.hop.src} → ${e.hop.dst} · p.${e.hop.page ?? '?'} · ${EDGE_STATUS[st].label}`}</title>

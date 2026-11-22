@@ -639,3 +639,32 @@ html[data-film="off"] .handoff { min-height: 60svh; }
   .chapter { min-height: 190svh; align-items: flex-start; padding-top: 105svh; padding-bottom: 20svh; }
   .handoff { padding-top: 40svh; }
 }
+
+/* ---- workspace: the film's motion language, quietly ---- */
+/* signals travel along the critical chain, from the recalled predicate towards the candidate */
+.g-flow { fill: none; stroke: #ffd79a; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 2 26; opacity: .9;
+  animation: g-flow 2.4s linear infinite; pointer-events: none; filter: drop-shadow(0 0 4px rgba(231,169,72,.9)); }
+@keyframes g-flow { to { stroke-dashoffset: 28; } }
+.chain-link.st-extracted::after, .chain-link.st-confirmed::after { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,154,.95), transparent); background-size: 40% 100%; background-repeat: no-repeat;
+  animation: chain-signal 2.6s var(--ease-io) infinite; animation-direction: reverse; pointer-events: none; }
+@keyframes chain-signal { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+.finding { isolation: isolate; }
+.finding::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgba(236,228,210,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(236,228,210,.03) 1px, transparent 1px);
+  background-size: 48px 48px; -webkit-mask-image: linear-gradient(110deg, transparent 30%, #000 75%); mask-image: linear-gradient(110deg, transparent 30%, #000 75%); }
+.finding::after { animation: glow-drift 18s ease-in-out infinite alternate; }
+@keyframes glow-drift { from { transform: translate(0, 0); } to { transform: translate(-90px, 40px) scale(1.15); } }
+.finding .kline::before { content: "[ dossier ]"; font-family: var(--mono); color: var(--ink-4); font-size: 11px; margin-right: 2px; }
+.panel { position: relative; }
+.finding, .panel#review { background-clip: padding-box; }
+.corner-marks::after { content: ""; position: absolute; inset: 8px; pointer-events: none; border: 1px solid rgba(127,162,255,.35); border-radius: 10px;
+  -webkit-mask: linear-gradient(#000 0 0) top left / 12px 12px no-repeat, linear-gradient(#000 0 0) top right / 12px 12px no-repeat,
+    linear-gradient(#000 0 0) bottom left / 12px 12px no-repeat, linear-gradient(#000 0 0) bottom right / 12px 12px no-repeat;
+  mask: linear-gradient(#000 0 0) top left / 12px 12px no-repeat, linear-gradient(#000 0 0) top right / 12px 12px no-repeat,
+    linear-gradient(#000 0 0) bottom left / 12px 12px no-repeat, linear-gradient(#000 0 0) bottom right / 12px 12px no-repeat; }
+@media (prefers-reduced-motion: reduce) {
+  .g-flow { animation: none; stroke-dasharray: none; opacity: .35; }
+  .chain-link::after { animation: none !important; display: none; }
+  .finding::after { animation: none; }
+}

@@ -69,7 +69,7 @@ function CriticalChain({ a, onSelect }) {
   const r = keyRecall(recs, a.device.decision_date)
   const gap = r ? monthsBetween(r.initiated, a.device.decision_date) : null
   return (
-    <section className="panel" aria-labelledby="chain-title" data-testid="critical-chain">
+    <section className="panel corner-marks" aria-labelledby="chain-title" data-testid="critical-chain">
       <div className="panel-head">
         <h2 id="chain-title">Critical chain <span className="count">predicate → recall, the route that raised the verdict</span></h2>
         <p className="hint">Select a thread for its page and quote.</p>
