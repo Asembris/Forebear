@@ -40,13 +40,15 @@ test.describe('opening and film', () => {
     await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
     await page.goto('/')
     const canvas = page.getByTestId('film-canvas')
-    await expect(canvas).toHaveAttribute('data-renderer', 'canvas2d')
-    expect(await page.locator('canvas').count()).toBe(1)
+    await expect(canvas).toHaveAttribute('data-renderer', /^(webgl|canvas2d)$/)
+    expect(await page.locator('canvas').count()).toBe(2)          // field + story, nothing else
+    await expect(page.locator('.film-hud')).toContainText('The field')
     await shot(page, 'film-0-hero')
     for (const [id, label, n] of [['the-filing', 'The filing', 1], ['the-connection', 'The connection', 2], ['the-discovery', 'The discovery', 3]]) {
       await page.locator(`#${id}-copy`).scrollIntoViewIfNeeded()
       await page.evaluate((i) => document.getElementById(`${i}-copy`).scrollIntoView({ block: 'center' }), id)
       await expect(page.locator('.film-index a.on')).toContainText(label, { timeout: 4000 })
+      await expect(page.locator('.film-hud')).toContainText(label, { ignoreCase: true })
       await page.waitForTimeout(900)
       await shot(page, `film-${n}-${id}`)
     }
@@ -211,6 +213,17 @@ test.describe('responsive @responsive', () => {
       await shot(page, `responsive-${name}`)
     })
   }
+
+  test('the WebGL field renders when forced (software GL)', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
+    const errors = []
+    page.on('pageerror', (e) => errors.push(String(e)))
+    await page.goto('/?gl=1')
+    await expect(page.getByTestId('film-canvas')).toHaveAttribute('data-renderer', /^(webgl|canvas2d)$/)
+    await page.waitForTimeout(800)
+    expect(errors).toEqual([])
+    await shot(page, 'webgl-hero')
+  })
 
   test('the film chapters stay readable on small screens', async ({ page }) => {
     await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
