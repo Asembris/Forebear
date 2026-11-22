@@ -25,6 +25,13 @@ export const api = {
   triage: (src, dst) => req('/api/citation/triage', { method: 'POST', body: { src, dst } }),
   save: (k, note) => req('/api/assessments', { method: 'POST', body: { k, note } }),
   assessments: (k) => req(`/api/assessments${k ? `?k=${k}` : ''}`),
+  // Phase 2 agent runs: secondary to the deterministic assessment, shown as history
+  investigations: (k, limit = 30) => req(`/api/investigations?limit=${limit}${k ? `&k=${k}` : ''}`),
+  investigation: (id) => req(`/api/investigations/${id}`),
+  startInvestigation: (k, request, mode = 'auto') => req('/api/investigations', { method: 'POST', body: { k, request, mode } }),
+  proposals: (status) => req(`/api/proposals${status ? `?status=${status}` : ''}`),
+  decide: (pid, decision, reviewer, note) => req(`/api/proposals/${pid}/decision`, { method: 'POST', body: { decision, reviewer, human: true, note } }),
 }
 
 export const pmnUrl = (k) => `https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=${k}`
+export const reportUrl = (id, md = true) => `/api/investigations/${id}/report${md ? '?format=markdown' : ''}`
