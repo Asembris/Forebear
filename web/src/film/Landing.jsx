@@ -24,7 +24,9 @@ function readAnchors() {
     .map((el) => {
       const b = el.getBoundingClientRect()
       const top = b.top + scrollY
-      const y = el.dataset.align === 'top' ? 0 : top + b.height / 2 - h * 0.5
+      // on phones the words sit in a panel over the picture: a scene plays while its copy rises from below
+      const phone = innerWidth <= 860
+      const y = el.dataset.align === 'top' ? 0 : phone && el.classList.contains('chapter-copy') ? top - h * 0.55 : top + b.height / 2 - h * 0.5
       return [Math.max(0, y), Number(el.dataset.scene)]
     })
     .sort((a, b) => a[1] - b[1])
@@ -38,30 +40,52 @@ function canDraw() {
   } catch { return false }
 }
 
-/* One fixed canvas behind the page; the CSS scene beneath it is the no-canvas / reduced-motion still. */
-function FilmStage({ reduced, introDone, stats, onScene }) {
+/* Where each chapter's words leave the picture room: measured, so framing holds at any viewport. */
+function readZones() {
+  const W = innerWidth, H = innerHeight, gap = 48, edge = Math.max(24, W * 0.03), z = {}
+  const hero = document.querySelector('.hero-copy')
+  if (hero) { const r = hero.getBoundingClientRect(); z[0] = [Math.min(W * 0.62, r.right + gap), H * 0.18, W - edge - 40, H * 0.82] }
+  document.querySelectorAll('.chapter-copy[data-scene]').forEach((el) => {
+    const r = el.getBoundingClientRect(), n = Number(el.dataset.scene)
+    const left = r.left + r.width / 2 < W / 2
+    z[n] = left ? [r.right + gap, H * 0.1, W - edge - 40, H * 0.92] : [edge, H * 0.1, r.left - gap, H * 0.92]
+  })
+  const h = document.getElementById('handoff-copy')
+  // at scene 4 the handoff copy is centred: the picture takes the band above it
+  if (h) z[4] = [W * 0.12, H * 0.09, W * 0.88, Math.max(H * 0.3, H / 2 - h.getBoundingClientRect().height / 2 - 28)]
+  return z
+}
+
+/* Two fixed canvases behind the page: the WebGL field and the story. The CSS still beneath them is the
+   reduced-motion and no-canvas fallback. */
+function FilmStage({ reduced, introDone, stats, onScene, onKind }) {
   const host = useRef(null)
+  const gl = useRef(null)
   const film = useRef(null)
-  const [live, setLive] = useState(false)
+  const [live, setLive] = useState(null)
   useEffect(() => {
     if (reduced || !canDraw()) { document.documentElement.dataset.film = 'off'; return }
     let cancelled = false
     const compact = matchMedia('(max-width: 860px), (pointer: coarse)').matches
+    const forceGL = /[?&]gl=1\b/.test(location.search)
     import('./renderer.js').then(({ createFilm }) => {
       if (cancelled || !host.current) return
       try {
-        film.current = createFilm(host.current, { facts, deviceCount: stats?.nodes?.Device || 1187, compact, onScene })
+        film.current = createFilm(host.current, { glCanvas: gl.current, facts, deviceCount: stats?.nodes?.Device || 1187, compact, forceGL, onScene,
+          onRenderer: (k) => { setLive(k); onKind && onKind(k) } })
         film.current.setAnchors(readAnchors())
+        film.current.setZones(readZones())
         film.current.snap()
         delete document.documentElement.dataset.film
-        setLive(true)
+        setLive(film.current.kind)
+        onKind && onKind(film.current.kind)
       } catch { document.documentElement.dataset.film = 'off' }
     }).catch(() => { document.documentElement.dataset.film = 'off' })
     return () => { cancelled = true; film.current?.dispose(); film.current = null }
   }, [reduced])
   useEffect(() => {
     if (!live) return
-    const measure = () => film.current?.setAnchors(readAnchors())
+    const measure = () => { film.current?.setAnchors(readAnchors()); film.current?.setZones(readZones()) }
     const ro = new ResizeObserver(() => { film.current?.resize(); measure() })
     ro.observe(document.body)
     document.fonts?.ready.then(measure)
@@ -70,8 +94,8 @@ function FilmStage({ reduced, introDone, stats, onScene }) {
     addEventListener('pointermove', move, { passive: true })
     document.addEventListener('pointerleave', out)
     return () => { ro.disconnect(); removeEventListener('pointermove', move); document.removeEventListener('pointerleave', out) }
-  }, [live])
-  useEffect(() => { if (live && introDone === 'bloom') film.current?.bloom() }, [live, introDone])
+  }, [!!live])
+  useEffect(() => { if (live && introDone === 'bloom') film.current?.bloom() }, [!!live, introDone])
   return (
     <div className="film-stage" aria-hidden="true">
       <div className="film-fallback">
@@ -84,10 +108,48 @@ function FilmStage({ reduced, introDone, stats, onScene }) {
           <circle cx="240" cy="160" r="7" fill="#e7a948" /><circle cx="80" cy="80" r="6" fill="#e7a948" /><circle cx="70" cy="250" r="6" fill="#9aa7c2" />
         </svg>
       </div>
-      <canvas ref={host} className={live ? 'is-live' : ''} data-testid="film-canvas" data-renderer={live ? 'canvas2d' : 'fallback'} />
+      <canvas ref={gl} className={'film-gl' + (live === 'webgl' ? ' is-live' : '')} />
+      <div className="film-grid" />
+      <canvas ref={host} className={'film-story' + (live ? ' is-live' : '')} data-testid="film-canvas" data-renderer={live || 'fallback'} />
       <div className="film-vignette" />
     </div>
   )
+}
+
+const SCENES = [
+  { n: '00', name: 'The field', read: (c) => `${c.k} · one point among the store's clearances` },
+  { n: '01', name: 'The filing', read: (c, cit) => `${c.k} · 510(k) summary · page ${cit.page}` },
+  { n: '02', name: 'The connection', read: (c, cit, p) => `${c.k} → ${p.k} · ${c.decision_date.slice(0, 4)} → ${p.decision_date.slice(0, 4)}` },
+  { n: '03', name: 'The discovery', read: (c, cit, p, r) => `${p.k} · ${r.classification} · ${r.root_cause} · ${r.initiated}` },
+  { n: '04', name: 'The handoff', read: () => 'generation columns · same layout as the workspace' },
+]
+
+/* A dossier readout of what the picture is showing: plain facts, updated per scene. */
+function Hud({ scene, renderer }) {
+  const s = SCENES[scene] || SCENES[0]
+  return (
+    <div className="film-hud" aria-hidden="true">
+      <span className="hud-n">[{s.n} / 04]</span>
+      <span className="hud-name">{s.name}</span>
+      <span className="hud-read">{s.read(facts.candidate, facts.citation, facts.predicate, facts.recall)}</span>
+      {renderer && <span className="hud-r">{renderer === 'webgl' ? 'webgl field' : '2d field'} · illustrative</span>}
+    </div>
+  )
+}
+
+/* Counts arrive from the live store; while they load, a quiet placeholder rather than a dash. */
+function Stat({ v }) {
+  const [shown, setShown] = useState(0)
+  useEffect(() => {
+    if (v == null) return
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setShown(v); return }
+    let raf, t0
+    const step = (t) => { t0 ??= t; const k = Math.min(1, (t - t0) / 1100); setShown(Math.round(v * (1 - Math.pow(1 - k, 3)))); if (k < 1) raf = requestAnimationFrame(step) }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  }, [v])
+  if (v == null) return <b className="stat-wait" aria-label="loading">&nbsp;</b>
+  return <b>{shown.toLocaleString('en-US')}</b>
 }
 
 const Line = ({ children }) => <span className="ln"><span>{children}</span></span>
@@ -97,7 +159,7 @@ function Chapter({ id, scene, mark, label, place, statement, children, foot }) {
   return (
     <article id={id} className={`chapter place-${place}`} aria-labelledby={`${id}-title`}>
       <div ref={ref} className="chapter-copy reveal" data-scene={scene} id={`${id}-copy`}>
-        <p className="chapter-label"><span>{mark}</span>{label}</p>
+        <p className="chapter-label"><span>{mark} / 03</span>{label}</p>
         <h2 className="chapter-statement" id={`${id}-title`}>{statement.map((l, i) => <Line key={i}>{l} </Line>)}</h2>
         {children}
         {foot && <p className="chapter-foot">{foot}</p>}
@@ -114,6 +176,7 @@ const INDEX = [
 export default function Landing({ go, stats, introDone, onReplay, reduced }) {
   const [solid, setSolid] = useState(false)
   const [scene, setScene] = useState(0)
+  const [kind, setKind] = useState(null)
   const handoff = useReveal()
   useEffect(() => {
     const on = () => setSolid(scrollY > 40)
@@ -123,11 +186,11 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
   const c = facts.candidate, p = facts.predicate, r = facts.recall, cit = facts.citation
   const gap = monthsBetween(r.initiated, c.decision_date)
   const yrs = Math.floor(gap / 12), mos = gap % 12
-  const n = (x) => (x == null ? '—' : x.toLocaleString('en-US'))
   const quote = cit.quote.split(cit.dst)
   return (
     <div className="film" id="top">
-      <FilmStage reduced={reduced} introDone={introDone} stats={stats} onScene={setScene} />
+      <FilmStage reduced={reduced} introDone={introDone} stats={stats} onScene={setScene} onKind={setKind} />
+      {kind && <Hud scene={scene} renderer={kind} />}
       <header className={'film-top' + (solid ? ' is-solid' : '')}>
         <a href="#/" aria-label="Forebear, start of film" onClick={(e) => { e.preventDefault(); scrollTo({ top: 0 }) }}><Wordmark size={26} /></a>
         <span className="spacer" />
@@ -151,6 +214,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
 
       <main id="main">
         <section className="hero" data-scene="0" data-align="top" aria-labelledby="hero-title">
+          <div className="hero-copy">
           <p className="eyebrow">510(k) predicate due diligence</p>
           <h1 id="hero-title" tabIndex={-1} style={{ outline: 'none' }}>Every clearance has <em>a past.</em></h1>
           <p className="hero-lede">
@@ -169,9 +233,10 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
             </a>
           </div>
           <div className="hero-proof" aria-label="What is in the shipped graph">
-            <div><b>{n(stats?.nodes?.Device)}</b><span>clearances in the graph</span></div>
-            <div><b>{n(stats?.citations_by_kind?.predicate)}</b><span>predicate links, each with a page</span></div>
-            <div><b>{n(stats?.nodes?.Recall)}</b><span>FDA recall records joined</span></div>
+            <div><Stat v={stats?.nodes?.Device} /><span>clearances in the graph</span></div>
+            <div><Stat v={stats?.citations_by_kind?.predicate} /><span>predicate links, each with a page</span></div>
+            <div><Stat v={stats?.nodes?.Recall} /><span>FDA recall records joined</span></div>
+          </div>
           </div>
           <div className="scroll-cue" aria-hidden="true">Scroll<i /></div>
         </section>
