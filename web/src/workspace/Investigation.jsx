@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api, pmnUrl, reportUrl } from '../api.js'
 import {
-  EDGE_STATUS, VERDICTS, countEvents, edgeStatus, fmtDate, monthsBetween, nodeTone, shortName, spanText, year,
+  EDGE_STATUS, VERDICTS, countEvents, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
 } from '../evidence.js'
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
@@ -42,7 +42,7 @@ function FindingSentence({ a }) {
     const recs = sig.evidence.filter((e) => e.type === 'recall')
     const r = keyRecall(recs, d.decision_date)
     const first = sig.evidence.find((e) => e.type === 'citation' && e.src === a.k)
-    const gap = r ? monthsBetween(r.initiated, d.decision_date) : null
+    const timing = r ? recallTiming(r.initiated, d.decision_date) : null
     const ev = countEvents(recs)
     return (
       <p className="finding-sentence" data-testid="finding-sentence">
@@ -51,7 +51,9 @@ function FindingSentence({ a }) {
           : sig.chain.length > 2 ? <>Through it, {sig.gen === 2 ? 'grand-predicate' : `generation-${sig.gen} ancestor`} <span className="k">{holder?.k}</span></> : <>That predicate</>}
         {' '}({shortName(holder?.name, 52)}) has {ev.events} recall event{ev.events === 1 ? '' : 's'} in this signal
         {r && <>, including a <span className="amber">{r.classification || 'unclassified'} {r.root_cause}</span> recall that began {fmtDate(r.initiated)}
-          {gap > 0 ? <>, <span className="amber">{spanText(gap)} before</span> {a.k} was cleared</> : gap != null ? <>, after {a.k} was cleared</> : null}</>}.
+          {timing && <>, {timing.relation === 'before'
+            ? <><span className="amber">{timing.duration} before</span> {a.k} was cleared</>
+            : recallTimingText(timing, a.k)}</>}</>}.
         {sig.conditional && <> This route is <b style={{ color: 'var(--violet)' }}>conditional</b>: it holds only if that citation is a predicate.</>}
       </p>
     )
@@ -67,7 +69,7 @@ function CriticalChain({ a, onSelect }) {
   const holderK = sig.chain[sig.chain.length - 1]
   const recs = sig.evidence.filter((e) => e.type === 'recall')
   const r = keyRecall(recs, a.device.decision_date)
-  const gap = r ? monthsBetween(r.initiated, a.device.decision_date) : null
+  const timing = r ? recallTiming(r.initiated, a.device.decision_date) : null
   return (
     <section className="panel corner-marks" aria-labelledby="chain-title" data-testid="critical-chain">
       <div className="panel-head">
@@ -109,9 +111,9 @@ function CriticalChain({ a, onSelect }) {
           )
         })}
       </div>
-      {r && gap != null && (
+      {r && timing && (
         <div className="chain-timing">
-          <span className="chip tone-amber"><span className="glyph" />{gap > 0 ? `Recall began ${spanText(gap)} before ${a.k}'s clearance` : `Recall began ${spanText(-gap)} after ${a.k}'s clearance`}</span>
+          <span className="chip tone-amber"><span className="glyph" />{recallTimingText(timing, a.k, 'chip')}</span>
           <span className="muted">{countEvents(recs).events} recall event(s) · {recs.length} product record(s) in this signal. Documentation signal, not a safety finding.</span>
         </div>
       )}

@@ -102,6 +102,35 @@ export function monthsBetween(a, b) {
   const [yb, mb, db] = b.slice(0, 10).split('-').map(Number)
   return (yb - ya) * 12 + (mb - ma) - (db < da ? 1 : 0)
 }
+/** Order two ISO dates by calendar day: -1 if a is earlier, 0 if the same day, 1 if later, null if either is missing.
+    Zero-padded YYYY-MM-DD strings sort chronologically, so no rounding can blur the order. */
+export function dateOrder(a, b) {
+  if (!a || !b) return null
+  const x = String(a).slice(0, 10), y = String(b).slice(0, 10)
+  return x < y ? -1 : x > y ? 1 : 0
+}
+
+/** When a recall began relative to a clearance. The relation comes from the dates themselves; the elapsed
+    duration is measured separately, always forwards in time, and is display text only. */
+export function recallTiming(initiated, clearance) {
+  const order = dateOrder(initiated, clearance)
+  if (order == null) return null
+  if (order === 0) return { relation: 'same-day', months: 0, duration: '' }
+  const months = order < 0 ? monthsBetween(initiated, clearance) : monthsBetween(clearance, initiated)
+  return { relation: order < 0 ? 'before' : 'after', months, duration: spanText(months) }
+}
+
+/** Wording for a recallTiming() result: 'clause' continues a sentence, 'chip' stands alone. */
+export function recallTimingText(timing, k, form = 'clause') {
+  if (!timing) return ''
+  const { relation, duration } = timing
+  if (form === 'chip') {
+    return relation === 'same-day' ? `Recall began on the day of ${k}'s clearance`
+      : `Recall began ${duration} ${relation} ${k}'s clearance`
+  }
+  return relation === 'same-day' ? `on the day ${k} was cleared` : `${duration} ${relation} ${k} was cleared`
+}
+
 export function spanText(months) {
   if (months == null) return ''
   const neg = months < 0
