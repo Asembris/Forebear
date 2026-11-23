@@ -41,10 +41,11 @@ TOOLS = [
     {"name": "ingest_clearance", "description": "Fetch a 510(k) from FDA (openFDA + summary PDF), extract its predicates and recalls, "
                                                 "and MERGE it into the graph. Also extends lineage for a device whose summary was unread.",
      "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
-    {"name": "review_citation", "description": "Record a human-verified judgement on an extracted citation edge: confirmed, rejected, "
-                                               "or '' to clear. Rejected edges stop counting in every lineage query. Recorded with reviewer "
-                                               "'mcp-client': a confirmation made here does not clear uncertain-evidence flags, "
-                                               "which only a person's review in the app does.",
+    {"name": "review_citation", "description": "Record an ADVISORY judgement on an extracted citation edge: confirmed, rejected, "
+                                               "or '' to clear. Recorded with reviewer 'mcp-client' (possibly an AI agent), it never "
+                                               "changes the deterministic lineage or verdict: a confirmation here lists the link as "
+                                               "advisory, a rejection flags the link as disputed but keeps it, and neither overwrites "
+                                               "a person's review. Only a person's review in the app makes a link trusted or removes it.",
      "inputSchema": {"type": "object", "properties": {"src": K, "dst": K, "status": {"type": "string", "enum": ["confirmed", "rejected", ""]},
                                                       "note": {"type": "string"}}, "required": ["src", "dst", "status"]}},
     {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls.",
@@ -105,8 +106,11 @@ def _compact_assessment(a: dict) -> dict:
                      "recalls": [{k: e.get(k) for k in ("id", "classification", "root_cause", "initiated", "url")}
                                  for e in s["evidence"] if e.get("type") == "recall"][:5],
                      "citation_evidence": [{k: e.get(k) for k in ("src", "dst", "page", "snippet", "source_url",
-                                                                 "name_check", "audit", "audit_note", "doubt")}
+                                                                 "name_check", "audit", "audit_note", "doubt", "trust")}
                                            for e in s["evidence"] if e.get("type") == "citation"],
+                     # untrusted links an automated source suggested: never verdict inputs until a person confirms
+                     "advisory_links": [{k: e.get(k) for k in ("src", "dst", "page", "basis", "ai_model", "trust")}
+                                        for e in s["evidence"] if e.get("type") == "advisory_citation"],
                      "unresolved_citations": [{k: e.get(k) for k in ("src", "cited", "reason", "page", "quote")}
                                               for e in s["evidence"] if e.get("type") == "unresolved_citation"]}
                     for s in a["signals"]],

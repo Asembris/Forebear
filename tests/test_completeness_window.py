@@ -143,8 +143,7 @@ def _routes(path):
 
 
 @pytest.mark.parametrize("doubt_props", [
-    "r.name_check = 'mismatch'", "r.audit = 'unresolved'", "r.audit = 'corrected'", "r.panel_check = 'different'",
-    "r.kind = 'mention', r.ai_label = 'predicate'"])
+    "r.name_check = 'mismatch'", "r.audit = 'unresolved'", "r.audit = 'corrected'", "r.panel_check = 'different'"])
 def test_doubtful_link_off_the_shortest_route_is_seen(tmp_path, doubt_props):
     g = _routes(tmp_path / "r.rl")
     try:
@@ -185,9 +184,25 @@ def test_confirmation_through_the_mcp_client_is_not_a_human_confirmation(g):
     assert assess(g, "K000001", 4)["coverage"]["evidence"] == "complete"
 
 
-def test_mention_promoted_only_by_the_mcp_client_is_doubtful(g):
+def test_ai_labelled_link_off_the_shortest_route_is_advisory_not_lineage(tmp_path):
+    g = _routes(tmp_path / "a.rl")
+    try:
+        g.conn.execute("MATCH (:Device {k:'K000011'})-[r:CITES]->(:Device {k:'K000012'}) "
+                       "SET r.kind = 'mention', r.ai_label = 'predicate'")
+        a = assess(g, "K000010", 2)
+        assert a["verdict"] == "NO_DESIGN_RECALL_SIGNAL" and a["verdict_reason"].startswith("Provisional")
+        assert a["coverage"]["doubtful_links"] == 0 and a["coverage"]["advisory_links_in_window"] == 1
+        assert a["coverage"]["evidence"] == "partial"
+        assert "advisory_links_pending_review" in a["coverage"]["evidence_reasons"]
+    finally:
+        g.close()
+
+
+def test_mention_promoted_only_by_the_mcp_client_is_advisory(g):
     g.conn.execute("MATCH (:Device {k:'K000001'})-[r:CITES]->(:Device {k:'K000002'}) SET r.kind = 'mention'")
     g.review_citation("K000001", "K000002", "confirmed", None, reviewer="mcp-client")
     a = assess(g, "K000001", 4)
-    assert "K000002" in {x["k"] for x in a["ancestors"]}
-    assert a["coverage"]["evidence"] == "uncertain" and a["verdict"] == "INSUFFICIENT_LINEAGE"
+    assert "K000002" not in {x["k"] for x in a["ancestors"]}
+    assert a["verdict"] == "INSUFFICIENT_LINEAGE" and "automated source" in a["verdict_reason"]
+    adv = next(s for s in a["signals"] if s["code"] == "ADVISORY_LINK_PENDING_REVIEW")
+    assert adv["evidence"][0]["basis"] == ["client_confirmation"] and adv["evidence"][0]["trust"] == "advisory"

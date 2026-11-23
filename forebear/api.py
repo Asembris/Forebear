@@ -254,7 +254,8 @@ class ReviewIn(BaseModel):
     dst: str
     status: str = Field(pattern="^(confirmed|rejected|)$")
     note: str | None = None
-    # Who recorded it: "user" (the app) or "mcp-client" (the MCP tool, possibly an AI agent). Optional.
+    # Who recorded it: "user" (the app, a person) or "mcp-client" (the MCP tool, possibly an AI agent). An mcp-client
+    # review is advisory: it never changes trusted lineage and never overwrites a person's review. Optional.
     via: str = Field("user", pattern="^(user|mcp-client)$")
 
 
