@@ -56,6 +56,31 @@ test.describe('two-hop discovery', () => {
     expect(shallow).toEqual([])                               // depth 1 already finds this signal: no extra queries
   })
 
+  test('rejecting one REMstar path refreshes the contrast to the remaining supported path', async ({ page }) => {
+    const [kept, dropped] = facts.recall.holders.includes('K130077') ? ['K130077', 'K131982'] : facts.recall.holders
+    await page.goto(`/#/check/${c.k}`)
+    const panel = page.getByTestId('depth-contrast')
+    const route = panel.locator('.dc-route')
+    await expect(route).toContainText(`${p.k} → ${dropped}`)
+    await expect(panel.getByTestId('depth-2')).toContainText(`${p.k} itself cites ${kept} and ${dropped}`)
+    try {
+      await route.locator('li').filter({ hasText: `${p.k} → ${dropped}` }).getByRole('button', { name: 'Provenance' }).click()
+      const drawer = page.getByTestId('provenance')
+      await drawer.getByRole('button', { name: 'Reject citation' }).click()
+      await expect(drawer.getByRole('status')).toContainText('Recorded: rejected')
+      // no reload: the panel re-queries both depths from the updated graph
+      await expect(panel.getByTestId('depth-2')).toContainText(`${p.k} itself cites ${kept}.`)
+      await expect(panel.getByTestId('depth-2')).toContainText(`FDA lists it on ${r.id}`)
+      await expect(panel.getByTestId('depth-2')).toContainText('Review lineage')
+      await expect(panel.getByTestId('depth-1')).toContainText('No design-recall signal · provisional')
+      await expect(route.locator('.dc-n')).toHaveText([`${c.k} → ${p.k}`, `${p.k} → ${kept}`, r.id])
+      await expect(route.locator('.is-recall')).toContainText(`FDA's record lists ${kept}, not ${p.k}`)
+    } finally {
+      const res = await page.request.post('/api/citation/review', { data: { src: p.k, dst: dropped, status: '' } })
+      expect(res.ok()).toBeTruthy()
+    }
+  })
+
   test('the workspace home offers the case', async ({ page }) => {
     await page.goto('/#/check')
     await page.getByRole('button', { name: new RegExp(c.k) }).click()
