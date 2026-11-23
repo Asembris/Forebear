@@ -112,8 +112,22 @@ and the original quote, page and source hash stay on the edge, it leaves trusted
 restored if a later summary cites the device again. Reconciliation runs only when the refreshed summary text was read,
 so an unreadable download never wipes lineage, and any write error rolls the whole ingest back. Retired edges appear in
 the `CITATION_RETIRED_BY_REINGEST` signal; one that a person had confirmed makes the evidence `partial` (reason
-`human_confirmed_citation_retired`). Reviews record the summary hash they were made against
-(`reviewed_source_sha256`).
+`human_confirmed_citation_retired`).
+
+Summary refresh (`summaries.refresh`, `POST /api/ingest {"refresh": true}`, MCP `ingest_clearance refresh=true`, the
+"Re-download" option on *Add a clearance*): a plain re-ingest reuses the cached summary text, so only an explicit
+refresh can see a changed FDA PDF. The refresh re-downloads the PDF and writes the new record to the gitignored
+`data/live` cache, which then supersedes the committed `data/raw` record for the app; `data/raw` is never written by the
+app (openFDA responses follow the same rule). The cached record is replaced only by readable evidence: a download
+error, an HTTP 429/5xx, a missing PDF or an image-only PDF raises an error that changes neither the cache nor the graph.
+An unchanged PDF (same SHA-256) is reported as unchanged.
+
+Reviews are bound to the evidence version: a review records the summary SHA-256 it was made against
+(`reviewed_source_sha256`) and counts only while the edge carries that SHA-256 (`graph.CURRENT_HUMAN_REVIEW`). When a
+refresh changes the PDF, or a retired citation is restored from a different PDF, the review stays on the edge as history
+but stops counting: the edge falls back to the extraction rules and is flagged `review_outdated`; an outdated
+confirmation of a non-predicate becomes an advisory link (`outdated_human_confirmation`). A person's new review on the
+current evidence makes it trusted again. A legacy review without a recorded hash counts only on an edge that has none.
 
 ### 5. Uncertainty in assessments (`forebear/lineage.py`, rules `forebear-rules-v3`)
 A lineage hop is **doubtful** when it is audit-unresolved, its K-number was supplied by an audit correction rather than
