@@ -1,0 +1,21 @@
+# One-command quickstart:  docker compose up --build   ->  http://localhost:8765
+services:
+  forebear:
+    build: .
+    image: forebear:local
+    ports:
+      - "127.0.0.1:8765:8765"     # loopback only; change to "8765:8765" to expose on the LAN
+    volumes:
+      - forebear-data:/data       # Relate store + live-ingest cache, seeded on first launch
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    init: false                   # uvicorn runs as PID 1 and handles SIGTERM itself
+    stop_grace_period: 20s
+    restart: unless-stopped
+
+volumes:
+  forebear-data:
