@@ -95,8 +95,25 @@ AI agent but labelled "curated human review", are kept with their notes under `a
 applied: K092835 → K991646 stays out of the lineage through the audit (`error`), and the three K093416 links are
 audit-`unresolved`, so they count, flagged as doubtful, until a person decides them.
 
-Lineage rule (`graph.LINEAGE_EDGE`): a person confirmed it, OR (the extractor said predicate, or the LLM labelled a
-mention predicate) and the audit did not mark it `error`/`not_predicate`, unless a person rejected it.
+Lineage rule (`graph.LINEAGE_EDGE`, trusted lineage): the edge is still cited by the citing device's current summary
+(not retired by a re-ingest), and a person confirmed it, OR the extractor said predicate and the audit did not mark it
+`error`/`not_predicate`, unless a person rejected it. Automated sources never change trusted lineage on their own: an
+LLM triage label, or a confirmation or rejection sent through the MCP client (reviewer `mcp-client`), is **advisory**
+(`graph.ADVISORY_EDGE`) until a person decides. Advisory links are listed with their provenance (model, quote, time,
+page, source hash) and the suggested device's recalls in the `ADVISORY_LINK_PENDING_REVIEW` signal; they are never
+traversed, so they cannot raise or lower a verdict, recall reach or the watchlist. Inside the verdict window they make
+the evidence `partial` (reason `advisory_links_pending_review`), so a clean result is shown as provisional rather than
+fully supported. An MCP-client review never overwrites a person's review.
+
+Re-ingest reconciliation (`ingest.write`, `graph.retire_citations`): re-ingesting a clearance compares its stored
+citations with the refreshed summary inside the same write transaction. Edges the refreshed summary no longer supports
+are **retired** (`retired_at`, `retired_reason`, `retired_by_sha256`), not deleted: reviews, LLM labels, audit fields
+and the original quote, page and source hash stay on the edge, it leaves trusted and advisory lineage, and it is
+restored if a later summary cites the device again. Reconciliation runs only when the refreshed summary text was read,
+so an unreadable download never wipes lineage, and any write error rolls the whole ingest back. Retired edges appear in
+the `CITATION_RETIRED_BY_REINGEST` signal; one that a person had confirmed makes the evidence `partial` (reason
+`human_confirmed_citation_retired`). Reviews record the summary hash they were made against
+(`reviewed_source_sha256`).
 
 ### 5. Uncertainty in assessments (`forebear/lineage.py`, rules `forebear-rules-v3`)
 A lineage hop is **doubtful** when it is audit-unresolved, its K-number was supplied by an audit correction rather than
@@ -266,9 +283,9 @@ Two issues found in review, investigated, fixed and re-reviewed by an independen
    The three disputed K093416 links are audit-`unresolved`: they count in the lineage, flagged as doubtful, so the
    Trilogy 200's recalls show instead of being dropped by a supposed human rejection. The re-review found one more path
    to the same problem: the MCP `review_citation` tool wrote the same field as the app. Its writes are now recorded with
-   reviewer `mcp-client`; they still apply (a rejection removes the edge and is disclosed as an unresolved predicate
-   citation), but a client confirmation never clears an uncertain-evidence flag, and a mention promoted only by a client
-   confirmation counts as doubtful. Only a review made in the app (reviewer `user`) or a named human review does.
+   reviewer `mcp-client`; a client confirmation never clears an uncertain-evidence flag. (Superseded by rules
+   `forebear-rules-v5`: MCP-client reviews and LLM labels are now advisory and never change trusted lineage; see the
+   lineage rule above.) Only a review made in the app (reviewer `user`) or a named human review does.
 2. **Completeness beyond the direct predicates.** Investigation on all 1,040 in-family devices: 7 clean results
    requested at `depth=1` were reported `complete` although the full ancestry is REVIEW_LINEAGE (e.g. K251770), and among
    the 101 `complete` clean results, 4 had removed or unresolved predicate citations and 23 had doubtful links at
