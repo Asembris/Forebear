@@ -51,23 +51,30 @@ FULLTEXT = "CREATE FULLTEXT INDEX device_text IF NOT EXISTS FOR (d:Device) ON EA
 # read it as a predicate and the extraction audit did not find it wrong - unless a person rejected it.
 # Automated sources never change trusted lineage on their own: an LLM triage label, or a confirmation/rejection
 # recorded through the MCP client (reviewer 'mcp-client', possibly an AI agent), is advisory until a person decides.
+# A person's review is bound to the evidence it was made on: it counts only while the edge's source SHA-256 is the one
+# recorded at review time (reviewed_source_sha256). When a refreshed summary changes the evidence, or a retired edge is
+# restored from a different PDF, the review is kept as history but the edge falls back to the extraction rules and is
+# flagged 'review_outdated' until a person reviews it again.
 MACHINE_REVIEWER = "mcp-client"
 HUMAN_REVIEW = f"(r.review IS NOT NULL AND coalesce(r.reviewer, '') <> '{MACHINE_REVIEWER}')"
+CURRENT_HUMAN_REVIEW = f"({HUMAN_REVIEW} AND coalesce(r.reviewed_source_sha256, '') = coalesce(r.source_sha256, ''))"
 LIVE_EDGE = "r.retired_at IS NULL"
-LINEAGE_EDGE = (f"{LIVE_EDGE} AND NOT (r.review = 'rejected' AND {HUMAN_REVIEW}) AND "
-                f"((r.review = 'confirmed' AND {HUMAN_REVIEW}) OR "
+LINEAGE_EDGE = (f"{LIVE_EDGE} AND NOT (r.review = 'rejected' AND {CURRENT_HUMAN_REVIEW}) AND "
+                f"((r.review = 'confirmed' AND {CURRENT_HUMAN_REVIEW}) OR "
                 "(r.kind = 'predicate' AND NOT coalesce(r.audit, '') IN ['error', 'not_predicate']))")
 # Advisory (uncertain, untrusted) lineage: an automated source says predicate, no person has decided, and the
 # extraction audit did not rule it out from the source. Shown with its provenance; never a verdict input.
-ADVISORY_EDGE = (f"{LIVE_EDGE} AND NOT ({LINEAGE_EDGE}) AND NOT (r.review = 'rejected' AND {HUMAN_REVIEW}) AND "
+# A person's confirmation made on an earlier version of the evidence is advisory too, until it is renewed.
+ADVISORY_EDGE = (f"{LIVE_EDGE} AND NOT ({LINEAGE_EDGE}) AND NOT (r.review = 'rejected' AND {CURRENT_HUMAN_REVIEW}) AND "
                  "NOT coalesce(r.audit, '') IN ['error', 'not_predicate', 'role_corrected'] AND "
-                 f"(r.ai_label = 'predicate' OR (r.review = 'confirmed' AND r.reviewer = '{MACHINE_REVIEWER}'))")
+                 f"(r.ai_label = 'predicate' OR (r.review = 'confirmed' AND r.reviewer = '{MACHINE_REVIEWER}') OR "
+                 f"(r.review = 'confirmed' AND {HUMAN_REVIEW} AND NOT {CURRENT_HUMAN_REVIEW}))")
 DISPUTED_EDGE = ("coalesce(r.audit, '') = 'unresolved' AND "
-                 f"(coalesce(r.review, '') <> 'confirmed' OR coalesce(r.reviewer, '') = '{MACHINE_REVIEWER}')")
+                 f"NOT (r.review = 'confirmed' AND {CURRENT_HUMAN_REVIEW})")
 _HOP_FIELDS = ("src: startNode(r).k, dst: endNode(r).k, page: r.page, snippet: r.snippet, confidence: r.confidence, "
                "review: r.review, reviewer: r.reviewer, review_note: r.review_note, "
                "reviewed_at: toString(r.reviewed_at), name_check: r.name_check, source_url: r.source_url, "
-               "source_sha256: r.source_sha256, kind: r.kind, audit: r.audit, audit_note: r.audit_note, "
+               "source_sha256: r.source_sha256, reviewed_source_sha256: r.reviewed_source_sha256, kind: r.kind, audit: r.audit, audit_note: r.audit_note, "
                "ai_label: r.ai_label, ai_quote: r.ai_quote, ai_model: r.ai_model, ai_at: toString(r.ai_at), "
                "text_source: r.text_source, panel_check: r.panel_check, quote: r.quote, method: r.method")
 

@@ -248,3 +248,20 @@ def test_saved_assessment_is_flagged_after_ai_triage_and_human_review(tiny):
     assert h["verdict"] == assess(tiny, "K000009")["verdict"]      # flagged for re-check, verdict unchanged
     tiny.review_citation("K000009", "K000002", "confirmed", "p.3", reviewer="user")
     assert assess(tiny, "K000009")["verdict"] != h["verdict"]
+
+
+# ---------------------------------------------------------------- reviews are bound to the evidence version
+def test_an_outdated_confirmation_of_a_mention_is_advisory_not_lineage(tiny):
+    tiny.upsert_citations([{"src": "K000009", "dst": "K000002", "kind": "mention", "confidence": 0.4, "page": 3,
+                            "snippet": "see K000002", "quote": "see K000002", "method": "test",
+                            "source_url": "u", "source_sha256": "s1"}])
+    tiny.review_citation("K000009", "K000002", "confirmed", "a predicate on p.3", reviewer="user")
+    assert assess(tiny, "K000009")["verdict"] == "REVIEW_LINEAGE"
+    tiny.upsert_citations([{"src": "K000009", "dst": "K000002", "kind": "mention", "confidence": 0.4, "page": 3,
+                            "snippet": "see K000002", "quote": "see K000002", "method": "test",
+                            "source_url": "u", "source_sha256": "s2"}])
+    a = assess(tiny, "K000009")
+    assert a["verdict"] == "NO_DESIGN_RECALL_SIGNAL" and a["coverage"]["evidence"] == "partial"
+    link = next(e for s in a["signals"] if s["code"] == "ADVISORY_LINK_PENDING_REVIEW"
+                for e in s["evidence"] if e["type"] == "advisory_citation")
+    assert link["basis"] == ["outdated_human_confirmation"] and link["review_note"] == "a predicate on p.3"

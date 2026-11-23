@@ -348,9 +348,11 @@ def doubt(h: dict) -> list[str]:
     """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it; a
     confirmation sent through the MCP tool (reviewer "mcp-client", possibly an AI agent) does not, and a rejection
     sent through it leaves the edge in the lineage, flagged, until a person decides."""
-    if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
+    if current_human_review(h) and h.get("review") == "confirmed":
         return []
     why = []
+    if human_review(h) and not current_human_review(h):
+        why.append("review_outdated")         # a person reviewed an earlier version of the evidence
     if h.get("audit") == "unresolved":
         why.append("audit_unresolved")
     if h.get("audit") == "corrected":         # the K-number was supplied by the audit, not printed in the PDF
@@ -369,11 +371,21 @@ def doubt(h: dict) -> list[str]:
     return why
 
 
+def human_review(h: dict) -> bool:
+    """A review recorded by a person (any version of the evidence)."""
+    return bool(h.get("review")) and h.get("reviewer") not in MACHINE_REVIEWERS
+
+
+def current_human_review(h: dict) -> bool:
+    """Mirror of graph.CURRENT_HUMAN_REVIEW: a person's review made on the evidence the edge carries now."""
+    return human_review(h) and (h.get("reviewed_source_sha256") or "") == (h.get("source_sha256") or "")
+
+
 def trust(h: dict) -> str:
     """How far a trusted lineage hop can be relied on: 'human_verified' (a person confirmed it), 'extracted' (read
     from the FDA summary, nothing doubtful) or 'uncertain' (doubt(h) is not empty). Advisory and retired edges are
     labelled where they are listed; they are never lineage hops."""
-    if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
+    if h.get("review") == "confirmed" and current_human_review(h):
         return "human_verified"
     return "uncertain" if doubt(h) else "extracted"
 
@@ -385,6 +397,8 @@ def advisory_basis(h: dict) -> list[str]:
         out.append("llm_label")
     if h.get("review") == "confirmed" and h.get("reviewer") in MACHINE_REVIEWERS:
         out.append("client_confirmation")
+    if h.get("review") == "confirmed" and human_review(h) and not current_human_review(h):
+        out.append("outdated_human_confirmation")
     return out
 
 

@@ -19,7 +19,7 @@ from typing import Any, Callable
 
 from .. import summaries
 from ..graph import ADVISORY_EDGE, LINEAGE_EDGE, Graph
-from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt, recall_reach
+from ..lineage import EVIDENCE_WINDOW, assess, compare, current_human_review, doubt, recall_reach
 
 K_RE = re.compile(r"^K\d{6}$")
 RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
@@ -151,7 +151,10 @@ def _provenance(h: dict) -> str:
     'client_confirmed_not_human' and 'llm_label_machine' on a non-predicate are advisory: they never count in the
     lineage until a person confirms the citation."""
     if h.get("review") == "confirmed":
-        return "human_confirmed" if h.get("reviewer") not in ("mcp-client",) else "client_confirmed_not_human"
+        if h.get("reviewer") in ("mcp-client",):
+            return "client_confirmed_not_human"
+        # a person's confirmation of an earlier version of the evidence needs re-review before it counts
+        return "human_confirmed" if current_human_review(h) else "human_review_outdated"
     if h.get("review") == "rejected" and h.get("reviewer") in ("mcp-client",):
         return "client_rejection_pending_not_human"
     if h.get("audit") == "corrected":
@@ -242,6 +245,7 @@ def t_list_citations(g: Graph, args: dict, ctx: RunContext) -> dict:
         RETURN b.k AS dst, b.name AS dst_name, toString(b.decision_date) AS dst_decision_date, r.kind AS kind,
                r.page AS page, r.quote AS quote, r.snippet AS snippet, r.audit AS audit, r.audit_note AS audit_note,
                r.review AS review, r.reviewer AS reviewer, r.name_check AS name_check, r.panel_check AS panel_check,
+               r.source_sha256 AS source_sha256, r.reviewed_source_sha256 AS reviewed_source_sha256,
                r.ai_label AS ai_label, r.corrected_from AS corrected_from, r.source_url AS source_url,
                r.retired_at IS NOT NULL AS retired, ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory
         ORDER BY CASE r.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, dst""", {"k": k})
@@ -345,6 +349,7 @@ def verify_citation_facts(g: Graph, src: str, dst: str) -> dict:
         RETURN r.page AS page, r.quote AS quote, r.snippet AS snippet, r.source_url AS source_url,
                r.source_sha256 AS sha, r.kind AS kind, r.corrected_from AS corrected_from, r.audit AS audit,
                r.audit_note AS audit_note, r.text_source AS text_source, r.review AS review,
+               r.source_sha256 AS source_sha256, r.reviewed_source_sha256 AS reviewed_source_sha256,
                r.reviewer AS reviewer, r.ai_label AS ai_label,
                ({LINEAGE_EDGE}) AS in_lineage""", {"s": src, "d": dst})
     if not rows:
