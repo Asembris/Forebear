@@ -8,7 +8,7 @@ import httpx
 import pytest
 
 from forebear import ingest, summaries
-from forebear.lineage import assess, doubt
+from forebear.lineage import assess, citation_state, doubt
 
 K = "K261000"
 URL_PATH = f"/cdrh_docs/pdf26/{K}.pdf"
@@ -220,3 +220,32 @@ def test_a_citation_restored_from_the_reviewed_pdf_keeps_its_review(tiny, fda):
     ingest.add_clearance(tiny, K, refresh=True)
     h = _hop(tiny, "K000003")
     assert h["reviewed_source_sha256"] == h["source_sha256"] and doubt(h) == []
+
+
+# ---------------------------------------------------------------- the record a client shows after a review
+def test_citation_state_reports_an_outdated_review_until_it_is_redone(tiny, fda):
+    ingest.add_clearance(tiny, K)
+    tiny.review_citation(K, "K000009", "confirmed", "read v1 p.1", reviewer="user")
+    c = citation_state(tiny.citation_edge(K, "K000009"))
+    assert (c["review"], c["reviewer"], c["trust"]) == ("confirmed", "user", "human_verified")
+    assert c["reviewed_source_sha256"] == c["source_sha256"] and c["in_lineage"] and not c["advisory"]
+
+    fda.pdf = make_pdf(V2)
+    ingest.add_clearance(tiny, K, refresh=True)
+    c = citation_state(tiny.citation_edge(K, "K000009"))
+    assert c["review"] == "confirmed" and c["reviewed_source_sha256"] != c["source_sha256"]
+    assert c["trust"] == "uncertain" and "review_outdated" in doubt(c)
+
+    tiny.review_citation(K, "K000009", "confirmed", "read v2 p.1", reviewer="user")
+    c = citation_state(tiny.citation_edge(K, "K000009"))
+    assert c["trust"] == "human_verified" and c["reviewed_source_sha256"] == c["source_sha256"]
+
+
+def test_citation_state_labels_rejected_and_cleared_edges(tiny):
+    tiny.review_citation("K000005", "K000004", "rejected", None, reviewer="user")
+    c = citation_state(tiny.citation_edge("K000005", "K000004"))
+    assert (c["review"], c["in_lineage"], c["trust"]) == ("rejected", False, None)
+    tiny.review_citation("K000005", "K000004", "", None, reviewer="user")
+    c = citation_state(tiny.citation_edge("K000005", "K000004"))
+    assert (c["review"], c["in_lineage"], c["trust"]) == (None, True, "extracted")
+    assert citation_state(tiny.citation_edge("K000005", "K000001")) is None
