@@ -1,5 +1,10 @@
 # Forebear
 
+[![Backend](https://github.com/Asembris/Forebear/actions/workflows/backend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/backend.yml)
+[![Frontend](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml)
+[![CodeQL](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml)
+[![Security](https://github.com/Asembris/Forebear/actions/workflows/security.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/security.yml)
+
 **Check a device's 510(k) ancestry before you cite it.**
 
 Forebear reads predicate citations out of FDA 510(k) summaries and stores the medical-device family tree in a Relate graph, joined to FDA recall records. One query then shows whether a candidate predicate, or any of its ancestors, was recalled for a design problem, with the page and quote behind every link.
@@ -62,6 +67,18 @@ Browser tests (Node 18+; starts the API on a throwaway copy of the store, so not
 ```powershell
 cd web; npx playwright install chromium; npm run test:e2e; cd ..
 ```
+
+Continuous integration (GitHub Actions, on every pull request and push to `main`):
+
+| Workflow | Jobs |
+| --- | --- |
+| [Backend](.github/workflows/backend.yml) | `ruff check` lint baseline ([ruff.toml](ruff.toml)); `pytest` with coverage on Ubuntu and Windows |
+| [Frontend](.github/workflows/frontend.yml) | `npm run build`, failing if the committed `web/dist` is stale; Playwright end-to-end suite (desktop, tablet, mobile) against the real API |
+| [CodeQL](.github/workflows/codeql.yml) | `security-extended` analysis of Python, JavaScript and the workflows themselves; also weekly |
+| [Security](.github/workflows/security.yml) | `pip-audit` and `npm audit`; dependency review on pull requests; gitleaks secret scan of the full history; also weekly |
+| [Repository hygiene](.github/workflows/hygiene.yml) | actionlint for workflows; one-line Conventional Commit check on every pull-request commit |
+
+Dependabot ([config](.github/dependabot.yml)) opens weekly grouped updates for pip, npm and GitHub Actions.
 
 ## Investigation agent (Phase 2)
 An NVIDIA-hosted LLM investigates one device by calling Forebear's graph tools step by step (check the lineage, trace
