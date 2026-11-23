@@ -2,7 +2,7 @@
 from conftest import build_tiny, cite, dev, recall
 
 from forebear.graph import open_graph
-from forebear.lineage import assess
+from forebear.lineage import assess, recall_reach
 
 
 def test_persists_and_reopens_read_only(tmp_path):
@@ -69,7 +69,7 @@ def test_cited_after_recall_is_temporal(tiny):
 
 
 def test_recall_event_reach_splits_before_after(tiny):
-    r = tiny.recall_event_reach("1", depth=3)
+    r = recall_reach(tiny, "1", depth=3)
     assert [x["k"] for x in r["recalled"]] == ["K000002"]
     after = {d["k"] for d in r["descendants"] if d["after_recall"]}
     assert after == {"K000003", "K000004", "K000005", "K000006"}       # K000007 cites only as 'mention'
@@ -100,10 +100,10 @@ def test_search_by_k_prefix_and_text(tiny):
 def test_multi_event_reach_uses_each_lineages_own_recall_date(tiny):
     # event 9 starts in 2019 on K000004; event 1 started 2008 on K000002.
     tiny.upsert_recalls([recall("Z-0009-2019", ["K000004"], "2019-06-01", event="9")])
-    r = {d["k"]: d for d in tiny.recall_event_reach("1,9", depth=3)["descendants"]}
+    r = {d["k"]: d for d in recall_reach(tiny, "1,9", depth=3)["descendants"]}
     # K000005 (2020) and K000006 (2021) descend from both; earliest relevant start is 2008 -> after
     assert r["K000005"]["after_recall"] and r["K000006"]["after_recall"]
-    only9 = {d["k"]: d for d in tiny.recall_event_reach("9", depth=3)["descendants"]}
+    only9 = {d["k"]: d for d in recall_reach(tiny, "9", depth=3)["descendants"]}
     assert only9["K000005"]["after_recall"] and only9["K000005"]["recall_started"] == "2019-06-01"
 
 
@@ -113,6 +113,6 @@ def test_multi_event_reach_does_not_borrow_another_events_start(tiny):
     tiny.upsert_devices([dev("K000010", "2017-03-01")])
     tiny.upsert_citations([cite("K000010", "K000004")])
     tiny.upsert_recalls([recall("Z-0009-2019", ["K000004"], "2019-06-01", event="9")])
-    r = {d["k"]: d for d in tiny.recall_event_reach("1,9", depth=1)["descendants"]}
+    r = {d["k"]: d for d in recall_reach(tiny, "1,9", depth=1)["descendants"]}
     assert r["K000010"]["via"] == ["K000004"]
     assert r["K000010"]["after_recall"] is False

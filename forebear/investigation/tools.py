@@ -19,7 +19,7 @@ from typing import Any, Callable
 
 from .. import summaries
 from ..graph import LINEAGE_EDGE, Graph
-from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt
+from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt, recall_reach
 
 K_RE = re.compile(r"^K\d{6}$")
 RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
@@ -308,14 +308,15 @@ def t_recall_reach(g: Graph, args: dict, ctx: RunContext) -> dict:
     ev = str(args.get("event") or "").strip()
     if not EVENT_RE.match(ev):
         raise ToolError("event must be a numeric FDA recall event number, e.g. 88071")
-    r = g.recall_event_reach(ev, 3)
+    r = recall_reach(g, ev, 3)
     if not r["recalled"]:
         raise ToolError(f"no recalled device for event {ev} in the graph")
     desc = r["descendants"]
     return {"event": ev, "initiated": r.get("initiated"), "recalled": r["recalled"][:20],
             "descendants_total": len(desc), "descendants_cleared_after_recall": sum(d["after_recall"] for d in desc),
+            "timing_counts": r["counts"],
             "descendants": [{k: d[k] for k in ("k", "name", "decision_date", "gen", "via", "conditional_via",
-                                              "after_recall")}
+                                              "evidence", "timing", "after_recall")}
                             for d in desc][:25]}
 
 

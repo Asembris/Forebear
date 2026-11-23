@@ -4,11 +4,85 @@ generation, and recall links say whether they are FDA-listed associations or nam
 import pytest
 from conftest import build_tiny, cite, dev, recall
 
-from forebear.lineage import assess, compare, recall_attribution
+from forebear.lineage import assess, classify_reach, compare, date_relation, recall_attribution, recall_reach
 
 
 def _unresolve(g, src, dst):
     g.q("MATCH (:Device {k:$s})-[r:CITES]->(:Device {k:$d}) SET r.audit = 'unresolved'", {"s": src, "d": dst})
+
+
+# ---------------------------------------------------------------- date boundaries
+@pytest.mark.parametrize("clearance,start,want", [
+    ("2021-06-15", "2021-06-14", "after"),
+    ("2021-06-13", "2021-06-14", "before"),
+    ("2021-06-14", "2021-06-14", "same_day"),
+    ("2021-06-14T00:00:00", "2021-06-14", "same_day"),
+    (None, "2021-06-14", "unknown"),
+    ("2021-06-14", None, "unknown"),
+    ("", "", "unknown"),
+    ("None", "2021-06-14", "unknown"),
+    ("2021-12-31", "2022-01-01", "before"),
+])
+def test_date_relation_boundaries(clearance, start, want):
+    assert date_relation(clearance, start) == want
+
+
+# ---------------------------------------------------------------- recall reach classification
+REC = [{"k": "KA", "name": "A", "initiated": "2020-01-01"}, {"k": "KB", "name": "B", "initiated": "2010-01-01"},
+       {"k": "KN", "name": "N", "initiated": None}]
+
+
+def _row(k, decided, via, supported):
+    return {"k": k, "name": k, "applicant": "x", "decision_date": decided, "gen": 1, "supported_gen": 1 if supported
+            else None, "via": via, "supported_via": supported}
+
+
+def test_reach_mixed_confidence_timing_comes_from_supported_route_only():
+    # supported route to KA (recall 2020), conditional route to KB (recall 2010); cleared 2015
+    r = classify_reach(REC, [_row("KD", "2015-05-05", ["KA", "KB"], ["KA"])])
+    d = r["descendants"][0]
+    assert d["evidence"] == "supported" and d["supported_via"] == ["KA"] and d["conditional_via"] == ["KB"]
+    assert d["timing"] == "before" and d["after_recall"] is False and d["recall_started"] == "2020-01-01"
+    assert d["conditional_timing"] == "after" and d["conditional_recall_started"] == "2010-01-01"
+    assert r["counts"] == {"after_supported": 0, "after_conditional": 0, "before": 1, "same_day": 0, "unknown": 0,
+                           "conditional": 0, "mixed": 1}
+
+
+def test_reach_conditional_only_after_is_counted_apart_from_supported():
+    r = classify_reach(REC, [_row("KD", "2015-05-05", ["KB"], [])])
+    d = r["descendants"][0]
+    assert d["evidence"] == "conditional" and d["timing"] == "after" and d["conditional_timing"] is None
+    assert r["counts"]["after_conditional"] == 1 and r["counts"]["after_supported"] == 0
+
+
+def test_reach_same_day_and_missing_dates_are_not_before():
+    r = classify_reach(REC, [_row("K1", "2020-01-01", ["KA"], ["KA"]), _row("K2", None, ["KA"], ["KA"]),
+                             _row("K3", "2022-01-01", ["KN"], ["KN"])])
+    t = {d["k"]: d["timing"] for d in r["descendants"]}
+    assert t == {"K1": "same_day", "K2": "unknown", "K3": "unknown"}
+    assert not any(d["after_recall"] for d in r["descendants"])
+    assert r["counts"]["before"] == 0 and r["counts"]["same_day"] == 1 and r["counts"]["unknown"] == 2
+    assert r["initiated"] == "2010-01-01"           # the undated holder never becomes the string "None"
+    assert {x["k"]: x["initiated"] for x in r["recalled"]}["KN"] is None
+
+
+def test_reach_graph_conditional_route_does_not_decide_supported_timing(tiny):
+    # K000011 (2009) cites K000002 (recall 2008-04-01) only through an unresolved citation, and K000001 (no recall).
+    tiny.upsert_devices([dev("K000011", "2009-01-01"), dev("K000012", "2008-04-01")])
+    tiny.upsert_citations([cite("K000011", "K000002"), cite("K000012", "K000002")])
+    _unresolve(tiny, "K000011", "K000002")
+    r = {d["k"]: d for d in recall_reach(tiny, "1", depth=3)["descendants"]}
+    assert r["K000011"]["evidence"] == "conditional" and r["K000011"]["conditional_via"] == ["K000002"]
+    assert r["K000011"]["timing"] == "after"
+    assert r["K000012"]["timing"] == "same_day" and r["K000012"]["after_recall"] is False   # cleared the same day
+    assert r["K000003"]["evidence"] == "supported" and r["K000003"]["timing"] == "after"
+    out = recall_reach(tiny, "1", depth=3)
+    assert out["counts"]["after_conditional"] == 1 and out["counts"]["same_day"] == 1
+
+
+def test_reach_unknown_event_is_empty(tiny):
+    r = recall_reach(tiny, "424242", depth=3)
+    assert r["recalled"] == [] and r["descendants"] == [] and r["counts"]["after_supported"] == 0
 
 
 # ---------------------------------------------------------------- compare keeps coverage

@@ -383,3 +383,76 @@ def evidence_ids(a: dict) -> set[str]:
             if e.get("type") == "recall":
                 ids.add(e["id"])
     return ids
+
+
+def date_relation(clearance: str | None, recall_start: str | None) -> str:
+    """'after' | 'before' | 'same_day' | 'unknown': when a clearance was decided relative to a recall start.
+    Compared by calendar day (ISO YYYY-MM-DD strings sort chronologically). A missing date is 'unknown', never
+    'before'; a same-day pair cannot be ordered and is never counted as 'after'."""
+    c, r = (str(clearance)[:10] if clearance else ""), (str(recall_start)[:10] if recall_start else "")
+    if not c or not r or c in ("None", "null") or r in ("None", "null"):
+        return "unknown"
+    return "after" if c > r else "before" if c < r else "same_day"
+
+
+def _earliest(dates) -> str | None:
+    ds = [str(d)[:10] for d in dates if d]
+    return min(ds) if ds else None
+
+
+def classify_reach(recalled: list[dict], desc: list[dict]) -> dict:
+    """Recall reach from raw query rows (Graph.recall_event_reach).
+
+    Each descendant reaches one or more recalled holders. A holder is supported if at least one path to it has no
+    unresolved audit link, conditional if every path does. Timing is taken from the supported holders only (the
+    earliest recall start among them); conditional holders get their own timing, reported separately, so a date
+    reached only through an unresolved citation can never decide the supported classification. `evidence` is
+    'supported' when any holder is supported, else 'conditional'."""
+    start = {d["k"]: (str(d["initiated"])[:10] if d.get("initiated") else None) for d in recalled}
+    out = []
+    for r in desc:
+        via = sorted(r["via"])
+        supported_via = sorted(v for v in r.get("supported_via") or [] if v)
+        conditional_via = sorted(set(via) - set(supported_via))
+        sup_start = _earliest(start.get(v) for v in supported_via)
+        cond_start = _earliest(start.get(v) for v in conditional_via)
+        evidence = "supported" if supported_via else "conditional"
+        basis = sup_start if supported_via else cond_start
+        timing = date_relation(r.get("decision_date"), basis)
+        out.append({
+            "k": r["k"], "name": r["name"], "applicant": r.get("applicant"),
+            "decision_date": str(r["decision_date"])[:10] if r.get("decision_date") else None,
+            "gen": r["gen"], "supported_gen": r.get("supported_gen"),
+            "via": via, "supported_via": supported_via, "conditional_via": conditional_via, "evidence": evidence,
+            "recall_started": basis, "timing": timing, "after_recall": timing == "after",
+            # mixed-confidence routes: what the conditional holders alone would say (None if there are none)
+            "conditional_recall_started": cond_start if supported_via and conditional_via else None,
+            "conditional_timing": (date_relation(r.get("decision_date"), cond_start)
+                                   if supported_via and conditional_via else None),
+        })
+    counts = {"after_supported": 0, "after_conditional": 0, "before": 0, "same_day": 0, "unknown": 0}
+    for d in out:
+        if d["timing"] == "after":
+            counts["after_supported" if d["evidence"] == "supported" else "after_conditional"] += 1
+        else:
+            counts[d["timing"]] += 1
+    counts["conditional"] = sum(1 for d in out if d["evidence"] == "conditional")
+    counts["mixed"] = sum(1 for d in out if d["conditional_via"] and d["supported_via"])
+    recalled_out = []
+    for d in recalled:
+        x = {"link_name_check": "match" if "match" in (d.get("name_checks") or []) else
+             "mismatch" if "mismatch" in (d.get("name_checks") or []) else None,
+             "linked_before_clearance": bool(d.get("before_clearance"))}
+        recalled_out.append({"k": d["k"], "name": d["name"], "decision_date": d.get("decision_date"),
+                             "initiated": start[d["k"]], "records": d.get("records"),
+                             "attribution": recall_attribution(x)})
+    return {"initiated": _earliest(start.values()), "recalled": recalled_out, "descendants": out, "counts": counts}
+
+
+def recall_reach(g: Graph, event: str, depth: int = 3) -> dict:
+    raw = g.recall_event_reach(event, depth)
+    if not raw["recalled"]:
+        return {"event": event, "initiated": None, "recalled": [], "descendants": [],
+                "counts": {"after_supported": 0, "after_conditional": 0, "before": 0, "same_day": 0, "unknown": 0,
+                           "conditional": 0, "mixed": 0}}
+    return {"event": event, **classify_reach(raw["recalled"], raw["descendants"])}

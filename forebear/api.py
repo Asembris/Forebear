@@ -23,7 +23,7 @@ from . import ingest as ingest_mod
 from .ingest import IngestError
 from .investigation import runner as inv_runner
 from .investigation import store as inv_store
-from .lineage import assess, compare
+from .lineage import assess, compare, recall_reach
 
 agent.load_env()
 use_live_cache()          # live ingests never touch the committed data/raw cache
@@ -155,7 +155,7 @@ async def compare_ep(body: CompareIn):
 async def recall_event(event: str, depth: int = 3):
     if not all(e.strip().isdigit() for e in event.split(",")) or event.count(",") > 9:
         raise HTTPException(400, "Recall event numbers are numeric, e.g. 88058 or 88058,88071")
-    return await run(lambda g: g.recall_event_reach(event, depth))
+    return await run(lambda g: recall_reach(g, event, depth))
 
 
 @app.get("/api/watchlist")
