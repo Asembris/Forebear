@@ -1,5 +1,10 @@
 # Keep the hook runnable by Git's sh on every OS.
 .githooks/* text eol=lf
 *.sh text eol=lf
+# Web sources and the committed build use LF on every OS, so a Windows build of web/dist
+# is byte-identical to the Linux build that CI compares against.
+web/** text=auto eol=lf
+web/dist/index.html text eol=lf
+*.woff2 binary
 # Relate store is binary.
 *.rl binary
