@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '../api.js'
-import { VERDICTS, fmtDate } from '../evidence.js'
+import { ATTRIBUTION, EVIDENCE_REASON_TEXT, EVIDENCE_TONE, TIMING_TEXT, fmtDate, verdictView } from '../evidence.js'
 
 const Head = ({ eyebrow, title, children }) => (
   <div className="page-head"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{children && <p>{children}</p>}</div>
@@ -37,23 +37,32 @@ export function CompareView({ initial, go }) {
         <section className="panel">
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Candidate</th><th>Cleared</th><th>Verdict</th><th>Own recalls<br />(design)</th>
+              <thead><tr><th>Candidate</th><th>Cleared</th><th>Verdict</th><th>Evidence<br />(verdict window)</th><th>Own recalls<br />(design)</th>
                 <th>Flagged ancestors<br />gen 1–2</th><th>Ancestors<br />(unread)</th><th>Top signal</th></tr></thead>
-              <tbody>{rows.map((r) => r.found ? (
-                <tr key={r.k} className="click" tabIndex={0} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
+              <tbody>{rows.map((r) => {
+                if (!r.found) return (
+                  <tr key={r.k}><td><span className="k mono">{r.k}</span></td><td colSpan={7} className="sub">Not in the graph. <a href={`#/ingest/${r.k}`}>Read it from FDA →</a></td></tr>)
+                const vv = verdictView(r.verdict, r.evidence)
+                return (
+                <tr key={r.k} className="click" tabIndex={0} data-k={r.k} data-evidence={r.evidence} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
                   <td><span className="k mono">{r.k}</span><div className="sub">{r.name}</div><div className="sub">{r.applicant}</div></td>
                   <td className="num">{fmtDate(r.decision_date)}</td>
-                  <td><span className={`chip tone-${VERDICTS[r.verdict].tone}`}>{VERDICTS[r.verdict].label}</span></td>
+                  <td><span className={`chip tone-${vv.tone}`} data-testid="compare-verdict">{vv.label}</span>
+                    {r.conditional && <div><span className="chip tone-violet">conditional</span></div>}
+                    <div className="sub" style={{ maxWidth: 320 }} data-testid="compare-reason">{r.verdict_reason}</div></td>
+                  <td><span className={`chip tone-${EVIDENCE_TONE[r.evidence] || 'muted'}`} data-testid="compare-evidence">{r.evidence}</span>
+                    {(r.evidence_reasons || []).map((c) => <div key={c} className="sub">{EVIDENCE_REASON_TEXT[c] || c}</div>)}</td>
                   <td className="num">{r.own_recalls} <span className="sub">({r.own_design_recalls})</span></td>
                   <td className="num">{r.flagged_ancestors_gen12}</td>
                   <td className="num">{r.ancestors} <span className="sub">({r.lineage_unknown})</span></td>
                   <td className="sub" style={{ maxWidth: 360 }}>{r.top_signal || '—'}</td>
-                </tr>) : (
-                <tr key={r.k}><td><span className="k mono">{r.k}</span></td><td colSpan={6} className="sub">Not in the graph. <a href={`#/ingest/${r.k}`}>Read it from FDA →</a></td></tr>))}
+                </tr>)
+              })}
               </tbody>
             </table>
           </div>
-          <p className="graph-hint">Verdicts are deterministic documentation signals; a lower count is not a statement that a device is safer.</p>
+          <p className="graph-hint">Verdicts are deterministic documentation signals; a lower count is not a statement that a device is safer.
+            A verdict on partial or uncertain evidence is provisional: equal verdicts on unequal evidence are not equivalent.</p>
         </section>
       )}
     </div>

@@ -153,3 +153,56 @@ export function shortName(n, max = 30) {
   const s = (n || '').replace(/\s+/g, ' ').trim()
   return s.length > max ? s.slice(0, max - 1) + '…' : s
 }
+
+/** Mirror of lineage.provisional(): a "no signal" verdict on an incomplete verdict window. */
+export function isProvisional(verdict, evidence) {
+  return verdict === 'NO_DESIGN_RECALL_SIGNAL' && evidence !== 'complete'
+}
+
+/** Verdict chip for a verdict plus its evidence coverage. A provisional "no signal" never shows the calm tone. */
+export function verdictView(verdict, evidence) {
+  const v = VERDICTS[verdict]
+  if (!v) return { tone: 'muted', label: verdict || 'Unknown', provisional: false }
+  return isProvisional(verdict, evidence)
+    ? { tone: 'muted', label: `${v.label} · provisional`, provisional: true }
+    : { tone: v.tone, label: v.label, provisional: false }
+}
+
+export const EVIDENCE_TONE = { complete: 'calm', partial: 'amber', uncertain: 'alert', none: 'muted' }
+
+/** Mirror of the coverage.evidence_reasons codes in lineage.assess(). */
+export const EVIDENCE_REASON_TEXT = {
+  direct_predicate_links_all_uncertain: 'every direct predicate link rests on uncertain evidence',
+  unresolved_predicate_citations: 'predicate citations within two generations could not be resolved',
+  direct_predicate_summaries_unread: "a direct predicate's own summary was not read",
+  doubtful_links_in_window: 'links within two generations rest on doubtful evidence',
+  recall_cause_or_class_unknown: 'a recall has no stated cause or FDA class',
+  unattributed_recalls_in_product_code: 'design-related recalls in the product code name no 510(k)',
+  shallow_traversal: 'grand-predicates were not traversed',
+}
+
+/** Mirror of lineage.recall_attribution(): how FDA's recall record is tied to the clearance it lists. */
+export const ATTRIBUTION = {
+  product_family: { short: 'FDA-listed · product family', tone: 'muted',
+    text: 'The recall began before this clearance was decided, so it is not a recall of this cleared model: FDA lists the clearance as part of the recalled product family.' },
+  listed_only: { short: 'FDA-listed · model not named', tone: 'muted',
+    text: 'FDA lists this 510(k) on the recall, but the recall text does not name this device: the recalled model may be another one in the family.' },
+  model_named: { short: 'FDA-listed · model named', tone: 'other',
+    text: 'FDA lists this 510(k) on the recall and the recall text names this device.' },
+  unchecked: { short: 'FDA-listed', tone: 'other',
+    text: 'FDA lists this 510(k) on the recall; whether the recall text names this model could not be checked.' },
+}
+
+/** Recall reach timing (lineage.date_relation) as display text. */
+export const TIMING_TEXT = {
+  after: 'cleared after the recall began',
+  before: 'cleared before the recall began',
+  same_day: 'cleared the day the recall began (order unknown)',
+  unknown: 'timing unknown (a date is missing)',
+}
+
+export function recallAttribution(r) {
+  if (r?.attribution) return r.attribution
+  if (r?.linked_before_clearance) return 'product_family'
+  return r?.link_name_check === 'match' ? 'model_named' : r?.link_name_check === 'mismatch' ? 'listed_only' : 'unchecked'
+}

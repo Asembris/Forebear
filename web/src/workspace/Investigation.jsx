@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api, pmnUrl, reportUrl } from '../api.js'
 import {
-  EDGE_STATUS, VERDICTS, countEvents, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
+  EDGE_STATUS, EVIDENCE_REASON_TEXT, VERDICTS, countEvents, verdictView, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
 } from '../evidence.js'
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
@@ -157,8 +157,8 @@ export default function Investigation({ k, go, onChanged }) {
     </div>
   )
   const d = a.device
-  const v = VERDICTS[a.verdict]
   const cov = a.coverage
+  const v = { ...VERDICTS[a.verdict], ...verdictView(a.verdict, cov.evidence) }
   const nReview = reviewItems(a).length
   const conditional = a.signals.filter((s) => s.conditional).length
   return (
@@ -194,6 +194,7 @@ export default function Investigation({ k, go, onChanged }) {
         <div className="coverage-row" aria-label="Evidence coverage">
           <span className={`chip tone-${cov.evidence === 'complete' ? 'calm' : cov.evidence === 'uncertain' ? 'alert' : 'muted'}`} title="Completeness of evidence inside the verdict window">
             Evidence {cov.evidence}</span>
+          {(cov.evidence_reasons || []).map((c) => <span key={c} className="chip tone-muted" data-testid="evidence-reason">{EVIDENCE_REASON_TEXT[c] || c}</span>)}
           <span className="chip">{cov.ancestors} ancestors · {cov.generations_traversed} generations</span>
           {cov.ancestors_lineage_unknown > 0 && <span className="chip tone-muted">{cov.ancestors_lineage_unknown} with unread summaries</span>}
           {cov.doubtful_links > 0 && <span className="chip tone-alert">{cov.doubtful_links} doubtful link(s)</span>}
