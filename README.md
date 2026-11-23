@@ -47,15 +47,21 @@ Tests (extraction and adversarial rules, OCR provenance, audit decisions, uncert
 ```
 
 ## Try this (90 seconds)
-1. **The story.** On the start page, click **K252078 BreathePal Bilevel (2026)**:
-   - Verdict: **Review lineage**.
-   - Its predicate, BiPAP A30 (K113053), is named on pages 5, 6 and 7 of the summary.
-   - K113053 carries the June 2021 Philips PE-PUR foam recall records (Class I, root cause "Device Design").
-   - The timeline shows the recall diamonds sitting *before* BreathePal's clearance date.
-2. **The evidence.** Expand a signal to see the citation chain, the quoted summary text with a PDF link, and each FDA recall record.
+0. **The opening.** <http://127.0.0.1:8765> plays a three-second opening once per session (Skip or Escape ends it), then a short scroll film follows one real thread: K252078 → K113053 → a Class I design recall. Every date, page and quote in it is read from the shipped store and checked by `tests/test_story_facts.py`. Deep links such as `#/check/K252078` skip it. Design and journey: `docs/UX_EXPERIENCE.md`.
+1. **The story.** Click **Investigate K252078** (or open the investigation from the end of the film):
+   - Verdict: **Review lineage**, marked as a deterministic assessment and authoritative only within its documented scope.
+   - The critical chain: BreathePal cites the BiPAP A30 (K113053) on page 6 of its summary.
+   - K113053 carries the June 2021 Philips PE-PUR foam recall records (Class I, root cause "Device Design"), which began 4 yr 9 mo before BreathePal's clearance.
+   - The evidence graph (or its *Timeline* mode) shows the lineage; the timeline puts the recall diamonds *before* BreathePal's clearance date.
+2. **The evidence.** Select any thread for its provenance: the verbatim quote, a link that opens the original FDA PDF at the cited page, the extraction record and the PDF's SHA-256. *What needs human review* lists every uncertainty with what conflicts, why it matters and the next step.
 3. **Writes.** Click **Save assessment to graph**. Then, under *What K252078 cites*, reject the edge: the lineage and verdict change immediately, and the saved assessment is marked **stale**. Restore the edge.
-4. **Recall reach.** Open the tab and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 25 later devices descend from them; 8 of those were cleared after the recall on their own lineage began.
+4. **Recall reach.** Open it and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 26 later devices descend from them; 8 of those were cleared after the recall on their own lineage began; 4 are reached only through an unresolved citation (conditional, shown in violet).
 5. **Live update.** In **Add a clearance**, enter an out-of-family ancestor (dashed node) to read its summary from FDA and extend the tree. This needs internet.
+
+Browser tests (Node 18+; starts the API on a throwaway copy of the store, so nothing is written to `data/forebear.rl`):
+```powershell
+cd web; npx playwright install chromium; npm run test:e2e; cd ..
+```
 
 ## Investigation agent (Phase 2)
 An NVIDIA-hosted LLM investigates one device by calling Forebear's graph tools step by step (check the lineage, trace

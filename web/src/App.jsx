@@ -1,115 +1,95 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { api } from './api.js'
-import CheckView from './CheckView.jsx'
-import { CompareView, ReachView, WatchlistView, IngestView, AboutView } from './Views.jsx'
+import Intro, { introSeen, forgetIntro } from './film/Intro.jsx'
+import { useMedia } from './hooks.js'
+import Shell from './workspace/Shell.jsx'
 
-const TABS = [
-  ['check', 'Predicate check'],
-  ['compare', 'Compare candidates'],
-  ['reach', 'Recall reach'],
-  ['watch', 'Watchlist'],
-  ['ingest', 'Add a clearance'],
-  ['about', 'How it works'],
-]
+const Landing = lazy(() => import('./film/Landing.jsx'))
 
-function parseHash() {
-  const [tab, arg] = window.location.hash.replace(/^#\/?/, '').split('/')
-  return { tab: tab || 'check', arg: arg || '' }
+const ALIASES = { about: 'method' }
+
+export function parseHash(h = window.location.hash) {
+  if (!h.startsWith('#/')) return { tab: 'film', arg: '' }   // "#the-filing" etc. are anchors inside the film
+  const raw = h.replace(/^#\/?/, '')
+  if (!raw) return { tab: 'film', arg: '' }
+  const [tab, ...rest] = raw.split('/')
+  return { tab: ALIASES[tab] || tab || 'film', arg: decodeURIComponent(rest.join('/') || '') }
 }
+const hashFor = (tab, arg) => (tab === 'film' ? '#/' : `#/${tab}${arg ? '/' + arg : ''}`)
 
 export default function App() {
-  const [route, setRoute] = useState(parseHash())
+  const [route, setRoute] = useState(parseHash)
   const [stats, setStats] = useState(null)
   const [statsErr, setStatsErr] = useState(null)
+  const reduced = useMedia('(prefers-reduced-motion: reduce)')
+  // The opening plays once per tab session, only on the landing page, never under reduced motion,
+  // and never in front of a deep link: real work is never delayed.
+  const [intro, setIntro] = useState(() => route.tab === 'film' && !introSeen() &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [introDone, setIntroDone] = useState(intro ? 'pending' : 'none')
 
+  useEffect(() => {
+    document.documentElement.dataset.motion = reduced ? 'reduced' : 'full'
+  }, [reduced])
   useEffect(() => {
     const on = () => setRoute(parseHash())
-    window.addEventListener('hashchange', on)
-    return () => window.removeEventListener('hashchange', on)
+    addEventListener('hashchange', on)
+    return () => removeEventListener('hashchange', on)
   }, [])
-  const refreshStats = () => api.stats().then(setStats).catch((e) => setStatsErr(e.message))
-  useEffect(() => { refreshStats() }, [])
+  // the API may still be opening the store: retry a few times before reporting it unavailable
+  const refreshStats = useCallback((attempt = 0) => api.stats().then((s) => { setStats(s); setStatsErr(null) })
+    .catch((e) => { if (attempt < 5) setTimeout(() => refreshStats(attempt + 1), 800 * (attempt + 1)); else setStatsErr(e.message) }), [])
+  useEffect(() => { refreshStats() }, [refreshStats])
 
-  const go = (tab, arg = '') => { window.location.hash = `/${tab}${arg ? '/' + arg : ''}` }
-
-  return (
-    <div className="app">
-      <header className="top">
-        <div className="brand" onClick={() => go('check')}>
-          <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
-            <circle cx="8" cy="8" r="5" className="b1" /><circle cx="24" cy="16" r="5" className="b2" /><circle cx="8" cy="24" r="5" className="b2" />
-            <path d="M12 9l8 5M12 23l8-5" className="b3" />
-          </svg>
-          <div>
-            <div className="name">Forebear</div>
-            <div className="tag">Check a device's 510(k) ancestry before you cite it</div>
-          </div>
-        </div>
-        <Search onPick={(k) => go('check', k)} />
-        <div className="stats" title="Live counts from the Relate store">
-          {stats ? (
-            <>
-              <span><b>{stats.nodes.Device?.toLocaleString()}</b> devices</span>
-              <span><b>{stats.citations_by_kind.predicate?.toLocaleString()}</b> predicate links</span>
-              <span><b>{stats.nodes.Recall?.toLocaleString()}</b> recalls</span>
-              <span className="relate">Relate · single-file store</span>
-            </>
-          ) : <span className="err">{statsErr || 'connecting…'}</span>}
-        </div>
-      </header>
-      <nav className="tabs">
-        {TABS.map(([id, label]) => (
-          <button key={id} className={route.tab === id ? 'on' : ''} onClick={() => go(id)}>{label}</button>
-        ))}
-      </nav>
-      <main>
-        {route.tab === 'check' && <CheckView k={route.arg} go={go} onChanged={refreshStats} />}
-        {route.tab === 'compare' && <CompareView initial={route.arg} go={go} />}
-        {route.tab === 'reach' && <ReachView initial={route.arg} go={go} />}
-        {route.tab === 'watch' && <WatchlistView go={go} />}
-        {route.tab === 'ingest' && <IngestView initial={route.arg} go={go} onChanged={refreshStats} />}
-        {route.tab === 'about' && <AboutView stats={stats} />}
-      </main>
-      <footer>
-        Public FDA data (openFDA 510(k), recall and enforcement records; 510(k) summary PDFs). Forebear reports
-        documented lineage and recall history; it does not judge device safety. Not regulatory advice.
-      </footer>
-    </div>
-  )
-}
-
-function Search({ onPick }) {
-  const [q, setQ] = useState('')
-  const [res, setRes] = useState([])
-  const [open, setOpen] = useState(false)
-  const timer = useRef(null)
   useEffect(() => {
-    clearTimeout(timer.current)
-    if (q.trim().length < 2) { setRes([]); return }
-    timer.current = setTimeout(() => api.search(q).then(setRes).catch(() => setRes([])), 180)
-  }, [q])
-  const pick = (k) => { setOpen(false); setQ(''); onPick(k) }
+    const titles = { film: 'Forebear · Every clearance has a past', check: route.arg ? `${route.arg} · Forebear` : 'Investigate · Forebear',
+      compare: 'Compare predicates · Forebear', reach: 'Recall reach · Forebear', watch: 'Watchlist · Forebear',
+      ingest: 'Add a clearance · Forebear', history: 'History · Forebear', method: 'Method · Forebear' }
+    document.title = titles[route.tab] || 'Forebear'
+  }, [route])
+
+  const go = useCallback((tab, arg = '', opts = {}) => {
+    const h = hashFor(tab, arg)
+    const apply = () => {
+      history.pushState(null, '', h)
+      setRoute(parseHash(h))
+      window.scrollTo(0, 0)
+    }
+    const vt = opts.transition && !reduced && document.startViewTransition
+    if (vt) document.startViewTransition(() => flushSync(apply))
+    else apply()
+  }, [reduced])
+  useEffect(() => {
+    const on = () => setRoute(parseHash())
+    addEventListener('popstate', on)
+    return () => removeEventListener('popstate', on)
+  }, [])
+
+  const replay = () => {
+    forgetIntro()
+    if (route.tab !== 'film') go('film')
+    window.scrollTo(0, 0)
+    if (!reduced) { setIntroDone('pending'); setIntro(true) }
+  }
+
   return (
-    <div className="search">
-      <input value={q} placeholder="Search a device or K-number, e.g. DreamStation or K252078"
-        onChange={(e) => { setQ(e.target.value); setOpen(true) }}
-        onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 150)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            const v = q.trim().toUpperCase()
-            if (/^K\d{6}$/.test(v)) pick(v)
-            else if (res[0]) pick(res[0].k)
-          }
-        }} />
-      {open && res.length > 0 && (
-        <ul className="results">
-          {res.map((r) => (
-            <li key={r.k} onMouseDown={() => pick(r.k)}>
-              <b>{r.k}</b> {r.name}<span>{r.applicant} · {r.decision_date} · {r.product_code}</span>
-            </li>
-          ))}
-        </ul>
+    <>
+      <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus() }}>Skip to content</a>
+      {intro && <Intro onDone={() => {
+        setIntroDone('bloom')
+        setTimeout(() => setIntro(false), 700)
+        requestAnimationFrame(() => document.getElementById('hero-title')?.focus({ preventScroll: true }))
+      }} />}
+      <div inert={intro && introDone === 'pending' ? '' : undefined} style={{ display: 'contents' }}>
+      {route.tab === 'film' ? (
+        <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+          <Landing go={go} stats={stats} introDone={introDone} reduced={reduced} />
+        </Suspense>
+      ) : (
+        <Shell route={route} go={go} stats={stats} statsErr={statsErr} refreshStats={refreshStats} onReplay={replay} />
       )}
-    </div>
+      </div>
+    </>
   )
 }

@@ -1,0 +1,37 @@
+{
+  "_note": "Every claim the opening film makes. tests/test_story_facts.py checks each value against the shipped Relate store.",
+  "candidate": {
+    "k": "K252078",
+    "name": "BreathePal Bilevel",
+    "applicant": "Compal Electronics, Inc.",
+    "decision_date": "2026-03-17",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf",
+    "verdict": "REVIEW_LINEAGE"
+  },
+  "citation": {
+    "src": "K252078",
+    "dst": "K113053",
+    "page": 6,
+    "quote": "substantially equivalent to the legally marketed predicate device, BiPAP A30 Ventilatory support system (K113053)."
+  },
+  "predicate": {
+    "k": "K113053",
+    "name": "BiPAP A30 Ventilatory Support System",
+    "applicant": "Respironics, Inc.",
+    "decision_date": "2012-02-01"
+  },
+  "recall": {
+    "holder": "K113053",
+    "event": "88071",
+    "ids": ["Z-1957-2021", "Z-1958-2021"],
+    "classification": "Class I",
+    "root_cause": "Device Design",
+    "initiated": "2021-06-14",
+    "reason": "The polyester-based polyurethane (PE-PUR) foam may degrade into particles"
+  },
+  "grand_predicates": [
+    { "k": "K092818", "name": "BiPAP AVAPS", "decision_date": "2010-01-22" },
+    { "k": "K082660", "name": "V60 Ventilator", "decision_date": "2009-01-09" },
+    { "k": "K103167", "name": "Stellar 150", "decision_date": "2011-03-01" }
+  ]
+}

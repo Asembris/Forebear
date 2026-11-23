@@ -165,9 +165,13 @@ async def watchlist(design_only: bool = True):
     for r in rows:
         d = by.setdefault(r["k"], {"k": r["k"], "name": r["name"], "applicant": r["applicant"],
                                    "decision_date": r["decision_date"], "received_date": r["received_date"],
-                                   "min_gen": r["gen"],
+                                   "min_gen": r["gen"], "supported_min_gen": None, "recall_count": 0,
                                    "ancestors": set(), "events": set(), "recalls": []})
         d["min_gen"] = min(d["min_gen"], r["gen"])
+        d["recall_count"] += 1
+        if not r["conditional"]:        # a route that does not rest on an unresolved citation
+            sg = d["supported_min_gen"]
+            d["supported_min_gen"] = r["gen"] if sg is None else min(sg, r["gen"])
         d["ancestors"].add(r["ancestor"])
         d["events"].add(r["event"])
         if len(d["recalls"]) < 6:
@@ -177,7 +181,11 @@ async def watchlist(design_only: bool = True):
     for d in out:
         d["ancestors"] = sorted(d["ancestors"])
         d["events"] = sorted(e for e in d["events"] if e)
-    return {"count": len(out), "direct": sum(1 for d in out if d["min_gen"] == 1), "rows": out}
+        # computed over every recall route, not the first six listed: conditional only if none is supported
+        d["conditional"] = d["supported_min_gen"] is None
+    return {"count": len(out), "direct": sum(1 for d in out if d["min_gen"] == 1),
+            "direct_supported": sum(1 for d in out if d["supported_min_gen"] == 1),
+            "conditional": sum(1 for d in out if d["conditional"]), "rows": out}
 
 
 @app.get("/api/assessments")
