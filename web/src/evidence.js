@@ -33,13 +33,15 @@ export const DOUBT_TEXT = {
   llm_label_only: 'A predicate only because an LLM labelled the mention',
   client_confirmation_only: 'Confirmed only through the automated MCP client, not a person',
   client_rejection_pending: 'Rejected through the automated MCP client; kept until a person decides',
+  review_outdated: "A person reviewed an earlier version of the FDA summary; it needs re-review",
 }
 
 /** Mirror of lineage.doubt(): why a lineage hop's evidence is doubtful ([] if not). */
 export function doubt(h) {
   if (!h) return []
-  if (h.review === 'confirmed' && !MACHINE_REVIEWERS.includes(h.reviewer)) return []
+  if (h.review === 'confirmed' && humanReview(h)) return []
   const why = []
+  if (outdatedReview(h)) why.push('review_outdated')
   if (h.audit === 'unresolved') why.push('audit_unresolved')
   if (h.audit === 'corrected') why.push('audit_correction')
   if (h.name_check === 'mismatch' && !['variant', 'corrected'].includes(h.audit)) why.push('name_mismatch')
@@ -51,8 +53,13 @@ export function doubt(h) {
   return why
 }
 
-/** A review recorded by a person (not the automated MCP client). Only these change trusted lineage. */
+/** Mirror of graph.CURRENT_HUMAN_REVIEW: a review recorded by a person (not the automated MCP client) on the
+    evidence version the edge carries now. Only these change trusted lineage. */
 export const humanReview = (h) => !!h?.review && !MACHINE_REVIEWERS.includes(h.reviewer)
+  && (h.reviewed_source_sha256 || '') === (h.source_sha256 || '')
+
+/** A person's review made on an earlier version of the summary: kept as history, no longer counted. */
+export const outdatedReview = (h) => !!h?.review && !MACHINE_REVIEWERS.includes(h.reviewer) && !humanReview(h)
 
 export const EDGE_STATUS = {
   confirmed: { label: 'Confirmed by a person', short: 'Confirmed' },

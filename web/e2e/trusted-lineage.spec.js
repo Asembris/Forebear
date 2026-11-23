@@ -48,3 +48,24 @@ test('re-ingest lists citations retired by the refreshed summary', async ({ page
   await expect(page.getByTestId('ingest-retired')).toContainText('K000003 (confirmed by user)')
   await expect(page.getByTestId('ingest-retired')).toContainText('kept with their reviews and provenance')
 })
+
+test('re-ingest can explicitly refresh the FDA summary and reports a changed PDF', async ({ page }) => {
+  let body = null
+  await page.route('**/api/ingest', (route) => {
+    body = route.request().postDataJSON()
+    return route.fulfill({
+      json: {
+        k: 'K261000', was_present: true, lineage_was_known: true, summary_status: 'ok', summary_url: null,
+        summary_sha256: 'bbbbbbbbbbbbbbbb', refresh: { changed: true, previous_sha256: 'aaaaaaaaaaaaaaaa' },
+        citations_added: [], citations_unresolved: [], new_devices: [], recalls_linked: [], extraction: {},
+        graph_before: {}, graph_after: {}, rels_before: {}, rels_after: {},
+        reconciliation: { ran: true, skipped_reason: null, new: [], restored: [], retired: [], retired_with_human_review: [] },
+      },
+    })
+  })
+  await page.goto('/#/ingest/K261000')
+  await page.getByTestId('ingest-refresh').check()
+  await page.getByRole('button', { name: 'Read and add' }).click()
+  await expect(page.getByTestId('ingest-refresh-result')).toContainText('aaaaaaaaaaaa → bbbbbbbbbbbb')
+  expect(body).toEqual({ k: 'K261000', refresh: true })
+})
