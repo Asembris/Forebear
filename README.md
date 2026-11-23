@@ -4,6 +4,9 @@
 
 <br/>
 
+[![Watch: demo video](https://img.shields.io/badge/watch-demo_video-ff0000?style=for-the-badge&logo=youtube&logoColor=white&labelColor=0b1322)](https://youtu.be/wi9gg9Cik7Y)
+[![Devpost: submission](https://img.shields.io/badge/devpost-submission-003e54?style=for-the-badge&logo=devpost&logoColor=white&labelColor=0b1322)](https://devpost.com/software/forebear)
+<br/>
 [![Backend](https://github.com/Asembris/Forebear/actions/workflows/backend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/backend.yml)
 [![Frontend](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml)
 [![Security](https://github.com/Asembris/Forebear/actions/workflows/security.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/security.yml)
