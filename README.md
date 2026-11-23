@@ -260,6 +260,7 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 | [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
 | [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K251770](docs/investigations/K251770_I-8203364b195e.md) and [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Data rights, manufacturer-authored text, trademarks, bundled fonts and libraries |
+| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What to confirm before the Devpost entry goes in |
 
 ## Data, licensing and attribution
 
