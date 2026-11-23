@@ -32,6 +32,7 @@ export const DOUBT_TEXT = {
   different_fda_panel: 'Cited device sits in a different FDA review panel',
   llm_label_only: 'A predicate only because an LLM labelled the mention',
   client_confirmation_only: 'Confirmed only through the automated MCP client, not a person',
+  client_rejection_pending: 'Rejected through the automated MCP client; kept until a person decides',
 }
 
 /** Mirror of lineage.doubt(): why a lineage hop's evidence is doubtful ([] if not). */
@@ -46,24 +47,33 @@ export function doubt(h) {
   if (h.kind != null && h.kind !== 'predicate' && h.ai_label === 'predicate') why.push('llm_label_only')
   if (h.kind != null && h.kind !== 'predicate' && h.review === 'confirmed' && MACHINE_REVIEWERS.includes(h.reviewer))
     why.push('client_confirmation_only')
+  if (h.review === 'rejected' && MACHINE_REVIEWERS.includes(h.reviewer)) why.push('client_rejection_pending')
   return why
 }
+
+/** A review recorded by a person (not the automated MCP client). Only these change trusted lineage. */
+export const humanReview = (h) => !!h?.review && !MACHINE_REVIEWERS.includes(h.reviewer)
 
 export const EDGE_STATUS = {
   confirmed: { label: 'Confirmed by a person', short: 'Confirmed' },
   extracted: { label: 'Machine-extracted', short: 'Extracted' },
   disputed: { label: 'Disputed evidence', short: 'Disputed' },
   conditional: { label: 'Conditional route', short: 'Conditional' },
-  rejected: { label: 'Rejected by a reviewer', short: 'Rejected' },
+  rejected: { label: 'Rejected by a person', short: 'Rejected' },
+  advisory: { label: 'Advisory: suggested by an LLM or the MCP client, awaiting a person; not a verdict input', short: 'Advisory' },
+  retired: { label: 'Retired: the refreshed FDA summary no longer cites it; kept for the record', short: 'Retired' },
 }
 
-/** One of confirmed | extracted | disputed | conditional | rejected, with the reasons behind it. */
+/** One of confirmed | extracted | disputed | conditional | rejected | advisory | retired, with the reasons behind it.
+    Mirrors graph.LINEAGE_EDGE / ADVISORY_EDGE: the backend's advisory / trust / retired_at fields win when present. */
 export function edgeStatus(h) {
-  if (h?.review === 'rejected') return { key: 'rejected', reasons: [] }
+  if (h?.retired_at || h?.trust === 'retired') return { key: 'retired', reasons: [] }
+  if (h?.review === 'rejected' && humanReview(h)) return { key: 'rejected', reasons: [] }
+  if (h?.advisory || h?.trust === 'advisory') return { key: 'advisory', reasons: [] }
   const reasons = doubt(h)
   if (reasons.includes('audit_unresolved')) return { key: 'conditional', reasons }
   if (reasons.length) return { key: 'disputed', reasons }
-  if (h?.review === 'confirmed') return { key: 'confirmed', reasons }
+  if (h?.review === 'confirmed' && humanReview(h)) return { key: 'confirmed', reasons }
   return { key: 'extracted', reasons }
 }
 
@@ -179,6 +189,8 @@ export const EVIDENCE_REASON_TEXT = {
   recall_cause_or_class_unknown: 'a recall has no stated cause or FDA class',
   unattributed_recalls_in_product_code: 'design-related recalls in the product code name no 510(k)',
   shallow_traversal: 'grand-predicates were not traversed',
+  advisory_links_pending_review: 'predicate links suggested only by an LLM or the MCP client await a person',
+  human_confirmed_citation_retired: 'a citation a person confirmed is no longer in the refreshed FDA summary',
 }
 
 /** Mirror of lineage.recall_attribution(). Every link is FDA's own listing of the K-number on the recall record: an

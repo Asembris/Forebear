@@ -134,6 +134,10 @@ select.field { padding: 6px 10px; width: auto; }
 .status-conditional .line { border-top-style: dotted; border-top-width: 3px; }
 .status-rejected { color: var(--ink-4); }
 .status-rejected .line { border-top-style: dashed; opacity: .6; }
+.status-advisory { color: var(--violet); }
+.status-advisory .line { border-top-style: dotted; opacity: .7; }
+.status-retired { color: var(--ink-4); }
+.status-retired .line { border-top-style: dotted; opacity: .4; }
 
 /* ================================================================== INTRO (≈3 s, once per session) */
 .intro {

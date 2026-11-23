@@ -51,6 +51,20 @@ export function reviewItems(a) {
           todo: 'Open each thread, compare the quote with the cited device, then confirm or reject it.',
           hops: s.evidence.filter((e) => e.type === 'citation') })
         break
+      case 'ADVISORY_LINK_PENDING_REVIEW':
+        items.push({ id: s.code, tone: 'violet', sev: 'info', title: s.title,
+          what: 'An LLM label or the automated MCP client calls these citations predicates; no person has decided.',
+          why: 'They are not used for the verdict. If one is a real predicate, its recalls belong in the lineage and the verdict could change.',
+          todo: 'Open each link, read the PDF page, and confirm or reject it yourself.',
+          hops: s.evidence.filter((e) => e.type === 'advisory_citation') })
+        break
+      case 'CITATION_RETIRED_BY_REINGEST':
+        items.push({ id: s.code, tone: 'muted', sev: 'info', title: s.title,
+          what: "Re-reading the citing device's FDA summary no longer found these citations, so they were retired from the lineage.",
+          why: 'Earlier reviews, labels and provenance are kept for the record; a review made on the old text may no longer apply.',
+          todo: 'Compare the refreshed summary with the earlier one and record a new review if the citation still matters.',
+          hops: s.evidence })
+        break
       case 'PREDICATE_CITATION_UNRESOLVED':
         items.push({ id: s.code, tone: 'muted', sev: 'info', title: s.title,
           what: 'Predicate citations printed in a summary did not become lineage threads.',

@@ -272,6 +272,11 @@ export function IngestView({ initial, go, onChanged }) {
             res.citations_added.map((c) => (
               <div key={c.dst} className="cit"><div className="cit-h"><span className="k mono">{c.dst}</span> <span className="chip">{c.kind}</span> <span className="muted">p.{c.page}</span></div>
                 <blockquote className="quote">“{c.snippet}”</blockquote></div>))}
+          {res.reconciliation?.retired?.length > 0 && <>
+            <h3 style={{ fontSize: 13 }}>Citations no longer in the refreshed summary</h3>
+            <p className="muted small" data-testid="ingest-retired">Retired from the lineage, kept with their reviews and provenance:{' '}
+              {res.reconciliation.retired.map((c) => `${c.dst}${c.review ? ` (${c.review} by ${c.reviewer || 'unknown'})` : ''}`).join(', ')}.</p></>}
+          {res.reconciliation && !res.reconciliation.ran && <p className="muted small">{res.reconciliation.skipped_reason}.</p>}
           <p className="muted small">{res.recalls_linked.length} recall record(s) linked.</p>
           <button className="btn btn-primary" onClick={() => go('check', res.k)}>Investigate {res.k} <span className="arr">→</span></button>
         </section>
