@@ -155,7 +155,9 @@ export function createFilm(story, { glCanvas, facts, deviceCount = 1187, compact
     const t = clamp(spring.value, 0, 4)
     const scene = Math.round(t)
     if (scene !== lastScene) { lastScene = scene; onScene && onScene(scene) }
-    draw(t, now / 1000)
+    // past the last scene the picture scrolls away with the page, so the handoff copy never slides over it
+    const over = Math.max(0, window.scrollY - anchors[anchors.length - 1][0])
+    draw(t, now / 1000, over)
     raf = requestAnimationFrame(frame)
   }
 
@@ -209,8 +211,9 @@ export function createFilm(story, { glCanvas, facts, deviceCount = 1187, compact
     }
   }
 
-  function draw(t, time) {
+  function draw(t, time, over = 0) {
     const c = cam(t)
+    c.sy -= over
     const mix = smooth(3.35, 3.95, t)
     const { cand, pred, gps, recall, X, rulerY } = world
     const P = (x, y) => [(x - c.cx) * c.z + c.sx, (y - c.cy) * c.z + c.sy]
