@@ -27,11 +27,28 @@ def candidate_urls(k: str) -> list[str]:
 
 
 def cache_file(k: str) -> Path:
-    """Committed cache first; in live mode, anything not in it lives in data/live (gitignored)."""
+    """Where k's summary is read from. In live mode a record in data/live (gitignored) wins: it is either a summary
+    the committed cache never had, or an explicit refresh() of one it has. Otherwise the committed data/raw cache."""
     raw = SUMMARY_CACHE / f"{k}.json"
-    if CACHE_MODE["mode"] == "live" and not raw.exists():
-        return LIVE_SUMMARY_CACHE / f"{k}.json"
+    live = LIVE_SUMMARY_CACHE / f"{k}.json"
+    if CACHE_MODE["mode"] == "live" and (live.exists() or not raw.exists()):
+        return live
     return raw
+
+
+def write_file(k: str) -> Path:
+    """Where a fetched summary is written: data/live in live mode, so the app never rewrites the committed
+    data/raw cache (only scripts/fetch_data.py, in raw mode, does)."""
+    return (LIVE_SUMMARY_CACHE if CACHE_MODE["mode"] == "live" else SUMMARY_CACHE) / f"{k}.json"
+
+
+def _store(k: str, rec: dict) -> None:
+    """Write atomically: a crash mid-write never leaves a truncated record that would shadow the committed one."""
+    p = write_file(k)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(rec), encoding="utf-8")
+    tmp.replace(p)
 
 
 def load(k: str) -> dict | None:
@@ -69,6 +86,44 @@ def fetch(k: str, client: httpx.Client | None = None, force: bool = False) -> di
         cached = load(k)
         if cached is not None:
             return cached
+    rec = download(k, client)
+    if rec["status"] != "error":          # transient errors are not cached
+        _store(k, rec)
+    return rec
+
+
+class RefreshError(Exception):
+    pass
+
+
+def refresh(k: str, client: httpx.Client | None = None) -> dict:
+    """Explicitly re-download k's summary PDF from FDA to detect a changed document. Live mode only: the refreshed
+    record goes to data/live and supersedes the committed data/raw record for the app, which is never modified.
+
+    The cached record is replaced only by genuinely readable evidence: a PDF with a text layer whose SHA-256 differs
+    from the cached one. A download error, a missing PDF or an image-only PDF (whose OCR, if any, was made from other
+    bytes) raises RefreshError and leaves the cache untouched, so existing lineage is never reconciled against
+    unreadable evidence. Returns the current record with `refresh` metadata: {changed, previous_sha256}."""
+    if CACHE_MODE["mode"] != "live":
+        raise RefreshError("refresh writes the live cache only; call config.use_live_cache() first")
+    prev = load(k)
+    rec = download(k, client)
+    prev_sha = (prev or {}).get("sha256")
+    if rec["status"] == "error":
+        raise RefreshError(f"download failed: {rec.get('error')}; the cached summary is kept")
+    if rec["status"] == "missing":
+        raise RefreshError("FDA returned no summary PDF for this clearance; the cached summary is kept")
+    if prev_sha and rec["sha256"] == prev_sha:
+        return prev | {"refresh": {"changed": False, "previous_sha256": prev_sha, "checked_at": rec["fetched_at"]}}
+    if rec["status"] != "ok":
+        raise RefreshError(f"the refreshed PDF (sha256 {str(rec['sha256'])[:12]}) has no readable text layer; "
+                           "the cached summary is kept and nothing was reconciled")
+    _store(k, rec)
+    return rec | {"refresh": {"changed": True, "previous_sha256": prev_sha, "checked_at": rec["fetched_at"]}}
+
+
+def download(k: str, client: httpx.Client | None = None) -> dict:
+    """One download attempt over the candidate URLs; never touches the cache."""
     own = client is None
     client = client or httpx.Client(timeout=60, headers={"User-Agent": USER_AGENT}, follow_redirects=True)
     rec = {"k": k, "status": "missing", "url": None, "sha256": None, "pages": [],
@@ -76,6 +131,10 @@ def fetch(k: str, client: httpx.Client | None = None, force: bool = False) -> di
     try:
         for url in candidate_urls(k):
             r = client.get(url)
+            if r.status_code == 429 or r.status_code >= 500:     # transient: never cached, never read as "missing"
+                rec["status"] = "error"
+                rec["error"] = f"HTTP {r.status_code} from {url}"
+                break
             if r.status_code == 200 and r.content[:4] == b"%PDF":
                 rec["url"] = url
                 rec["sha256"] = hashlib.sha256(r.content).hexdigest()
@@ -95,7 +154,4 @@ def fetch(k: str, client: httpx.Client | None = None, force: bool = False) -> di
     finally:
         if own:
             client.close()
-    if rec["status"] != "error":          # transient errors are not cached
-        cache_file(k).parent.mkdir(parents=True, exist_ok=True)
-        cache_file(k).write_text(json.dumps(rec), encoding="utf-8")
     return rec

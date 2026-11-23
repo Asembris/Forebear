@@ -57,7 +57,9 @@ def normalise_k(k: str) -> str:
     return k
 
 
-def fetch_clearance(k: str, use_cache: bool = True) -> Fetched:
+def fetch_clearance(k: str, use_cache: bool = True, refresh: bool = False) -> Fetched:
+    """refresh=True re-downloads the summary PDF (summaries.refresh) instead of reusing the cached text, so a changed
+    FDA document is detected; it raises IngestError, writing nothing, unless the new PDF is readable."""
     k = normalise_k(k)
     try:
         meta = openfda.clearances_by_k([k], use_cache=use_cache)
@@ -67,7 +69,9 @@ def fetch_clearance(k: str, use_cache: bool = True) -> Fetched:
     if not meta:
         raise IngestError(f"{k} is not a 510(k) clearance in openFDA")
     try:
-        summ = summaries.fetch(k)
+        summ = summaries.refresh(k) if refresh else summaries.fetch(k)
+    except summaries.RefreshError as e:
+        raise IngestError(f"Summary refresh for {k} did not change the graph: {e}") from e
     except Exception as e:
         raise IngestError(f"Could not download the 510(k) summary: {e}") from e
     if summ["status"] == "error":
@@ -138,6 +142,7 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
         "k": f.k, "was_present": existing is not None,
         "lineage_was_known": bool(existing and existing.get("lineage_known")),
         "summary_status": devices[0]["summary_status"], "summary_url": f.summ.get("url"),
+        "summary_sha256": f.summ.get("sha256"), "refresh": f.summ.get("refresh"),
         "citations_added": cits, "citations_unresolved": unresolved, "new_devices": list(rel.cited_meta),
         "reconciliation": {
             "ran": reconcile,
@@ -153,10 +158,10 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
     }
 
 
-def add_clearance(g: Graph, k: str, use_cache: bool = True) -> dict:
+def add_clearance(g: Graph, k: str, use_cache: bool = True, refresh: bool = False) -> dict:
     """Synchronous composition of the phases (scripts, tests, MCP-less use)."""
     k = normalise_k(k)
     existing = g.device(k)
-    f = fetch_clearance(k, use_cache)
+    f = fetch_clearance(k, use_cache, refresh)
     rel = fetch_related(f, present_devices(g, f.cited), use_cache)
     return write(g, f, rel, existing)

@@ -232,6 +232,9 @@ async def list_assessments(k: str | None = None):
 # ---------------------------------------------------------------- writes
 class IngestIn(BaseModel):
     k: str
+    # Re-download the summary PDF instead of reusing the cached text, to detect a changed FDA document. A failed or
+    # unreadable download changes nothing (422).
+    refresh: bool = False
 
 
 @app.post("/api/ingest")
@@ -241,7 +244,7 @@ async def ingest(body: IngestIn):
     try:
         # network phases run off the Relate thread, so the UI stays responsive during a PDF download
         existing = await run(lambda g: g.device(k))
-        fetched = await loop.run_in_executor(None, ingest_mod.fetch_clearance, k)
+        fetched = await loop.run_in_executor(None, ingest_mod.fetch_clearance, k, True, body.refresh)
         present = await run(lambda g: ingest_mod.present_devices(g, fetched.cited))
         related = await loop.run_in_executor(None, ingest_mod.fetch_related, fetched, present)
         return await run(lambda g: ingest_mod.write(g, fetched, related, existing))

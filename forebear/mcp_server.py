@@ -41,8 +41,11 @@ TOOLS = [
     {"name": "ingest_clearance", "description": "Fetch a 510(k) from FDA (openFDA + summary PDF), extract its predicates and recalls, "
                                                 "and MERGE it into the graph. Also extends lineage for a device whose summary was unread. "
                                                 "Re-ingesting reconciles citations: ones the refreshed summary no longer supports are "
-                                                "retired (kept with their reviews and provenance, out of lineage).",
-     "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
+                                                "retired (kept with their reviews and provenance, out of lineage). Set refresh=true "
+                                                "to re-download the summary PDF and detect a changed FDA document; a failed or "
+                                                "unreadable download changes nothing.",
+     "inputSchema": {"type": "object", "properties": {"k_number": K, "refresh": {"type": "boolean"}},
+                     "required": ["k_number"]}},
     {"name": "review_citation", "description": "Record an ADVISORY judgement on an extracted citation edge: confirmed, rejected, "
                                                "or '' to clear. Recorded with reviewer 'mcp-client' (possibly an AI agent), it never "
                                                "changes the deterministic lineage or verdict: a confirmation here lists the link as "
@@ -136,9 +139,9 @@ def call_tool(name: str, args: dict):
     if name == "list_citations":
         return _http("GET", f"/api/device/{up(args['k_number'])}")["citations"]
     if name == "ingest_clearance":
-        r = _http("POST", "/api/ingest", json={"k": up(args["k_number"])})
+        r = _http("POST", "/api/ingest", json={"k": up(args["k_number"]), "refresh": bool(args.get("refresh"))})
         return {k: r[k] for k in ("k", "was_present", "summary_status", "summary_url", "new_devices",
-                                  "recalls_linked", "extraction", "reconciliation")} | {
+                                  "recalls_linked", "extraction", "reconciliation", "refresh")} | {
             "citations_added": [{k: c[k] for k in ("dst", "kind", "page", "snippet")} for c in r["citations_added"]]}
     if name == "review_citation":
         return _http("POST", "/api/citation/review", json={"src": up(args["src"]), "dst": up(args["dst"]),
