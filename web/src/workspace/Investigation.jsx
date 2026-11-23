@@ -49,7 +49,7 @@ function FindingSentence({ a }) {
         {shortName(d.name, 48)} cites <span className="k">{sig.chain[1]}</span>{first?.page ? <> on page {first.page} of its summary</> : null}.
         {' '}{sig.conditional ? <>The cited device <span className="k">{holder?.k}</span>, reached through a citation the audit could not resolve,</>
           : sig.chain.length > 2 ? <>Through it, {sig.gen === 2 ? 'grand-predicate' : `generation-${sig.gen} ancestor`} <span className="k">{holder?.k}</span></> : <>That predicate</>}
-        {' '}({shortName(holder?.name, 52)}) has {ev.events} recall event{ev.events === 1 ? '' : 's'} in this signal
+        {' '}({shortName(holder?.name, 52)}) is listed by FDA on {ev.events} recall event{ev.events === 1 ? '' : 's'} in this signal
         {r && <>, including a <span className="amber">{r.classification || 'unclassified'} {r.root_cause}</span> recall that began {fmtDate(r.initiated)}
           {timing && <>, {timing.relation === 'before'
             ? <><span className="amber">{timing.duration} before</span> {a.k} was cleared</>
