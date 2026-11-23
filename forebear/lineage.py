@@ -22,7 +22,29 @@ def _recall_ev(x: dict) -> dict:
             "root_cause": x.get("root_cause"), "design_related": x.get("design_related"),
             "initiated": x.get("initiated"), "firm": x.get("firm"), "reason": x.get("reason"),
             "url": x.get("url"), "status": x.get("status"),
-            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance")}
+            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance"),
+            "attribution": recall_attribution(x)}
+
+
+def recall_attribution(x: dict) -> str:
+    """How a recall record is tied to the 510(k) it is linked to. The link itself is always FDA's: openFDA lists the
+    clearance's K-number on the recall record. That is an association, not proof that this cleared model was recalled.
+
+      product_family  the recall began before this clearance was decided, so the clearance cannot be the recalled
+                      product as cleared; FDA lists later clearances of the same product family on older recalls
+      model_named     the recall's product/reason text names this device
+      listed_only     FDA lists the K-number, but the recall text does not name this device (the recalled model may
+                      be another one in the family)
+      unchecked       FDA lists the K-number; the device's FDA name has no distinctive token to check
+    """
+    if x.get("linked_before_clearance"):
+        return "product_family"
+    nc = x.get("link_name_check")
+    if nc == "match":
+        return "model_named"
+    if nc == "mismatch":
+        return "listed_only"
+    return "unchecked"
 
 
 def _count(recs: list[dict]) -> str:
