@@ -19,7 +19,7 @@ from typing import Any, Callable
 
 from .. import summaries
 from ..graph import LINEAGE_EDGE, Graph
-from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt
+from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt, recall_reach
 
 K_RE = re.compile(r"^K\d{6}$")
 RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
@@ -300,22 +300,24 @@ def t_get_recall(g: Graph, args: dict, ctx: RunContext) -> dict:
             "initiated": x.get("initiated"), "status": x.get("status"), "firm": x.get("firm"), "url": x.get("url"),
             "untrusted_reason": untrusted(x.get("reason"), 400), "untrusted_product": untrusted(x.get("product"), 300),
             "linked_devices": devs[:20], "linked_devices_total": len(devs),
-            "note": "Device links are FDA's own k_numbers on the recall record; link_name_check says whether the "
-                    "product text names the device."}
+            "note": "Device links are FDA's own k_numbers on the recall record: an association, not verified model "
+                    "identity. link_name_check is a fuzzy heuristic (one distinctive word of the FDA device name found "
+                    "in the recall text), not proof the recall names that exact model."}
 
 
 def t_recall_reach(g: Graph, args: dict, ctx: RunContext) -> dict:
     ev = str(args.get("event") or "").strip()
     if not EVENT_RE.match(ev):
         raise ToolError("event must be a numeric FDA recall event number, e.g. 88071")
-    r = g.recall_event_reach(ev, 3)
+    r = recall_reach(g, ev, 3)
     if not r["recalled"]:
         raise ToolError(f"no recalled device for event {ev} in the graph")
     desc = r["descendants"]
     return {"event": ev, "initiated": r.get("initiated"), "recalled": r["recalled"][:20],
             "descendants_total": len(desc), "descendants_cleared_after_recall": sum(d["after_recall"] for d in desc),
+            "timing_counts": r["counts"],
             "descendants": [{k: d[k] for k in ("k", "name", "decision_date", "gen", "via", "conditional_via",
-                                              "after_recall")}
+                                              "evidence", "timing", "after_recall")}
                             for d in desc][:25]}
 
 

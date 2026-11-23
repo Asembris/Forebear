@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { api, pmnUrl } from '../api.js'
 import {
-  DOUBT_TEXT, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, pdfAt, recallTone, shortName,
+  ATTRIBUTION, DOUBT_TEXT, PREDATES_CLEARANCE, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, pdfAt, recallAttribution, recallTone, shortName,
 } from '../evidence.js'
 
 /* Highlight the cited K-number inside the verbatim quote. */
@@ -22,14 +22,19 @@ export function StatusTag({ hop }) {
 
 export function RecallCard({ r }) {
   const tone = recallTone(r)
+  const att = ATTRIBUTION[recallAttribution(r)]
   return (
-    <div className="recall">
+    <div className="recall" data-attribution={recallAttribution(r)}>
       <div className="recall-h">
         <span className={`chip tone-${tone}`}>{tone === 'design' ? 'Design-related' : tone === 'class1' ? 'Class I, other cause' : 'Other cause'}</span>
         <span className="k mono">{r.id}</span>
         <span className="muted">{r.classification || 'Unclassified'} · {r.root_cause || 'cause not stated'} · began {fmtDate(r.initiated)}</span>
         {r.url && <a href={r.url} target="_blank" rel="noreferrer">FDA record ↗</a>}
       </div>
+      <div className="recall-r"><span className={`chip tone-${att.tone}`} title={att.text}>{att.short}</span> <span className="muted small">{att.text}</span></div>
+      {r.linked_before_clearance && (
+        <div className="recall-r" data-testid="recall-predates"><span className="chip tone-muted" title={PREDATES_CLEARANCE.text}>{PREDATES_CLEARANCE.short}</span>{' '}
+          <span className="muted small">{PREDATES_CLEARANCE.text}</span></div>)}
       {r.reason && <div className="recall-r">{r.reason}</div>}
       {r.status && <div className="recall-r">Status: {r.status}{r.event ? ` · event ${r.event}` : ''}{r.firm ? ` · ${r.firm}` : ''}</div>}
     </div>
@@ -210,11 +215,11 @@ function NodeBody({ sel, a, closeBtn, onClose, go, onSelect }) {
           </div>
         )}
         <div className="drawer-sec">
-          <h3>FDA recall records · {ev.events} event(s), {ev.records} product record(s)</h3>
+          <h3>Recall records on which FDA lists this 510(k) · {ev.events} event(s), {ev.records} product record(s)</h3>
           {n.side !== 'self' && before.length > 0 && (
             <p className="note-box amber" style={{ marginBottom: 10 }}>{before.length} of these record(s) began before {a.k} was cleared on {fmtDate(a.device.decision_date)}.</p>
           )}
-          {recalls.length === 0 ? <p className="muted">No recall record names this 510(k) in openFDA.</p>
+          {recalls.length === 0 ? <p className="muted">openFDA lists this 510(k) on no recall record.</p>
             : <div style={{ display: 'grid', gap: 8 }}>{recalls.slice(0, 20).map((r) => <RecallCard key={r.id} r={r} />)}</div>}
           {recalls.length > 20 && <p className="muted small">+ {recalls.length - 20} more record(s): open the device to see all.</p>}
         </div>

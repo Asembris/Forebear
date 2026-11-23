@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '../api.js'
-import { VERDICTS, fmtDate } from '../evidence.js'
+import {
+  ATTRIBUTION, EVIDENCE_REASON_TEXT, EVIDENCE_TONE, PREDATES_CLEARANCE, TIMING_TEXT, fmtDate, recallAttribution, verdictView,
+} from '../evidence.js'
 
 const Head = ({ eyebrow, title, children }) => (
   <div className="page-head"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{children && <p>{children}</p>}</div>
@@ -37,23 +39,32 @@ export function CompareView({ initial, go }) {
         <section className="panel">
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Candidate</th><th>Cleared</th><th>Verdict</th><th>Own recalls<br />(design)</th>
+              <thead><tr><th>Candidate</th><th>Cleared</th><th>Verdict</th><th>Evidence<br />(verdict window)</th><th>Own recalls<br />(design)</th>
                 <th>Flagged ancestors<br />gen 1–2</th><th>Ancestors<br />(unread)</th><th>Top signal</th></tr></thead>
-              <tbody>{rows.map((r) => r.found ? (
-                <tr key={r.k} className="click" tabIndex={0} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
+              <tbody>{rows.map((r) => {
+                if (!r.found) return (
+                  <tr key={r.k}><td><span className="k mono">{r.k}</span></td><td colSpan={7} className="sub">Not in the graph. <a href={`#/ingest/${r.k}`}>Read it from FDA →</a></td></tr>)
+                const vv = verdictView(r.verdict, r.evidence)
+                return (
+                <tr key={r.k} className="click" tabIndex={0} data-k={r.k} data-evidence={r.evidence} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
                   <td><span className="k mono">{r.k}</span><div className="sub">{r.name}</div><div className="sub">{r.applicant}</div></td>
                   <td className="num">{fmtDate(r.decision_date)}</td>
-                  <td><span className={`chip tone-${VERDICTS[r.verdict].tone}`}>{VERDICTS[r.verdict].label}</span></td>
+                  <td><span className={`chip tone-${vv.tone}`} data-testid="compare-verdict">{vv.label}</span>
+                    {r.conditional && <div><span className="chip tone-violet">conditional</span></div>}
+                    <div className="sub" style={{ maxWidth: 320 }} data-testid="compare-reason">{r.verdict_reason}</div></td>
+                  <td><span className={`chip tone-${EVIDENCE_TONE[r.evidence] || 'muted'}`} data-testid="compare-evidence">{r.evidence}</span>
+                    {(r.evidence_reasons || []).map((c) => <div key={c} className="sub">{EVIDENCE_REASON_TEXT[c] || c}</div>)}</td>
                   <td className="num">{r.own_recalls} <span className="sub">({r.own_design_recalls})</span></td>
                   <td className="num">{r.flagged_ancestors_gen12}</td>
                   <td className="num">{r.ancestors} <span className="sub">({r.lineage_unknown})</span></td>
                   <td className="sub" style={{ maxWidth: 360 }}>{r.top_signal || '—'}</td>
-                </tr>) : (
-                <tr key={r.k}><td><span className="k mono">{r.k}</span></td><td colSpan={6} className="sub">Not in the graph. <a href={`#/ingest/${r.k}`}>Read it from FDA →</a></td></tr>))}
+                </tr>)
+              })}
               </tbody>
             </table>
           </div>
-          <p className="graph-hint">Verdicts are deterministic documentation signals; a lower count is not a statement that a device is safer.</p>
+          <p className="graph-hint">Verdicts are deterministic documentation signals; a lower count is not a statement that a device is safer.
+            A verdict on partial or uncertain evidence is provisional: equal verdicts on unequal evidence are not equivalent.</p>
         </section>
       )}
     </div>
@@ -67,15 +78,24 @@ export function ReachView({ initial, go }) {
   const [err, setErr] = useState(null)
   const run = (e = ev) => { setErr(null); setData(null); api.recallEvent(e.replace(/\s/g, '')).then(setData).catch((x) => setErr(x.message)) }
   useEffect(() => { setEv(initial || '88058,88071'); run(initial || '88058,88071') }, [initial])
-  const isCond = (d) => d.conditional_via?.length > 0 && d.conditional_via.length === d.via.length
-  const after = data?.descendants.filter((d) => d.after_recall) || []
-  const before = data?.descendants.filter((d) => !d.after_recall) || []
-  const nCond = data?.descendants.filter(isCond).length || 0
+  const desc = data?.descendants || []
+  const c = data?.counts || {}
+  // [id, title, rows, hint, always shown]
+  const groups = [
+    ['after-supported', 'Cleared after the recall began · supported route', desc.filter((d) => d.timing === 'after' && d.evidence === 'supported'),
+      '"After it began", not after it was resolved. A descendant is not recalled because of its ancestor.', true],
+    ['after-conditional', 'Cleared after the recall began · conditional route only', desc.filter((d) => d.timing === 'after' && d.evidence === 'conditional'),
+      'Every route to the recalled clearance runs through a citation the audit could not resolve.', false],
+    ['same-day', 'Cleared the day the recall began', desc.filter((d) => d.timing === 'same_day'),
+      'Same calendar day: the dates cannot order them, so these count as neither before nor after.', false],
+    ['unknown', 'Timing unknown', desc.filter((d) => d.timing === 'unknown'), 'A clearance date or recall start is missing.', false],
+    ['before', 'Cleared before the recall began', desc.filter((d) => d.timing === 'before'), null, true],
+  ]
   return (
     <div>
       <Head eyebrow="Recall evidence" title="Recall reach">
-        Start from an FDA recall event. Forebear finds every clearance it names, then every later clearance that cites one of them,
-        up to three generations, and splits them by whether they were cleared after the recall began.
+        Start from an FDA recall event. Forebear finds every clearance FDA lists on it, then every later clearance that cites one of them,
+        up to three generations, and compares each clearance date with the recall start on its own supported route.
       </Head>
       <section className="panel">
         <form className="row-in" onSubmit={(e) => { e.preventDefault(); run() }}>
@@ -92,20 +112,29 @@ export function ReachView({ initial, go }) {
         <>
           <section className="panel" data-testid="reach-stats">
             <div className="bigstats">
-              <div><b>{data.recalled.length}</b><span>clearances named in recall event(s) {data.event}</span></div>
-              <div><b>{data.descendants.length}</b><span>later clearances descend from them</span></div>
-              <div className="amber"><b>{after.length}</b><span>cleared after the recall on their lineage began{data.initiated ? ` (earliest ${fmtDate(data.initiated)})` : ''}</span></div>
-              <div className="violet"><b>{nCond}</b><span>reached only through an unresolved citation (conditional)</span></div>
+              <div><b>{data.recalled.length}</b><span>clearances FDA lists on recall event(s) {data.event}</span></div>
+              <div><b>{desc.length}</b><span>later clearances descend from them</span></div>
+              <div className="amber" data-testid="reach-count-after"><b>{c.after_supported ?? 0}</b><span>cleared after the recall on a supported route began{data.initiated ? ` (earliest ${fmtDate(data.initiated)})` : ''}</span></div>
+              <div className="violet" data-testid="reach-count-conditional"><b>{c.conditional ?? 0}</b><span>reached only through an unresolved citation (conditional){c.after_conditional ? `, ${c.after_conditional} of them cleared after` : ''}</span></div>
+              {(c.same_day > 0 || c.unknown > 0) && (
+                <div data-testid="reach-count-undetermined"><b>{(c.same_day || 0) + (c.unknown || 0)}</b><span>timing not determinable ({c.same_day || 0} same day, {c.unknown || 0} missing a date)</span></div>)}
             </div>
             <div className="tags" style={{ marginTop: 14 }}>{data.recalled.map((r) => (
-              <button key={r.k} className="tag-btn" onClick={() => go('check', r.k)}><span className="k">{r.k}</span> {r.name}</button>))}</div>
+              <button key={r.k} className="tag-btn" onClick={() => go('check', r.k)} data-testid="reach-holder"
+                title={ATTRIBUTION[recallAttribution(r)].text + (r.linked_before_clearance ? ' ' + PREDATES_CLEARANCE.text : '')}>
+                <span className="k">{r.k}</span> {r.name} <span className="muted">· {ATTRIBUTION[recallAttribution(r)].short}
+                  {r.linked_before_clearance ? ` · ${PREDATES_CLEARANCE.short.toLowerCase()}` : ''}</span></button>))}</div>
+            <p className="muted small" style={{ marginBottom: 0 }}>FDA lists these clearances on the recall record. That is an association, not verified model
+              identity: a name match is a fuzzy heuristic on the recall text, and a recall that began before a clearance does not by itself
+              show whether that model was affected.</p>
           </section>
           <section className="panel">
-            <div className="panel-head"><h2>Cleared after the recall began <span className="count">{after.length}</span></h2>
-              <p className="hint">"After it began", not after it was resolved. A descendant is not recalled because of its ancestor.</p></div>
-            <DescTable rows={after} go={go} isCond={isCond} />
-            <div className="panel-head" style={{ marginTop: 22 }}><h2>Cleared before <span className="count">{before.length}</span></h2></div>
-            <DescTable rows={before} go={go} isCond={isCond} />
+            {groups.filter(([, , rows, , always]) => always || rows.length).map(([id, title, rows, hint], i) => (
+              <div key={id} data-testid={`reach-${id}`}>
+                <div className="panel-head" style={i ? { marginTop: 22 } : undefined}><h2>{title} <span className="count">{rows.length}</span></h2>
+                  {hint && <p className="hint">{hint}</p>}</div>
+                <DescTable rows={rows} go={go} />
+              </div>))}
           </section>
         </>
       )}
@@ -113,24 +142,31 @@ export function ReachView({ initial, go }) {
   )
 }
 
-function DescTable({ rows, go, isCond }) {
+function DescTable({ rows, go }) {
   if (!rows.length) return <p className="muted">None.</p>
   return (
     <div className="tbl-wrap">
       <table className="tbl">
-        <thead><tr><th>Device</th><th>Applicant</th><th>Cleared</th><th>Recall began<br />on its lineage</th><th>Distance</th><th>Descends from</th></tr></thead>
+        <thead><tr><th>Device</th><th>Applicant</th><th>Cleared</th><th>Recall began<br />on its route</th><th>Distance</th><th>Descends from</th></tr></thead>
         <tbody>{rows.map((d) => {
-          const cond = isCond(d)
+          const cond = d.evidence === 'conditional'
+          const mixed = !cond && d.conditional_via?.length > 0
+          const gen = d.supported_gen ?? d.gen
           return (
-            <tr key={d.k} className={'click' + (cond ? ' is-conditional' : '')} tabIndex={0} onClick={() => go('check', d.k)} onKeyDown={rowKey(() => go('check', d.k))}>
-              <td><span className="k mono">{d.k}</span> {cond && <span className="chip tone-violet">conditional</span>}<div className="sub">{d.name}</div></td>
+            <tr key={d.k} className={'click' + (cond ? ' is-conditional' : '')} tabIndex={0} data-k={d.k} data-timing={d.timing} data-evidence={d.evidence}
+              onClick={() => go('check', d.k)} onKeyDown={rowKey(() => go('check', d.k))}>
+              <td><span className="k mono">{d.k}</span> {cond && <span className="chip tone-violet">conditional</span>}
+                {mixed && <span className="chip tone-muted" title="Some routes are supported, others rest on an unresolved citation">mixed routes</span>}
+                <div className="sub">{d.name}</div></td>
               <td className="sub">{d.applicant}</td>
               <td className="num">{fmtDate(d.decision_date)}</td>
-              <td className="num">{fmtDate(d.recall_started)}</td>
-              <td>{d.gen === 1 ? 'direct predicate' : `${d.gen} generations`}</td>
+              <td className="num">{fmtDate(d.recall_started)}<div className="sub">{TIMING_TEXT[d.timing]}</div>
+                {mixed && d.conditional_timing && d.conditional_timing !== d.timing && (
+                  <div className="sub" style={{ color: 'var(--violet)' }}>Conditional route only: recall began {fmtDate(d.conditional_recall_started)}, {TIMING_TEXT[d.conditional_timing]}</div>)}</td>
+              <td>{gen === 1 ? 'direct predicate' : `${gen} generations`}</td>
               <td className="sub">{d.via.map((v) => (
                 <span key={v} style={d.conditional_via?.includes(v) ? { color: 'var(--violet)' } : undefined}
-                  title={d.conditional_via?.includes(v) ? 'Reached only through an unresolved citation' : undefined}>{v} </span>))}</td>
+                  title={d.conditional_via?.includes(v) ? 'Reached only through an unresolved citation' : 'Reached through a supported citation'}>{v} </span>))}</td>
             </tr>
           )
         })}</tbody>
@@ -151,17 +187,19 @@ export function WatchlistView({ go }) {
   const nCond = data?.conditional ?? rows.filter((r) => r.conditional).length
   return (
     <div>
-      <Head eyebrow="Recall evidence" title="Watchlist: cited after a recall began">
-        Clearances cleared after a design-related recall had already started on their predicate or grand-predicate. Close to, but not
-        the same as, the JAMA study's measure (Class I predicate recalls, any cause). A question to ask, not a finding: the recall may
-        have been fixed, or limited to lots or software versions.
+      <Head eyebrow="Recall evidence" title="Watchlist: cleared after a predicate recall began">
+        Clearances whose FDA decision date falls after a design-related recall had started on their predicate or grand-predicate.
+        Only the clearance date is compared: it does not show when the predicate was chosen or cited, and the application's receipt
+        date does not establish that either. Same-day dates are not counted as after. Close to, but not the same as, the JAMA study's
+        measure (Class I predicate recalls, any cause). A question to ask, not a finding: the recall may have been fixed, or limited
+        to lots or software versions.
       </Head>
       {err && <p className="err">{err}</p>}
       {!data && !err && <div className="loading-thread"><i />Querying the graph…</div>}
       {data && (
         <section className="panel">
           <div className="bigstats">
-            <div><b>{data.count}</b><span>clearances in the dataset match</span></div>
+            <div><b>{data.count}</b><span>clearances decided after a recall began on their lineage</span></div>
             <div className="amber"><b>{data.direct_supported ?? data.direct}</b><span>cite a directly recalled predicate through a supported citation</span></div>
             <div className="violet"><b>{nCond}</b><span>conditional: every route runs through an unresolved citation</span></div>
           </div>
@@ -175,15 +213,18 @@ export function WatchlistView({ go }) {
         <section className="panel">
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Cleared device</th><th>Received / cleared</th><th>Recalled ancestor</th><th>Recall records</th></tr></thead>
+              <thead><tr><th>Cleared device</th><th>Cleared · recall began</th><th>Recalled ancestor</th><th>Recall records</th></tr></thead>
               <tbody>{shown.map((r) => (
-                <tr key={r.k} className={'click' + (r.conditional ? ' is-conditional' : '')} tabIndex={0} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
+                <tr key={r.k} className={'click' + (r.conditional ? ' is-conditional' : '')} tabIndex={0} data-k={r.k} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
                   <td><span className="k mono">{r.k}</span> {r.conditional && <span className="chip tone-violet">conditional</span>}<div className="sub">{r.name}</div><div className="sub">{r.applicant}</div></td>
-                  <td className="num">{fmtDate(r.received_date)}<div className="sub">{fmtDate(r.decision_date)}</div></td>
-                  <td><span className="mono">{r.ancestors.join(', ')}</span><div className="sub">{r.conditional ? 'cited device · citation unresolved' : r.supported_min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
+                  <td className="num" data-testid="watch-dates">Cleared {fmtDate(r.decision_date)}<div className="sub">recall began {fmtDate(r.recall_basis)}{r.days_after_recall != null ? `, ${r.days_after_recall} days earlier` : ''}</div></td>
+                  <td><span className="mono">{(r.conditional ? r.ancestors : r.supported_ancestors || r.ancestors).join(', ')}</span><div className="sub">{r.conditional ? 'cited device · citation unresolved' : r.supported_min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
                   <td className="sub">{r.recall_count > 2 && <div className="muted">{r.recall_count} recall routes; first two:</div>}{r.recalls.slice(0, 2).map((x) => (
                     <div key={x.recall_id + x.ancestor}>{x.recall_id} · {x.classification || 'unclassified'} · {x.root_cause} · {fmtDate(x.initiated)}
-                      {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}</div>))}</td>
+                      {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}
+                      <div className="muted" title={ATTRIBUTION[recallAttribution(x)].text + (x.linked_before_clearance ? ' ' + PREDATES_CLEARANCE.text : '')}
+                        data-testid="watch-attribution">{x.ancestor}: {ATTRIBUTION[recallAttribution(x)].short}
+                        {x.linked_before_clearance ? ` · ${PREDATES_CLEARANCE.short.toLowerCase()}` : ''}</div></div>))}</td>
                 </tr>))}</tbody>
             </table>
           </div>

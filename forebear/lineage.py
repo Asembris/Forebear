@@ -22,7 +22,33 @@ def _recall_ev(x: dict) -> dict:
             "root_cause": x.get("root_cause"), "design_related": x.get("design_related"),
             "initiated": x.get("initiated"), "firm": x.get("firm"), "reason": x.get("reason"),
             "url": x.get("url"), "status": x.get("status"),
-            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance")}
+            "link_name_check": x.get("link_name_check"), "linked_before_clearance": x.get("linked_before_clearance"),
+            "attribution": recall_attribution(x)}
+
+
+ATTRIBUTION_CODES = ("name_token_match", "name_token_absent", "name_not_checkable")
+
+
+def recall_attribution(x: dict) -> str:
+    """What the recall-text name heuristic says about a recall record linked to a 510(k). The link itself is always
+    FDA's: openFDA lists the clearance's K-number on the recall record. That is an association; nothing here verifies
+    which model was recalled.
+
+      name_token_match    a distinctive word of the device's FDA name appears in the recall's product/reason text
+                          (evidence.name_check: exact, spacing- or OCR-normalised, or within a small edit distance).
+                          One fuzzy token is a heuristic signal, not proof that the recall names this exact model.
+      name_token_absent   no distinctive word of the FDA name was found; the recalled model may differ, or the text
+                          may name it differently
+      name_not_checkable  the FDA name has no distinctive word to look for, or no check was recorded
+
+    Timing is deliberately not part of this code: `linked_before_clearance` (the recall began before this clearance
+    was decided) is reported on its own and does not by itself establish whether this model was affected."""
+    nc = x.get("link_name_check")
+    if nc == "match":
+        return "name_token_match"
+    if nc == "mismatch":
+        return "name_token_absent"
+    return "name_not_checkable"
 
 
 def _count(recs: list[dict]) -> str:
@@ -184,6 +210,17 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     # `evidence` describes the verdict window only (the candidate and two predicate generations, the reach of
     # every severity rule that can change a verdict); gaps beyond it are counted in coverage.deeper_gaps.
     shallow = depth < EVIDENCE_WINDOW         # grand-predicates were not traversed at all
+    window_doubtful = [d for d in doubtful if d["gen"] <= EVIDENCE_WINDOW]
+    # Why the verdict window is not complete, one code per gap, so every view can say so without re-deriving it.
+    evidence_reasons = [code for code, hit in (
+        ("direct_predicate_links_all_uncertain", bool(gen1 and not trusted_gen1)),
+        ("unresolved_predicate_citations", bool(missing)),
+        ("direct_predicate_summaries_unread", bool(gen1_unread)),
+        ("doubtful_links_in_window", bool(window_doubtful)),
+        ("recall_cause_or_class_unknown", bool(unknown_recalls)),
+        ("unattributed_recalls_in_product_code", bool(pc.get("unattributed_design_recalls_n"))),
+        ("shallow_traversal", bool(shallow and ancestors)),
+    ) if hit]
     if gen1 and not trusted_gen1:
         evidence = "uncertain"
     elif missing or gen1_unread or any(d["gen"] <= EVIDENCE_WINDOW for d in doubtful) or unknown_recalls or \
@@ -240,7 +277,8 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         "ancestors": ancestors, "descendants": descendants,
         "coverage": {"ancestors": len(ancestors), "ancestors_lineage_unknown": len(unknown),
                      "candidate_lineage_known": bool(dev.get("lineage_known")),
-                     "evidence": evidence, "doubtful_links": len(doubtful),
+                     "evidence": evidence, "evidence_reasons": evidence_reasons,
+                     "doubtful_links": len(doubtful),
                      "unresolved_predicate_citations": len(missing),
                      "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1),
                      "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
@@ -304,9 +342,16 @@ def _missing_predicates(g: Graph, d: dict) -> list[dict]:
     return out
 
 
+def provisional(a: dict) -> bool:
+    """A "no signal" verdict that rests on an incomplete verdict window: it says nothing about the missing part."""
+    return a["verdict"] == "NO_DESIGN_RECALL_SIGNAL" and a["coverage"]["evidence"] != "complete"
+
+
 def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:
     """One row per candidate predicate - the comparison table FDA's draft guidance suggests
-    submitters include when explaining predicate selection."""
+    submitters include when explaining predicate selection. Each row keeps the verdict's evidence coverage,
+    the reasons it is incomplete and the verdict reason, so two equal verdicts on unequal evidence never
+    look the same."""
     rows = []
     for k in ks:
         a = assess(g, k, depth)
@@ -317,6 +362,12 @@ def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:
         rows.append({
             "k": k, "found": True, "name": d.get("name"), "applicant": d.get("applicant"),
             "decision_date": d.get("decision_date"), "verdict": a["verdict"],
+            "verdict_reason": a["verdict_reason"], "provisional": provisional(a),
+            "evidence": a["coverage"]["evidence"], "evidence_reasons": a["coverage"]["evidence_reasons"],
+            "deeper_gaps": a["coverage"]["deeper_gaps"],
+            # medium signals that all hang on an unresolved citation: the REVIEW verdict is conditional
+            "conditional": a["verdict"] == "REVIEW_LINEAGE" and not any(
+                s["severity"] == "medium" and not s.get("conditional") for s in a["signals"]),
             "own_recalls": len(d["recalls"]),
             "own_design_recalls": sum(1 for x in d["recalls"] if x.get("design_related")),
             "flagged_ancestors_gen12": sum(1 for s in a["signals"]
@@ -336,3 +387,80 @@ def evidence_ids(a: dict) -> set[str]:
             if e.get("type") == "recall":
                 ids.add(e["id"])
     return ids
+
+
+def date_relation(clearance: str | None, recall_start: str | None) -> str:
+    """'after' | 'before' | 'same_day' | 'unknown': when a clearance was decided relative to a recall start.
+    Compared by calendar day (ISO YYYY-MM-DD strings sort chronologically). A missing date is 'unknown', never
+    'before'; a same-day pair cannot be ordered and is never counted as 'after'."""
+    c, r = (str(clearance)[:10] if clearance else ""), (str(recall_start)[:10] if recall_start else "")
+    if not c or not r or c in ("None", "null") or r in ("None", "null"):
+        return "unknown"
+    return "after" if c > r else "before" if c < r else "same_day"
+
+
+def _earliest(dates) -> str | None:
+    ds = [str(d)[:10] for d in dates if d]
+    return min(ds) if ds else None
+
+
+def classify_reach(recalled: list[dict], desc: list[dict]) -> dict:
+    """Recall reach from raw query rows (Graph.recall_event_reach).
+
+    Each descendant reaches one or more recalled holders. A holder is supported if at least one path to it has no
+    unresolved audit link, conditional if every path does. Timing is taken from the supported holders only (the
+    earliest recall start among them); conditional holders get their own timing, reported separately, so a date
+    reached only through an unresolved citation can never decide the supported classification. `evidence` is
+    'supported' when any holder is supported, else 'conditional'."""
+    start = {d["k"]: (str(d["initiated"])[:10] if d.get("initiated") else None) for d in recalled}
+    out = []
+    for r in desc:
+        via = sorted(r["via"])
+        supported_via = sorted(v for v in r.get("supported_via") or [] if v)
+        conditional_via = sorted(set(via) - set(supported_via))
+        sup_start = _earliest(start.get(v) for v in supported_via)
+        cond_start = _earliest(start.get(v) for v in conditional_via)
+        evidence = "supported" if supported_via else "conditional"
+        basis = sup_start if supported_via else cond_start
+        timing = date_relation(r.get("decision_date"), basis)
+        out.append({
+            "k": r["k"], "name": r["name"], "applicant": r.get("applicant"),
+            "decision_date": str(r["decision_date"])[:10] if r.get("decision_date") else None,
+            "gen": r["gen"], "supported_gen": r.get("supported_gen"),
+            "via": via, "supported_via": supported_via, "conditional_via": conditional_via, "evidence": evidence,
+            "recall_started": basis, "timing": timing, "after_recall": timing == "after",
+            # mixed-confidence routes: what the conditional holders alone would say (None if there are none)
+            "conditional_recall_started": cond_start if supported_via and conditional_via else None,
+            "conditional_timing": (date_relation(r.get("decision_date"), cond_start)
+                                   if supported_via and conditional_via else None),
+        })
+    counts = {"after_supported": 0, "after_conditional": 0, "before": 0, "same_day": 0, "unknown": 0}
+    for d in out:
+        if d["timing"] == "after":
+            counts["after_supported" if d["evidence"] == "supported" else "after_conditional"] += 1
+        else:
+            counts[d["timing"]] += 1
+    counts["conditional"] = sum(1 for d in out if d["evidence"] == "conditional")
+    counts["mixed"] = sum(1 for d in out if d["conditional_via"] and d["supported_via"])
+    recalled_out = []
+    for d in recalled:
+        x = {"link_name_check": "match" if "match" in (d.get("name_checks") or []) else
+             "mismatch" if "mismatch" in (d.get("name_checks") or []) else None,
+             "linked_before_clearance": bool(d.get("before_clearance"))}
+        # the device can be on several records of the event: 'name_token_match' if the heuristic matched on any of
+        # them, and every record's own result is kept in name_checks
+        recalled_out.append({"k": d["k"], "name": d["name"], "decision_date": d.get("decision_date"),
+                             "initiated": start[d["k"]], "records": d.get("records"),
+                             "name_checks": sorted(c for c in d.get("name_checks") or [] if c),
+                             "linked_before_clearance": x["linked_before_clearance"],
+                             "attribution": recall_attribution(x)})
+    return {"initiated": _earliest(start.values()), "recalled": recalled_out, "descendants": out, "counts": counts}
+
+
+def recall_reach(g: Graph, event: str, depth: int = 3) -> dict:
+    raw = g.recall_event_reach(event, depth)
+    if not raw["recalled"]:
+        return {"event": event, "initiated": None, "recalled": [], "descendants": [],
+                "counts": {"after_supported": 0, "after_conditional": 0, "before": 0, "same_day": 0, "unknown": 0,
+                           "conditional": 0, "mixed": 0}}
+    return {"event": event, **classify_reach(raw["recalled"], raw["descendants"])}
