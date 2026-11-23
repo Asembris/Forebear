@@ -14,7 +14,7 @@
 [![Data: openFDA, cached](https://img.shields.io/badge/data-openFDA_·_cached_offline-e7a948?style=flat-square&labelColor=0b1322)](data/PROVENANCE.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f1ebdd?style=flat-square&labelColor=0b1322)](LICENSE)
 
-**[The discovery](#the-discovery)** · **[Two hops deep](#two-hops-deep)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)**
+**[The discovery](#the-discovery)** · **[One hop](#one-hop-breathepal)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)** · **[Licensing](#data-licensing-and-attribution)**
 
 </div>
 
@@ -27,7 +27,48 @@ A new medical device reaches the US market through a 510(k) by claiming it is "s
 
 ## The discovery
 
-BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicate, the Philips Respironics BiPAP A30. FDA had already attributed a **Class I** recall with root cause **Device Design** (the PE-PUR foam recall) to that predicate's clearance, **4 years 9 months earlier**. Nothing on BreathePal's own FDA record says so. The graph does:
+**One more generation changes the verdict.** SleepRes PAP System (K251770) was cleared in December 2025. Its FDA summary names one predicate, the Philips DreamStation 2 (K200480), and no recall in the shipped FDA records lists the DreamStation 2. A check that stops at the named predicate comes back clean. One generation further, the DreamStation 2's own summary names two REMstar clearances, and FDA lists both on **Class I** recall **Z-1974-2021**, root cause **Device Design** (the PE-PUR foam recall), initiated **4 years 6 months** before SleepRes was cleared.
+
+| Query depth | What it walks | Verdict for K251770 |
+| --- | --- | --- |
+| **1 generation** | K251770 → K200480 (no recall on file) | `NO_DESIGN_RECALL_SIGNAL`, marked **provisional** because grand-predicates were not traversed |
+| **2 generations** | K251770 → K200480 → K130077 and K131982, both on Z-1974-2021 | `REVIEW_LINEAGE`, evidence complete |
+
+**The decision it changes.** At depth 1 the result is a provisional "no design-recall signal": an engineer who took it at face value would cite the DreamStation 2 with nothing to explain. At depth 2 the verdict is **Review lineage** with complete evidence: the predicate rationale now has to account for a Class I design recall two generations up, for example by saying whether the recalled design element is carried forward, or by choosing another predicate. Forebear does not answer that question; it makes sure it gets asked, with the evidence attached.
+
+| | Evidence | Source |
+| --- | --- | --- |
+| **Candidate** | K251770 · SleepRes PAP System · Sleepres, Inc. · cleared 2025-12-15 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf#page=5) |
+| **Hop 1** | p. 5: *"Predicate Device: Philips DreamStation 2 - K200480"* | same PDF, page 5 |
+| **Predicate** | K200480 · DreamStation 2 System · Respironics · cleared 2020-07-10 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf#page=4) |
+| **Hop 2** | p. 4: *"Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)"*, *"Secondary Predicate Device: REMSTAR SE (K130077)"* | K200480 PDF, page 4 |
+| **Recall** | Z-1974-2021 · event 88058 · Class I · Device Design · initiated 2021-06-14 (PE-PUR foam). FDA's record lists K130077 and K131982, not K200480 | [FDA recall Z-1974-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815) |
+| **Verdict** | `REVIEW_LINEAGE` at depth 2, provisional `NO_DESIGN_RECALL_SIGNAL` at depth 1 | deterministic rules in [`forebear/lineage.py`](forebear/lineage.py) |
+
+The recall began after the DreamStation 2 was cleared. The investigation page shows both depths side by side (*Why the graph matters*), with each hop's quote, a link to the FDA PDF at the cited page, and the recall record. In Relate the difference between the two answers is one number in the pattern, `*1..1` versus `*1..2`:
+
+```cypher
+MATCH path = (d:Device {k: 'K251770'})-[:CITES*1..2]->(a:Device)
+WHERE all(c IN relationships(path) WHERE c.kind = 'predicate')
+MATCH (a)-[:SUBJECT_OF]->(r:Recall)
+WHERE r.classification = 'Class I' AND r.root_cause = 'Device Design'
+  AND r.initiated < d.decision_date
+RETURN [n IN nodes(path) | n.k] AS chain, r.id AS recall, r.initiated AS initiated
+```
+
+```text
+*1..1   (no rows)
+*1..2   ['K251770', 'K200480', 'K131982']  Z-1974-2021  2021-06-14
+        ['K251770', 'K200480', 'K130077']  Z-1974-2021  2021-06-14
+```
+
+Every value here, including both verdicts and both query results, is asserted against the shipped store and the cached FDA page text by [`tests/test_two_hop_story.py`](tests/test_two_hop_story.py). The query is simplified: the app's version also applies human-review and audit rules to every edge (`LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)). FDA attributes the recall to product families that list these clearances; it is a question for the predicate rationale, not a finding that SleepRes is unsafe.
+
+**Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. That recommendation is about the predicate itself; a recall two generations up is not a guidance violation, but it is the kind of history a reviewer may ask about. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
+
+## One hop: BreathePal
+
+BreathePal Bilevel (K252078, the case in the banner above) is the simpler version: the recall sits on the named predicate itself, so a one-hop lookup already finds it. It was cleared in March 2026, and its FDA summary names one predicate, the Philips Respironics BiPAP A30. FDA had already attributed a **Class I** recall with root cause **Device Design** (the same PE-PUR foam recall) to that predicate's clearance, **4 years 9 months earlier**. BreathePal's own 510(k) record does not mention it; connecting the two takes the citation on page 6 of its summary and FDA's recall records:
 
 | | Evidence | Source |
 | --- | --- | --- |
@@ -39,40 +80,19 @@ BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicat
 
 Every value in this table is asserted against the shipped store by [`tests/test_story_facts.py`](tests/test_story_facts.py) and [`tests/test_shipped_evidence.py`](tests/test_shipped_evidence.py). FDA attributes these recalls to product *families* that list K113053, so the signal is "FDA links a Class I design recall to the predicate's clearance", not "this exact model was recalled".
 
-**Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
-
-## Two hops deep
-
-BreathePal's predicate carries the recall itself, so a one-hop lookup already finds it. **SleepRes PAP System (K251770) is the case where only the graph does.** Its own predicate, the DreamStation 2, has no recall in the shipped FDA records. That predicate's predicates do: two REMstar clearances that FDA lists on Class I design recall **Z-1974-2021**.
-
-| Query depth | What it walks | Verdict for K251770 |
-| --- | --- | --- |
-| **1 generation** | K251770 → K200480 (no recall on file) | `NO_DESIGN_RECALL_SIGNAL`, marked **provisional** because grand-predicates were not traversed |
-| **2 generations** | K251770 → K200480 → K130077 and K131982, both on Z-1974-2021 | `REVIEW_LINEAGE`, evidence complete |
-
-| | Evidence | Source |
-| --- | --- | --- |
-| **Candidate** | K251770 · SleepRes PAP System · Sleepres, Inc. · cleared 2025-12-15 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf#page=5) |
-| **Hop 1** | p. 5: *"Predicate Device: Philips DreamStation 2 - K200480"* | same PDF, page 5 |
-| **Predicate** | K200480 · DreamStation 2 System · Respironics · cleared 2020-07-10 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf#page=4) |
-| **Hop 2** | p. 4: *"Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)"*, *"Secondary Predicate Device: REMSTAR SE (K130077)"* | K200480 PDF, page 4 |
-| **Recall** | Z-1974-2021 · event 88058 · Class I · Device Design · initiated 2021-06-14 (PE-PUR foam). FDA's record lists K130077 and K131982, not K200480 | [FDA recall Z-1974-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815) |
-
-The recall began after the DreamStation 2 was cleared and 4 years 6 months before SleepRes was. The investigation page shows both depths side by side (*Why the graph matters*), with each hop's quote, a link to the FDA PDF at the cited page, and the recall record. The same simplified query as [below](#why-relate), with `*1..1` and then `*1..2`:
-
-```text
-*1..1   (no rows)
-*1..2   ['K251770', 'K200480', 'K131982']  Z-1974-2021  2021-06-14
-        ['K251770', 'K200480', 'K130077']  Z-1974-2021  2021-06-14
-```
-
-Every value here, including both verdicts and both query results, is asserted against the shipped store and the cached FDA page text by [`tests/test_two_hop_story.py`](tests/test_two_hop_story.py). As with BreathePal, FDA attributes the recall to product families that list these clearances; it is a question for the predicate rationale, not a finding that SleepRes is unsafe.
-
 ## Judge walkthrough
 
-No API key, external database or other service is needed: the graph and the web build are committed. Pick one way to run it.
+No API key, external database or other service is needed: the graph (`data/forebear.rl`) and the web build (`web/dist`) are committed, so nothing is fetched from FDA at run time. Pick one way to run it.
 
-**With Docker (any OS).** Needs Docker Engine with Compose v2, for example Docker Desktop.
+| Path | You need | Tested on |
+| --- | --- | --- |
+| Docker (recommended on macOS and Linux) | Docker Engine with Compose v2, e.g. Docker Desktop | Linux container |
+| Native Windows | PowerShell 5.1+, Python 3.12, internet for the one-time `pip install` | Windows 10, Python 3.12.0 |
+| Native Linux | Python 3.12 with `venv` | CI runs the test suite on Ubuntu; the app itself is demoed on Windows and in Docker |
+
+Node is not needed unless you change the UI.
+
+**With Docker (any OS).**
 
 ```sh
 git clone https://github.com/Asembris/Forebear.git
@@ -90,11 +110,32 @@ cd Forebear
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>. Then, with either setup, in about three minutes:
+`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>.
 
-1. **Watch the thread.** A short opening film follows K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
-2. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
-3. **See what one more hop finds.** On the landing page, click **Two hops deep** under the hero (or open [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770)). *Why the graph matters* puts depth 1 (**No design-recall signal · provisional**) next to depth 2 (**Review lineage**, Class I design recall Z-1974-2021), with a PDF link at the cited page for each hop.
+**Natively on Linux.** The same steps by hand:
+
+```sh
+git clone https://github.com/Asembris/Forebear.git
+cd Forebear
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m uvicorn forebear.api:app --host 127.0.0.1 --port 8765
+```
+
+**Check it is up.** <http://127.0.0.1:8765/api/health> returns `{"ok": true, ...}` with the store's node and relationship counts. If it does not:
+
+| Symptom | Fix |
+| --- | --- |
+| Port 8765 already in use | Native: pass another `--port`. Docker: change the left side of `127.0.0.1:8765:8765` in [`compose.yaml`](compose.yaml) |
+| `Python 3.12 was not found` | Install 3.12 from [python.org](https://www.python.org/downloads/); `relate-db` 1.0.2 is pinned and tested on 3.12 |
+| `run.ps1 cannot be loaded` | Use the exact command above; `-ExecutionPolicy Bypass` applies to that one process only |
+| Docker shows old data after a pull | `docker compose down -v`, then `docker compose up --build` (this deletes your local reviews and saved assessments) |
+
+Then, with any setup, in about three minutes:
+
+1. **See what one more hop finds.** Open [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770), or click **Two hops deep** under the landing-page hero. *Why the graph matters* puts depth 1 (**No design-recall signal · provisional**) next to depth 2 (**Review lineage**, Class I design recall Z-1974-2021), with a PDF link at the cited page for each hop.
+2. **Watch the thread.** The landing page opens with a short film that follows the one-hop case, K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
+3. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
 4. **Open the evidence.** Select any thread for its verbatim quote, a link to the FDA PDF at the cited page, and the PDF's SHA-256. *What needs human review* lists every uncertainty.
 5. **Write to the graph.** Click **Save assessment to graph**. Under *What K252078 cites*, reject the edge: the lineage and verdict change at once and the saved assessment is marked **stale**. Restore it.
 6. **Trace recall reach.** Open **Recall reach** for [`88058,88071`](http://127.0.0.1:8765/#/reach/88058,88071), the Philips recall filed as two openFDA events: 14 recalled clearances, 26 later devices descend from them, 8 of those were cleared after the recall on their own lineage began.
@@ -123,7 +164,11 @@ The rebuild reproduces the same graph and counts, but the `.rl` bytes and the ti
 
 ## Why Relate
 
-Predicate ancestry is a graph problem: a variable-depth walk over citations, a join to recalls at every hop, and a date comparison along the path. In tables that is a recursive query per device. In Relate it is one Cypher pattern, run in-process against a single file.
+Predicate ancestry is a graph problem: a variable-depth walk over citations, a join to recalls at every hop, and a date comparison along the path. None of it strictly needs a graph database. A person can find Z-1974-2021 by reading two PDFs and searching FDA's recall database for each K-number, and SQL can express the walk as a recursive CTE. What Relate changes is the cost of asking:
+
+- **Depth is a parameter, not a rewrite.** The K251770 result above flips between `*1..1` and `*1..2` in the same pattern. The path comes back as a value, so the app shows each hop's page, quote, PDF hash and review state next to the answer.
+- **Evidence and decisions live on the same edges.** Human reviews, audit decisions and saved assessments are written to the graph the queries walk, so rejecting a citation changes the lineage at once, and a saved assessment whose ancestry later changed is found by a query.
+- **It runs everywhere the repo does.** One committed file opened in-process, with no server, so every one of the 1,040 in-family devices gets the same check in the build instead of a manual lookup per candidate.
 
 **Single-file mode.** The whole graph lives in [`data/forebear.rl`](data/forebear.rl), about 6.5 MB, committed to the repo. It persists every write the app makes (human reviews, saved assessments, live ingests, agent runs) and is opened in-process through `relate-db` 1.0.2. There is no database server to run. The FastAPI app is the only writer, pinned to one thread.
 
@@ -148,7 +193,7 @@ graph LR
 | `Recall` nodes / `SUBJECT_OF` relationships | 563 / 762 |
 | `Company` / `ProductCode` nodes | 301 / 76 |
 
-The discovery as one query (simplified: the app's version also applies human-review and audit rules to every edge, see `LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)):
+The same query for the one-hop BreathePal case (simplified: the app's version also applies human-review and audit rules to every edge, see `LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)). Depth 2 also surfaces recalls on BreathePal's grand-predicates:
 
 ```cypher
 MATCH path = (d:Device {k: 'K252078'})-[:CITES*1..2]->(a:Device)
@@ -213,16 +258,31 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 | [Investigation agent](docs/INVESTIGATION_AGENT.md) | Tools, loop, safety boundaries, CLI and HTTP API, persisted runs in Relate |
 | [Agent evaluation](docs/AGENT_EVALUATION.md) | Frozen 24-case protocol, deterministic vs live results, failure analysis |
 | [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
-| [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
+| [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K251770](docs/investigations/K251770_I-8203364b195e.md) and [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
+| [Third-party notices](THIRD_PARTY_NOTICES.md) | Data rights, manufacturer-authored text, trademarks, bundled fonts and libraries |
+| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What to confirm before the Devpost entry goes in |
+
+## Data, licensing and attribution
+
+- **Code and docs** written for Forebear are under the [MIT License](LICENSE).
+- **openFDA records** (510(k), recall, enforcement, classification) are public domain under openFDA's [CC0 1.0 dedication](https://open.fda.gov/license/). Data provided by the U.S. Food and Drug Administration (<https://open.fda.gov>). FDA has not reviewed or endorsed this project.
+- **510(k) summary text** is written by the submitting companies, not by FDA, so it is **not** claimed as public domain and is not covered by the MIT License. The repository keeps its extracted page text (not the PDFs) so that every citation can be checked and the graph rebuilt offline; each quote links to FDA's copy. Details and a removal route: [third-party notices](THIRD_PARTY_NOTICES.md).
+- **Names** of devices and companies are used only as identifiers from FDA records and belong to their owners. The bundled Inter and Newsreader fonts are under the SIL Open Font License 1.1.
+
+## AI assistance (disclosure)
+
+- **Building the project.** Claude Code, an AI coding assistant, wrote most of the code, tests and documentation, including this README, under the author's direction.
+- **Evidence labels.** The extraction-audit decisions in [`data/audit/link_decisions.json`](data/audit/link_decisions.json), the extraction-evaluation labels in [`eval/`](eval/) and the 2026-11-20 source-correction checks in [data provenance](data/PROVENANCE.md) were made by Claude Code agents, not people. Each is labelled that way in the data and kept out of the human-review fields. No human review has been recorded yet.
+- **At run time,** no language model produces a verdict, a count or an audit decision. The two optional features below are the only model calls, and both are off unless an NVIDIA API key is configured.
+- **Example reports.** The four reports in [`docs/investigations/`](docs/investigations/) were written by the optional investigation agent and say so in each file.
 
 <details>
-<summary><b>AI and third-party tools (disclosure)</b></summary>
+<summary><b>Optional model features and libraries</b></summary>
 
 - **Optional LLM triage.** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b` (fallback `mistralai/mistral-large-4-1t-a52b`) labels *ambiguous* citation mentions on request. Its output must quote the snippet verbatim or it is discarded. An LLM label is advisory: it is shown with its provenance but never changes the lineage or a verdict until a person confirms the citation.
 - **Optional investigation agent.** NVIDIA-hosted `nvidia/nemotron-3-ultra-550b-a55b` (same fallback). It chooses tool calls and writes findings, but produces no verdicts or counts and cannot change lineage.
 - Both need `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` (see [`.env.example`](.env.example)). Everything else works without them.
-- **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)).
-- **Built with** Claude Code, an AI coding assistant, which wrote most of the code and docs under the author's direction.
+- **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)). Licenses: [third-party notices](THIRD_PARTY_NOTICES.md).
 
 </details>
 
@@ -231,5 +291,5 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 <div align="center">
 <img src="docs/assets/forebear-mark.svg" alt="Forebear mark" width="56" />
 <br/>
-<sub>FDA data is US federal government work in the public domain. Code under the <a href="LICENSE">MIT License</a>.</sub>
+<sub>Code under the <a href="LICENSE">MIT License</a>. openFDA data under CC0; manufacturer-authored summary text keeps its authors' rights. See <a href="THIRD_PARTY_NOTICES.md">third-party notices</a>.</sub>
 </div>
