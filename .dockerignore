@@ -1,0 +1,12 @@
+# Build context: only what the runtime image needs (see Dockerfile COPY lines).
+*
+!forebear/
+!web/dist/
+!data/forebear.rl
+!data/raw/
+!data/audit/
+!data/reviews.json
+!requirements.txt
+!docker/entrypoint.sh
+**/__pycache__
+**/*.pyc

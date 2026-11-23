@@ -43,7 +43,19 @@ Every value in this table is asserted against the shipped store by [`tests/test_
 
 ## Judge walkthrough
 
-Windows, PowerShell, Python 3.12. No API key and no network are needed after the install: the graph and the web build are committed.
+No API key, external database or other service is needed: the graph and the web build are committed. Pick one way to run it.
+
+**With Docker (any OS).** Needs Docker Engine with Compose v2, for example Docker Desktop.
+
+```sh
+git clone https://github.com/Asembris/Forebear.git
+cd Forebear
+docker compose up --build
+```
+
+Open <http://localhost:8765> once the log shows `Application startup complete` (the first build downloads the Python base image and pinned dependencies; later starts take seconds). The container runs FastAPI, embedded Relate and the prebuilt UI. On first launch it copies the shipped `data/forebear.rl` into the `forebear-data` Docker volume and works on that copy, so reviews, saved assessments, investigations and ingested clearances survive `docker compose down` and restarts, while the committed evidence in the image stays untouched. `docker compose down -v` deletes the volume and starts over from the shipped store; do that after pulling a newer `data/forebear.rl`, since an existing volume is never overwritten. The port is bound to `127.0.0.1` only; the container runs as a non-root user on a read-only filesystem with all capabilities dropped, and `docker compose ps` shows its health check.
+
+**Natively on Windows.** PowerShell, Python 3.12, no network needed after the install.
 
 ```powershell
 git clone https://github.com/Asembris/Forebear.git
@@ -51,7 +63,7 @@ cd Forebear
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>. Then, in about three minutes:
+`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>. Then, with either setup, in about three minutes:
 
 1. **Watch the thread.** A short opening film follows K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
 2. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
