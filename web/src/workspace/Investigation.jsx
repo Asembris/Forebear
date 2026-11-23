@@ -6,6 +6,7 @@ import {
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
 import DepthContrast from './DepthContrast.jsx'
+import { depthLabel } from './depth.js'
 import Provenance, { Quote, RecallCard, deviceIn } from './Provenance.jsx'
 import ReviewQueue, { reviewItems } from './Review.jsx'
 
@@ -350,7 +351,7 @@ function Note({ a, onSaved }) {
   useEffect(() => { setSaved(null); setOpen(false); setNote('') }, [a.k])
   const save = async () => {
     setBusy(true)
-    try { const r = await api.save(a.k, note); setSaved(r); setOpen(false); setNote(''); onSaved() }
+    try { const r = await api.save(a.k, note, a.depth); setSaved(r); setOpen(false); setNote(''); onSaved() }
     catch (e) { setSaved({ error: e.message }) } finally { setBusy(false) }
   }
   const text = a.memo.headline + '\n\n' + a.memo.paragraphs.map((p) => p.text).join('\n\n')
@@ -374,7 +375,7 @@ function Note({ a, onSaved }) {
         </div>
       )}
       {saved && (saved.error ? <p className="err">{saved.error}</p>
-        : <p className="ok" role="status">Saved {saved.id}: linked to {saved.flagged_recalls.length} flagged recall record(s).</p>)}
+        : <p className="ok" role="status">Saved {saved.id} at {saved.depth} gen: linked to {saved.flagged_recalls.length} flagged recall record(s).</p>)}
     </section>
   )
 }
@@ -387,6 +388,7 @@ function HistoryPanel({ a, assessments, runs, go }) {
       {assessments.length === 0 ? <p className="muted small">None saved for {a.k} yet.</p> : assessments.map((h) => (
         <div key={h.id} className="hist">
           <div className="hist-h"><span className="k mono">{h.id}</span><span className="muted">{h.created_at?.slice(0, 16).replace('T', ' ')}</span>
+            <span className="muted" data-testid="saved-depth">{depthLabel(h)}</span>
             <span className={`chip tone-${VERDICTS[h.verdict]?.tone || 'muted'}`}>{VERDICTS[h.verdict]?.label || h.verdict}</span></div>
           {h.stale && <div className="stale">Stale: the graph changed after this was saved
             {h.verdict_now !== h.verdict && <> (verdict now {VERDICTS[h.verdict_now]?.label || h.verdict_now})</>}

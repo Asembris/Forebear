@@ -40,3 +40,10 @@ export function excerpt(text, k, before = 64, after = 16) {
   if (b < t.length) b = t.lastIndexOf(' ', b) > i + k.length ? t.lastIndexOf(' ', b) : b
   return { head: (a > 0 ? '…' : '') + t.slice(a, i), k, tail: t.slice(i + k.length, b) + (b < t.length ? '…' : '') }
 }
+
+/* The query depth a saved assessment was computed and is re-checked at. Assessments saved before depth was stored
+   carry 'legacy': their depth is read from the saved payload, or is the old API default of 4 when that is missing. */
+export function depthLabel(h) {
+  if (h?.depth == null) return ''
+  return `${h.depth} gen${h.depth_source && h.depth_source !== 'recorded' ? ' · legacy' : ''}`
+}
