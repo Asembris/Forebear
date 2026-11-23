@@ -157,6 +157,14 @@ export function spanText(months) {
   return neg ? `-${s}` : s
 }
 
+/** The recall a reviewer should read first: the earliest design-related one that began before the clearance. */
+export function keyRecall(recs, clearance) {
+  const design = recs.filter((r) => r.design_related)
+  const pool = design.length ? design : recs.filter((r) => r.classification === 'Class I')
+  const before = pool.filter((r) => r.initiated && clearance && r.initiated < clearance).sort((p, q) => p.initiated.localeCompare(q.initiated))
+  return before[0] || [...pool].sort((p, q) => (q.initiated || '').localeCompare(p.initiated || ''))[0] || null
+}
+
 /** The PDF link opens the original FDA document at the cited page. */
 export const pdfAt = (url, page) => (url ? (page ? `${url}#page=${page}` : url) : null)
 

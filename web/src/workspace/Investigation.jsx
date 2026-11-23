@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api, pmnUrl, reportUrl } from '../api.js'
 import {
-  EDGE_STATUS, EVIDENCE_REASON_TEXT, VERDICTS, humanReview, countEvents, verdictView, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
+  EDGE_STATUS, EVIDENCE_REASON_TEXT, VERDICTS, humanReview, countEvents, keyRecall, verdictView, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
 } from '../evidence.js'
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
+import DepthContrast from './DepthContrast.jsx'
 import Provenance, { Quote, RecallCard, deviceIn } from './Provenance.jsx'
 import ReviewQueue, { reviewItems } from './Review.jsx'
 
@@ -12,14 +13,6 @@ import ReviewQueue, { reviewItems } from './Review.jsx'
 function topChain(a) {
   const strong = a.signals.filter((s) => (s.severity === 'high' || s.severity === 'medium') && s.chain?.length > 1)
   return strong.find((s) => !s.conditional) || strong[0] || null     // a supported route before a conditional one
-}
-
-/* The recall a reviewer should read first: the earliest design-related one that began before the clearance. */
-function keyRecall(recs, clearance) {
-  const design = recs.filter((r) => r.design_related)
-  const pool = design.length ? design : recs.filter((r) => r.classification === 'Class I')
-  const before = pool.filter((r) => r.initiated && clearance && r.initiated < clearance).sort((p, q) => p.initiated.localeCompare(q.initiated))
-  return before[0] || [...pool].sort((p, q) => (q.initiated || '').localeCompare(p.initiated || ''))[0] || null
 }
 
 /* One deterministic sentence that states the finding in plain words, built only from the assessment. */
@@ -202,6 +195,8 @@ export default function Investigation({ k, go, onChanged }) {
           {nReview > 0 && <a className="chip tone-blue" href="#review" onClick={(e) => { e.preventDefault(); document.getElementById('review')?.scrollIntoView({ block: 'start' }) }}>{nReview} item(s) need human review ↓</a>}
         </div>
       </section>
+
+      <DepthContrast a={a} onSelect={setSel} />
 
       <CriticalChain a={a} onSelect={setSel} />
 
@@ -415,7 +410,7 @@ function HistoryPanel({ a, assessments, runs, go }) {
 export function Home({ go, stats }) {
   const cases = [
     ['K252078', 'BreathePal Bilevel', 'Cleared 2026 · direct predicate under a Class I design recall'],
-    ['K251770', 'SleepRes PAP System', 'Cleared 2025 · a second real lineage'],
+    ['K251770', 'SleepRes PAP System', 'Cleared 2025 · depth 1 finds no signal; depth 2 finds a Class I design recall'],
     ['K200480', 'DreamStation 2', 'Cleared 2020, before the June 2021 recall began'],
   ]
   return (
