@@ -268,14 +268,20 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 - **510(k) summary text** is written by the submitting companies, not by FDA, so it is **not** claimed as public domain and is not covered by the MIT License. The repository keeps its extracted page text (not the PDFs) so that every citation can be checked and the graph rebuilt offline; each quote links to FDA's copy. Details and a removal route: [third-party notices](THIRD_PARTY_NOTICES.md).
 - **Names** of devices and companies are used only as identifiers from FDA records and belong to their owners. The bundled Inter and Newsreader fonts are under the SIL Open Font License 1.1.
 
+## AI assistance (disclosure)
+
+- **Building the project.** Claude Code, an AI coding assistant, wrote most of the code, tests and documentation, including this README, under the author's direction.
+- **Evidence labels.** The extraction-audit decisions in [`data/audit/link_decisions.json`](data/audit/link_decisions.json), the extraction-evaluation labels in [`eval/`](eval/) and the 2026-11-20 source-correction checks in [data provenance](data/PROVENANCE.md) were made by Claude Code agents, not people. Each is labelled that way in the data and kept out of the human-review fields. No human review has been recorded yet.
+- **At run time,** no language model produces a verdict, a count or an audit decision. The two optional features below are the only model calls, and both are off unless an NVIDIA API key is configured.
+- **Example reports.** The four reports in [`docs/investigations/`](docs/investigations/) were written by the optional investigation agent and say so in each file.
+
 <details>
-<summary><b>AI and third-party tools (disclosure)</b></summary>
+<summary><b>Optional model features and libraries</b></summary>
 
 - **Optional LLM triage.** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b` (fallback `mistralai/mistral-large-4-1t-a52b`) labels *ambiguous* citation mentions on request. Its output must quote the snippet verbatim or it is discarded. An LLM label is advisory: it is shown with its provenance but never changes the lineage or a verdict until a person confirms the citation.
 - **Optional investigation agent.** NVIDIA-hosted `nvidia/nemotron-3-ultra-550b-a55b` (same fallback). It chooses tool calls and writes findings, but produces no verdicts or counts and cannot change lineage.
 - Both need `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` (see [`.env.example`](.env.example)). Everything else works without them.
-- **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)).
-- **Built with** Claude Code, an AI coding assistant, which wrote most of the code and docs under the author's direction.
+- **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)). Licenses: [third-party notices](THIRD_PARTY_NOTICES.md).
 
 </details>
 
