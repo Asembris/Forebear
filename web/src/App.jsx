@@ -84,7 +84,7 @@ export default function App() {
       <div inert={intro && introDone === 'pending' ? '' : undefined} style={{ display: 'contents' }}>
       {route.tab === 'film' ? (
         <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
-          <Landing go={go} stats={stats} introDone={introDone} onReplay={replay} reduced={reduced} />
+          <Landing go={go} stats={stats} introDone={introDone} reduced={reduced} />
         </Suspense>
       ) : (
         <Shell route={route} go={go} stats={stats} statsErr={statsErr} refreshStats={refreshStats} onReplay={replay} />

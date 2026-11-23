@@ -138,20 +138,28 @@ const SCENES = [
 ]
 
 /* A dossier readout of what the picture is showing: plain facts, updated per scene. */
-function Hud({ renderer }) {
+function Hud() {
   const scene = useScene()
+  // the readout belongs to the film: it steps aside once the page's closing sections arrive
+  const [away, setAway] = useState(false)
+  useEffect(() => {
+    const el = document.querySelector('.paths')
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setAway(e.isIntersecting || e.boundingClientRect.top < 0))
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   const s = SCENES[scene] || SCENES[0]
   return (
-    <div className="film-hud" aria-hidden="true">
+    <div className={'film-hud' + (away ? ' is-away' : '')} aria-hidden="true">
       <span className="hud-n">[{s.n} / 04]</span>
       <span className="hud-name">{s.name}</span>
       <span className="hud-read">{s.read(facts.candidate, facts.citation, facts.predicate, facts.recall)}</span>
-      {renderer && <span className="hud-r">{renderer === 'webgl' ? 'webgl field' : '2d field'} · illustrative</span>}
     </div>
   )
 }
 
-/* Counts arrive from the live store; while they load, a quiet placeholder rather than a dash. */
+/* Counts from the live store count up once they arrive; the row is not drawn until then. */
 function Stat({ v }) {
   const [shown, setShown] = useState(0)
   useEffect(() => {
@@ -162,7 +170,7 @@ function Stat({ v }) {
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [v])
-  if (v == null) return <b className="stat-wait" aria-label="loading">&nbsp;</b>
+  if (v == null) return null
   return <b>{shown.toLocaleString('en-US')}</b>
 }
 
@@ -201,7 +209,7 @@ const INDEX = [
   ['the-discovery', 'The discovery'], ['handoff', 'Investigate'],
 ]
 
-export default function Landing({ go, stats, introDone, onReplay, reduced }) {
+export default function Landing({ go, stats, introDone, reduced }) {
   const [solid, setSolid] = useState(false)
   const [kind, setKind] = useState(null)
   const handoff = useReveal()
@@ -217,7 +225,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
   return (
     <div className="film" id="top">
       <FilmStage reduced={reduced} introDone={introDone} stats={stats} onScene={sceneStore.set} onKind={setKind} />
-      {kind && <Hud renderer={kind} />}
+      {kind && <Hud />}
       <header className={'film-top' + (solid ? ' is-solid' : '')}>
         <a href="#/" aria-label="Forebear, start of film" onClick={(e) => { e.preventDefault(); scrollTo({ top: 0 }) }}><Wordmark size={26} /></a>
         <span className="spacer" />
@@ -252,13 +260,14 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
               Follow one thread <span aria-hidden="true">↓</span>
             </a>
           </div>
-          <div className="hero-proof" aria-label="What is in the shipped graph">
-            <div><Stat v={stats?.nodes?.Device} /><span>clearances in the graph</span></div>
-            <div><Stat v={stats?.citations_by_kind?.predicate} /><span>predicate links, each with a page</span></div>
-            <div><Stat v={stats?.nodes?.Recall} /><span>FDA recall records joined</span></div>
+          {stats && (
+            <div className="hero-proof" aria-label="What is in the shipped graph">
+              <div><Stat v={stats.nodes?.Device} /><span>clearances in the graph</span></div>
+              <div><Stat v={stats.citations_by_kind?.predicate} /><span>predicate links, each with a page</span></div>
+              <div><Stat v={stats.nodes?.Recall} /><span>FDA recall records joined</span></div>
+            </div>
+          )}
           </div>
-          </div>
-          <div className="scroll-cue" aria-hidden="true">Scroll<i /></div>
         </section>
 
         <Chapter id="the-filing" scene={1} mark="01" label="The filing" place="left"
@@ -327,10 +336,7 @@ export default function Landing({ go, stats, introDone, onReplay, reduced }) {
       <footer className="film-foot">
         <p>Public FDA data: openFDA 510(k), recall and enforcement records and 510(k) summary PDFs. Forebear reports documented
           lineage and recall history; it does not judge device safety. Not regulatory advice.</p>
-        <p style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-          <Mark size={18} />
-          {!reduced && <button className="btn btn-quiet btn-sm" onClick={onReplay} data-testid="replay">Replay opening</button>}
-        </p>
+        <Mark size={18} />
       </footer>
     </div>
   )
