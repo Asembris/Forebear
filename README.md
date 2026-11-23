@@ -135,7 +135,11 @@ The rebuild reproduces the same graph and counts, but the `.rl` bytes and the ti
 
 ## Why Relate
 
-Predicate ancestry is a graph problem: a variable-depth walk over citations, a join to recalls at every hop, and a date comparison along the path. In tables that is a recursive query per device. In Relate it is one Cypher pattern, run in-process against a single file.
+Predicate ancestry is a graph problem: a variable-depth walk over citations, a join to recalls at every hop, and a date comparison along the path. None of it strictly needs a graph database. A person can find Z-1974-2021 by reading two PDFs and searching FDA's recall database for each K-number, and SQL can express the walk as a recursive CTE. What Relate changes is the cost of asking:
+
+- **Depth is a parameter, not a rewrite.** The K251770 result above flips between `*1..1` and `*1..2` in the same pattern. The path comes back as a value, so the app shows each hop's page, quote, PDF hash and review state next to the answer.
+- **Evidence and decisions live on the same edges.** Human reviews, audit decisions and saved assessments are written to the graph the queries walk, so rejecting a citation changes the lineage at once, and a saved assessment whose ancestry later changed is found by a query.
+- **It runs everywhere the repo does.** One committed file opened in-process, with no server, so every one of the 1,040 in-family devices gets the same check in the build instead of a manual lookup per candidate.
 
 **Single-file mode.** The whole graph lives in [`data/forebear.rl`](data/forebear.rl), about 6.5 MB, committed to the repo. It persists every write the app makes (human reviews, saved assessments, live ingests, agent runs) and is opened in-process through `relate-db` 1.0.2. There is no database server to run. The FastAPI app is the only writer, pinned to one thread.
 
@@ -160,7 +164,7 @@ graph LR
 | `Recall` nodes / `SUBJECT_OF` relationships | 563 / 762 |
 | `Company` / `ProductCode` nodes | 301 / 76 |
 
-The discovery as one query (simplified: the app's version also applies human-review and audit rules to every edge, see `LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)):
+The same query for the one-hop BreathePal case (simplified: the app's version also applies human-review and audit rules to every edge, see `LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)). Depth 2 also surfaces recalls on BreathePal's grand-predicates:
 
 ```cypher
 MATCH path = (d:Device {k: 'K252078'})-[:CITES*1..2]->(a:Device)
