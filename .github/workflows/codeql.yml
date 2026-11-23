@@ -16,8 +16,35 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Code scanning is free on public repositories; private ones need GitHub Code Security.
+  # While unsupported, analysis is skipped (reported as skipped, never as passed).
+  support:
+    name: Check code scanning support
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Check repository visibility
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OVERRIDE: ${{ vars.CODE_SCANNING_ENABLED }}
+        run: |
+          visibility=$(gh api "repos/$GITHUB_REPOSITORY" --jq .visibility)
+          if [ "$visibility" = "public" ] || [ "$OVERRIDE" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            msg="CodeQL was NOT run: code scanning is unavailable on this $visibility repository. Make the repository public, or enable GitHub Code Security and set the repository variable CODE_SCANNING_ENABLED=true."
+            echo "::warning title=CodeQL skipped::$msg"
+            printf '### CodeQL not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   analyze:
     name: Analyze (${{ matrix.language }})
+    needs: support
+    if: needs.support.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
