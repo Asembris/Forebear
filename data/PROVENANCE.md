@@ -1,6 +1,6 @@
 # Data provenance
 
-All data is US federal government work, which is public domain in the US. It was fetched on 2026-11-16 with no API key.
+All data was fetched from FDA on 2026-11-16 with no API key. openFDA records are dedicated to the public domain under [CC0 1.0](https://open.fda.gov/license/), and FDA-authored pages are in the public domain. The 510(k) summary text in `data/raw/summaries/` and `data/raw/ocr/` is different: summaries are written by the submitting companies, so Forebear makes no public-domain claim for that text. See [third-party notices](../THIRD_PARTY_NOTICES.md).
 
 | Source | Endpoint / URL pattern | What we keep | Where |
 |---|---|---|---|

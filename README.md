@@ -258,7 +258,15 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 | [Investigation agent](docs/INVESTIGATION_AGENT.md) | Tools, loop, safety boundaries, CLI and HTTP API, persisted runs in Relate |
 | [Agent evaluation](docs/AGENT_EVALUATION.md) | Frozen 24-case protocol, deterministic vs live results, failure analysis |
 | [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
-| [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
+| [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K251770](docs/investigations/K251770_I-8203364b195e.md) and [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
+| [Third-party notices](THIRD_PARTY_NOTICES.md) | Data rights, manufacturer-authored text, trademarks, bundled fonts and libraries |
+
+## Data, licensing and attribution
+
+- **Code and docs** written for Forebear are under the [MIT License](LICENSE).
+- **openFDA records** (510(k), recall, enforcement, classification) are public domain under openFDA's [CC0 1.0 dedication](https://open.fda.gov/license/). Data provided by the U.S. Food and Drug Administration (<https://open.fda.gov>). FDA has not reviewed or endorsed this project.
+- **510(k) summary text** is written by the submitting companies, not by FDA, so it is **not** claimed as public domain and is not covered by the MIT License. The repository keeps its extracted page text (not the PDFs) so that every citation can be checked and the graph rebuilt offline; each quote links to FDA's copy. Details and a removal route: [third-party notices](THIRD_PARTY_NOTICES.md).
+- **Names** of devices and companies are used only as identifiers from FDA records and belong to their owners. The bundled Inter and Newsreader fonts are under the SIL Open Font License 1.1.
 
 <details>
 <summary><b>AI and third-party tools (disclosure)</b></summary>
@@ -276,5 +284,5 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 <div align="center">
 <img src="docs/assets/forebear-mark.svg" alt="Forebear mark" width="56" />
 <br/>
-<sub>FDA data is US federal government work in the public domain. Code under the <a href="LICENSE">MIT License</a>.</sub>
+<sub>Code under the <a href="LICENSE">MIT License</a>. openFDA data under CC0; manufacturer-authored summary text keeps its authors' rights. See <a href="THIRD_PARTY_NOTICES.md">third-party notices</a>.</sub>
 </div>
