@@ -1,0 +1,11 @@
+name: Forebear CodeQL config
+
+queries:
+  - uses: security-extended
+
+paths-ignore:
+  - web/dist
+  - web/node_modules
+  - data
+  - eval/legacy
+  - tools
