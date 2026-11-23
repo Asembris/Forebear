@@ -84,6 +84,26 @@ test.describe('opening and film', () => {
     await ctx.close()
   })
 
+  test('when the store cannot answer, the hero shows no placeholder counts', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
+    await page.route('**/api/stats', (r) => r.fulfill({ status: 503, body: '{"detail":"storage locked"}' }))
+    await page.goto('/')
+    await expect(page.getByRole('heading', { name: /Every clearance/ })).toBeVisible()
+    await page.waitForTimeout(1500)
+    await expect(page.locator('.hero-proof')).toHaveCount(0)
+  })
+
+  test('the landing page carries no scroll cue, renderer tag or replay button', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
+    await page.goto('/')
+    await expect(page.locator('.film-hud')).toBeVisible()
+    await expect(page.locator('.scroll-cue')).toHaveCount(0)
+    await expect(page.locator('.film-hud')).not.toContainText(/webgl|illustrative/i)
+    await expect(page.getByText('Replay opening')).toHaveCount(0)
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight))
+    await expect(page.locator('.film-hud')).toHaveClass(/is-away/)
+  })
+
   test('replay brings the opening back', async ({ page }) => {
     await page.addInitScript(() => sessionStorage.setItem('forebear:intro', 'seen'))
     await page.goto('/#/watch')
