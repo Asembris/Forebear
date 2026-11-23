@@ -218,12 +218,13 @@ async def list_assessments(k: str | None = None):
 
     def do(g: Graph):
         rows = g.assessments(kk)
-        verdicts: dict[str, str | None] = {}
-        for r in rows:              # does the graph still give the saved verdict?
-            if r["k"] not in verdicts:
-                cur = assess(g, r["k"])
-                verdicts[r["k"]] = cur["verdict"] if cur else None
-            r["verdict_now"] = verdicts[r["k"]]
+        verdicts: dict[tuple[str, int], str | None] = {}
+        for r in rows:              # does the graph still give the saved verdict, at the depth it was saved at?
+            key = (r["k"], r["depth"])
+            if key not in verdicts:
+                cur = assess(g, r["k"], r["depth"])
+                verdicts[key] = cur["verdict"] if cur else None
+            r["verdict_now"] = verdicts[key]
             r["stale"] = bool(r["stale"] or r["verdict_now"] != r["verdict"])
         return rows
     return await run(do)
@@ -318,8 +319,8 @@ async def save(body: SaveIn):
         payload = {"verdict": a["verdict"], "signals": [{k2: s[k2] for k2 in ("code", "severity", "title", "chain")}
                                                         for s in a["signals"]],
                    "coverage": a["coverage"], "rules_version": a["rules_version"], "depth": a["depth"]}
-        aid = g.save_assessment(k, a["verdict"], payload, text, "template", flagged)
-        return {"id": aid, "verdict": a["verdict"], "flagged_recalls": flagged}
+        aid = g.save_assessment(k, a["verdict"], payload, text, "template", flagged, depth=a["depth"])
+        return {"id": aid, "verdict": a["verdict"], "depth": a["depth"], "flagged_recalls": flagged}
     r = await run(do)
     if r is None:
         raise HTTPException(404, f"{k} is not in the graph")
