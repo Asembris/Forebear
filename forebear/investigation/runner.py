@@ -336,7 +336,7 @@ def run(call_graph: GraphCall, inv: dict, budget: Budget | None = None, client: 
         emit("done", {"status": status, "mode": mode})
         return rep
     except Exception as e:
-        call_graph(lambda g: store.update(g, inv_id, status="failed", error=f"{type(e).__name__}: {str(e)[:400]}",
-                                          progress="failed"))
+        error = f"{type(e).__name__}: {str(e)[:400]}"
+        call_graph(lambda g: store.update(g, inv_id, status="failed", error=error, progress="failed"))
         emit("failed", {"error": str(e)})
         raise
