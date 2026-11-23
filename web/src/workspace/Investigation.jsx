@@ -6,6 +6,7 @@ import {
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
 import DepthContrast from './DepthContrast.jsx'
+import { depthLabel } from './depth.js'
 import Provenance, { Quote, RecallCard, deviceIn } from './Provenance.jsx'
 import ReviewQueue, { reviewItems } from './Review.jsx'
 
@@ -133,7 +134,7 @@ export default function Investigation({ k, go, onChanged }) {
     api.assessments(k).then(setAssessments).catch(() => setAssessments([]))
     api.investigations(k, 10).then(setRuns).catch(() => setRuns([]))
   }
-  useEffect(() => { setSel(null); setShown(2); load() }, [k, depth])
+  useEffect(() => { setSel(null); setShown(Math.min(2, depth)); load() }, [k, depth])
 
   if (err) return (
     <div className="panel" role="alert">
@@ -211,7 +212,7 @@ export default function Investigation({ k, go, onChanged }) {
             <label className="small muted">Show <select className="field" value={shown} onChange={(e) => setShown(+e.target.value)} aria-label="Generations shown">
               {Array.from({ length: depth }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
             <label className="small muted">Query <select className="field" value={depth} onChange={(e) => setDepth(+e.target.value)} aria-label="Generations traversed by the query">
-              {[2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
+              {[1, 2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
             {mode === 'graph' && a.descendants.length > 0 && (
               <button className="btn btn-line btn-sm" aria-pressed={desc} onClick={() => setDesc(!desc)}>{desc ? 'Hide' : 'Show'} later devices</button>
             )}
@@ -350,7 +351,7 @@ function Note({ a, onSaved }) {
   useEffect(() => { setSaved(null); setOpen(false); setNote('') }, [a.k])
   const save = async () => {
     setBusy(true)
-    try { const r = await api.save(a.k, note); setSaved(r); setOpen(false); setNote(''); onSaved() }
+    try { const r = await api.save(a.k, note, a.depth); setSaved(r); setOpen(false); setNote(''); onSaved() }
     catch (e) { setSaved({ error: e.message }) } finally { setBusy(false) }
   }
   const text = a.memo.headline + '\n\n' + a.memo.paragraphs.map((p) => p.text).join('\n\n')
@@ -374,7 +375,7 @@ function Note({ a, onSaved }) {
         </div>
       )}
       {saved && (saved.error ? <p className="err">{saved.error}</p>
-        : <p className="ok" role="status">Saved {saved.id}: linked to {saved.flagged_recalls.length} flagged recall record(s).</p>)}
+        : <p className="ok" role="status">Saved {saved.id} at {saved.depth} gen: linked to {saved.flagged_recalls.length} flagged recall record(s).</p>)}
     </section>
   )
 }
@@ -387,6 +388,7 @@ function HistoryPanel({ a, assessments, runs, go }) {
       {assessments.length === 0 ? <p className="muted small">None saved for {a.k} yet.</p> : assessments.map((h) => (
         <div key={h.id} className="hist">
           <div className="hist-h"><span className="k mono">{h.id}</span><span className="muted">{h.created_at?.slice(0, 16).replace('T', ' ')}</span>
+            <span className="muted" data-testid="saved-depth">{depthLabel(h)}</span>
             <span className={`chip tone-${VERDICTS[h.verdict]?.tone || 'muted'}`}>{VERDICTS[h.verdict]?.label || h.verdict}</span></div>
           {h.stale && <div className="stale">Stale: the graph changed after this was saved
             {h.verdict_now !== h.verdict && <> (verdict now {VERDICTS[h.verdict_now]?.label || h.verdict_now})</>}

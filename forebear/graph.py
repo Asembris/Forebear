@@ -9,7 +9,7 @@ Schema (labels / relationship types):
   (:Company {name})
   (:Recall {id, recall_number, event, classification, root_cause, design_related,
             initiated, status, firm, reason, product, url})
-  (:Assessment {id, created_at, target_k, verdict, payload, memo, memo_source})
+  (:Assessment {id, created_at, target_k, verdict, depth, payload, memo, memo_source})
 
   (Device)-[:CITES {kind: predicate|reference|mention, confidence, page, snippet, quote,
                     method, text_source, source_url, source_sha256, name_check, panel_check,
@@ -249,16 +249,19 @@ class Graph:
         return rows[0] if rows else None
 
     def save_assessment(self, target_k: str, verdict: str, payload: dict, memo: str,
-                        memo_source: str, recall_ids: list[str]) -> str:
+                        memo_source: str, recall_ids: list[str], depth: int | None = None) -> str:
+        """`depth` is the number of predicate generations the saved verdict was computed over; history recomputes
+        and checks staleness at that depth. Defaults to payload['depth'] when the payload carries it."""
         aid = "A-" + uuid.uuid4().hex[:10]
+        depth = _assessment_depth(depth if depth is not None else payload.get("depth"))[0]
         self.conn.execute(
             """MATCH (d:Device {k:$k})
-            CREATE (a:Assessment {id:$id, created_at: datetime(), target_k:$k, verdict:$verdict,
+            CREATE (a:Assessment {id:$id, created_at: datetime(), target_k:$k, verdict:$verdict, depth:$depth,
                                   payload:$payload, memo:$memo, memo_source:$src})
             CREATE (a)-[:ASSESSED]->(d)
             WITH a UNWIND $recalls AS rid
             MATCH (x:Recall {id: rid}) MERGE (a)-[:FLAGGED]->(x)""",
-            {"k": target_k, "id": aid, "verdict": verdict, "payload": json.dumps(payload),
+            {"k": target_k, "id": aid, "verdict": verdict, "depth": depth, "payload": json.dumps(payload),
              "memo": memo, "src": memo_source, "recalls": recall_ids})
         return aid
 
@@ -463,25 +466,63 @@ class Graph:
         return {"event": event, "recalled": devs, "descendants": desc}
 
     def assessments(self, k: str | None = None, limit: int = 20) -> list[dict]:
-        """Saved assessments, each with a `stale` flag: after it was saved, a citation somewhere in
-        the assessed device's ancestry (4 generations) was reviewed or AI-labelled, or a device in
-        that ancestry was (re-)ingested - so the saved verdict may no longer match the graph."""
+        """Saved assessments, each with its `depth` and a `stale` flag: after it was saved, a citation leaving the
+        assessed device or an ancestor within that depth was reviewed or AI-labelled, or a device within that
+        depth was (re-)ingested - so the saved verdict may no longer match the graph. These are the edges and
+        devices assess() reads at that depth. `depth_source` says where the depth came from: 'recorded' on the
+        node, or for an assessment saved before depth was stored, 'legacy_payload' (the depth inside its saved
+        payload, which is the depth its verdict was computed at) or 'legacy_default' (neither: the API default 4)."""
         rows = self.q(
             """MATCH (a:Assessment)-[:ASSESSED]->(d:Device)
             WHERE $k IS NULL OR d.k = $k
+            RETURN a.id AS id, a.depth AS depth, a.payload AS payload, toString(a.created_at) AS created_at
+            ORDER BY created_at DESC LIMIT $n""", {"k": k, "n": limit})
+        if not rows:
+            return []
+        scoped = []
+        for r in rows:
+            if r["depth"] is not None:
+                depth, source = _assessment_depth(r["depth"])[0], "recorded"
+            else:
+                try:
+                    legacy = json.loads(r["payload"] or "{}").get("depth")
+                except (TypeError, ValueError, AttributeError):
+                    legacy = None
+                depth, ok = _assessment_depth(legacy)
+                source = "legacy_payload" if ok else "legacy_default"
+            scoped.append({"id": r["id"], "depth": depth, "source": source})
+        return self.q(
+            """UNWIND $rows AS r
+            MATCH (a:Assessment {id: r.id})-[:ASSESSED]->(d:Device)
             OPTIONAL MATCH (a)-[:FLAGGED]->(x:Recall)
-            WITH a, d, collect(x.id) AS flagged
-            OPTIONAL MATCH (d)-[:CITES*0..4]->(y:Device)-[c:CITES]->(:Device)
-            WHERE c.reviewed_at > a.created_at OR c.ai_at > a.created_at
-            WITH a, d, flagged, collect(DISTINCT y.k + '->' + endNode(c).k) AS changed_edges
-            OPTIONAL MATCH (d)-[:CITES*0..4]->(z:Device) WHERE z.ingested_live_at > a.created_at
-            WITH a, d, flagged, changed_edges, collect(DISTINCT z.k) AS reingested
+            WITH r, a, d, collect(x.id) AS flagged
+            OPTIONAL MATCH p = (d)-[:CITES*0..8]->(y:Device)-[c:CITES]->(:Device)
+            WHERE length(p) <= r.depth + 1 AND (c.reviewed_at > a.created_at OR c.ai_at > a.created_at)
+            WITH r, a, d, flagged, collect(DISTINCT y.k + '->' + endNode(c).k) AS changed_edges
+            OPTIONAL MATCH q = (d)-[:CITES*0..8]->(z:Device)
+            WHERE length(q) <= r.depth AND z.ingested_live_at > a.created_at
+            WITH r, a, d, flagged, changed_edges, collect(DISTINCT z.k) AS reingested
             RETURN a.id AS id, toString(a.created_at) AS created_at, d.k AS k, d.name AS name,
-                   a.verdict AS verdict, a.memo AS memo, a.memo_source AS memo_source, flagged,
+                   a.verdict AS verdict, r.depth AS depth, r.source AS depth_source,
+                   a.memo AS memo, a.memo_source AS memo_source, flagged,
                    changed_edges, reingested,
                    size(changed_edges) > 0 OR size(reingested) > 0 AS stale
-            ORDER BY created_at DESC LIMIT $n""", {"k": k, "n": limit})
-        return rows
+            ORDER BY created_at DESC""", {"rows": scoped})
+
+
+ASSESSMENT_DEFAULT_DEPTH = 4     # what POST /api/assessments used when no depth was sent
+
+
+def _assessment_depth(v) -> tuple[int, bool]:
+    """(depth, valid): an assessment depth clamped to the 1-8 generations assess() traverses, or the API default
+    when `v` is missing or not an integer (booleans included)."""
+    if isinstance(v, bool) or not isinstance(v, (int, float, str)):
+        return ASSESSMENT_DEFAULT_DEPTH, False
+    try:
+        n = int(v)
+    except (ValueError, OverflowError):
+        return ASSESSMENT_DEFAULT_DEPTH, False
+    return max(1, min(n, 8)), True
 
 
 def _clean(d: dict | None) -> dict | None:

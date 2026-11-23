@@ -53,8 +53,12 @@ TOOLS = [
                                                "a person's review. Only a person's review in the app makes a link trusted or removes it.",
      "inputSchema": {"type": "object", "properties": {"src": K, "dst": K, "status": {"type": "string", "enum": ["confirmed", "rejected", ""]},
                                                       "note": {"type": "string"}}, "required": ["src", "dst", "status"]}},
-    {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls.",
-     "inputSchema": {"type": "object", "properties": {"k_number": K, "note": {"type": "string"}}, "required": ["k_number"]}},
+    {"name": "save_assessment", "description": "Persist the current check as an (:Assessment) node linked to the device and its flagged recalls. "
+                                               "`depth` is the number of predicate generations the saved verdict is computed over "
+                                               "(1-6, default 4); history rechecks the assessment at that depth.",
+     "inputSchema": {"type": "object", "properties": {"k_number": K, "note": {"type": "string"},
+                                                      "depth": {"type": "integer", "minimum": 1, "maximum": 6, "default": 4}},
+                     "required": ["k_number"]}},
     {"name": "investigate", "description": "Run Forebear's autonomous investigation agent (NVIDIA-hosted LLM over the graph tools; labelled "
                                            "deterministic fallback if inference is unavailable) on one device and wait for the report. "
                                            "Returns the deterministic conclusion, recall totals, uncertainties, verified and rejected agent "
@@ -148,7 +152,10 @@ def call_tool(name: str, args: dict):
                                                            "status": args["status"], "note": args.get("note"),
                                                            "via": "mcp-client"})
     if name == "save_assessment":
-        return _http("POST", "/api/assessments", json={"k": up(args["k_number"]), "note": args.get("note")})
+        depth = args.get("depth", 4)
+        if isinstance(depth, bool) or not isinstance(depth, int) or not 1 <= depth <= 6:
+            raise ValueError("depth must be an integer from 1 to 6")
+        return _http("POST", "/api/assessments", json={"k": up(args["k_number"]), "note": args.get("note"), "depth": depth})
     if name == "investigate":
         body = {"request": args["request"], "depth": int(args.get("generations", 4)), "mode": args.get("mode", "auto")}
         if args.get("k_number"):

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api, reportUrl } from '../api.js'
 import { VERDICTS } from '../evidence.js'
+import { depthLabel } from './depth.js'
 
 /* Everything that was saved or run against the graph: assessments first (deterministic), agent runs second. */
 export default function History({ go }) {
@@ -28,11 +29,12 @@ export default function History({ go }) {
         {assess && assess.length === 0 && <p className="muted">None yet. Save one from any investigation.</p>}
         {assess && assess.length > 0 && (
           <div className="tbl-wrap"><table className="tbl">
-            <thead><tr><th>Assessment</th><th>Device</th><th>Saved verdict</th><th>Now</th><th>Saved</th></tr></thead>
+            <thead><tr><th>Assessment</th><th>Device</th><th>Depth</th><th>Saved verdict</th><th>Now</th><th>Saved</th></tr></thead>
             <tbody>{assess.map((h) => (
               <tr key={h.id} className="click" tabIndex={0} onClick={() => go('check', h.k)} onKeyDown={(e) => e.key === 'Enter' && go('check', h.k)}>
                 <td className="mono">{h.id}</td>
                 <td><span className="k mono">{h.k}</span><div className="sub">{h.name}</div></td>
+                <td className="sub num" data-testid="saved-depth">{depthLabel(h)}</td>
                 <td><span className={`chip tone-${VERDICTS[h.verdict]?.tone || 'muted'}`}>{VERDICTS[h.verdict]?.label || h.verdict}</span></td>
                 <td>{h.stale ? <span className="stale">Stale{h.verdict_now !== h.verdict ? ` · now ${VERDICTS[h.verdict_now]?.label || h.verdict_now}` : ''}</span> : <span className="ok">Current</span>}</td>
                 <td className="sub num">{h.created_at?.slice(0, 16).replace('T', ' ')}</td>
