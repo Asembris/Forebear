@@ -16,8 +16,9 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # Dependency review needs the dependency graph, which private repositories only get with
-  # GitHub Code Security. While unsupported, the review is skipped (reported as skipped, never as passed).
+  # Dependency review needs the repository's dependency graph to be enabled (private repositories also
+  # need GitHub Code Security). This job calls the same compare endpoint the action uses; while it is
+  # unavailable (HTTP 403/404) the review is skipped (reported as skipped, never as passed).
   dependency-review-support:
     name: Check dependency review support
     if: github.event_name == 'pull_request'
@@ -26,21 +27,33 @@ jobs:
     outputs:
       enabled: ${{ steps.check.outputs.enabled }}
     steps:
-      - name: Check repository visibility
+      - name: Probe the dependency graph API
         id: check
         env:
           GH_TOKEN: ${{ github.token }}
-          OVERRIDE: ${{ vars.DEPENDENCY_REVIEW_ENABLED }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          visibility=$(gh api "repos/$GITHUB_REPOSITORY" --jq .visibility)
-          if [ "$visibility" = "public" ] || [ "$OVERRIDE" = "true" ]; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            msg="Dependency review was NOT run: the dependency graph API is unavailable on this $visibility repository. Make the repository public, or enable GitHub Code Security and set the repository variable DEPENDENCY_REVIEW_ENABLED=true."
-            echo "::warning title=Dependency review skipped::$msg"
-            printf '### Dependency review not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/dependency-graph/compare/$BASE_SHA...$HEAD_SHA")
+          case "$code" in
+            200)
+              echo "enabled=true" >> "$GITHUB_OUTPUT"
+              ;;
+            403|404)
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              msg="Dependency review was NOT run: the dependency graph API returned HTTP $code. Enable the dependency graph in the repository's security settings (private repositories also need GitHub Code Security)."
+              echo "::warning title=Dependency review skipped::$msg"
+              printf '### Dependency review not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              echo "::error title=Dependency graph probe failed::Unexpected HTTP $code from the dependency graph API."
+              exit 1
+              ;;
+          esac
 
   dependency-review:
     name: Dependency review
