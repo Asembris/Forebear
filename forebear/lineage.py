@@ -206,6 +206,17 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     # `evidence` describes the verdict window only (the candidate and two predicate generations, the reach of
     # every severity rule that can change a verdict); gaps beyond it are counted in coverage.deeper_gaps.
     shallow = depth < EVIDENCE_WINDOW         # grand-predicates were not traversed at all
+    window_doubtful = [d for d in doubtful if d["gen"] <= EVIDENCE_WINDOW]
+    # Why the verdict window is not complete, one code per gap, so every view can say so without re-deriving it.
+    evidence_reasons = [code for code, hit in (
+        ("direct_predicate_links_all_uncertain", bool(gen1 and not trusted_gen1)),
+        ("unresolved_predicate_citations", bool(missing)),
+        ("direct_predicate_summaries_unread", bool(gen1_unread)),
+        ("doubtful_links_in_window", bool(window_doubtful)),
+        ("recall_cause_or_class_unknown", bool(unknown_recalls)),
+        ("unattributed_recalls_in_product_code", bool(pc.get("unattributed_design_recalls_n"))),
+        ("shallow_traversal", bool(shallow and ancestors)),
+    ) if hit]
     if gen1 and not trusted_gen1:
         evidence = "uncertain"
     elif missing or gen1_unread or any(d["gen"] <= EVIDENCE_WINDOW for d in doubtful) or unknown_recalls or \
@@ -262,7 +273,8 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         "ancestors": ancestors, "descendants": descendants,
         "coverage": {"ancestors": len(ancestors), "ancestors_lineage_unknown": len(unknown),
                      "candidate_lineage_known": bool(dev.get("lineage_known")),
-                     "evidence": evidence, "doubtful_links": len(doubtful),
+                     "evidence": evidence, "evidence_reasons": evidence_reasons,
+                     "doubtful_links": len(doubtful),
                      "unresolved_predicate_citations": len(missing),
                      "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1),
                      "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
@@ -326,9 +338,16 @@ def _missing_predicates(g: Graph, d: dict) -> list[dict]:
     return out
 
 
+def provisional(a: dict) -> bool:
+    """A "no signal" verdict that rests on an incomplete verdict window: it says nothing about the missing part."""
+    return a["verdict"] == "NO_DESIGN_RECALL_SIGNAL" and a["coverage"]["evidence"] != "complete"
+
+
 def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:
     """One row per candidate predicate - the comparison table FDA's draft guidance suggests
-    submitters include when explaining predicate selection."""
+    submitters include when explaining predicate selection. Each row keeps the verdict's evidence coverage,
+    the reasons it is incomplete and the verdict reason, so two equal verdicts on unequal evidence never
+    look the same."""
     rows = []
     for k in ks:
         a = assess(g, k, depth)
@@ -339,6 +358,12 @@ def compare(g: Graph, ks: list[str], depth: int = 4) -> list[dict]:
         rows.append({
             "k": k, "found": True, "name": d.get("name"), "applicant": d.get("applicant"),
             "decision_date": d.get("decision_date"), "verdict": a["verdict"],
+            "verdict_reason": a["verdict_reason"], "provisional": provisional(a),
+            "evidence": a["coverage"]["evidence"], "evidence_reasons": a["coverage"]["evidence_reasons"],
+            "deeper_gaps": a["coverage"]["deeper_gaps"],
+            # medium signals that all hang on an unresolved citation: the REVIEW verdict is conditional
+            "conditional": a["verdict"] == "REVIEW_LINEAGE" and not any(
+                s["severity"] == "medium" and not s.get("conditional") for s in a["signals"]),
             "own_recalls": len(d["recalls"]),
             "own_design_recalls": sum(1 for x in d["recalls"] if x.get("design_related")),
             "flagged_ancestors_gen12": sum(1 for s in a["signals"]
