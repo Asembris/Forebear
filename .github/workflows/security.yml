@@ -16,9 +16,36 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Dependency review needs the dependency graph, which private repositories only get with
+  # GitHub Code Security. While unsupported, the review is skipped (reported as skipped, never as passed).
+  dependency-review-support:
+    name: Check dependency review support
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Check repository visibility
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OVERRIDE: ${{ vars.DEPENDENCY_REVIEW_ENABLED }}
+        run: |
+          visibility=$(gh api "repos/$GITHUB_REPOSITORY" --jq .visibility)
+          if [ "$visibility" = "public" ] || [ "$OVERRIDE" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            msg="Dependency review was NOT run: the dependency graph API is unavailable on this $visibility repository. Make the repository public, or enable GitHub Code Security and set the repository variable DEPENDENCY_REVIEW_ENABLED=true."
+            echo "::warning title=Dependency review skipped::$msg"
+            printf '### Dependency review not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   dependency-review:
     name: Dependency review
-    if: github.event_name == 'pull_request'
+    needs: dependency-review-support
+    if: needs.dependency-review-support.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
