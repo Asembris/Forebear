@@ -85,6 +85,8 @@ Every value in this table is asserted against the shipped store by [`tests/test_
 
 ## Judge walkthrough
 
+Prefer to watch first? The [demo video](https://youtu.be/wi9gg9Cik7Y) shows Forebear running, and the [Devpost submission](https://devpost.com/software/forebear) has the project write-up.
+
 No API key, external database or other service is needed: the graph (`data/forebear.rl`) and the web build (`web/dist`) are committed, so nothing is fetched from FDA at run time. Pick one way to run it.
 
 | Path | You need | Tested on |
