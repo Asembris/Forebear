@@ -104,8 +104,11 @@ function EdgeBody({ sel, a, closeBtn, onClose, go, reload, onSelect }) {
     setBusy(true); setMsg(null)
     try {
       const r = await api.review(h.src, h.dst, status)
-      setMsg({ ok: true, text: status ? `Recorded: ${status}. The assessment has been recomputed from the graph.` : 'Review cleared. The assessment has been recomputed.' })
-      onSelect({ ...sel, hop: { ...h, review: r?.review ?? (status || null), reviewer: r?.reviewer ?? (status ? 'user' : null) } })
+      // show the edge exactly as the graph now stores it (review, reviewer, the PDF versions reviewed and current, trust)
+      if (r?.citation) onSelect({ ...sel, hop: r.citation })
+      setMsg(r?.citation
+        ? { ok: true, text: status ? `Recorded: ${status}. The assessment has been recomputed from the graph.` : 'Review cleared. The assessment has been recomputed.' }
+        : { ok: false, text: 'The review was sent, but the graph did not return the citation. Reopen it to see its current state.' })
       reload()
     } catch (e) { setMsg({ ok: false, text: e.message }) } finally { setBusy(false) }
   }
@@ -151,7 +154,7 @@ function EdgeBody({ sel, a, closeBtn, onClose, go, reload, onSelect }) {
             <dt>FDA panel</dt><dd>{h.panel_check || '—'}</dd>
             {h.audit && <><dt>Audit</dt><dd>{h.audit}{h.audit_note ? ` — ${h.audit_note}` : ''}</dd></>}
             {h.ai_label && <><dt>LLM label</dt><dd>{h.ai_label}{h.ai_model ? ` · ${h.ai_model}` : ''} (advisory; never a verdict input until a person confirms)</dd></>}
-            <dt>Review</dt><dd>{h.review ? `${h.review} by ${h.reviewer || 'unknown'}${MACHINE_REVIEWERS.includes(h.reviewer) ? ' (automated client; advisory)' : outdatedReview(h) ? ' on an earlier version of the summary; needs re-review' : ''}` : 'not reviewed by a person'}</dd>
+            <dt>Review</dt><dd data-testid="edge-review">{h.review ? `${h.review} by ${h.reviewer || 'unknown'}${MACHINE_REVIEWERS.includes(h.reviewer) ? ' (automated client; advisory)' : outdatedReview(h) ? ' on an earlier version of the summary; needs re-review' : ''}` : 'not reviewed by a person'}</dd>
             <dt>Trust</dt><dd data-testid="edge-trust">{EDGE_STATUS[edgeStatus(h).key].label}</dd>
             {h.retired_at && <><dt>Retired</dt><dd>{fmtDate(h.retired_at)} · no longer cited by the refreshed summary</dd></>}
             {src.summary_sha256 && <><dt>PDF SHA-256</dt><dd><span className="mono">{src.summary_sha256}</span></dd></>}

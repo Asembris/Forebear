@@ -669,3 +669,47 @@ html[data-film="off"] .handoff { min-height: 60svh; }
 .film-top.is-solid { backdrop-filter: none; background: rgba(8, 13, 24, 0.92); }
 .film-hud { transition: opacity .4s var(--ease-out), transform .4s var(--ease-out); }
 .film-hud.is-away { opacity: 0; transform: translateY(10px); pointer-events: none; }
+
+/* Depth contrast: the same clearance at one and two predicate generations */
+.depth-contrast { border-color: rgba(231, 169, 72, .28); background: linear-gradient(135deg, rgba(22, 35, 59, .82), rgba(13, 21, 37, .82)); }
+.dc-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.dc-col { background: var(--night-2); border: 1px solid var(--rule); border-radius: var(--r-m); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.dc-col.is-deep { border-color: rgba(231, 169, 72, .45); box-shadow: inset 0 0 0 1px rgba(231, 169, 72, .08), 0 0 48px -22px rgba(231, 169, 72, .55); }
+.dc-col p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.dc-col .k { color: var(--blue); }
+.dc-col .amber { color: var(--amber); font-weight: 600; }
+.dc-depth { font-size: 11px !important; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3) !important; font-weight: 600; }
+.dc-depth b { color: var(--ivory); font-weight: 650; }
+.dc-verdict { font-family: var(--serif); font-size: 24px; font-weight: 450; letter-spacing: -0.015em; line-height: 1.1; display: flex; gap: 10px; align-items: center; }
+.dc-verdict i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent); flex: none; }
+.dc-verdict.tone-amber { color: var(--amber); }
+.dc-verdict.tone-alert { color: var(--alert); }
+.dc-verdict.tone-calm { color: var(--sage); }
+.dc-verdict.tone-muted { color: var(--ink-2); }
+.dc-step { display: grid; align-content: center; justify-items: center; position: relative; width: 84px; }
+.dc-step::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid var(--amber); opacity: .7; }
+.dc-step span { position: relative; background: var(--night-1); border: 1px solid rgba(231, 169, 72, .5); color: var(--amber); border-radius: 999px; padding: 3px 9px; font-size: 11.5px; white-space: nowrap; }
+.dc-route { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 0; }
+.dc-route li { display: grid; grid-template-columns: 190px minmax(0, 1fr) auto; gap: 6px 14px; align-items: baseline; padding: 10px 2px; border-top: 1px solid var(--rule); font-size: 13px; }
+.dc-route .dc-n { color: var(--ivory); font-size: 12.5px; }
+.dc-route .dc-q { color: var(--ink-2); font-family: var(--serif); font-size: 14.5px; line-height: 1.4; }
+.dc-route .is-recall .dc-n { color: var(--amber); }
+.dc-route .is-recall .dc-q { font-family: inherit; font-size: 13px; }
+.dc-route .dc-q .k { color: var(--blue); font-size: 12.5px; }
+.dc-route .dc-a { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.dc-route .dc-a a { font-size: 12.5px; white-space: nowrap; }
+.dc-foot { margin: 10px 0 0; }
+@media (max-width: 860px) {
+  .dc-grid { grid-template-columns: 1fr; }
+  .dc-step { width: auto; height: 34px; }
+  .dc-step::before { left: 50%; right: auto; top: 0; bottom: 0; border-top: 0; border-left: 2px solid var(--amber); }
+  .dc-route li { grid-template-columns: 1fr; }
+  .dc-route .dc-a { justify-content: flex-start; }
+}
+.hero-alt { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin-top: 20px; max-width: 40em; padding: 10px 14px; border: 1px solid rgba(231, 169, 72, .3); border-radius: var(--r-m); background: rgba(9, 15, 27, .55); backdrop-filter: blur(8px); color: var(--ink-2); font-size: 14px; line-height: 1.5; text-decoration: none !important; transition: border-color .2s, background .2s; }
+.hero-alt:hover, .hero-alt:focus-visible { border-color: rgba(231, 169, 72, .6); background: rgba(16, 26, 46, .75); }
+.hero-alt .k { color: var(--blue); }
+.hero-alt b { color: var(--amber); font-weight: 600; white-space: nowrap; }
+.hero-alt-tag { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); font-weight: 650; white-space: nowrap; }
+.dc-route .dc-q mark { background: rgba(127, 162, 255, .16); color: var(--ivory); border-radius: 3px; padding: 0 3px; font-family: var(--mono); font-size: .86em; }
+.dc-col a.mono { white-space: nowrap; }

@@ -62,6 +62,12 @@ the favicon.
   plain-language finding sentence, built only from the assessment payload. It names the page, the recall class, the root
   cause, the start date, and how long before the clearance the recall began. Coverage chips show evidence completeness,
   ancestors, unread summaries, doubtful links, conditional signals, and a jump link to the review queue.
+- **Why the graph matters** (only when depth changes the verdict). The same deterministic rules run at depth 1 and
+  depth 2, side by side, joined by a *+1 hop* thread. Shown only when the depth-1 verdict differs and every strong
+  signal sits at generation 2 or deeper, so it never appears for a case like K252078 whose direct predicate already
+  carries the recall. Below the two verdicts, each hop is listed with a quote excerpt centred on the cited K-number, a
+  link to the FDA PDF at that page, and its provenance drawer, then the recall record. The shipped example is K251770
+  (`#/check/K251770`); the landing page links to it under the hero as *Two hops deep*.
 - **Critical chain.** The route that raised the verdict, as cards joined by status-coded threads. Each card and each
   thread opens its provenance.
 - **Evidence graph.** Generation columns that fit the panel width. Status-coded threads, and nodes coloured by recall

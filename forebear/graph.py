@@ -231,6 +231,18 @@ class Graph:
             {"src": src, "dst": dst, "label": label, "quote": quote, "model": model})
         return rows[0] if rows else None
 
+    def citation_edge(self, src: str, dst: str) -> dict | None:
+        """The full current state of one citation edge, in the shape lineage hops use, plus how the lineage rules
+        treat it now. The authoritative record a client shows after reviewing the edge."""
+        rows = self.q(
+            f"""MATCH (a:Device {{k:$src}})-[r:CITES]->(b:Device {{k:$dst}})
+            RETURN {{{_HOP_FIELDS}}} AS hop, ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory,
+                   toString(r.retired_at) AS retired_at""", {"src": src, "dst": dst})
+        if not rows:
+            return None
+        r = rows[0]
+        return r["hop"] | {"in_lineage": bool(r["in_lineage"]), "advisory": bool(r["advisory"]), "retired_at": r["retired_at"]}
+
     def citation(self, src: str, dst: str) -> dict | None:
         rows = self.q("""MATCH (a:Device {k:$src})-[c:CITES]->(b:Device {k:$dst})
             RETURN c.kind AS kind, c.snippet AS snippet""", {"src": src, "dst": dst})

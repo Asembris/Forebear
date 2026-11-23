@@ -390,6 +390,17 @@ def trust(h: dict) -> str:
     return "uncertain" if doubt(h) else "extracted"
 
 
+def citation_state(h: dict | None) -> dict | None:
+    """One citation edge (graph.citation_edge) labelled as the lineage rules treat it now: 'retired', 'advisory', a
+    trusted hop's trust() ('human_verified', 'extracted' or 'uncertain'), or None when it is out of lineage (rejected
+    by a person or removed by the audit)."""
+    if h is None:
+        return None
+    label = ("retired" if h.get("retired_at") else "advisory" if h.get("advisory")
+             else trust(h) if h.get("in_lineage") else None)
+    return h | {"trust": label}
+
+
 def advisory_basis(h: dict) -> list[str]:
     """Which automated sources call an untrusted citation a predicate."""
     out = []

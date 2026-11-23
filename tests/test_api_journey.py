@@ -172,3 +172,14 @@ def test_phase35_source_corrected_assessments(client):
     assert {c["dst"]: c["kind"] for c in rt045["citations"]} == {
         "K060044": "predicate", "K130328": "reference", "K023135": "reference",
     }
+
+
+def test_review_returns_the_authoritative_citation(client):
+    r = client.post("/api/citation/review", json={"src": "K200480", "dst": "K131982", "status": "rejected"}).json()
+    c = r["citation"]
+    assert (c["src"], c["dst"], c["review"], c["reviewer"], c["trust"], c["in_lineage"]) == \
+        ("K200480", "K131982", "rejected", "user", None, False)
+    assert c["page"] == 4 and c["reviewed_source_sha256"] == c["source_sha256"] and len(c["source_sha256"]) == 64
+    c = client.post("/api/citation/review", json={"src": "K200480", "dst": "K131982", "status": ""}).json()["citation"]
+    assert (c["review"], c["trust"], c["in_lineage"]) == (None, "extracted", True)
+    assert client.post("/api/citation/review", json={"src": "K200480", "dst": "K999999", "status": ""}).status_code == 404

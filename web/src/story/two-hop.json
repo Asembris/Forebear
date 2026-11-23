@@ -1,0 +1,41 @@
+{
+  "_note": "The two-hop discovery: a one-generation lookup finds nothing, the graph finds a Class I design recall two citations back. tests/test_two_hop_story.py checks every value against the shipped Relate store and the cached FDA evidence in data/raw/.",
+  "candidate": {
+    "k": "K251770",
+    "name": "SleepRes PAP System",
+    "applicant": "Sleepres, Inc.",
+    "decision_date": "2025-12-15",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf",
+    "summary_sha256": "73647d0b389e327183174ec57cc9a3d79f04f17f06202db8a7bbef99a7a273d1"
+  },
+  "depth1": { "generations": 1, "verdict": "NO_DESIGN_RECALL_SIGNAL", "provisional": true },
+  "depth2": { "generations": 2, "verdict": "REVIEW_LINEAGE", "provisional": false },
+  "predicate": {
+    "k": "K200480",
+    "name": "DreamStation 2 System",
+    "applicant": "Respironics, Inc.",
+    "decision_date": "2020-07-10",
+    "summary_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf",
+    "summary_sha256": "923bbcfbbaea7deaf5a1b208872bda1afcf8433ff7c413ac5831cdc6c69bd1cb",
+    "recalls": 0
+  },
+  "hops": [
+    { "src": "K251770", "dst": "K200480", "page": 5, "quote": "Predicate Device: Philips DreamStation 2 - K200480" },
+    { "src": "K200480", "dst": "K131982", "page": 4, "quote": "Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)" },
+    { "src": "K200480", "dst": "K130077", "page": 4, "quote": "Secondary Predicate Device: REMSTAR SE (K130077)" }
+  ],
+  "grand_predicates": [
+    { "k": "K131982", "name": "REMSTAR AUTO A-FLEX HT", "applicant": "Respironics, Inc.", "decision_date": "2013-10-18" },
+    { "k": "K130077", "name": "REMSTAR SE", "applicant": "Respironics, Inc.", "decision_date": "2013-05-21" }
+  ],
+  "recall": {
+    "id": "Z-1974-2021",
+    "event": "88058",
+    "classification": "Class I",
+    "root_cause": "Device Design",
+    "initiated": "2021-06-14",
+    "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815",
+    "holders": ["K131982", "K130077"],
+    "reason": "The polyester-based polyurethane (PE-PUR) foam may degrade into particles"
+  }
+}
