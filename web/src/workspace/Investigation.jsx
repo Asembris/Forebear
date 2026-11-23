@@ -134,7 +134,7 @@ export default function Investigation({ k, go, onChanged }) {
     api.assessments(k).then(setAssessments).catch(() => setAssessments([]))
     api.investigations(k, 10).then(setRuns).catch(() => setRuns([]))
   }
-  useEffect(() => { setSel(null); setShown(2); load() }, [k, depth])
+  useEffect(() => { setSel(null); setShown(Math.min(2, depth)); load() }, [k, depth])
 
   if (err) return (
     <div className="panel" role="alert">
@@ -212,7 +212,7 @@ export default function Investigation({ k, go, onChanged }) {
             <label className="small muted">Show <select className="field" value={shown} onChange={(e) => setShown(+e.target.value)} aria-label="Generations shown">
               {Array.from({ length: depth }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
             <label className="small muted">Query <select className="field" value={depth} onChange={(e) => setDepth(+e.target.value)} aria-label="Generations traversed by the query">
-              {[2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
+              {[1, 2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n} gen</option>)}</select></label>
             {mode === 'graph' && a.descendants.length > 0 && (
               <button className="btn btn-line btn-sm" aria-pressed={desc} onClick={() => setDesc(!desc)}>{desc ? 'Hide' : 'Show'} later devices</button>
             )}
