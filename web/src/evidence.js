@@ -181,16 +181,21 @@ export const EVIDENCE_REASON_TEXT = {
   shallow_traversal: 'grand-predicates were not traversed',
 }
 
-/** Mirror of lineage.recall_attribution(): how FDA's recall record is tied to the clearance it lists. */
+/** Mirror of lineage.recall_attribution(). Every link is FDA's own listing of the K-number on the recall record: an
+    association, never verified model identity. The code only reports the fuzzy name heuristic (evidence.name_check). */
 export const ATTRIBUTION = {
-  product_family: { short: 'FDA-listed · product family', tone: 'muted',
-    text: 'The recall began before this clearance was decided, so it is not a recall of this cleared model: FDA lists the clearance as part of the recalled product family.' },
-  listed_only: { short: 'FDA-listed · model not named', tone: 'muted',
-    text: 'FDA lists this 510(k) on the recall, but the recall text does not name this device: the recalled model may be another one in the family.' },
-  model_named: { short: 'FDA-listed · model named', tone: 'other',
-    text: 'FDA lists this 510(k) on the recall and the recall text names this device.' },
-  unchecked: { short: 'FDA-listed', tone: 'other',
-    text: 'FDA lists this 510(k) on the recall; whether the recall text names this model could not be checked.' },
+  name_token_match: { short: 'FDA-listed · name match (heuristic)', tone: 'other',
+    text: 'FDA lists this 510(k) on the recall. A distinctive word of its FDA device name appears in the recall text, possibly as a fuzzy match. This heuristic does not verify that the recall names this exact model.' },
+  name_token_absent: { short: 'FDA-listed · name not found (heuristic)', tone: 'muted',
+    text: 'FDA lists this 510(k) on the recall, but no distinctive word of its FDA device name was found in the recall text. The recalled model may differ, or the text may name it differently.' },
+  name_not_checkable: { short: 'FDA-listed · name not checked', tone: 'muted',
+    text: 'FDA lists this 510(k) on the recall. No name check is available: its FDA device name has no distinctive word to look for, or no check was recorded for this link. Which model was recalled is not established here.' },
+}
+
+/** Caveat for a recall that began before the clearance it is listed on. Dates alone do not settle whether the model was affected. */
+export const PREDATES_CLEARANCE = {
+  short: 'Recall began before this clearance',
+  text: 'This recall began before this 510(k) was cleared, yet FDA lists it on the record. The dates alone do not establish whether this cleared model was affected: read the FDA record.',
 }
 
 /** Recall reach timing (lineage.date_relation) as display text. */
@@ -202,7 +207,6 @@ export const TIMING_TEXT = {
 }
 
 export function recallAttribution(r) {
-  if (r?.attribution) return r.attribution
-  if (r?.linked_before_clearance) return 'product_family'
-  return r?.link_name_check === 'match' ? 'model_named' : r?.link_name_check === 'mismatch' ? 'listed_only' : 'unchecked'
+  if (r?.attribution && ATTRIBUTION[r.attribution]) return r.attribution
+  return r?.link_name_check === 'match' ? 'name_token_match' : r?.link_name_check === 'mismatch' ? 'name_token_absent' : 'name_not_checkable'
 }

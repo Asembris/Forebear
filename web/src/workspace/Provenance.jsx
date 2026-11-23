@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { api, pmnUrl } from '../api.js'
 import {
-  ATTRIBUTION, DOUBT_TEXT, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, pdfAt, recallAttribution, recallTone, shortName,
+  ATTRIBUTION, DOUBT_TEXT, PREDATES_CLEARANCE, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, pdfAt, recallAttribution, recallTone, shortName,
 } from '../evidence.js'
 
 /* Highlight the cited K-number inside the verbatim quote. */
@@ -32,6 +32,9 @@ export function RecallCard({ r }) {
         {r.url && <a href={r.url} target="_blank" rel="noreferrer">FDA record ↗</a>}
       </div>
       <div className="recall-r"><span className={`chip tone-${att.tone}`} title={att.text}>{att.short}</span> <span className="muted small">{att.text}</span></div>
+      {r.linked_before_clearance && (
+        <div className="recall-r" data-testid="recall-predates"><span className="chip tone-muted" title={PREDATES_CLEARANCE.text}>{PREDATES_CLEARANCE.short}</span>{' '}
+          <span className="muted small">{PREDATES_CLEARANCE.text}</span></div>)}
       {r.reason && <div className="recall-r">{r.reason}</div>}
       {r.status && <div className="recall-r">Status: {r.status}{r.event ? ` · event ${r.event}` : ''}{r.firm ? ` · ${r.firm}` : ''}</div>}
     </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '../api.js'
-import { ATTRIBUTION, EVIDENCE_REASON_TEXT, EVIDENCE_TONE, TIMING_TEXT, fmtDate, verdictView } from '../evidence.js'
+import {
+  ATTRIBUTION, EVIDENCE_REASON_TEXT, EVIDENCE_TONE, PREDATES_CLEARANCE, TIMING_TEXT, fmtDate, recallAttribution, verdictView,
+} from '../evidence.js'
 
 const Head = ({ eyebrow, title, children }) => (
   <div className="page-head"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{children && <p>{children}</p>}</div>
@@ -118,10 +120,13 @@ export function ReachView({ initial, go }) {
                 <div data-testid="reach-count-undetermined"><b>{(c.same_day || 0) + (c.unknown || 0)}</b><span>timing not determinable ({c.same_day || 0} same day, {c.unknown || 0} missing a date)</span></div>)}
             </div>
             <div className="tags" style={{ marginTop: 14 }}>{data.recalled.map((r) => (
-              <button key={r.k} className="tag-btn" onClick={() => go('check', r.k)} title={ATTRIBUTION[r.attribution]?.text}>
-                <span className="k">{r.k}</span> {r.name} <span className="muted">· {ATTRIBUTION[r.attribution]?.short}</span></button>))}</div>
-            <p className="muted small" style={{ marginBottom: 0 }}>FDA lists these clearances on the recall record. That is an association: it does not by itself
-              mean the listed model, as cleared, is the recalled product.</p>
+              <button key={r.k} className="tag-btn" onClick={() => go('check', r.k)} data-testid="reach-holder"
+                title={ATTRIBUTION[recallAttribution(r)].text + (r.linked_before_clearance ? ' ' + PREDATES_CLEARANCE.text : '')}>
+                <span className="k">{r.k}</span> {r.name} <span className="muted">· {ATTRIBUTION[recallAttribution(r)].short}
+                  {r.linked_before_clearance ? ` · ${PREDATES_CLEARANCE.short.toLowerCase()}` : ''}</span></button>))}</div>
+            <p className="muted small" style={{ marginBottom: 0 }}>FDA lists these clearances on the recall record. That is an association, not verified model
+              identity: a name match is a fuzzy heuristic on the recall text, and a recall that began before a clearance does not by itself
+              show whether that model was affected.</p>
           </section>
           <section className="panel">
             {groups.filter(([, , rows, , always]) => always || rows.length).map(([id, title, rows, hint], i) => (
@@ -217,7 +222,9 @@ export function WatchlistView({ go }) {
                   <td className="sub">{r.recall_count > 2 && <div className="muted">{r.recall_count} recall routes; first two:</div>}{r.recalls.slice(0, 2).map((x) => (
                     <div key={x.recall_id + x.ancestor}>{x.recall_id} · {x.classification || 'unclassified'} · {x.root_cause} · {fmtDate(x.initiated)}
                       {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}
-                      <div className="muted" title={ATTRIBUTION[x.attribution]?.text} data-testid="watch-attribution">{x.ancestor}: {ATTRIBUTION[x.attribution]?.short}</div></div>))}</td>
+                      <div className="muted" title={ATTRIBUTION[recallAttribution(x)].text + (x.linked_before_clearance ? ' ' + PREDATES_CLEARANCE.text : '')}
+                        data-testid="watch-attribution">{x.ancestor}: {ATTRIBUTION[recallAttribution(x)].short}
+                        {x.linked_before_clearance ? ` · ${PREDATES_CLEARANCE.short.toLowerCase()}` : ''}</div></div>))}</td>
                 </tr>))}</tbody>
             </table>
           </div>
