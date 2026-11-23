@@ -4,7 +4,7 @@
 rapidocr-onnxruntime==1.4.4
 pypdfium2==5.15.2
 onnxruntime==1.32.0
-opencv-python==5.0.0.93
+opencv-python==5.1.0.95
 numpy==2.5.5
 Pillow==13.0.0
 pyclipper==1.4.0
