@@ -38,7 +38,7 @@ the favicon.
    wordmark rises, and the line *Every clearance has a past* is set. The lockup then dissolves, and the film's field
    blooms out from where the mark stood. It plays once per tab session, and only on the landing page. Skip, Escape,
    Enter, Space or a click ends it at once. It never plays under reduced motion or in front of a deep link. Nothing
-   loads behind it. "Replay" in the footer and "Replay the film" in the workspace bring it back.
+   loads behind it. "Replay the film" in the workspace rail brings it back.
 2. **Hero.** The value in one sentence, live counts from the store (clearances, predicate links, recall records), and two
    paths: *Investigate K252078* goes straight to the workspace, and *Follow one thread* starts the film.
 3. **Scroll film** (`Landing.jsx`, `renderer.js`). Three chapters over one fixed canvas:
@@ -133,7 +133,9 @@ All old hash links still resolve, including `#/check/K…`, `#/compare/…`, `#/
   - **Re-renders.** Scene changes update only the readout and chapter index, through an external store, never the whole
     page.
 - **Dossier framing.** A fine grid, numbered chapters (`01 / 03`), a mono scene readout (`[02 / 04] THE CONNECTION
-  K252078 → K113053 · 2026 → 2012 · webgl field · illustrative`), and corner marks on evidence. In the workspace, amber
+  K252078 → K113053 · 2026 → 2012`), which steps aside when the closing sections arrive, and corner marks on
+  evidence. The live store counts in the hero appear only once the API answers; if it cannot, the row is left out.
+  Past the last scene the picture scrolls away with the page, so the handoff copy never slides over it. In the workspace, amber
   signals travel along the critical chain, in both the graph and the chain strip, so the film's language continues into
   the product. Reduced motion stops all of it.
 - **Honest content.** Every node, date, page, quote and recall id in the film comes from `web/src/story/facts.json`, and
