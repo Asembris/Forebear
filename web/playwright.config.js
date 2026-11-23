@@ -1,13 +1,16 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const port = process.env.E2E_PORT || '8767'
+const ci = !!process.env.CI
 export default defineConfig({
   testDir: './e2e',
   timeout: 45_000,
   fullyParallel: false,
   workers: 1,
-  reporter: [['list']],
-  use: { baseURL: `http://127.0.0.1:${port}`, trace: 'off' },
+  forbidOnly: ci,
+  retries: ci ? 1 : 0,
+  reporter: ci ? [['github'], ['list'], ['html', { open: 'never' }]] : [['list']],
+  use: { baseURL: `http://127.0.0.1:${port}`, trace: ci ? 'retain-on-failure' : 'off' },
   webServer: {
     command: 'node e2e/serve.mjs',
     url: `http://127.0.0.1:${port}/api/health`,

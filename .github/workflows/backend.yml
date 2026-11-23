@@ -1,0 +1,84 @@
+name: Backend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PYTHON_VERSION: "3.12"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PYTHONUTF8: "1"
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Ruff check
+        uses: astral-sh/ruff-action@v3
+        with:
+          version: "0.17.6"
+          args: check --output-format=github
+
+  test:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install pytest-cov==7.0.0
+
+      - name: Run tests
+        run: >
+          python -m pytest
+          --junitxml=reports/junit.xml
+          --cov=forebear
+          --cov-report=xml:reports/coverage.xml
+          --cov-report=term-missing:skip-covered
+
+      - name: Publish coverage summary
+        if: always() && runner.os == 'Linux' && hashFiles('reports/coverage.xml') != ''
+        run: |
+          python - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import xml.etree.ElementTree as ET
+          rate = float(ET.parse("reports/coverage.xml").getroot().get("line-rate")) * 100
+          print(f"### Backend coverage\n\n**{rate:.1f}%** of lines in `forebear/` covered.")
+          EOF
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-reports-${{ matrix.os }}
+          path: reports/
+          retention-days: 14
+          if-no-files-found: ignore

@@ -19,6 +19,7 @@
 
 ## Checks (Windows, PowerShell, from the repo root)
 - Tests: `.venv\Scripts\python.exe -m pytest`
+- Lint: `ruff check .` (ruff 0.17.6, rules in `ruff.toml`; CI runs it, it is not in `requirements.txt`)
 - Frontend build: `cd web; npm ci; npm run build` (commit the updated `web/dist` when the UI changes)
 - Offline graph rebuild: `.venv\Scripts\python.exe scripts\build_graph.py`
 
