@@ -82,9 +82,17 @@ Every value in this table is asserted against the shipped store by [`tests/test_
 
 ## Judge walkthrough
 
-No API key, external database or other service is needed: the graph and the web build are committed. Pick one way to run it.
+No API key, external database or other service is needed: the graph (`data/forebear.rl`) and the web build (`web/dist`) are committed, so nothing is fetched from FDA at run time. Pick one way to run it.
 
-**With Docker (any OS).** Needs Docker Engine with Compose v2, for example Docker Desktop.
+| Path | You need | Tested on |
+| --- | --- | --- |
+| Docker (recommended on macOS and Linux) | Docker Engine with Compose v2, e.g. Docker Desktop | Linux container |
+| Native Windows | PowerShell 5.1+, Python 3.12, internet for the one-time `pip install` | Windows 10, Python 3.12.0 |
+| Native Linux | Python 3.12 with `venv` | CI runs the test suite on Ubuntu; the app itself is demoed on Windows and in Docker |
+
+Node is not needed unless you change the UI.
+
+**With Docker (any OS).**
 
 ```sh
 git clone https://github.com/Asembris/Forebear.git
@@ -102,11 +110,32 @@ cd Forebear
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>. Then, with either setup, in about three minutes:
+`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>.
 
-1. **Watch the thread.** A short opening film follows K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
-2. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
-3. **See what one more hop finds.** On the landing page, click **Two hops deep** under the hero (or open [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770)). *Why the graph matters* puts depth 1 (**No design-recall signal · provisional**) next to depth 2 (**Review lineage**, Class I design recall Z-1974-2021), with a PDF link at the cited page for each hop.
+**Natively on Linux.** The same steps by hand:
+
+```sh
+git clone https://github.com/Asembris/Forebear.git
+cd Forebear
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m uvicorn forebear.api:app --host 127.0.0.1 --port 8765
+```
+
+**Check it is up.** <http://127.0.0.1:8765/api/health> returns `{"ok": true, ...}` with the store's node and relationship counts. If it does not:
+
+| Symptom | Fix |
+| --- | --- |
+| Port 8765 already in use | Native: pass another `--port`. Docker: change the left side of `127.0.0.1:8765:8765` in [`compose.yaml`](compose.yaml) |
+| `Python 3.12 was not found` | Install 3.12 from [python.org](https://www.python.org/downloads/); `relate-db` 1.0.2 is pinned and tested on 3.12 |
+| `run.ps1 cannot be loaded` | Use the exact command above; `-ExecutionPolicy Bypass` applies to that one process only |
+| Docker shows old data after a pull | `docker compose down -v`, then `docker compose up --build` (this deletes your local reviews and saved assessments) |
+
+Then, with any setup, in about three minutes:
+
+1. **See what one more hop finds.** Open [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770), or click **Two hops deep** under the landing-page hero. *Why the graph matters* puts depth 1 (**No design-recall signal · provisional**) next to depth 2 (**Review lineage**, Class I design recall Z-1974-2021), with a PDF link at the cited page for each hop.
+2. **Watch the thread.** The landing page opens with a short film that follows the one-hop case, K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
+3. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
 4. **Open the evidence.** Select any thread for its verbatim quote, a link to the FDA PDF at the cited page, and the PDF's SHA-256. *What needs human review* lists every uncertainty.
 5. **Write to the graph.** Click **Save assessment to graph**. Under *What K252078 cites*, reject the edge: the lineage and verdict change at once and the saved assessment is marked **stale**. Restore it.
 6. **Trace recall reach.** Open **Recall reach** for [`88058,88071`](http://127.0.0.1:8765/#/reach/88058,88071), the Philips recall filed as two openFDA events: 14 recalled clearances, 26 later devices descend from them, 8 of those were cleared after the recall on their own lineage began.
