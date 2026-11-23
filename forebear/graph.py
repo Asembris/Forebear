@@ -28,7 +28,6 @@ incremental ingestion of a single new clearance uses the same code path as the b
 from __future__ import annotations
 
 import json
-import time
 import uuid
 from pathlib import Path
 

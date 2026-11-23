@@ -28,7 +28,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from forebear import summaries  # noqa: E402
-from forebear.predicates import extract_from_summary  # noqa: E402
 from scripts.audit_links import collect  # noqa: E402
 
 EVAL = ROOT / "eval"
