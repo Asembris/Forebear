@@ -1,167 +1,195 @@
-# Forebear
+<div align="center">
+
+<img src="docs/assets/forebear-hero.svg" alt="Forebear: BreathePal Bilevel (K252078, cleared 2026) cites the BiPAP A30 (K113053, cleared 2012) on page 6 of its FDA summary; the BiPAP A30 carries Class I design recall Z-1957-2021, initiated in 2021" width="100%" />
+
+<br/>
 
 [![Backend](https://github.com/Asembris/Forebear/actions/workflows/backend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/backend.yml)
 [![Frontend](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml)
-[![CodeQL](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml)
 [![Security](https://github.com/Asembris/Forebear/actions/workflows/security.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/security.yml)
+[![Hygiene](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml)
+<br/>
+[![Relate 1.0.2 · single file](https://img.shields.io/badge/Relate_1.0.2-single--file_.rl-7fa2ff?style=flat-square&labelColor=0b1322)](#why-relate)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-7fa2ff?style=flat-square&logo=python&logoColor=f1ebdd&labelColor=0b1322)](requirements.txt)
+[![Data: openFDA, cached](https://img.shields.io/badge/data-openFDA_·_cached_offline-e7a948?style=flat-square&labelColor=0b1322)](data/PROVENANCE.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-f1ebdd?style=flat-square&labelColor=0b1322)](LICENSE)
 
-**Check a device's 510(k) ancestry before you cite it.**
+**[The discovery](#the-discovery)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)**
 
-Forebear reads predicate citations out of FDA 510(k) summaries and stores the medical-device family tree in a Relate graph, joined to FDA recall records. One query then shows whether a candidate predicate, or any of its ancestors, was recalled for a design problem, with the page and quote behind every link.
+</div>
 
-- **Why it matters.** FDA's 2023 draft guidance recommends choosing predicates not subject to design-related recalls. Kadakia et al. (JAMA 2023) found devices cleared on predicates with Class I recalls were associated with a 6.4× higher risk of their own Class I recall.
-- **Why the existing tools fall short.** FDA's own databases answer one hop at a time.
+<br/>
 
-> Status: **working prototype** (hackathon vertical slice).
+A new medical device reaches the US market through a 510(k) by claiming it is "substantially equivalent" to an older one, its **predicate**. That predicate was cleared against its own predicate, and so on back. FDA's databases answer one hop at a time. **Forebear reads the predicate citations out of FDA 510(k) summaries, stores the device family tree in a [Relate](https://github.com/relatedb/relate) graph joined to FDA recall records, and answers in one query whether a candidate predicate, or any of its ancestors, was recalled for a design problem.** Every link carries the PDF page and the quote it came from.
 
-## Run it (Windows, PowerShell)
-Prerequisites: Python 3.12. Node 18+ is only needed if `web/dist` is missing; the build is committed.
+> [!IMPORTANT]
+> Forebear reports documented lineage and recall history. It is not regulatory advice and does not judge device safety.
+
+## The discovery
+
+BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicate, the Philips Respironics BiPAP A30. FDA had already attributed a **Class I** recall with root cause **Device Design** (the PE-PUR foam recall) to that predicate's clearance, **4 years 9 months earlier**. Nothing on BreathePal's own FDA record says so. The graph does:
+
+| | Evidence | Source |
+| --- | --- | --- |
+| **Candidate** | K252078 · BreathePal Bilevel · Compal Electronics · cleared 2026-03-17 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K252078.pdf#page=6) |
+| **Citation** | p. 6: *"substantially equivalent to the legally marketed predicate device, BiPAP A30 Ventilatory support system (K113053)."* | same PDF, page 6 |
+| **Predicate** | K113053 · BiPAP A30 · Respironics · cleared 2012-02-01 | [FDA 510(k) record](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K113053) |
+| **Recall** | Z-1957-2021 and Z-1958-2021 · event 88071 · Class I · Device Design · initiated 2021-06-14 | FDA recall [Z-1957-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187817), [Z-1958-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187818) |
+| **Verdict** | `REVIEW_LINEAGE`: a direct predicate with a Class I design recall on file | deterministic rules in [`forebear/lineage.py`](forebear/lineage.py) |
+
+Every value in this table is asserted against the shipped store by [`tests/test_story_facts.py`](tests/test_story_facts.py) and [`tests/test_shipped_evidence.py`](tests/test_shipped_evidence.py). FDA attributes these recalls to product *families* that list K113053, so the signal is "FDA links a Class I design recall to the predicate's clearance", not "this exact model was recalled".
+
+**Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
+
+## Judge walkthrough
+
+Windows, PowerShell, Python 3.12. No API key and no network are needed after the install: the graph and the web build are committed.
 
 ```powershell
 git clone https://github.com/Asembris/Forebear.git
 cd Forebear
-git config core.hooksPath .githooks              # activates the one-line commit-message check
-Copy-Item .env.example .env                      # optional: only needed for LLM triage
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-This opens <http://127.0.0.1:8765>. The script:
-- creates `.venv`;
-- installs the pinned `requirements.txt`;
-- rebuilds `data\forebear.rl` offline if it is missing;
-- starts the server.
+`run.ps1` creates `.venv`, installs the pinned [`requirements.txt`](requirements.txt), rebuilds `data\forebear.rl` offline only if it is missing, and opens <http://127.0.0.1:8765>. Then, in about three minutes:
 
-Manual equivalent:
+1. **Watch the thread.** A short opening film follows K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
+2. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
+3. **Open the evidence.** Select any thread for its verbatim quote, a link to the FDA PDF at the cited page, and the PDF's SHA-256. *What needs human review* lists every uncertainty.
+4. **Write to the graph.** Click **Save assessment to graph**. Under *What K252078 cites*, reject the edge: the lineage and verdict change at once and the saved assessment is marked **stale**. Restore it.
+5. **Trace recall reach.** Open **Recall reach** for [`88058,88071`](http://127.0.0.1:8765/#/reach/88058,88071), the Philips recall filed as two openFDA events: 14 recalled clearances, 26 later devices descend from them, 8 of those were cleared after the recall on their own lineage began.
+6. **Optional, needs internet.** **Add a clearance** fetches an out-of-family ancestor's summary from FDA into `data/live/` and extends the tree.
+
+<details>
+<summary><b>Manual setup, checks and the browser suite</b></summary>
+
 ```powershell
 py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe scripts\build_graph.py        # optional: store is shipped; rebuild is offline, ~2 s
 .venv\Scripts\python.exe -m uvicorn forebear.api:app --port 8765
 ```
 
-The rebuild reproduces the same graph and counts, but the `.rl` bytes and `data\build_report.json` timings differ, so Git shows them as modified. Run `git restore data\forebear.rl data\build_report.json` to return to the shipped store.
-
-Frontend (only when changing the UI; Node 18+):
-```powershell
-cd web; npm ci; npm run build; cd ..
-```
-
-Tests (extraction and adversarial rules, OCR provenance, audit decisions, uncertainty rules, recall links, graph, verdict rules, ingest and rollback, API journey, BreathePal evidence chain, security, MCP, offline rebuild; the Relate-CLI MCP test is skipped if `tools\relate.exe` is absent):
-```powershell
-.venv\Scripts\python.exe -m pytest
-```
-
-## Try this (90 seconds)
-0. **The opening.** <http://127.0.0.1:8765> plays a three-second opening once per session (Skip or Escape ends it), then a short scroll film follows one real thread: K252078 → K113053 → a Class I design recall. Every date, page and quote in it is read from the shipped store and checked by `tests/test_story_facts.py`. Deep links such as `#/check/K252078` skip it. Design and journey: `docs/UX_EXPERIENCE.md`.
-1. **The story.** Click **Investigate K252078** (or open the investigation from the end of the film):
-   - Verdict: **Review lineage**, marked as a deterministic assessment and authoritative only within its documented scope.
-   - The critical chain: BreathePal cites the BiPAP A30 (K113053) on page 6 of its summary.
-   - K113053 carries the June 2021 Philips PE-PUR foam recall records (Class I, root cause "Device Design"), which began 4 yr 9 mo before BreathePal's clearance.
-   - The evidence graph (or its *Timeline* mode) shows the lineage; the timeline puts the recall diamonds *before* BreathePal's clearance date.
-2. **The evidence.** Select any thread for its provenance: the verbatim quote, a link that opens the original FDA PDF at the cited page, the extraction record and the PDF's SHA-256. *What needs human review* lists every uncertainty with what conflicts, why it matters and the next step.
-3. **Writes.** Click **Save assessment to graph**. Then, under *What K252078 cites*, reject the edge: the lineage and verdict change immediately, and the saved assessment is marked **stale**. Restore the edge.
-4. **Recall reach.** Open it and trace `88058,88071` (the Philips recall; openFDA files it as two events). Result: 14 recalled clearances; 26 later devices descend from them; 8 of those were cleared after the recall on their own lineage began; 4 are reached only through an unresolved citation (conditional, shown in violet).
-5. **Live update.** In **Add a clearance**, enter an out-of-family ancestor (dashed node) to read its summary from FDA and extend the tree. This needs internet.
-
-Browser tests (Node 18+; starts the API on a throwaway copy of the store, so nothing is written to `data/forebear.rl`):
-```powershell
-cd web; npx playwright install chromium; npm run test:e2e; cd ..
-```
-
-Continuous integration (GitHub Actions, on every pull request and push to `main`):
-
-| Workflow | Jobs |
+| Check | Command |
 | --- | --- |
-| [Backend](.github/workflows/backend.yml) | `ruff check` lint baseline ([ruff.toml](ruff.toml)); `pytest` with coverage on Ubuntu and Windows |
-| [Frontend](.github/workflows/frontend.yml) | `npm run build`, failing if the committed `web/dist` is stale; Playwright end-to-end suite (desktop, tablet, mobile) against the real API |
-| [CodeQL](.github/workflows/codeql.yml) | `security-extended` analysis of Python, JavaScript and the workflows themselves; also weekly. Skipped\* |
-| [Security](.github/workflows/security.yml) | `pip-audit` and `npm audit`; dependency review on pull requests (skipped\*); gitleaks secret scan of the full history; also weekly |
-| [Repository hygiene](.github/workflows/hygiene.yml) | actionlint for workflows; one-line Conventional Commit check on every pull-request commit |
+| Tests | `.venv\Scripts\python.exe -m pytest` |
+| Lint (ruff 0.17.6, not in `requirements.txt`) | `ruff check .` |
+| Offline graph rebuild, ~4 s | `.venv\Scripts\python.exe scripts\build_graph.py` |
+| Frontend build (Node 18+, only when changing the UI) | `cd web; npm ci; npm run build` |
+| Browser end-to-end suite, on a throwaway copy of the store | `cd web; npx playwright install chromium; npm run test:e2e` |
 
-\* **Skipped while the repository is private.** GitHub offers code scanning and the dependency graph (which dependency review needs) only on public repositories or with GitHub Code Security. Until then the CodeQL and dependency-review jobs show as *skipped*, with a warning in the run summary; they have not checked the code, so a skipped run is not a security pass. They run automatically once the repository is public. On a private repository with Code Security, set the repository variables `CODE_SCANNING_ENABLED=true` and `DEPENDENCY_REVIEW_ENABLED=true`.
+The rebuild reproduces the same graph and counts, but the `.rl` bytes and the timings in `data\build_report.json` differ, so Git shows both as modified. `git restore data\forebear.rl data\build_report.json` returns to the shipped store. Contributors: run `git config core.hooksPath .githooks` once to enable the one-line commit-message check.
 
-Dependabot ([config](.github/dependabot.yml)) opens weekly grouped updates for pip, npm and GitHub Actions.
+</details>
 
-## Investigation agent (Phase 2)
-An NVIDIA-hosted LLM investigates one device by calling Forebear's graph tools step by step (check the lineage, trace
-ancestors, open recall records, verify each citation against the cached FDA PDF text, list coverage gaps), then submits
-findings. Every finding is checked against what the tools returned; the conclusion and all recall counts in the
-report are computed from the graph, not by the model. The agent cannot review or change lineage links or fetch FDA
-documents: it can only propose, and a named person decides. Runs, tool traces, findings and proposals are stored in
-Relate. Without NVIDIA inference, a labelled deterministic checklist runs instead. Details, safety boundaries and the
-real runs: `docs\INVESTIGATION_AGENT.md`.
+## Why Relate
 
-Needs `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` (see `.env.example`); optional `FOREBEAR_AGENT_MODELS`.
+Predicate ancestry is a graph problem: a variable-depth walk over citations, a join to recalls at every hop, and a date comparison along the path. In tables that is a recursive query per device. In Relate it is one Cypher pattern, run in-process against a single file.
 
-Command line (stop the app first, or use `--copy` to work on a copy under `data\live`):
-```powershell
-.venv\Scripts\python.exe scripts\investigate.py --copy "Investigate K252078, trace recalled predicates, verify the original FDA evidence, identify unresolved lineage, and prepare a documented due-diligence report."
-.venv\Scripts\python.exe scripts\investigate.py --copy --k K201620 --mode deterministic "Investigate K201620"
+**Single-file mode.** The whole graph lives in [`data/forebear.rl`](data/forebear.rl), about 6.5 MB, committed to the repo. It persists every write the app makes (human reviews, saved assessments, live ingests, agent runs) and is opened in-process through `relate-db` 1.0.2. There is no database server to run. The FastAPI app is the only writer, pinned to one thread.
+
+**Reproducible.** `scripts/build_graph.py` rebuilds the file deterministically from the committed FDA cache in `data/raw/`, with no network access (a cache miss is an error). [`tests/test_reproducibility.py`](tests/test_reproducibility.py) checks that the rebuild matches. Only `scripts/fetch_data.py` writes `data/raw/`; see [data provenance](data/PROVENANCE.md).
+
+```mermaid
+graph LR
+  D(["Device<br/>K252078"]) -- "CITES<br/>{kind, page, quote, review}" --> P(["Device<br/>K113053"])
+  P -- "CITES" --> G(["Device<br/>K092818"])
+  P -- "SUBJECT_OF" --> R{{"Recall<br/>Z-1957-2021"}}
+  D -- "FILED_BY" --> C["Company"]
+  D -- "IN_CODE" --> PC["ProductCode"]
+  A["Assessment"] -- "ASSESSED" --> D
+  A -- "FLAGGED" --> R
+  I["Investigation"] -- "INVESTIGATES" --> D
 ```
-It prints each model turn and tool call, then writes the report to `data\live\investigations\<id>.md` and `.json`.
 
-HTTP API (app running on port 8765):
-```powershell
-$r = Invoke-RestMethod -Method Post http://127.0.0.1:8765/api/investigations -ContentType application/json -Body '{"request": "Investigate K252078 and its recalled predicates", "k": "K252078", "depth": 4}'
-Invoke-RestMethod http://127.0.0.1:8765/api/investigations/$($r.id)                    # status and progress
-Invoke-RestMethod http://127.0.0.1:8765/api/investigations/$($r.id)/trace              # tool calls (?results=true for outputs)
-Invoke-RestMethod "http://127.0.0.1:8765/api/investigations/$($r.id)/report?format=markdown"
-Invoke-RestMethod http://127.0.0.1:8765/api/proposals?status=pending_human_decision      # agent proposals awaiting a person
+| In the shipped store | Count |
+| --- | ---: |
+| `Device` nodes (1,040 in four respiratory product codes, 147 out-of-family predicates) | 1,187 |
+| `CITES` relationships (1,235 predicate, 123 reference, 244 ambiguous mention) | 1,602 |
+| `Recall` nodes / `SUBJECT_OF` relationships | 563 / 762 |
+| `Company` / `ProductCode` nodes | 301 / 76 |
+
+The discovery as one query (simplified: the app's version also applies human-review and audit rules to every edge, see `LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)):
+
+```cypher
+MATCH path = (d:Device {k: 'K252078'})-[:CITES*1..2]->(a:Device)
+WHERE all(c IN relationships(path) WHERE c.kind = 'predicate')
+MATCH (a)-[:SUBJECT_OF]->(r:Recall)
+WHERE r.classification = 'Class I' AND r.root_cause = 'Device Design'
+  AND r.initiated < d.decision_date
+RETURN [n IN nodes(path) | n.k] AS chain, r.id AS recall, r.initiated AS initiated
 ```
-Other endpoints: `GET /api/investigations?k=K113053` (runs that examined a device, with a `stale` flag),
-`GET /api/investigations/{id}/findings`, `POST /api/investigations/{id}/resume`, and
-`POST /api/proposals/{id}/decision` with `{"decision": "approve"|"dismiss", "reviewer": "<your name>", "human": true}`.
 
-Agent tests (scripted model, no network): `.venv\Scripts\python.exe -m pytest tests\test_investigation.py tests\test_investigation_api.py tests\test_bounded_results.py`
+```text
+['K252078', 'K113053']             Z-1957-2021  2021-06-14
+['K252078', 'K113053']             Z-1958-2021  2021-06-14
+['K252078', 'K113053']             Z-1973-2021  2021-06-14
+['K252078', 'K113053']             Z-2036-2025  2025-05-09
+['K252078', 'K113053', 'K092818']  Z-1973-2021  2021-06-14
+['K252078', 'K113053', 'K082660']  Z-2061-2017  2017-04-24
+```
 
-## How it uses Relate
-- **Mode: single file** (`data/forebear.rl`, about 4 MB, committed).
-  - It can be inspected directly, travels with the repo, and rebuilds deterministically from `data/raw/`.
-  - The API is the single writer; the connection is pinned to one thread.
-- **What the graph models.**
-  - Nodes: `Device`, `Recall`, `ProductCode`, `Company`, `Assessment`.
-  - `(:Device)-[:CITES {kind, page, snippet, review, ai_label}]->(:Device)` is the predicate genealogy, with evidence.
-  - `(:Device)-[:SUBJECT_OF]->(:Recall)` attaches recalls.
-  - `(:Assessment)-[:ASSESSED|FLAGGED]->` holds saved decisions.
-  - `(:Investigation)-[:INVESTIGATES|EXAMINED|RAN|FOUND|PROPOSED|RESUMES]->` holds agent runs, their tool calls
-    (`ToolCall`), machine findings (`Finding`, never human-approved) and proposals awaiting a person (`Proposal`).
-- **What Relate does at run time.**
-  - Variable-length Cypher walks ancestors and descendants (`[:CITES*1..N]`) with a per-edge rule that honours human review.
-  - Recalls are joined on every ancestor.
-  - Date comparisons find "cleared after the predicate was recalled".
-  - A full-text index serves device search.
-  - A stale-assessment query flags saved assessments whose ancestry was reviewed, AI-labelled or re-ingested after they were saved.
-  - MERGE-based incremental ingest.
-  - Review, AI-triage and assessment writes all change the next query's answer.
-- **Agents (MCP).**
-  - **Live tools:** `forebear` runs `python -m forebear.mcp_server` and talks to the running API. Tools: `check_predicate`, `compare_predicates`, `recall_reach`, `list_citations`, `ingest_clearance`, `review_citation`, `save_assessment`, `investigate`, `get_investigation`.
-  - **Raw Cypher, read-only:** Relate's own server, `relate serve --database data\forebear.rl --mcp stdio --read-only`. The `.rl` file is locked while the app runs, so use it with the app stopped, or on a copy.
-  - Both are configured in `.mcp.json` (Claude Code format).
-  - The Relate CLI is not bundled. Download `relate-windows-amd64.exe` v1.0.2 from <https://github.com/relatedb/relate/releases>, verify it against `docs\relate-v1.0.2-SHA256SUMS.txt` (`Get-FileHash`), and save it as `tools\relate.exe`.
+Relate also serves the full-text device search, MERGE-based incremental ingest, and a stale-assessment query that flags saved assessments whose ancestry changed afterwards. Agents get two MCP servers, both in [`.mcp.json`](.mcp.json): `forebear` (live tools such as `check_predicate` and `recall_reach`, through the running API) and Relate's own read-only server (`relate serve --database data\forebear.rl --mcp stdio --read-only`, raw Cypher, with the app stopped). The Relate CLI is not bundled: download `relate-windows-amd64.exe` v1.0.2 from [Relate releases](https://github.com/relatedb/relate/releases), check it against [`docs/relate-v1.0.2-SHA256SUMS.txt`](docs/relate-v1.0.2-SHA256SUMS.txt) and save it as `tools\relate.exe`.
 
-## Where the data lives
-- `data/forebear.rl`: the Relate store.
-- `data/raw/`: cached openFDA JSON and summary text with URL and SHA-256. Provenance is in `data/PROVENANCE.md`.
-- `data/build_report.json`: counts and extraction statistics.
-- `data/reviews.json`: human review decisions, applied by the build through the same review write the UI and MCP use; each must name the person (none yet). Four earlier AI-generated decisions that had been labelled "curated human review" are kept there for the record under `ai_generated_not_applied` and are not applied.
-- `data/audit/link_decisions.json`: extraction-audit decisions on flagged predicate links (error / not_predicate / variant / unresolved, with verified corrections). Made by an AI agent, stored apart from human review, overridden by any human review. See `docs/EVIDENCE_QUALITY.md`.
-- `data/raw/ocr/`: text recovered from the 68 image-only summaries (local OCR, or a PDF Portfolio's embedded summary), each checked against the PDF's recorded SHA-256.
-- `data/live/` (gitignored): anything fetched by live ingest in the app. The committed `data/raw` is only written by `scripts/fetch_data.py`.
-- `eval/`: extraction audit and evaluation outputs (`link_audit.json`, `link_audit_queue.json` = links awaiting a person, `extraction_eval*.json`, `llm_triage_experiment.json`).
+## Architecture
 
-Dataset: four FDA product codes for respiratory devices (CPAP/BiPAP: BZD; ventilators: MNS, MNT, CBK).
-- 1,040 clearances, plus 147 out-of-family predicates.
-- 1,229 predicate links, 123 reference-device links, 244 ambiguous mentions.
-- Every predicate link flagged by the name or FDA-panel check has an audit decision: 13 verified K-number errors (removed from lineage, 12 with a verified correction), 8 non-predicates, 98 naming variants, and 21 unresolved links that are kept, flagged and listed for a person. Evidence quality, methods and remaining limits: `docs/EVIDENCE_QUALITY.md`.
-- 563 recall records.
+```mermaid
+flowchart LR
+  FDA["openFDA API<br/>+ 510(k) summary PDFs"] -->|scripts/fetch_data.py| RAW[("data/raw/<br/>cached JSON, page text,<br/>PDF SHA-256")]
+  RAW -->|"scripts/build_graph.py<br/>extract · audit · OCR text"| RL[("data/forebear.rl<br/>Relate single file")]
+  RL <-->|single writer thread| API["FastAPI<br/>forebear/api.py"]
+  API --> UI["React + Vite UI<br/>web/dist"]
+  API --> MCP["MCP tools<br/>forebear/mcp_server.py"]
+  API --> AG["Investigation agent<br/>(optional, NVIDIA-hosted)"]
+  API -->|live ingest| LIVE[("data/live/<br/>gitignored")]
+```
 
-## AI and third-party tools (disclosure)
-- **LLM (optional).** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b`, falling back to `mistralai/mistral-large-4-1t-a52b`. Used only to label *ambiguous* citation mentions, on request. Its output must quote the snippet verbatim or it is discarded, and humans can override it.
-  - The LLM is **not** used for verdicts, notes or the extraction audit. In testing it miscounted recalls, and on hard citation cases it agreed with the audit 5 times in 28 (`eval/llm_triage_experiment.json`). A link made a predicate only by the LLM counts as uncertain evidence in assessments.
-  - Set `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` to enable it. Everything else works without it.
-- **Investigation agent (optional).** NVIDIA-hosted `nvidia/nemotron-3-ultra-550b-a55b`, falling back to `mistralai/mistral-large-4-1t-a52b`, chosen by a bounded tool-calling probe (`docs/INVESTIGATION_AGENT.md`). It chooses which tools to call and writes findings; it does not produce verdicts or counts, its findings are verified against tool results (unsupported ones are shown as rejected), and it cannot change lineage.
-  - The verdicts, the note and the extraction audit stay deterministic as described above.
-- **Libraries.** FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional for refreshing the OCR cache: RapidOCR (ONNX) and pypdfium2 (`requirements-ocr.txt`).
-- **Built with.** Claude Code (an AI coding assistant) wrote most of the code and docs under the team's direction.
+- **Extraction** ([`forebear/predicates.py`](forebear/predicates.py)) is deterministic: K-numbers with context rules that separate predicate, reference and mention. Image-only summaries were recovered by local OCR, checked against the PDF's recorded hash.
+- **Audit** ([`data/audit/link_decisions.json`](data/audit/link_decisions.json)) decides every link that fails the name or FDA-panel check. Any named human review overrides it.
+- **Verdicts** ([`forebear/lineage.py`](forebear/lineage.py)) are deterministic rules. No language model produces a verdict, a count or an audit decision.
+- **The investigation agent** is optional. It calls the same graph tools, its findings are checked against tool results, and it can only *propose* changes for a person to decide. See [the agent docs](docs/INVESTIGATION_AGENT.md).
 
-Not regulatory advice. Forebear reports documented lineage and recall history; it does not judge device safety.
+## Results, honestly
+
+| Measure | Result |
+| --- | --- |
+| Coverage | 639 of 1,040 in-family summaries read (including 67 recovered by OCR and 1 from a PDF Portfolio). 354 are statement-only, 35 have no PDF online, 12 predate 1996 |
+| Predicate links | 1,229 extracted. Every flagged link has an audit decision: 13 K-number errors removed (12 with a verified correction), 98 naming variants, 21 left **unresolved for a person** |
+| Extraction precision | 0.999 point estimate on a stratified sample, but the 95% lower bound on the largest stratum is only 0.912, and the audit found errors the extractor still makes |
+| Verdicts over all 1,040 devices | 99 design recall on file · 139 review lineage · 354 no design-recall signal (253 of them **provisional**) · 448 lineage not checkable |
+| LLM triage of hard citations | Agreed with the audit on 5 of 28, so it is **not** used for any decision |
+| Investigation agent, 24 frozen cases | **No-go for relying on its report.** Its graph section matched the deterministic run (17/17 critical Class I witnesses), but its own prose kept 10/17 and the live run completed 15/24 within the inference budget |
+| Human review | **None yet.** Audit and evaluation labels were made by an AI coding agent and are stored apart from human-review fields |
+
+Limits worth knowing: out-of-family predicates are metadata only, so many lineages stop after one or two generations; recall attribution depends on FDA's `k_numbers` lists; the completeness guarantee covers two generations. Full methods and numbers: [evidence quality](docs/EVIDENCE_QUALITY.md) and [agent evaluation](docs/AGENT_EVALUATION.md).
+
+Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web/dist` check and a Playwright suite, `pip-audit`, `npm audit`, gitleaks and actionlint. CodeQL and dependency review are configured but are **skipped while the repository is private**; a skipped run is not a security pass.
+
+## Go deeper
+
+| Document | What it covers |
+| --- | --- |
+| [Evidence quality](docs/EVIDENCE_QUALITY.md) | Extraction rules, OCR, audit decisions, uncertainty, evaluation, remaining limits |
+| [Data provenance](data/PROVENANCE.md) | Every FDA source, coverage per status, source corrections, how to rebuild or refresh |
+| [Investigation agent](docs/INVESTIGATION_AGENT.md) | Tools, loop, safety boundaries, CLI and HTTP API, persisted runs in Relate |
+| [Agent evaluation](docs/AGENT_EVALUATION.md) | Frozen 24-case protocol, deterministic vs live results, failure analysis |
+| [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
+| [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
+
+<details>
+<summary><b>AI and third-party tools (disclosure)</b></summary>
+
+- **Optional LLM triage.** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b` (fallback `mistralai/mistral-large-4-1t-a52b`) labels *ambiguous* citation mentions on request. Its output must quote the snippet verbatim or it is discarded, people can override it, and an LLM-only link counts as uncertain evidence.
+- **Optional investigation agent.** NVIDIA-hosted `nvidia/nemotron-3-ultra-550b-a55b` (same fallback). It chooses tool calls and writes findings, but produces no verdicts or counts and cannot change lineage.
+- Both need `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` (see [`.env.example`](.env.example)). Everything else works without them.
+- **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)).
+- **Built with** Claude Code, an AI coding assistant, which wrote most of the code and docs under the author's direction.
+
+</details>
+
+<br/>
+
+<div align="center">
+<img src="docs/assets/forebear-mark.svg" alt="Forebear mark" width="56" />
+<br/>
+<sub>FDA data is US federal government work in the public domain. Code under the <a href="LICENSE">MIT License</a>.</sub>
+</div>
