@@ -74,9 +74,11 @@ Continuous integration (GitHub Actions, on every pull request and push to `main`
 | --- | --- |
 | [Backend](.github/workflows/backend.yml) | `ruff check` lint baseline ([ruff.toml](ruff.toml)); `pytest` with coverage on Ubuntu and Windows |
 | [Frontend](.github/workflows/frontend.yml) | `npm run build`, failing if the committed `web/dist` is stale; Playwright end-to-end suite (desktop, tablet, mobile) against the real API |
-| [CodeQL](.github/workflows/codeql.yml) | `security-extended` analysis of Python, JavaScript and the workflows themselves; also weekly |
-| [Security](.github/workflows/security.yml) | `pip-audit` and `npm audit`; dependency review on pull requests; gitleaks secret scan of the full history; also weekly |
+| [CodeQL](.github/workflows/codeql.yml) | `security-extended` analysis of Python, JavaScript and the workflows themselves; also weekly. Skipped\* |
+| [Security](.github/workflows/security.yml) | `pip-audit` and `npm audit`; dependency review on pull requests (skipped\*); gitleaks secret scan of the full history; also weekly |
 | [Repository hygiene](.github/workflows/hygiene.yml) | actionlint for workflows; one-line Conventional Commit check on every pull-request commit |
+
+\* **Skipped while the repository is private.** GitHub offers code scanning and the dependency graph (which dependency review needs) only on public repositories or with GitHub Code Security. Until then the CodeQL and dependency-review jobs show as *skipped*, with a warning in the run summary; they have not checked the code, so a skipped run is not a security pass. They run automatically once the repository is public. On a private repository with Code Security, set the repository variables `CODE_SCANNING_ENABLED=true` and `DEPENDENCY_REVIEW_ENABLED=true`.
 
 Dependabot ([config](.github/dependabot.yml)) opens weekly grouped updates for pip, npm and GitHub Actions.
 
