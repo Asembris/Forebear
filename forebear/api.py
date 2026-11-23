@@ -232,6 +232,9 @@ async def list_assessments(k: str | None = None):
 # ---------------------------------------------------------------- writes
 class IngestIn(BaseModel):
     k: str
+    # Re-download the summary PDF instead of reusing the cached text, to detect a changed FDA document. A failed or
+    # unreadable download changes nothing (422).
+    refresh: bool = False
 
 
 @app.post("/api/ingest")
@@ -241,7 +244,7 @@ async def ingest(body: IngestIn):
     try:
         # network phases run off the Relate thread, so the UI stays responsive during a PDF download
         existing = await run(lambda g: g.device(k))
-        fetched = await loop.run_in_executor(None, ingest_mod.fetch_clearance, k)
+        fetched = await loop.run_in_executor(None, ingest_mod.fetch_clearance, k, True, body.refresh)
         present = await run(lambda g: ingest_mod.present_devices(g, fetched.cited))
         related = await loop.run_in_executor(None, ingest_mod.fetch_related, fetched, present)
         return await run(lambda g: ingest_mod.write(g, fetched, related, existing))
@@ -254,7 +257,8 @@ class ReviewIn(BaseModel):
     dst: str
     status: str = Field(pattern="^(confirmed|rejected|)$")
     note: str | None = None
-    # Who recorded it: "user" (the app) or "mcp-client" (the MCP tool, possibly an AI agent). Optional.
+    # Who recorded it: "user" (the app, a person) or "mcp-client" (the MCP tool, possibly an AI agent). An mcp-client
+    # review is advisory: it never changes trusted lineage and never overwrites a person's review. Optional.
     via: str = Field("user", pattern="^(user|mcp-client)$")
 
 
@@ -503,7 +507,8 @@ async def decide_proposal(pid: str, body: DecisionIn):
     except Exception as e:            # IngestError or anything else: never leave the proposal 'deciding'
         error = f"{type(e).__name__}: {str(e)[:300]}"
         return await run(lambda g: inv_store.decide_proposal(g, pid, "failed", who, body.note, {"error": error}))
-    res = {k2: r[k2] for k2 in ("k", "summary_status", "summary_url", "new_devices", "recalls_linked")} | {
+    res = {k2: r[k2] for k2 in ("k", "summary_status", "summary_url", "new_devices", "recalls_linked",
+                                "reconciliation")} | {
         "citations_added": [{k2: c[k2] for k2 in ("dst", "kind", "page")} for c in r["citations_added"]]}
     return await run(lambda g: inv_store.decide_proposal(g, pid, "executed", who, body.note, res))
 

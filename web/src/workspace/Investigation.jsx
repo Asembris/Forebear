@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api, pmnUrl, reportUrl } from '../api.js'
 import {
-  EDGE_STATUS, EVIDENCE_REASON_TEXT, VERDICTS, countEvents, verdictView, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
+  EDGE_STATUS, EVIDENCE_REASON_TEXT, VERDICTS, humanReview, countEvents, verdictView, edgeStatus, fmtDate, nodeTone, recallTiming, recallTimingText, shortName, year,
 } from '../evidence.js'
 import EvidenceGraph from './EvidenceGraph.jsx'
 import Timeline from './Timeline.jsx'
@@ -292,6 +292,9 @@ function Signal({ s, onSelect }) {
   )
 }
 
+// a person's own review (an automated client's review is advisory and never shows as one)
+const mine = (c, status) => c.review === status && humanReview(c)
+
 function Citations({ a, reload, go, onSelect }) {
   const [busy, setBusy] = useState(null)
   const [msg, setMsg] = useState(null)
@@ -299,7 +302,7 @@ function Citations({ a, reload, go, onSelect }) {
     setBusy(c.dst + label); setMsg(null)
     try {
       const r = await fn()
-      setMsg(label === 'ai' ? { ok: true, text: `LLM labelled ${c.dst} "${r.ai_label}" (${r.model.split('/')[1]}, ${r.seconds}s). Optional triage; a person's review overrides it.` } : null)
+      setMsg(label === 'ai' ? { ok: true, text: `LLM labelled ${c.dst} "${r.ai_label}" (${r.model.split('/')[1]}, ${r.seconds}s). Advisory only: it is not used for the verdict until a person confirms the citation.` } : null)
       reload()
     } catch (e) { setMsg({ ok: false, text: e.message }) } finally { setBusy(null) }
   }
@@ -314,24 +317,25 @@ function Citations({ a, reload, go, onSelect }) {
       {msg && <p className={msg.ok ? 'ok' : 'err'} role="status">{msg.text}</p>}
       {a.citations.map((c) => {
         const hop = { ...c, src: a.k }
-        const inLineage = c.kind === 'predicate' || c.ai_label === 'predicate'
+        const inLineage = c.in_lineage ?? (c.kind === 'predicate')
+        const st = edgeStatus(hop)
         return (
-          <div key={c.dst} className={'cit' + (c.review === 'rejected' ? ' is-rejected' : '')}>
+          <div key={c.dst} className={'cit' + (c.review === 'rejected' && humanReview(c) ? ' is-rejected' : '')}>
             <div className="cit-h">
               <button className="k mono" onClick={() => onSelect({ type: 'edge', id: a.k + '>' + c.dst, hop })}>{c.dst}</button>
               <span className={`chip ${c.kind === 'predicate' ? 'tone-blue' : 'tone-muted'}`}>{c.kind}</span>
-              {inLineage
-                ? <span className={`status status-${edgeStatus(hop).key}`}><span className="line" />{EDGE_STATUS[edgeStatus(hop).key].short}</span>
-                : <span className="status status-rejected" title="Reference devices and mentions are not lineage links">Not a lineage link</span>}
+              {inLineage || st.key === 'advisory' || st.key === 'retired'
+                ? <span className={`status status-${st.key}`} title={EDGE_STATUS[st.key].label} data-testid={`cit-status-${c.dst}`}><span className="line" />{EDGE_STATUS[st.key].short}</span>
+                : <span className="status status-rejected" title="Reference devices and mentions are not lineage links" data-testid={`cit-status-${c.dst}`}>Not a lineage link</span>}
               {c.ai_label && <span className="chip tone-violet" title={c.ai_quote}>LLM: {c.ai_label}</span>}
               <span className="muted small">{shortName(c.name, 34)} · {year(c.dst_decision_date)}</span>
             </div>
             <Quote text={c.quote || c.snippet} k={c.dst} ocr={c.text_source && c.text_source !== 'pdf_text_layer'} />
             <div className="cit-a">
-              <button className="btn btn-line btn-sm" disabled={!!busy} onClick={() => act(c, () => api.review(a.k, c.dst, c.review === 'confirmed' ? '' : 'confirmed'), 'ok')}>
-                {c.review === 'confirmed' ? 'Unconfirm' : 'Confirm'}</button>
-              <button className="btn btn-line btn-sm" disabled={!!busy} onClick={() => act(c, () => api.review(a.k, c.dst, c.review === 'rejected' ? '' : 'rejected'), 'no')}>
-                {c.review === 'rejected' ? 'Restore' : 'Reject'}</button>
+              <button className="btn btn-line btn-sm" disabled={!!busy} onClick={() => act(c, () => api.review(a.k, c.dst, mine(c, 'confirmed') ? '' : 'confirmed'), 'ok')}>
+                {mine(c, 'confirmed') ? 'Unconfirm' : 'Confirm'}</button>
+              <button className="btn btn-line btn-sm" disabled={!!busy} onClick={() => act(c, () => api.review(a.k, c.dst, mine(c, 'rejected') ? '' : 'rejected'), 'no')}>
+                {mine(c, 'rejected') ? 'Restore' : 'Reject'}</button>
               {c.kind !== 'predicate' && <button className="btn btn-quiet btn-sm" disabled={!!busy} onClick={() => act(c, () => api.triage(a.k, c.dst), 'ai')}>
                 {busy === c.dst + 'ai' ? 'Asking…' : 'Ask LLM to label'}</button>}
               <button className="btn btn-quiet btn-sm" onClick={() => onSelect({ type: 'edge', id: a.k + '>' + c.dst, hop })}>Provenance · p.{c.page}</button>

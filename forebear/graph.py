@@ -14,8 +14,10 @@ Schema (labels / relationship types):
   (Device)-[:CITES {kind: predicate|reference|mention, confidence, page, snippet, quote,
                     method, text_source, source_url, source_sha256, name_check, panel_check,
                     audit, audit_note, audit_by, corrected_from,       <- extraction audit (not human)
-                    review, review_note, reviewer, reviewed_at,        <- human review in the app
-                    ai_label, ai_quote, ai_model, ai_at}]->(Device)    <- optional LLM triage
+                    review, review_note, reviewer, reviewed_at,        <- review (person, or advisory
+                    reviewed_source_sha256,                               'mcp-client' automated client)
+                    ai_label, ai_quote, ai_model, ai_at,               <- optional LLM triage (advisory)
+                    retired_at, retired_reason, retired_by_sha256}]->(Device)  <- re-ingest reconciliation
   (Device)-[:SUBJECT_OF]->(Recall)
   (Device)-[:IN_CODE]->(ProductCode)
   (Device)-[:FILED_BY]->(Company)
@@ -23,7 +25,9 @@ Schema (labels / relationship types):
   (Assessment)-[:FLAGGED]->(Recall)
 
 All writes are MERGE-based so ingesting the same clearance twice is a no-op, and
-incremental ingestion of a single new clearance uses the same code path as the bulk build.
+incremental ingestion of a single new clearance uses the same code path as the bulk build. Re-ingesting a
+clearance reconciles its citations: edges the refreshed summary no longer supports are retired (kept with
+their reviews, labels, audit and provenance, but out of lineage), never deleted.
 """
 from __future__ import annotations
 
@@ -42,16 +46,37 @@ SCHEMA = [
 ]
 FULLTEXT = "CREATE FULLTEXT INDEX device_text IF NOT EXISTS FOR (d:Device) ON EACH [d.name, d.applicant]"
 
-# Rule: a human confirmed it, OR (the extractor says predicate, or the LLM triage labelled an ambiguous
-# mention as predicate, quote-checked) and the extraction audit did not find it wrong - unless a human
-# rejected it. Humans always win; the audit outranks the extractor and the LLM.
-SOURCE_ROLE_MCP_REVIEW = "(coalesce(r.audit, '') = 'role_corrected' AND coalesce(r.reviewer, '') = 'mcp-client')"
-LINEAGE_EDGE = (f"(coalesce(r.review, '') <> 'rejected' OR {SOURCE_ROLE_MCP_REVIEW}) AND "
-                f"((r.review = 'confirmed' AND NOT {SOURCE_ROLE_MCP_REVIEW}) OR "
-                "(NOT coalesce(r.audit, '') IN ['error', 'not_predicate'] AND "
-                "(r.kind = 'predicate' OR (r.ai_label = 'predicate' AND coalesce(r.audit, '') <> 'role_corrected'))))")
+# Trusted lineage rule (the only edges deterministic verdicts traverse): the edge is still cited by the citing
+# device's current FDA summary (not retired by a re-ingest), and either a PERSON confirmed it, or the extractor
+# read it as a predicate and the extraction audit did not find it wrong - unless a person rejected it.
+# Automated sources never change trusted lineage on their own: an LLM triage label, or a confirmation/rejection
+# recorded through the MCP client (reviewer 'mcp-client', possibly an AI agent), is advisory until a person decides.
+# A person's review is bound to the evidence it was made on: it counts only while the edge's source SHA-256 is the one
+# recorded at review time (reviewed_source_sha256). When a refreshed summary changes the evidence, or a retired edge is
+# restored from a different PDF, the review is kept as history but the edge falls back to the extraction rules and is
+# flagged 'review_outdated' until a person reviews it again.
+MACHINE_REVIEWER = "mcp-client"
+HUMAN_REVIEW = f"(r.review IS NOT NULL AND coalesce(r.reviewer, '') <> '{MACHINE_REVIEWER}')"
+CURRENT_HUMAN_REVIEW = f"({HUMAN_REVIEW} AND coalesce(r.reviewed_source_sha256, '') = coalesce(r.source_sha256, ''))"
+LIVE_EDGE = "r.retired_at IS NULL"
+LINEAGE_EDGE = (f"{LIVE_EDGE} AND NOT (r.review = 'rejected' AND {CURRENT_HUMAN_REVIEW}) AND "
+                f"((r.review = 'confirmed' AND {CURRENT_HUMAN_REVIEW}) OR "
+                "(r.kind = 'predicate' AND NOT coalesce(r.audit, '') IN ['error', 'not_predicate']))")
+# Advisory (uncertain, untrusted) lineage: an automated source says predicate, no person has decided, and the
+# extraction audit did not rule it out from the source. Shown with its provenance; never a verdict input.
+# A person's confirmation made on an earlier version of the evidence is advisory too, until it is renewed.
+ADVISORY_EDGE = (f"{LIVE_EDGE} AND NOT ({LINEAGE_EDGE}) AND NOT (r.review = 'rejected' AND {CURRENT_HUMAN_REVIEW}) AND "
+                 "NOT coalesce(r.audit, '') IN ['error', 'not_predicate', 'role_corrected'] AND "
+                 f"(r.ai_label = 'predicate' OR (r.review = 'confirmed' AND r.reviewer = '{MACHINE_REVIEWER}') OR "
+                 f"(r.review = 'confirmed' AND {HUMAN_REVIEW} AND NOT {CURRENT_HUMAN_REVIEW}))")
 DISPUTED_EDGE = ("coalesce(r.audit, '') = 'unresolved' AND "
-                 "(coalesce(r.review, '') <> 'confirmed' OR coalesce(r.reviewer, '') = 'mcp-client')")
+                 f"NOT (r.review = 'confirmed' AND {CURRENT_HUMAN_REVIEW})")
+_HOP_FIELDS = ("src: startNode(r).k, dst: endNode(r).k, page: r.page, snippet: r.snippet, confidence: r.confidence, "
+               "review: r.review, reviewer: r.reviewer, review_note: r.review_note, "
+               "reviewed_at: toString(r.reviewed_at), name_check: r.name_check, source_url: r.source_url, "
+               "source_sha256: r.source_sha256, reviewed_source_sha256: r.reviewed_source_sha256, kind: r.kind, audit: r.audit, audit_note: r.audit_note, "
+               "ai_label: r.ai_label, ai_quote: r.ai_quote, ai_model: r.ai_model, ai_at: toString(r.ai_at), "
+               "text_source: r.text_source, panel_check: r.panel_check, quote: r.quote, method: r.method")
 
 
 class Graph:
@@ -131,8 +156,25 @@ class Graph:
                     c.name_check_method = r.name_check_method, c.panel_check = r.panel_check,
                     c.explicit_label = r.explicit_label,
                     c.audit = r.audit, c.audit_note = r.audit_note, c.audit_by = r.audit_by,
-                    c.audit_date = r.audit_date, c.corrected_from = r.corrected_from""",
+                    c.audit_date = r.audit_date, c.corrected_from = r.corrected_from,
+                    c.retired_at = NULL, c.retired_reason = NULL, c.retired_by_sha256 = NULL""",
                 {"rows": rows[i:i + 500]})
+
+    def retire_citations(self, src: str, keep: list[str], source_sha256: str | None) -> list[dict]:
+        """Reconcile src's citations with a refreshed summary: every live CITES edge from src whose target is not
+        in `keep` (the targets the refreshed summary still supports) is retired, never deleted. Retired edges keep
+        every property - human review, LLM label, audit decision and source provenance - drop out of trusted and
+        advisory lineage, and come back (un-retired) if a later summary cites the device again. Call it inside the
+        ingest transaction so the reconciliation is atomic with the upserts."""
+        return self.q(
+            """MATCH (a:Device {k:$k})-[c:CITES]->(b:Device)
+            WHERE c.retired_at IS NULL AND NOT b.k IN $keep
+            SET c.retired_at = datetime(), c.retired_reason = 'not_in_refreshed_summary',
+                c.retired_by_sha256 = $sha
+            RETURN a.k AS src, b.k AS dst, c.kind AS kind, c.page AS page, c.quote AS quote,
+                   c.source_sha256 AS source_sha256, c.review AS review, c.reviewer AS reviewer,
+                   c.ai_label AS ai_label, c.audit AS audit ORDER BY dst""",
+            {"k": src, "keep": list(keep), "sha": source_sha256})
 
     def upsert_recalls(self, rows: list[dict]) -> None:
         """rows: recall dicts incl. k_numbers list; links each to the devices it names. Optional
@@ -163,18 +205,29 @@ class Graph:
                         reviewer: str = "user") -> dict | None:
         if status not in ("confirmed", "rejected", ""):
             raise ValueError("status must be confirmed, rejected or empty")
+        if reviewer == MACHINE_REVIEWER:
+            # an automated client's review is advisory: it never overwrites or clears a person's decision
+            held = self.q(f"""MATCH (a:Device {{k:$src}})-[r:CITES]->(b:Device {{k:$dst}}) WHERE {HUMAN_REVIEW}
+                RETURN a.k AS src, b.k AS dst, r.kind AS kind, r.review AS review, r.reviewer AS reviewer""",
+                          {"src": src, "dst": dst})
+            if held:
+                return held[0] | {"kept_human_review": True}
         rows = self.q(
-            """MATCH (a:Device {k:$src})-[c:CITES]->(b:Device {k:$dst})
-            SET c.review = $status, c.review_note = $note, c.reviewed_at = datetime(), c.reviewer = $reviewer
-            RETURN a.k AS src, b.k AS dst, c.kind AS kind, c.review AS review""",
+            f"""MATCH (a:Device {{k:$src}})-[r:CITES]->(b:Device {{k:$dst}})
+            SET r.review = $status, r.review_note = $note, r.reviewed_at = datetime(), r.reviewer = $reviewer,
+                r.reviewed_source_sha256 = r.source_sha256
+            RETURN a.k AS src, b.k AS dst, r.kind AS kind, r.review AS review, r.reviewer AS reviewer,
+                   ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory""",
             {"src": src, "dst": dst, "status": status or None, "note": note, "reviewer": reviewer})
         return rows[0] if rows else None
 
     def set_triage(self, src: str, dst: str, label: str, quote: str, model: str) -> dict | None:
         rows = self.q(
-            """MATCH (a:Device {k:$src})-[c:CITES]->(b:Device {k:$dst})
+            f"""MATCH (a:Device {{k:$src}})-[c:CITES]->(b:Device {{k:$dst}})
             SET c.ai_label = $label, c.ai_quote = $quote, c.ai_model = $model, c.ai_at = datetime()
-            RETURN a.k AS src, b.k AS dst, c.kind AS kind, c.ai_label AS ai_label, c.review AS review""",
+            WITH a, b, c AS r
+            RETURN a.k AS src, b.k AS dst, r.kind AS kind, r.ai_label AS ai_label, r.review AS review,
+                   ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory""",
             {"src": src, "dst": dst, "label": label, "quote": quote, "model": model})
         return rows[0] if rows else None
 
@@ -260,12 +313,7 @@ class Graph:
                                                    linked_before_clearance: s.before_clearance}}) AS recalls
             RETURN a {{.*}} AS device, length(p) AS gen, routes,
                    [n IN nodes(p) | n.k] AS chain,
-                   [r IN relationships(p) | {{src: startNode(r).k, dst: endNode(r).k, page: r.page,
-                        snippet: r.snippet, confidence: r.confidence, review: r.review, reviewer: r.reviewer,
-                        name_check: r.name_check, source_url: r.source_url, kind: r.kind,
-                        audit: r.audit, audit_note: r.audit_note, ai_label: r.ai_label,
-                        text_source: r.text_source, panel_check: r.panel_check,
-                        quote: r.quote, method: r.method}}] AS hops,
+                   [r IN relationships(p) | {{{_HOP_FIELDS}}}] AS hops,
                    recalls
             ORDER BY gen, device.decision_date""", {"k": k})
         out = []
@@ -276,40 +324,70 @@ class Graph:
         return out
 
     def direct_citations(self, k: str) -> list[dict]:
-        """All extracted citations from k (any kind, incl. rejected) for the review panel."""
+        """All extracted citations from k (any kind, incl. rejected and retired) for the review panel, each with
+        its trust standing: `in_lineage` (trusted, a verdict input), `advisory` (an automated source says predicate,
+        pending a person) or neither; `retired_at` when a refreshed summary no longer supports it."""
         return [{**r, "dst_decision_date": str(r["dst_decision_date"]) if r["dst_decision_date"] else None}
                 for r in self.q(
-            """MATCH (d:Device {k:$k})-[c:CITES]->(b:Device)
+            f"""MATCH (d:Device {{k:$k}})-[r:CITES]->(b:Device)
             RETURN b.k AS dst, b.name AS name, b.applicant AS applicant, b.decision_date AS dst_decision_date,
-                   c.kind AS kind, c.confidence AS confidence, c.page AS page, c.snippet AS snippet,
-                   c.review AS review, c.review_note AS review_note, c.source_url AS source_url,
-                   c.ai_label AS ai_label, c.ai_quote AS ai_quote, c.ai_model AS ai_model,
-                   c.name_check AS name_check, c.reviewer AS reviewer,
-                   c.panel_check AS panel_check, c.quote AS quote, c.method AS method,
-                   c.text_source AS text_source, c.audit AS audit, c.audit_note AS audit_note,
-                   c.audit_by AS audit_by, c.corrected_from AS corrected_from
-            ORDER BY CASE c.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, b.k""",
+                   r.kind AS kind, r.confidence AS confidence, r.page AS page, r.snippet AS snippet,
+                   r.review AS review, r.review_note AS review_note, r.source_url AS source_url,
+                   r.ai_label AS ai_label, r.ai_quote AS ai_quote, r.ai_model AS ai_model, toString(r.ai_at) AS ai_at,
+                   r.name_check AS name_check, r.reviewer AS reviewer, toString(r.reviewed_at) AS reviewed_at,
+                   r.reviewed_source_sha256 AS reviewed_source_sha256, r.source_sha256 AS source_sha256,
+                   r.panel_check AS panel_check, r.quote AS quote, r.method AS method,
+                   r.text_source AS text_source, r.audit AS audit, r.audit_note AS audit_note,
+                   r.audit_by AS audit_by, r.corrected_from AS corrected_from,
+                   toString(r.retired_at) AS retired_at, r.retired_reason AS retired_reason,
+                   ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory
+            ORDER BY CASE r.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, b.k""",
             {"k": k})]
 
     def lineage_edges_from(self, ks: list[str]) -> list[dict]:
         """Every lineage edge leaving the given devices, on any route (the ancestor query keeps only one
         shortest path per ancestor, so a doubtful edge on another route would otherwise go unseen)."""
+        return self._edges_from(ks, LINEAGE_EDGE)
+
+    def advisory_edges_from(self, ks: list[str]) -> list[dict]:
+        """Advisory (untrusted) predicate links leaving the given devices: an LLM label or an automated-client
+        confirmation with no person's decision. Each carries its provenance and the cited device's recalls, so the
+        evidence is visible, but nothing here is traversed by the verdict rules."""
+        if not ks:
+            return []
+        rows = self.q(
+            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND {ADVISORY_EDGE}
+            OPTIONAL MATCH (b)-[s:SUBJECT_OF]->(x:Recall)
+            WITH a, r, b, collect(DISTINCT x {{.*, link_name_check: s.name_check,
+                                              linked_before_clearance: s.before_clearance}}) AS recalls
+            RETURN {{{_HOP_FIELDS}}} AS hop, b.name AS dst_name, recalls
+            ORDER BY hop.src, hop.dst""", {"ks": list(ks)})
+        return [r["hop"] | {"dst_name": r["dst_name"], "recalls": [_clean(x) for x in r["recalls"] if x]}
+                for r in rows]
+
+    def retired_citations_from(self, ks: list[str]) -> list[dict]:
+        """Citation edges a re-ingest retired because the refreshed summary no longer supports them."""
         if not ks:
             return []
         return self.q(
-            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND {LINEAGE_EDGE}
-            RETURN a.k AS src, b.k AS dst, r.page AS page, r.snippet AS snippet, r.confidence AS confidence,
-                   r.review AS review, r.reviewer AS reviewer, r.name_check AS name_check,
-                   r.source_url AS source_url, r.kind AS kind, r.audit AS audit, r.audit_note AS audit_note,
-                   r.ai_label AS ai_label, r.text_source AS text_source, r.panel_check AS panel_check,
-                   r.quote AS quote, r.method AS method
-            ORDER BY src, dst""", {"ks": list(ks)})
+            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND r.retired_at IS NOT NULL
+            RETURN {{{_HOP_FIELDS}}} AS hop, toString(r.retired_at) AS retired_at, r.retired_reason AS retired_reason,
+                   r.retired_by_sha256 AS retired_by_sha256
+            ORDER BY hop.src, hop.dst""", {"ks": list(ks)})
+
+    def _edges_from(self, ks: list[str], rule: str) -> list[dict]:
+        if not ks:
+            return []
+        return [r["hop"] for r in self.q(
+            f"""MATCH (a:Device)-[r:CITES]->(b:Device) WHERE a.k IN $ks AND {rule}
+            RETURN {{{_HOP_FIELDS}}} AS hop ORDER BY hop.src, hop.dst""", {"ks": list(ks)})]
 
     def out_of_lineage_predicates(self, k: str) -> list[dict]:
         """Citations the extractor read as predicates that do not count in lineage queries (removed by
-        the audit or rejected by a person), minus K-number typos the audit corrected to another edge."""
+        the audit or rejected by a person), minus K-number typos the audit corrected to another edge. Edges retired
+        by a re-ingest are reported separately (retired_citations_from): the current summary no longer cites them."""
         rows = self.q(
-            f"""MATCH (d:Device {{k:$k}})-[r:CITES]->(b:Device)
+            f"""MATCH (d:Device {{k:$k}})-[r:CITES]->(b:Device) WHERE {LIVE_EDGE}
             RETURN b.k AS dst, r.kind AS kind, r.page AS page, r.quote AS quote, r.snippet AS snippet,
                    r.review AS review, r.review_note AS review_note, r.audit AS audit,
                    r.audit_note AS audit_note, r.corrected_from AS corrected_from,

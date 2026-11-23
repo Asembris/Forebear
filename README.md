@@ -190,7 +190,7 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 <details>
 <summary><b>AI and third-party tools (disclosure)</b></summary>
 
-- **Optional LLM triage.** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b` (fallback `mistralai/mistral-large-4-1t-a52b`) labels *ambiguous* citation mentions on request. Its output must quote the snippet verbatim or it is discarded, people can override it, and an LLM-only link counts as uncertain evidence.
+- **Optional LLM triage.** NVIDIA-hosted `nvidia/nemotron-3.5-lightning-30b-a3b` (fallback `mistralai/mistral-large-4-1t-a52b`) labels *ambiguous* citation mentions on request. Its output must quote the snippet verbatim or it is discarded. An LLM label is advisory: it is shown with its provenance but never changes the lineage or a verdict until a person confirms the citation.
 - **Optional investigation agent.** NVIDIA-hosted `nvidia/nemotron-3-ultra-550b-a55b` (same fallback). It chooses tool calls and writes findings, but produces no verdicts or counts and cannot change lineage.
 - Both need `NVIDIA_API_KEY` and `NVIDIA_BASE_URL` in `.env` (see [`.env.example`](.env.example)). Everything else works without them.
 - **Libraries.** Relate (`relate-db`), FastAPI, Uvicorn, pypdf, httpx, React 18, Vite. Optional OCR refresh: RapidOCR and pypdfium2 ([`requirements-ocr.txt`](requirements-ocr.txt)).

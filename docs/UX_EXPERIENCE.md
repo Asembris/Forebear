@@ -57,7 +57,7 @@ the favicon.
 
 ### The investigation page, top to bottom
 
-- **Finding.** The device, the verdict, and an authority note: *Deterministic assessment · forebear-rules-v4.
+- **Finding.** The device, the verdict, and an authority note: *Deterministic assessment · forebear-rules-v5.
   Authoritative within its documented scope … A documentation signal, not a safety determination.* Below it, one
   plain-language finding sentence, built only from the assessment payload. It names the page, the recall class, the root
   cause, the start date, and how long before the clearance the recall began. Coverage chips show evidence completeness,

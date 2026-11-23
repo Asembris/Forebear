@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { api, pmnUrl } from '../api.js'
 import {
-  ATTRIBUTION, DOUBT_TEXT, PREDATES_CLEARANCE, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, pdfAt, recallAttribution, recallTone, shortName,
+  ATTRIBUTION, DOUBT_TEXT, MACHINE_REVIEWERS, PREDATES_CLEARANCE, EDGE_STATUS, TEXT_SOURCE, countEvents, edgeStatus, fmtDate, humanReview, outdatedReview, pdfAt, recallAttribution, recallTone, shortName,
 } from '../evidence.js'
 
 /* Highlight the cited K-number inside the verbatim quote. */
@@ -150,18 +150,20 @@ function EdgeBody({ sel, a, closeBtn, onClose, go, reload, onSelect }) {
             <dt>Name check</dt><dd>{h.name_check || '—'}</dd>
             <dt>FDA panel</dt><dd>{h.panel_check || '—'}</dd>
             {h.audit && <><dt>Audit</dt><dd>{h.audit}{h.audit_note ? ` — ${h.audit_note}` : ''}</dd></>}
-            {h.ai_label && <><dt>LLM label</dt><dd>{h.ai_label} (optional triage; never a verdict input on its own)</dd></>}
-            <dt>Review</dt><dd>{h.review ? `${h.review} by ${h.reviewer || 'unknown'}` : 'not reviewed by a person'}</dd>
+            {h.ai_label && <><dt>LLM label</dt><dd>{h.ai_label}{h.ai_model ? ` · ${h.ai_model}` : ''} (advisory; never a verdict input until a person confirms)</dd></>}
+            <dt>Review</dt><dd>{h.review ? `${h.review} by ${h.reviewer || 'unknown'}${MACHINE_REVIEWERS.includes(h.reviewer) ? ' (automated client; advisory)' : outdatedReview(h) ? ' on an earlier version of the summary; needs re-review' : ''}` : 'not reviewed by a person'}</dd>
+            <dt>Trust</dt><dd data-testid="edge-trust">{EDGE_STATUS[edgeStatus(h).key].label}</dd>
+            {h.retired_at && <><dt>Retired</dt><dd>{fmtDate(h.retired_at)} · no longer cited by the refreshed summary</dd></>}
             {src.summary_sha256 && <><dt>PDF SHA-256</dt><dd><span className="mono">{src.summary_sha256}</span></dd></>}
           </dl>
         </div>
         <div className="drawer-sec">
           <h3>Your review</h3>
           <div className="drawer-acts">
-            <button className="btn btn-line btn-sm" disabled={busy} onClick={() => review(h.review === 'confirmed' ? '' : 'confirmed')}>
-              {h.review === 'confirmed' ? 'Clear confirmation' : 'Confirm citation'}</button>
-            <button className="btn btn-line btn-sm" disabled={busy} onClick={() => review(h.review === 'rejected' ? '' : 'rejected')}>
-              {h.review === 'rejected' ? 'Restore citation' : 'Reject citation'}</button>
+            <button className="btn btn-line btn-sm" disabled={busy} onClick={() => review(h.review === 'confirmed' && humanReview(h) ? '' : 'confirmed')}>
+              {h.review === 'confirmed' && humanReview(h) ? 'Clear confirmation' : 'Confirm citation'}</button>
+            <button className="btn btn-line btn-sm" disabled={busy} onClick={() => review(h.review === 'rejected' && humanReview(h) ? '' : 'rejected')}>
+              {h.review === 'rejected' && humanReview(h) ? 'Restore citation' : 'Reject citation'}</button>
           </div>
           <p className="note" style={{ marginTop: 8 }}>A review is a write to the Relate graph. Every lineage query, verdict and saved-assessment
             staleness check reads it immediately.</p>

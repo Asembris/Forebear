@@ -31,7 +31,7 @@ def _slim(row: dict) -> dict:
 def _cache_path(endpoint: str, search: str, skip: int) -> Path:
     key = hashlib.sha1(f"{endpoint}|{search}|{skip}".encode()).hexdigest()[:16]
     name = f"{endpoint}_{key}.json"
-    if CACHE_MODE["mode"] == "live" and not (OPENFDA_CACHE / name).exists():
+    if CACHE_MODE["mode"] == "live" and ((LIVE_OPENFDA_CACHE / name).exists() or not (OPENFDA_CACHE / name).exists()):
         return LIVE_OPENFDA_CACHE / name
     return OPENFDA_CACHE / name
 
@@ -66,6 +66,8 @@ def _get(endpoint: str, search: str, limit: int = 1000, skip: int = 0, use_cache
     data["results"] = [_slim(row) for row in data.get("results", [])]
     data["_fetched"] = {"endpoint": endpoint, "search": search, "skip": skip,
                         "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    if CACHE_MODE["mode"] == "live":        # the app never rewrites the committed data/raw cache
+        path = LIVE_OPENFDA_CACHE / path.name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data), encoding="utf-8")
     return data

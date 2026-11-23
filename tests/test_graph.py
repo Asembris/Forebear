@@ -51,12 +51,17 @@ def test_reject_removes_edge_from_lineage(tiny):
     assert "K000002" in {a["k"] for a in tiny.ancestors("K000004")}
 
 
-def test_confirm_or_ai_label_promotes_mention(tiny):
+def test_ai_label_is_advisory_and_only_a_person_promotes_a_mention(tiny):
     assert tiny.ancestors("K000007") == []
     tiny.set_triage("K000007", "K000004", "predicate", "Predicate device", "test-model")
+    assert tiny.ancestors("K000007") == []                         # an LLM label alone never makes lineage
+    adv = tiny.advisory_edges_from(["K000007"])
+    assert [(h["dst"], h["ai_label"], h["ai_model"], h["ai_quote"]) for h in adv] ==         [("K000004", "predicate", "test-model", "Predicate device")]
+    tiny.review_citation("K000007", "K000004", "confirmed", "read p.1", reviewer="user")
     assert "K000004" in {a["k"] for a in tiny.ancestors("K000007")}
+    assert tiny.advisory_edges_from(["K000007"]) == []
     tiny.review_citation("K000007", "K000004", "rejected", None)   # humans override AI
-    assert tiny.ancestors("K000007") == []
+    assert tiny.ancestors("K000007") == [] and tiny.advisory_edges_from(["K000007"]) == []
 
 
 def test_cited_after_recall_is_temporal(tiny):

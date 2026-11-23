@@ -70,7 +70,8 @@ def test_source_audit_requires_matching_pdf_and_literal_page(monkeypatch, source
 def test_source_role_corrections_outrank_machine_labels_and_reviews(tiny):
     src, dst = "K000007", "K000004"
     tiny.review_citation(src, dst, "confirmed", "automated", reviewer="mcp-client")
-    assert [a["k"] for a in tiny.ancestors(src, 1)] == [dst]       # unchanged behavior for an ordinary mention
+    assert tiny.ancestors(src, 1) == []                            # a client confirmation alone is advisory
+    assert [h["dst"] for h in tiny.advisory_edges_from([src])] == [dst]
     tiny.upsert_citations([{**cite(src, dst, "reference"), "audit": "role_corrected"}])
     tiny.set_triage(src, dst, "predicate", "machine triage", "test")
     tiny.review_citation(src, dst, "confirmed", "automated", reviewer="mcp-client")

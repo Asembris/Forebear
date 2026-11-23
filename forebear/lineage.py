@@ -68,6 +68,10 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
 
     pc = dev.get("product") or {}
 
+    for a in ancestors:
+        for h in a["hops"]:
+            h["trust"] = trust(h)
+
     # D: the candidate's own recalls (one signal, all recalls as evidence)
     own = sorted(dev["recalls"], key=lambda x: x.get("initiated") or "", reverse=True)
     if own:
@@ -130,10 +134,11 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     # route: its generation is its source's generation + 1 (the candidate is generation 0).
     gen_of = {k: 0} | {a["k"]: a["gen"] for a in ancestors}
     flagged, doubtful = [], []
-    for h in g.lineage_edges_from([x for x, n in gen_of.items() if n < depth]):
+    sources = [x for x, n in gen_of.items() if n < depth]
+    for h in g.lineage_edges_from(sources):
         why = doubt(h)
         if why:
-            doubtful.append({"type": "citation", "doubt": why, "gen": gen_of[h["src"]] + 1, **h})
+            doubtful.append({"type": "citation", "doubt": why, "gen": gen_of[h["src"]] + 1, "trust": "uncertain", **h})
             if "name_mismatch" in why:
                 flagged.append({"type": "citation", **h})
     if flagged:
@@ -149,6 +154,43 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
             title += f" Unresolved predicate evidence for {unresolved}. Recall signals through these links are conditional."
         signals.append({"code": "UNCERTAIN_LINK_IN_LINEAGE", "severity": "info",
                         "title": title, "evidence": other, "chain": []})
+
+    # V: advisory links. An LLM triage label or an automated-client confirmation says a citation is a predicate,
+    # but no person has decided. The cited device and its recalls are shown with full provenance, never traversed:
+    # they cannot raise or lower the verdict. Inside the verdict window they make the evidence partial, because a
+    # predicate (and its recalls) may be missing from the trusted lineage until someone decides.
+    advisory = [{"type": "advisory_citation", "trust": "advisory", "basis": advisory_basis(h),
+                 "gen": gen_of[h["src"]] + 1, **h} for h in g.advisory_edges_from(sources)]
+    window_advisory = [x for x in advisory if x["gen"] <= EVIDENCE_WINDOW]
+    if advisory:
+        rec_note = "; ".join(f"{x['dst']} has {_count(x['recalls'])}"
+                             + (f", {sum(1 for r in x['recalls'] if r.get('design_related'))} design-related"
+                                if any(r.get("design_related") for r in x["recalls"]) else "")
+                             for x in advisory if x["recalls"])
+        signals.append({"code": "ADVISORY_LINK_PENDING_REVIEW", "severity": "info",
+                        "title": f"{len(advisory)} predicate link(s) suggested only by an automated source (LLM triage or "
+                                 f"the MCP client) await a person's decision and are not used for the verdict"
+                                 + (f". Recalls on the suggested devices: {rec_note}" if rec_note else ""),
+                        "evidence": advisory + [_recall_ev(r) | {"via_advisory": f"{x['src']}->{x['dst']}"}
+                                                for x in advisory for r in x["recalls"]],
+                        "chain": []})
+
+    # X: citations a re-ingest retired because the refreshed FDA summary no longer supports them. Kept with their
+    # reviews and provenance for the record; out of lineage. A retired edge a person had confirmed is a gap: the
+    # person's decision was made on text the current summary no longer contains.
+    retired = [r["hop"] | {"type": "retired_citation", "trust": "retired", "retired_at": r["retired_at"],
+                           "retired_reason": r["retired_reason"], "retired_by_sha256": r["retired_by_sha256"],
+                           "gen": gen_of[r["hop"]["src"]] + 1}
+               for r in g.retired_citations_from(sources)]
+    retired_confirmed = [x for x in retired if x["gen"] <= EVIDENCE_WINDOW and x.get("review") == "confirmed"
+                         and x.get("reviewer") not in MACHINE_REVIEWERS]
+    if retired:
+        signals.append({"code": "CITATION_RETIRED_BY_REINGEST", "severity": "info",
+                        "title": f"{len(retired)} citation(s) are no longer supported by the refreshed FDA summary of the "
+                                 f"citing device and were retired from the lineage"
+                                 + (f"; {len(retired_confirmed)} had been confirmed by a person and need re-review"
+                                    if retired_confirmed else ""),
+                        "evidence": retired, "chain": []})
 
     # C: predicate citations in the own summary of the candidate or of any ancestor whose predicates fall inside
     # the requested depth, that did not become lineage edges: K-number not in openFDA, cleared later, or removed
@@ -220,11 +262,13 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         ("recall_cause_or_class_unknown", bool(unknown_recalls)),
         ("unattributed_recalls_in_product_code", bool(pc.get("unattributed_design_recalls_n"))),
         ("shallow_traversal", bool(shallow and ancestors)),
+        ("advisory_links_pending_review", bool(window_advisory)),
+        ("human_confirmed_citation_retired", bool(retired_confirmed)),
     ) if hit]
     if gen1 and not trusted_gen1:
         evidence = "uncertain"
     elif missing or gen1_unread or any(d["gen"] <= EVIDENCE_WINDOW for d in doubtful) or unknown_recalls or \
-            pc.get("unattributed_design_recalls_n") or (shallow and ancestors):
+            pc.get("unattributed_design_recalls_n") or (shallow and ancestors) or window_advisory or retired_confirmed:
         evidence = "partial"
     else:
         evidence = "complete" if ancestors else "none"
@@ -246,6 +290,9 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     elif ancestors and evidence == "uncertain":
         insufficient = ("Every direct predicate link of the candidate rests on uncertain evidence (see the "
                         "uncertain-link signals), so its ancestry was not treated as checked.")
+    elif not ancestors and any(x["gen"] == 1 for x in advisory):
+        insufficient = ("The candidate's only predicate links were suggested by an automated source (LLM triage or the "
+                        "MCP client) and await a person's decision, so its ancestry was not treated as checked.")
     else:
         insufficient = "No predicate citations were found for the candidate, so its ancestry was not checked."
     clear = ("No design-related recall on the candidate or its direct/grand-predicates in the readable ancestry "
@@ -257,6 +304,9 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     elif evidence == "partial":
         clear = ("Provisional: " + clear + " Part of the ancestry within two generations is missing or rests on "
                  "uncertain links (see the coverage signals), so a recall there would not show.")
+        if window_advisory:
+            clear += (" Predicate links suggested only by an automated source are not counted until a person "
+                      "confirms them (see ADVISORY_LINK_PENDING_REVIEW).")
     if any(deeper.values()):
         clear += (" Beyond two generations the ancestry has gaps (see DEEPER_ANCESTRY_GAPS), so the lower-severity "
                   "list may be incomplete.")
@@ -279,6 +329,8 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                      "candidate_lineage_known": bool(dev.get("lineage_known")),
                      "evidence": evidence, "evidence_reasons": evidence_reasons,
                      "doubtful_links": len(doubtful),
+                     "advisory_links": len(advisory), "advisory_links_in_window": len(window_advisory),
+                     "retired_citations": len(retired),
                      "unresolved_predicate_citations": len(missing),
                      "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1),
                      "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
@@ -287,17 +339,20 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
     }
 
 
-RULES_VERSION = "forebear-rules-v4"
-EVIDENCE_WINDOW = 2
-MACHINE_REVIEWERS = ("mcp-client",)       # reviews recorded through an automated client, not a person      # generations within which a recall can raise a verdict above "no signal"
+RULES_VERSION = "forebear-rules-v5"
+EVIDENCE_WINDOW = 2                       # generations within which a recall can raise a verdict above "no signal"
+MACHINE_REVIEWERS = ("mcp-client",)       # reviews recorded through an automated client, not a person
 
 
 def doubt(h: dict) -> list[str]:
     """Why a lineage hop's evidence is doubtful ([] if it is not). A person's confirmation clears it; a
-    confirmation sent through the MCP tool (reviewer "mcp-client", possibly an AI agent) does not."""
-    if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
+    confirmation sent through the MCP tool (reviewer "mcp-client", possibly an AI agent) does not, and a rejection
+    sent through it leaves the edge in the lineage, flagged, until a person decides."""
+    if current_human_review(h) and h.get("review") == "confirmed":
         return []
     why = []
+    if human_review(h) and not current_human_review(h):
+        why.append("review_outdated")         # a person reviewed an earlier version of the evidence
     if h.get("audit") == "unresolved":
         why.append("audit_unresolved")
     if h.get("audit") == "corrected":         # the K-number was supplied by the audit, not printed in the PDF
@@ -311,7 +366,40 @@ def doubt(h: dict) -> list[str]:
     if h.get("kind") not in (None, "predicate") and h.get("review") == "confirmed" \
             and h.get("reviewer") in MACHINE_REVIEWERS:
         why.append("client_confirmation_only")
+    if h.get("review") == "rejected" and h.get("reviewer") in MACHINE_REVIEWERS:
+        why.append("client_rejection_pending")    # an automated client disputes it; a person has not decided
     return why
+
+
+def human_review(h: dict) -> bool:
+    """A review recorded by a person (any version of the evidence)."""
+    return bool(h.get("review")) and h.get("reviewer") not in MACHINE_REVIEWERS
+
+
+def current_human_review(h: dict) -> bool:
+    """Mirror of graph.CURRENT_HUMAN_REVIEW: a person's review made on the evidence the edge carries now."""
+    return human_review(h) and (h.get("reviewed_source_sha256") or "") == (h.get("source_sha256") or "")
+
+
+def trust(h: dict) -> str:
+    """How far a trusted lineage hop can be relied on: 'human_verified' (a person confirmed it), 'extracted' (read
+    from the FDA summary, nothing doubtful) or 'uncertain' (doubt(h) is not empty). Advisory and retired edges are
+    labelled where they are listed; they are never lineage hops."""
+    if h.get("review") == "confirmed" and current_human_review(h):
+        return "human_verified"
+    return "uncertain" if doubt(h) else "extracted"
+
+
+def advisory_basis(h: dict) -> list[str]:
+    """Which automated sources call an untrusted citation a predicate."""
+    out = []
+    if h.get("ai_label") == "predicate":
+        out.append("llm_label")
+    if h.get("review") == "confirmed" and h.get("reviewer") in MACHINE_REVIEWERS:
+        out.append("client_confirmation")
+    if h.get("review") == "confirmed" and human_review(h) and not current_human_review(h):
+        out.append("outdated_human_confirmation")
+    return out
 
 
 UNKNOWN_CAUSES = ("", "other", "under investigation by firm", "unknown/undetermined by firm")

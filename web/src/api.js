@@ -20,7 +20,7 @@ export const api = {
   compare: (ks) => req('/api/compare', { method: 'POST', body: { ks } }),
   recallEvent: (e) => req(`/api/recall-event/${e}`),
   watchlist: () => req('/api/watchlist'),
-  ingest: (k) => req('/api/ingest', { method: 'POST', body: { k } }),
+  ingest: (k, refresh = false) => req('/api/ingest', { method: 'POST', body: { k, refresh } }),
   review: (src, dst, status, note) => req('/api/citation/review', { method: 'POST', body: { src, dst, status, note } }),
   triage: (src, dst) => req('/api/citation/triage', { method: 'POST', body: { src, dst } }),
   save: (k, note) => req('/api/assessments', { method: 'POST', body: { k, note } }),

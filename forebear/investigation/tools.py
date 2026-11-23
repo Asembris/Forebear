@@ -18,8 +18,8 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from .. import summaries
-from ..graph import LINEAGE_EDGE, Graph
-from ..lineage import EVIDENCE_WINDOW, assess, compare, doubt, recall_reach
+from ..graph import ADVISORY_EDGE, LINEAGE_EDGE, Graph
+from ..lineage import EVIDENCE_WINDOW, assess, compare, current_human_review, doubt, recall_reach
 
 K_RE = re.compile(r"^K\d{6}$")
 RECALL_RE = re.compile(r"^Z-\d{4}-\d{4}$")
@@ -147,9 +147,16 @@ def _gens(args: dict, default: int = 4) -> int:
 
 
 def _provenance(h: dict) -> str:
-    """Who stands behind a lineage hop: a person, an automated client, the extraction audit, or the extractor."""
+    """Who stands behind a lineage hop: a person, an automated client, the extraction audit, or the extractor.
+    'client_confirmed_not_human' and 'llm_label_machine' on a non-predicate are advisory: they never count in the
+    lineage until a person confirms the citation."""
     if h.get("review") == "confirmed":
-        return "human_confirmed" if h.get("reviewer") not in ("mcp-client",) else "client_confirmed_not_human"
+        if h.get("reviewer") in ("mcp-client",):
+            return "client_confirmed_not_human"
+        # a person's confirmation of an earlier version of the evidence needs re-review before it counts
+        return "human_confirmed" if current_human_review(h) else "human_review_outdated"
+    if h.get("review") == "rejected" and h.get("reviewer") in ("mcp-client",):
+        return "client_rejection_pending_not_human"
     if h.get("audit") == "corrected":
         return "audit_correction_machine"
     if h.get("audit") in ("variant", "unresolved", "role_corrected"):
@@ -165,6 +172,8 @@ def compact_assessment(a: dict) -> dict:
         recs = [e for e in s["evidence"] if e.get("type") == "recall"]
         cit = [e for e in s["evidence"] if e.get("type") == "citation"]
         unres = [e for e in s["evidence"] if e.get("type") == "unresolved_citation"]
+        adv = [e for e in s["evidence"] if e.get("type") == "advisory_citation"]
+        ret = [e for e in s["evidence"] if e.get("type") == "retired_citation"]
         dev = [e for e in s["evidence"] if e.get("type") == "device"]
         sig = {"code": s.get("code"), "severity": s["severity"], "title": s["title"], "chain": s.get("chain") or None}
         if s.get("conditional"):
@@ -179,6 +188,14 @@ def compact_assessment(a: dict) -> dict:
         if unres:
             sig["unresolved"] = [{"src": e["src"], "cited": e["cited"], "reason": e.get("reason"),
                                   "page": e.get("page")} for e in unres][:10]
+        if adv:     # untrusted: never a verdict input, listed so the agent cannot mistake it for lineage
+            sig["advisory_links"] = [{"src": e["src"], "dst": e["dst"], "page": e.get("page"), "trust": "advisory",
+                                      "basis": e.get("basis"), "ai_model": e.get("ai_model"),
+                                      "recall_ids": [x["id"] for x in e.get("recalls") or []][:10]} for e in adv][:10]
+        if ret:
+            sig["retired_links"] = [{"src": e["src"], "dst": e["dst"], "trust": "retired",
+                                     "retired_at": e.get("retired_at"), "review": e.get("review"),
+                                     "reviewer": e.get("reviewer")} for e in ret][:10]
         if dev:
             sig["devices"] = [{"k": e["k"], "summary_status": e.get("summary_status")} for e in dev][:12]
         out_signals.append({k: v for k, v in sig.items() if v is not None})
@@ -228,8 +245,9 @@ def t_list_citations(g: Graph, args: dict, ctx: RunContext) -> dict:
         RETURN b.k AS dst, b.name AS dst_name, toString(b.decision_date) AS dst_decision_date, r.kind AS kind,
                r.page AS page, r.quote AS quote, r.snippet AS snippet, r.audit AS audit, r.audit_note AS audit_note,
                r.review AS review, r.reviewer AS reviewer, r.name_check AS name_check, r.panel_check AS panel_check,
+               r.source_sha256 AS source_sha256, r.reviewed_source_sha256 AS reviewed_source_sha256,
                r.ai_label AS ai_label, r.corrected_from AS corrected_from, r.source_url AS source_url,
-               ({LINEAGE_EDGE}) AS in_lineage
+               r.retired_at IS NOT NULL AS retired, ({LINEAGE_EDGE}) AS in_lineage, ({ADVISORY_EDGE}) AS advisory
         ORDER BY CASE r.kind WHEN 'predicate' THEN 0 WHEN 'reference' THEN 1 ELSE 2 END, dst""", {"k": k})
     if not rows and g.device(k) is None:
         raise ToolError(f"{k} is not in the graph")
@@ -240,6 +258,8 @@ def t_list_citations(g: Graph, args: dict, ctx: RunContext) -> dict:
         _flag_injection(ctx, f"citation {k}->{r['dst']}", r["quote"], r["snippet"], r["audit_note"])
         out.append({"dst": r["dst"], "dst_name": r["dst_name"], "dst_decision_date": r["dst_decision_date"],
                     "kind": r["kind"], "counts_in_lineage": r["in_lineage"], "page": r["page"],
+                    "trust": ("uncertain" if why else "trusted") if r["in_lineage"] else
+                             "advisory" if r["advisory"] else "retired" if r["retired"] else "excluded",
                     "doubt": why or None, "audit": r["audit"], "audit_note": untrusted(r["audit_note"], 200),
                     "review": r["review"], "reviewer": r["reviewer"], "provenance": _provenance(r),
                     "name_check": r["name_check"], "panel_check": r["panel_check"],
@@ -329,6 +349,7 @@ def verify_citation_facts(g: Graph, src: str, dst: str) -> dict:
         RETURN r.page AS page, r.quote AS quote, r.snippet AS snippet, r.source_url AS source_url,
                r.source_sha256 AS sha, r.kind AS kind, r.corrected_from AS corrected_from, r.audit AS audit,
                r.audit_note AS audit_note, r.text_source AS text_source, r.review AS review,
+               r.source_sha256 AS source_sha256, r.reviewed_source_sha256 AS reviewed_source_sha256,
                r.reviewer AS reviewer, r.ai_label AS ai_label,
                ({LINEAGE_EDGE}) AS in_lineage""", {"s": src, "d": dst})
     if not rows:

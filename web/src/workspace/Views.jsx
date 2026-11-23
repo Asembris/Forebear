@@ -240,10 +240,11 @@ export function IngestView({ initial, go, onChanged }) {
   const [busy, setBusy] = useState(false)
   const [res, setRes] = useState(null)
   const [err, setErr] = useState(null)
+  const [refresh, setRefresh] = useState(false)
   useEffect(() => { if (initial) setK(initial) }, [initial])
   const run = async () => {
     setBusy(true); setErr(null); setRes(null)
-    try { const r = await api.ingest(k); setRes(r); onChanged && onChanged() } catch (e) { setErr(e.message) } finally { setBusy(false) }
+    try { const r = await api.ingest(k, refresh); setRes(r); onChanged && onChanged() } catch (e) { setErr(e.message) } finally { setBusy(false) }
   }
   const delta = (a, b) => Object.keys({ ...a, ...b }).map((key) => [key, (b[key] || 0) - (a[key] || 0)]).filter(([, d]) => d)
   return (
@@ -258,6 +259,11 @@ export function IngestView({ initial, go, onChanged }) {
           <input className="field" value={k} placeholder="K-number, e.g. K241135" onChange={(e) => setK(e.target.value)} aria-label="K-number to read from FDA" />
           <button className="btn btn-primary" disabled={busy || !k}>{busy ? 'Reading from FDA…' : 'Read and add'}</button>
         </form>
+        <label className="muted small" style={{ display: 'block', marginTop: 8 }}>
+          <input type="checkbox" checked={refresh} onChange={(e) => setRefresh(e.target.checked)} data-testid="ingest-refresh" />{' '}
+          Re-download the summary PDF from FDA to detect a changed document (otherwise the cached text is reused).
+          Reviews made on an earlier version then need re-review.
+        </label>
         {busy && <div className="loading-thread"><i />Downloading the summary PDF and extracting citations…</div>}
         {err && <p className="err" role="alert">{err}</p>}
       </section>
@@ -265,6 +271,9 @@ export function IngestView({ initial, go, onChanged }) {
         <section className="panel">
           <div className="panel-head"><h2>{res.k}: {res.was_present ? (res.lineage_was_known ? 're-read' : 'lineage extended') : 'added to the graph'}</h2></div>
           <p>Summary: <b>{res.summary_status}</b>{res.summary_url && <> · <a href={res.summary_url} target="_blank" rel="noreferrer">PDF ↗</a></>}</p>
+          {res.refresh && <p className="muted small" data-testid="ingest-refresh-result">{res.refresh.changed
+            ? `FDA's PDF changed (sha256 ${String(res.refresh.previous_sha256 || 'none').slice(0, 12)} → ${String(res.summary_sha256).slice(0, 12)}); citations were reconciled against the new text.`
+            : 'FDA\'s PDF is unchanged since it was cached.'}</p>}
           <p className="muted">Graph change: {delta(res.graph_before, res.graph_after).concat(delta(res.rels_before, res.rels_after))
             .map(([key, d]) => `${d > 0 ? '+' : ''}${d} ${key}`).join(' · ') || 'no new nodes or relationships (already up to date)'}</p>
           <h3 style={{ fontSize: 13 }}>Citations read from the summary</h3>
@@ -272,6 +281,11 @@ export function IngestView({ initial, go, onChanged }) {
             res.citations_added.map((c) => (
               <div key={c.dst} className="cit"><div className="cit-h"><span className="k mono">{c.dst}</span> <span className="chip">{c.kind}</span> <span className="muted">p.{c.page}</span></div>
                 <blockquote className="quote">“{c.snippet}”</blockquote></div>))}
+          {res.reconciliation?.retired?.length > 0 && <>
+            <h3 style={{ fontSize: 13 }}>Citations no longer in the refreshed summary</h3>
+            <p className="muted small" data-testid="ingest-retired">Retired from the lineage, kept with their reviews and provenance:{' '}
+              {res.reconciliation.retired.map((c) => `${c.dst}${c.review ? ` (${c.review} by ${c.reviewer || 'unknown'})` : ''}`).join(', ')}.</p></>}
+          {res.reconciliation && !res.reconciliation.ran && <p className="muted small">{res.reconciliation.skipped_reason}.</p>}
           <p className="muted small">{res.recalls_linked.length} recall record(s) linked.</p>
           <button className="btn btn-primary" onClick={() => go('check', res.k)}>Investigate {res.k} <span className="arr">→</span></button>
         </section>
