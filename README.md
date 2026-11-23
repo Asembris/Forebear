@@ -14,7 +14,7 @@
 [![Data: openFDA, cached](https://img.shields.io/badge/data-openFDA_·_cached_offline-e7a948?style=flat-square&labelColor=0b1322)](data/PROVENANCE.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f1ebdd?style=flat-square&labelColor=0b1322)](LICENSE)
 
-**[The discovery](#the-discovery)** · **[Two hops deep](#two-hops-deep)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)**
+**[The discovery](#the-discovery)** · **[One hop](#one-hop-breathepal)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)** · **[Licensing](#data-licensing-and-attribution)**
 
 </div>
 
@@ -27,7 +27,48 @@ A new medical device reaches the US market through a 510(k) by claiming it is "s
 
 ## The discovery
 
-BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicate, the Philips Respironics BiPAP A30. FDA had already attributed a **Class I** recall with root cause **Device Design** (the PE-PUR foam recall) to that predicate's clearance, **4 years 9 months earlier**. Nothing on BreathePal's own FDA record says so. The graph does:
+**One more generation changes the verdict.** SleepRes PAP System (K251770) was cleared in December 2025. Its FDA summary names one predicate, the Philips DreamStation 2 (K200480), and no recall in the shipped FDA records lists the DreamStation 2. A check that stops at the named predicate comes back clean. One generation further, the DreamStation 2's own summary names two REMstar clearances, and FDA lists both on **Class I** recall **Z-1974-2021**, root cause **Device Design** (the PE-PUR foam recall), initiated **4 years 6 months** before SleepRes was cleared.
+
+| Query depth | What it walks | Verdict for K251770 |
+| --- | --- | --- |
+| **1 generation** | K251770 → K200480 (no recall on file) | `NO_DESIGN_RECALL_SIGNAL`, marked **provisional** because grand-predicates were not traversed |
+| **2 generations** | K251770 → K200480 → K130077 and K131982, both on Z-1974-2021 | `REVIEW_LINEAGE`, evidence complete |
+
+**The decision it changes.** At depth 1 the result is a provisional "no design-recall signal": an engineer who took it at face value would cite the DreamStation 2 with nothing to explain. At depth 2 the verdict is **Review lineage** with complete evidence: the predicate rationale now has to account for a Class I design recall two generations up, for example by saying whether the recalled design element is carried forward, or by choosing another predicate. Forebear does not answer that question; it makes sure it gets asked, with the evidence attached.
+
+| | Evidence | Source |
+| --- | --- | --- |
+| **Candidate** | K251770 · SleepRes PAP System · Sleepres, Inc. · cleared 2025-12-15 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf#page=5) |
+| **Hop 1** | p. 5: *"Predicate Device: Philips DreamStation 2 - K200480"* | same PDF, page 5 |
+| **Predicate** | K200480 · DreamStation 2 System · Respironics · cleared 2020-07-10 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf#page=4) |
+| **Hop 2** | p. 4: *"Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)"*, *"Secondary Predicate Device: REMSTAR SE (K130077)"* | K200480 PDF, page 4 |
+| **Recall** | Z-1974-2021 · event 88058 · Class I · Device Design · initiated 2021-06-14 (PE-PUR foam). FDA's record lists K130077 and K131982, not K200480 | [FDA recall Z-1974-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815) |
+| **Verdict** | `REVIEW_LINEAGE` at depth 2, provisional `NO_DESIGN_RECALL_SIGNAL` at depth 1 | deterministic rules in [`forebear/lineage.py`](forebear/lineage.py) |
+
+The recall began after the DreamStation 2 was cleared. The investigation page shows both depths side by side (*Why the graph matters*), with each hop's quote, a link to the FDA PDF at the cited page, and the recall record. In Relate the difference between the two answers is one number in the pattern, `*1..1` versus `*1..2`:
+
+```cypher
+MATCH path = (d:Device {k: 'K251770'})-[:CITES*1..2]->(a:Device)
+WHERE all(c IN relationships(path) WHERE c.kind = 'predicate')
+MATCH (a)-[:SUBJECT_OF]->(r:Recall)
+WHERE r.classification = 'Class I' AND r.root_cause = 'Device Design'
+  AND r.initiated < d.decision_date
+RETURN [n IN nodes(path) | n.k] AS chain, r.id AS recall, r.initiated AS initiated
+```
+
+```text
+*1..1   (no rows)
+*1..2   ['K251770', 'K200480', 'K131982']  Z-1974-2021  2021-06-14
+        ['K251770', 'K200480', 'K130077']  Z-1974-2021  2021-06-14
+```
+
+Every value here, including both verdicts and both query results, is asserted against the shipped store and the cached FDA page text by [`tests/test_two_hop_story.py`](tests/test_two_hop_story.py). The query is simplified: the app's version also applies human-review and audit rules to every edge (`LINEAGE_EDGE` in [`forebear/graph.py`](forebear/graph.py)). FDA attributes the recall to product families that list these clearances; it is a question for the predicate rationale, not a finding that SleepRes is unsafe.
+
+**Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. That recommendation is about the predicate itself; a recall two generations up is not a guidance violation, but it is the kind of history a reviewer may ask about. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
+
+## One hop: BreathePal
+
+BreathePal Bilevel (K252078, the case in the banner above) is the simpler version: the recall sits on the named predicate itself, so a one-hop lookup already finds it. It was cleared in March 2026, and its FDA summary names one predicate, the Philips Respironics BiPAP A30. FDA had already attributed a **Class I** recall with root cause **Device Design** (the same PE-PUR foam recall) to that predicate's clearance, **4 years 9 months earlier**. BreathePal's own 510(k) record does not mention it; connecting the two takes the citation on page 6 of its summary and FDA's recall records:
 
 | | Evidence | Source |
 | --- | --- | --- |
@@ -38,35 +79,6 @@ BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicat
 | **Verdict** | `REVIEW_LINEAGE`: a direct predicate with a Class I design recall on file | deterministic rules in [`forebear/lineage.py`](forebear/lineage.py) |
 
 Every value in this table is asserted against the shipped store by [`tests/test_story_facts.py`](tests/test_story_facts.py) and [`tests/test_shipped_evidence.py`](tests/test_shipped_evidence.py). FDA attributes these recalls to product *families* that list K113053, so the signal is "FDA links a Class I design recall to the predicate's clearance", not "this exact model was recalled".
-
-**Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
-
-## Two hops deep
-
-BreathePal's predicate carries the recall itself, so a one-hop lookup already finds it. **SleepRes PAP System (K251770) is the case where only the graph does.** Its own predicate, the DreamStation 2, has no recall in the shipped FDA records. That predicate's predicates do: two REMstar clearances that FDA lists on Class I design recall **Z-1974-2021**.
-
-| Query depth | What it walks | Verdict for K251770 |
-| --- | --- | --- |
-| **1 generation** | K251770 → K200480 (no recall on file) | `NO_DESIGN_RECALL_SIGNAL`, marked **provisional** because grand-predicates were not traversed |
-| **2 generations** | K251770 → K200480 → K130077 and K131982, both on Z-1974-2021 | `REVIEW_LINEAGE`, evidence complete |
-
-| | Evidence | Source |
-| --- | --- | --- |
-| **Candidate** | K251770 · SleepRes PAP System · Sleepres, Inc. · cleared 2025-12-15 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf#page=5) |
-| **Hop 1** | p. 5: *"Predicate Device: Philips DreamStation 2 - K200480"* | same PDF, page 5 |
-| **Predicate** | K200480 · DreamStation 2 System · Respironics · cleared 2020-07-10 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf#page=4) |
-| **Hop 2** | p. 4: *"Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)"*, *"Secondary Predicate Device: REMSTAR SE (K130077)"* | K200480 PDF, page 4 |
-| **Recall** | Z-1974-2021 · event 88058 · Class I · Device Design · initiated 2021-06-14 (PE-PUR foam). FDA's record lists K130077 and K131982, not K200480 | [FDA recall Z-1974-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815) |
-
-The recall began after the DreamStation 2 was cleared and 4 years 6 months before SleepRes was. The investigation page shows both depths side by side (*Why the graph matters*), with each hop's quote, a link to the FDA PDF at the cited page, and the recall record. The same simplified query as [below](#why-relate), with `*1..1` and then `*1..2`:
-
-```text
-*1..1   (no rows)
-*1..2   ['K251770', 'K200480', 'K131982']  Z-1974-2021  2021-06-14
-        ['K251770', 'K200480', 'K130077']  Z-1974-2021  2021-06-14
-```
-
-Every value here, including both verdicts and both query results, is asserted against the shipped store and the cached FDA page text by [`tests/test_two_hop_story.py`](tests/test_two_hop_story.py). As with BreathePal, FDA attributes the recall to product families that list these clearances; it is a question for the predicate rationale, not a finding that SleepRes is unsafe.
 
 ## Judge walkthrough
 
