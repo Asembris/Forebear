@@ -23,7 +23,7 @@ from . import ingest as ingest_mod
 from .ingest import IngestError
 from .investigation import runner as inv_runner
 from .investigation import store as inv_store
-from .lineage import assess, compare, date_relation, recall_attribution, recall_reach
+from .lineage import assess, citation_state, compare, date_relation, recall_attribution, recall_reach
 
 agent.load_env()
 use_live_cache()          # live ingests never touch the committed data/raw cache
@@ -265,10 +265,15 @@ class ReviewIn(BaseModel):
 @app.post("/api/citation/review")
 async def review(body: ReviewIn):
     src, dst = _norm_k(body.src), _norm_k(body.dst)
-    r = await run(lambda g: g.review_citation(src, dst, body.status, body.note, reviewer=body.via))
+
+    def write(g):  # the review and the edge's new state are read in one store call
+        r = g.review_citation(src, dst, body.status, body.note, reviewer=body.via)
+        return r and r | {"citation": citation_state(g.citation_edge(src, dst))}
+    r = await run(write)
     if r is None:
         raise HTTPException(404, f"No citation {src} -> {dst}")
     return r
+
 
 
 class TriageIn(BaseModel):
