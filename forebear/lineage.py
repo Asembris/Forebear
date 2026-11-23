@@ -175,6 +175,23 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                                                 for x in advisory for r in x["recalls"]],
                         "chain": []})
 
+    # X: citations a re-ingest retired because the refreshed FDA summary no longer supports them. Kept with their
+    # reviews and provenance for the record; out of lineage. A retired edge a person had confirmed is a gap: the
+    # person's decision was made on text the current summary no longer contains.
+    retired = [r["hop"] | {"type": "retired_citation", "trust": "retired", "retired_at": r["retired_at"],
+                           "retired_reason": r["retired_reason"], "retired_by_sha256": r["retired_by_sha256"],
+                           "gen": gen_of[r["hop"]["src"]] + 1}
+               for r in g.retired_citations_from(sources)]
+    retired_confirmed = [x for x in retired if x["gen"] <= EVIDENCE_WINDOW and x.get("review") == "confirmed"
+                         and x.get("reviewer") not in MACHINE_REVIEWERS]
+    if retired:
+        signals.append({"code": "CITATION_RETIRED_BY_REINGEST", "severity": "info",
+                        "title": f"{len(retired)} citation(s) are no longer supported by the refreshed FDA summary of the "
+                                 f"citing device and were retired from the lineage"
+                                 + (f"; {len(retired_confirmed)} had been confirmed by a person and need re-review"
+                                    if retired_confirmed else ""),
+                        "evidence": retired, "chain": []})
+
     # C: predicate citations in the own summary of the candidate or of any ancestor whose predicates fall inside
     # the requested depth, that did not become lineage edges: K-number not in openFDA, cleared later, or removed
     # by the audit or a reviewer. `gen` is the generation the missing predicate would have had.
@@ -246,11 +263,12 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
         ("unattributed_recalls_in_product_code", bool(pc.get("unattributed_design_recalls_n"))),
         ("shallow_traversal", bool(shallow and ancestors)),
         ("advisory_links_pending_review", bool(window_advisory)),
+        ("human_confirmed_citation_retired", bool(retired_confirmed)),
     ) if hit]
     if gen1 and not trusted_gen1:
         evidence = "uncertain"
     elif missing or gen1_unread or any(d["gen"] <= EVIDENCE_WINDOW for d in doubtful) or unknown_recalls or \
-            pc.get("unattributed_design_recalls_n") or (shallow and ancestors) or window_advisory:
+            pc.get("unattributed_design_recalls_n") or (shallow and ancestors) or window_advisory or retired_confirmed:
         evidence = "partial"
     else:
         evidence = "complete" if ancestors else "none"
@@ -312,6 +330,7 @@ def assess(g: Graph, k: str, depth: int = 4) -> dict | None:
                      "evidence": evidence, "evidence_reasons": evidence_reasons,
                      "doubtful_links": len(doubtful),
                      "advisory_links": len(advisory), "advisory_links_in_window": len(window_advisory),
+                     "retired_citations": len(retired),
                      "unresolved_predicate_citations": len(missing),
                      "direct_predicates": len(gen1), "direct_predicates_trusted": len(trusted_gen1),
                      "evidence_scope": "candidate, direct predicates and grand-predicates (verdict window)",
@@ -352,8 +371,8 @@ def doubt(h: dict) -> list[str]:
 
 def trust(h: dict) -> str:
     """How far a trusted lineage hop can be relied on: 'human_verified' (a person confirmed it), 'extracted' (read
-    from the FDA summary, nothing doubtful) or 'uncertain' (doubt(h) is not empty). Advisory edges are labelled
-    where they are listed; they are never lineage hops."""
+    from the FDA summary, nothing doubtful) or 'uncertain' (doubt(h) is not empty). Advisory and retired edges are
+    labelled where they are listed; they are never lineage hops."""
     if h.get("review") == "confirmed" and h.get("reviewer") not in MACHINE_REVIEWERS:
         return "human_verified"
     return "uncertain" if doubt(h) else "extracted"

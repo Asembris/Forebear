@@ -504,7 +504,8 @@ async def decide_proposal(pid: str, body: DecisionIn):
     except Exception as e:            # IngestError or anything else: never leave the proposal 'deciding'
         error = f"{type(e).__name__}: {str(e)[:300]}"
         return await run(lambda g: inv_store.decide_proposal(g, pid, "failed", who, body.note, {"error": error}))
-    res = {k2: r[k2] for k2 in ("k", "summary_status", "summary_url", "new_devices", "recalls_linked")} | {
+    res = {k2: r[k2] for k2 in ("k", "summary_status", "summary_url", "new_devices", "recalls_linked",
+                                "reconciliation")} | {
         "citations_added": [{k2: c[k2] for k2 in ("dst", "kind", "page")} for c in r["citations_added"]]}
     return await run(lambda g: inv_store.decide_proposal(g, pid, "executed", who, body.note, res))
 

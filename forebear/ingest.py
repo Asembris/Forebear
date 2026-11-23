@@ -13,6 +13,12 @@ reads and the one write transaction on it:
     present_devices(g, ks)        graph     -> which cited K-numbers already exist
     fetch_related(fetched, present) network -> metadata for new predicates + recall rows
     write(g, fetched, related)    graph     -> one transaction, rollback on error
+
+Re-ingesting a clearance reconciles its citations inside that same transaction: citation edges the refreshed
+summary no longer supports are retired (graph.retire_citations), not deleted, so human reviews, LLM labels, audit
+decisions and source provenance survive and an edge comes back if a later summary cites the device again.
+Reconciliation only runs when the refreshed summary text was actually read: an unreadable download never wipes
+existing lineage.
 """
 from __future__ import annotations
 
@@ -21,7 +27,7 @@ from dataclasses import dataclass, field
 from . import audit, openfda, summaries
 from .dataset import (citation_rows, device_row, fetch_recalls_for, link_recalls, mark_no_predicate,
                       mark_unresolved)
-from .graph import Graph
+from .graph import MACHINE_REVIEWER, Graph
 from .predicates import extract_from_summary
 
 
@@ -108,10 +114,17 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
     mark_no_predicate(devices[:1], cits)
     mark_unresolved(devices[:1], unresolved)
     link_recalls(rel.recalls, {**rel.known, **{d["k"]: d for d in devices}})
+    text = summaries.load_text(f.k)
+    reconcile = bool(text and text.get("pages"))
+    keep = sorted({c["dst"] for c in cits})
+    prior = {r["dst"]: r["retired"] for r in g.q(
+        "MATCH (:Device {k:$k})-[c:CITES]->(b:Device) RETURN b.k AS dst, c.retired_at IS NOT NULL AS retired",
+        {"k": f.k})}
     g.conn.autocommit = False
     try:
         g.upsert_devices(devices)
         g.upsert_citations(cits)
+        retired = g.retire_citations(f.k, keep, (text or {}).get("sha256")) if reconcile else []
         g.upsert_recalls(rel.recalls)
         g.conn.execute("MATCH (d:Device {k:$k}) SET d.ingested_live_at = datetime()", {"k": f.k})
         g.conn.commit()
@@ -126,6 +139,14 @@ def write(g: Graph, f: Fetched, rel: Related, existing: dict | None) -> dict:
         "lineage_was_known": bool(existing and existing.get("lineage_known")),
         "summary_status": devices[0]["summary_status"], "summary_url": f.summ.get("url"),
         "citations_added": cits, "citations_unresolved": unresolved, "new_devices": list(rel.cited_meta),
+        "reconciliation": {
+            "ran": reconcile,
+            "skipped_reason": None if reconcile else "refreshed summary text not readable; existing citations kept",
+            "new": [d for d in keep if d not in prior],
+            "restored": [d for d in keep if prior.get(d)],
+            "retired": retired,
+            "retired_with_human_review": [r["dst"] for r in retired
+                                          if r.get("review") and r.get("reviewer") != MACHINE_REVIEWER]},
         "recalls_linked": [r["id"] for r in rel.recalls], "extraction": report,
         "graph_before": before["nodes"], "graph_after": after["nodes"],
         "rels_before": before["relationships"], "rels_after": after["relationships"],

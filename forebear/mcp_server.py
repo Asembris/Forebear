@@ -39,7 +39,9 @@ TOOLS = [
     {"name": "list_citations", "description": "What a device's 510(k) summary cites (predicate / reference / mention), with page and snippet.",
      "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
     {"name": "ingest_clearance", "description": "Fetch a 510(k) from FDA (openFDA + summary PDF), extract its predicates and recalls, "
-                                                "and MERGE it into the graph. Also extends lineage for a device whose summary was unread.",
+                                                "and MERGE it into the graph. Also extends lineage for a device whose summary was unread. "
+                                                "Re-ingesting reconciles citations: ones the refreshed summary no longer supports are "
+                                                "retired (kept with their reviews and provenance, out of lineage).",
      "inputSchema": {"type": "object", "properties": {"k_number": K}, "required": ["k_number"]}},
     {"name": "review_citation", "description": "Record an ADVISORY judgement on an extracted citation edge: confirmed, rejected, "
                                                "or '' to clear. Recorded with reviewer 'mcp-client' (possibly an AI agent), it never "
@@ -111,6 +113,8 @@ def _compact_assessment(a: dict) -> dict:
                      # untrusted links an automated source suggested: never verdict inputs until a person confirms
                      "advisory_links": [{k: e.get(k) for k in ("src", "dst", "page", "basis", "ai_model", "trust")}
                                         for e in s["evidence"] if e.get("type") == "advisory_citation"],
+                     "retired_links": [{k: e.get(k) for k in ("src", "dst", "retired_at", "review", "reviewer")}
+                                       for e in s["evidence"] if e.get("type") == "retired_citation"],
                      "unresolved_citations": [{k: e.get(k) for k in ("src", "cited", "reason", "page", "quote")}
                                               for e in s["evidence"] if e.get("type") == "unresolved_citation"]}
                     for s in a["signals"]],
@@ -134,7 +138,7 @@ def call_tool(name: str, args: dict):
     if name == "ingest_clearance":
         r = _http("POST", "/api/ingest", json={"k": up(args["k_number"])})
         return {k: r[k] for k in ("k", "was_present", "summary_status", "summary_url", "new_devices",
-                                  "recalls_linked", "extraction")} | {
+                                  "recalls_linked", "extraction", "reconciliation")} | {
             "citations_added": [{k: c[k] for k in ("dst", "kind", "page", "snippet")} for c in r["citations_added"]]}
     if name == "review_citation":
         return _http("POST", "/api/citation/review", json={"src": up(args["src"]), "dst": up(args["dst"]),
