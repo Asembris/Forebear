@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { startIsolatedApi } from './server.mjs'
 
 /*
   After a review the provenance drawer shows the citation exactly as the graph now stores it: the review, the
@@ -7,6 +8,8 @@ import { test, expect } from '@playwright/test'
   K200480 -> K131982 and K200480 -> K130077 are machine-extracted, never-reviewed predicate links in K251770's
   lineage (the two-hop showcase); each test uses its own, because clearing a review still records the PDF version.
   K251889 -> K251661 is seeded by e2e/seed_outdated_review.py: a person confirmed it on an earlier PDF version.
+  Re-reviewing it makes the review current, and nothing in the API can make a review outdated again, so that test
+  runs against its own API on a freshly seeded store copy: every attempt, retry or repeat starts from the same state.
 */
 const SRC = 'K200480', DST = 'K131982', DST2 = 'K130077'
 
@@ -80,8 +83,16 @@ test.describe('provenance review state', () => {
   })
 })
 
-test('a review made on an earlier PDF is shown as outdated until a person reviews it again', async ({ page }) => {
-  await page.goto('/#/check/K251889')
+const withOutdatedReview = test.extend({
+  // test-scoped: started before and torn down after each attempt, so a retry never sees a consumed seed
+  outdatedApi: async ({}, use) => {
+    const api = await startIsolatedApi({ seed: 'seed_outdated_review.py' })
+    try { await use(api.url) } finally { await api.stop() }
+  },
+})
+
+withOutdatedReview('a review made on an earlier PDF is shown as outdated until a person reviews it again', async ({ page, outdatedApi }) => {
+  await page.goto(`${outdatedApi}/#/check/K251889`)
   const cit = page.locator('.cit', { has: page.getByTestId('cit-status-K251661') })
   await cit.getByRole('button', { name: /Provenance/ }).click()
   const drawer = page.getByTestId('provenance')

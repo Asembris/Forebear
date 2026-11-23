@@ -1,7 +1,7 @@
 """Give the throwaway e2e store one genuinely outdated review: a person's confirmation of K251889 -> K251661
 recorded against an earlier version of K251889's summary PDF. This is the state a summary refresh leaves behind
 when the PDF changed (tests/test_summary_refresh.py); the browser suite cannot fetch FDA, so it is set directly.
-Usage: python seed_outdated_review.py <path to e2e .rl copy>. Never run it on data/forebear.rl."""
+Run by e2e/server.mjs startIsolatedApi on a fresh store copy before its API opens it; never on data/forebear.rl."""
 import sys
 from pathlib import Path
 
