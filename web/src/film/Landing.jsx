@@ -13,6 +13,7 @@ const sceneStore = (() => {
 })()
 const useScene = () => useSyncExternalStore(sceneStore.subscribe, sceneStore.get)
 import facts from '../story/facts.json'
+import twoHop from '../story/two-hop.json'
 import { Wordmark, Mark } from '../brand/Mark.jsx'
 import { fmtDate, monthsBetween, pdfAt } from '../evidence.js'
 export { useMedia } from '../hooks.js'
@@ -260,6 +261,12 @@ export default function Landing({ go, stats, introDone, reduced }) {
               Follow one thread <span aria-hidden="true">↓</span>
             </a>
           </div>
+          <a className="hero-alt" href={`#/check/${twoHop.candidate.k}`} data-testid="hero-two-hop"
+            onClick={(e) => { e.preventDefault(); go('check', twoHop.candidate.k, { transition: true }) }}>
+            <span className="hero-alt-tag">Two hops deep</span>
+            <span><span className="k">{twoHop.candidate.k}</span>: at depth 1, no design-recall signal. At depth 2, a {twoHop.recall.classification} design
+              recall ({twoHop.recall.id}) on its predicate's predicates. <b>See both depths →</b></span>
+          </a>
           {stats && (
             <div className="hero-proof" aria-label="What is in the shipped graph">
               <div><Stat v={stats.nodes?.Device} /><span>clearances in the graph</span></div>
@@ -328,7 +335,7 @@ export default function Landing({ go, stats, introDone, reduced }) {
             <a className="path-card" href="#/reach/88058,88071"><span className="k">Recall 88058 + 88071</span><h3>Recall reach</h3><p>From the June 2021 Philips foam recall: which later clearances descend from it?</p></a>
             <a className="path-card" href="#/watch"><span className="k">Watchlist</span><h3>Cited after a recall</h3><p>Clearances whose predicate was already under a design-related recall.</p></a>
             <a className="path-card" href="#/compare/K200480 K113053 K233643 K143677"><span className="k">Compare</span><h3>Choose a predicate</h3><p>Candidate predicates side by side, with their own and inherited recalls.</p></a>
-            <a className="path-card" href="#/check/K251770"><span className="k">K251770</span><h3>SleepRes PAP System</h3><p>Another 2025 clearance, another lineage.</p></a>
+            <a className="path-card" href={`#/check/${twoHop.candidate.k}`}><span className="k">{twoHop.candidate.k} · two hops</span><h3>{twoHop.candidate.name}</h3><p>One hop finds nothing. Two hops reach the {twoHop.recall.classification} recall {twoHop.recall.id}.</p></a>
           </div>
         </section>
       </main>

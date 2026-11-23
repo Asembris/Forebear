@@ -706,5 +706,10 @@ html[data-film="off"] .handoff { min-height: 60svh; }
   .dc-route li { grid-template-columns: 1fr; }
   .dc-route .dc-a { justify-content: flex-start; }
 }
+.hero-alt { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin-top: 20px; max-width: 40em; padding: 10px 14px; border: 1px solid rgba(231, 169, 72, .3); border-radius: var(--r-m); background: rgba(9, 15, 27, .55); backdrop-filter: blur(8px); color: var(--ink-2); font-size: 14px; line-height: 1.5; text-decoration: none !important; transition: border-color .2s, background .2s; }
+.hero-alt:hover, .hero-alt:focus-visible { border-color: rgba(231, 169, 72, .6); background: rgba(16, 26, 46, .75); }
+.hero-alt .k { color: var(--blue); }
+.hero-alt b { color: var(--amber); font-weight: 600; white-space: nowrap; }
+.hero-alt-tag { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); font-weight: 650; white-space: nowrap; }
 .dc-route .dc-q mark { background: rgba(127, 162, 255, .16); color: var(--ivory); border-radius: 3px; padding: 0 3px; font-family: var(--mono); font-size: .86em; }
 .dc-col a.mono { white-space: nowrap; }
