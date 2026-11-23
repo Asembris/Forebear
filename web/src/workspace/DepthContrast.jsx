@@ -19,7 +19,9 @@ const join = (xs) => xs.length < 2 ? xs : xs.flatMap((x, i) => (i === 0 ? [x] : 
    of the Relate query finds. Every claim links to the FDA page or recall record behind it. */
 export default function DepthContrast({ a, onSelect }) {
   const [pair, setPair] = useState(null)
+  // only when every strong signal sits beyond the direct predicates: otherwise depth 1 already finds it, so skip the extra queries
   const worth = a.depth >= 2 && a.signals.some((s) => strong(s) && s.chain?.length > 2)
+    && !a.signals.some((s) => strong(s) && (s.chain?.length || 0) <= 2)
   useEffect(() => {
     setPair(null)
     if (!worth) return
