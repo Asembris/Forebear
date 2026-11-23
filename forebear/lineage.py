@@ -26,25 +26,29 @@ def _recall_ev(x: dict) -> dict:
             "attribution": recall_attribution(x)}
 
 
-def recall_attribution(x: dict) -> str:
-    """How a recall record is tied to the 510(k) it is linked to. The link itself is always FDA's: openFDA lists the
-    clearance's K-number on the recall record. That is an association, not proof that this cleared model was recalled.
+ATTRIBUTION_CODES = ("name_token_match", "name_token_absent", "name_not_checkable")
 
-      product_family  the recall began before this clearance was decided, so the clearance cannot be the recalled
-                      product as cleared; FDA lists later clearances of the same product family on older recalls
-      model_named     the recall's product/reason text names this device
-      listed_only     FDA lists the K-number, but the recall text does not name this device (the recalled model may
-                      be another one in the family)
-      unchecked       FDA lists the K-number; the device's FDA name has no distinctive token to check
-    """
-    if x.get("linked_before_clearance"):
-        return "product_family"
+
+def recall_attribution(x: dict) -> str:
+    """What the recall-text name heuristic says about a recall record linked to a 510(k). The link itself is always
+    FDA's: openFDA lists the clearance's K-number on the recall record. That is an association; nothing here verifies
+    which model was recalled.
+
+      name_token_match    a distinctive word of the device's FDA name appears in the recall's product/reason text
+                          (evidence.name_check: exact, spacing- or OCR-normalised, or within a small edit distance).
+                          One fuzzy token is a heuristic signal, not proof that the recall names this exact model.
+      name_token_absent   no distinctive word of the FDA name was found; the recalled model may differ, or the text
+                          may name it differently
+      name_not_checkable  the FDA name has no distinctive word to look for, or no check was recorded
+
+    Timing is deliberately not part of this code: `linked_before_clearance` (the recall began before this clearance
+    was decided) is reported on its own and does not by itself establish whether this model was affected."""
     nc = x.get("link_name_check")
     if nc == "match":
-        return "model_named"
+        return "name_token_match"
     if nc == "mismatch":
-        return "listed_only"
-    return "unchecked"
+        return "name_token_absent"
+    return "name_not_checkable"
 
 
 def _count(recs: list[dict]) -> str:
@@ -443,8 +447,12 @@ def classify_reach(recalled: list[dict], desc: list[dict]) -> dict:
         x = {"link_name_check": "match" if "match" in (d.get("name_checks") or []) else
              "mismatch" if "mismatch" in (d.get("name_checks") or []) else None,
              "linked_before_clearance": bool(d.get("before_clearance"))}
+        # the device can be on several records of the event: 'name_token_match' if the heuristic matched on any of
+        # them, and every record's own result is kept in name_checks
         recalled_out.append({"k": d["k"], "name": d["name"], "decision_date": d.get("decision_date"),
                              "initiated": start[d["k"]], "records": d.get("records"),
+                             "name_checks": sorted(c for c in d.get("name_checks") or [] if c),
+                             "linked_before_clearance": x["linked_before_clearance"],
                              "attribution": recall_attribution(x)})
     return {"initiated": _earliest(start.values()), "recalled": recalled_out, "descendants": out, "counts": counts}
 

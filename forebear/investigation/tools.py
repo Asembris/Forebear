@@ -300,8 +300,9 @@ def t_get_recall(g: Graph, args: dict, ctx: RunContext) -> dict:
             "initiated": x.get("initiated"), "status": x.get("status"), "firm": x.get("firm"), "url": x.get("url"),
             "untrusted_reason": untrusted(x.get("reason"), 400), "untrusted_product": untrusted(x.get("product"), 300),
             "linked_devices": devs[:20], "linked_devices_total": len(devs),
-            "note": "Device links are FDA's own k_numbers on the recall record; link_name_check says whether the "
-                    "product text names the device."}
+            "note": "Device links are FDA's own k_numbers on the recall record: an association, not verified model "
+                    "identity. link_name_check is a fuzzy heuristic (one distinctive word of the FDA device name found "
+                    "in the recall text), not proof the recall names that exact model."}
 
 
 def t_recall_reach(g: Graph, args: dict, ctx: RunContext) -> dict:

@@ -1,13 +1,14 @@
 """Regression tests for the evidence-integrity fixes: compare keeps coverage, recall reach classifies timing per
 supported / conditional route with date boundaries, the watchlist compares clearance dates and tracks the supported
-generation, and recall links say whether they are FDA-listed associations or name the recalled model."""
+generation, and recall links are FDA-listed associations whose name check is a heuristic, never verified model
+identity."""
 import importlib
 
 import pytest
 from conftest import build_tiny, cite, dev, recall
 from fastapi.testclient import TestClient
 
-from forebear.lineage import assess, classify_reach, compare, date_relation, recall_attribution, recall_reach
+from forebear.lineage import ATTRIBUTION_CODES, assess, classify_reach, compare, date_relation, recall_attribution, recall_reach
 
 
 def _unresolve(g, src, dst):
@@ -123,7 +124,7 @@ def test_watchlist_compares_clearance_dates_not_receipt(tiny_client):
     r = rows["K000003"]                                  # cleared 2010-06-01, recall began 2008-04-01
     assert r["timing"] == "after" and r["recall_basis"] == "2008-04-01" and r["days_after_recall"] == 791
     assert "receipt date is not a citation date" in w["compared"]
-    assert all(x["attribution"] in ("product_family", "model_named", "listed_only", "unchecked")
+    assert all(x["attribution"] in ATTRIBUTION_CODES
                for row in w["rows"] for x in row["recalls"])
 
 
@@ -175,26 +176,43 @@ def test_compare_regression_K012323_vs_K014074(real_copy):
 
 # ---------------------------------------------------------------- recall attribution
 @pytest.mark.parametrize("link,want", [
-    ({"linked_before_clearance": True, "link_name_check": "match"}, "product_family"),
-    ({"linked_before_clearance": False, "link_name_check": "match"}, "model_named"),
-    ({"linked_before_clearance": False, "link_name_check": "mismatch"}, "listed_only"),
-    ({"link_name_check": "n/a"}, "unchecked"),
-    ({}, "unchecked"),
+    ({"linked_before_clearance": False, "link_name_check": "match"}, "name_token_match"),
+    ({"linked_before_clearance": False, "link_name_check": "mismatch"}, "name_token_absent"),
+    ({"link_name_check": "n/a"}, "name_not_checkable"),
+    ({}, "name_not_checkable"),
+    # an earlier recall start is reported on its own; it never decides the attribution code
+    ({"linked_before_clearance": True, "link_name_check": "match"}, "name_token_match"),
+    ({"linked_before_clearance": True, "link_name_check": "mismatch"}, "name_token_absent"),
+    ({"linked_before_clearance": True}, "name_not_checkable"),
 ])
-def test_recall_attribution(link, want):
+def test_recall_attribution_is_a_name_heuristic_only(link, want):
     assert recall_attribution(link) == want
 
 
-def test_assessment_recall_evidence_carries_attribution(tmp_path):
+def test_no_attribution_code_claims_model_identity():
+    for code in ATTRIBUTION_CODES:
+        assert "model" not in code and "family" not in code and "named" not in code
+
+
+def test_assessment_recall_evidence_keeps_timing_apart_from_attribution(tmp_path):
     g = build_tiny(tmp_path / "a.rl")
     try:
-        # FDA lists K000003 on a recall that began before K000003 was cleared: a product-family association
+        # FDA lists K000003 on a recall that began before K000003 was cleared, and the name heuristic found no token
         r = recall("Z-0002-2009", ["K000003"], "2009-01-01", event="2")
         r["links"] = [{"k": "K000003", "name_check": "mismatch", "before_clearance": True}]
         g.upsert_recalls([r])
         a = assess(g, "K000004")
         ev = {e["id"]: e for s in a["signals"] for e in s["evidence"] if e.get("type") == "recall"}
-        assert ev["Z-0002-2009"]["attribution"] == "product_family"
-        assert ev["Z-0001-2008"]["attribution"] == "unchecked"
+        assert ev["Z-0002-2009"]["attribution"] == "name_token_absent"
+        assert ev["Z-0002-2009"]["linked_before_clearance"] is True
+        assert ev["Z-0001-2008"]["attribution"] == "name_not_checkable"
     finally:
         g.close()
+
+
+def test_reach_recalled_holders_keep_per_record_name_checks():
+    r = classify_reach([{"k": "KA", "name": "A", "initiated": "2020-01-01", "records": 2,
+                         "name_checks": ["match", "mismatch"], "before_clearance": True}], [])
+    x = r["recalled"][0]
+    assert x["attribution"] == "name_token_match" and x["name_checks"] == ["match", "mismatch"]
+    assert x["linked_before_clearance"] is True
