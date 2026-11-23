@@ -51,17 +51,17 @@ async function expectRow(page, id, depthText, state) {
 
 withStore('saved assessments keep their depth and go stale only on evidence that depth reads', async ({ page, request, api }) => {
   await page.goto(`${api}/#/check/${K}`)
+  const d1 = await saveFromUi(page, 1)
   const d2 = await saveFromUi(page, 2)
   const d4 = await saveFromUi(page, 4)
-  expect([d2.verdict, d4.verdict]).toEqual(['REVIEW_LINEAGE', 'REVIEW_LINEAGE'])
-  // depth 1 is not offered by the query selector; the API saves it as given
-  const d1 = await (await request.post(`${api}/api/assessments`, { data: { k: K, depth: 1 } })).json()
-  expect([d1.depth, d1.verdict]).toEqual([1, 'NO_DESIGN_RECALL_SIGNAL'])
+  expect([d1.verdict, d2.verdict, d4.verdict]).toEqual(['NO_DESIGN_RECALL_SIGNAL', 'REVIEW_LINEAGE', 'REVIEW_LINEAGE'])
 
   // the investigation's own history lists each save with its depth, none stale on the unchanged graph
   await page.reload()
-  const hist = page.locator('.hist', { has: page.getByText(d2.id, { exact: true }) })
-  await expect(hist.getByTestId('saved-depth')).toHaveText('2 gen')
+  for (const [s, label] of [[d1, '1 gen'], [d2, '2 gen'], [d4, '4 gen']]) {
+    const hist = page.locator('.hist', { has: page.getByText(s.id, { exact: true }) })
+    await expect(hist.getByTestId('saved-depth')).toHaveText(label)
+  }
   await expect(page.locator('.hist .stale')).toHaveCount(0)
 
   await page.goto(`${api}/#/history`)
@@ -85,4 +85,43 @@ withStore('saved assessments keep their depth and go stale only on evidence that
   await expectRow(page, d2.id, '2 gen', /^Stale · now /)
   await expectRow(page, d1.id, '1 gen', /^Stale/)
   await expectRow(page, LEGACY, '1 gen · legacy', /^Stale/)
+})
+
+withStore('a depth-1 query works through the verdict, graph, generation selector and saved history', async ({ page, api }) => {
+  await page.goto(`${api}/#/check/${K}`)
+  const query = page.getByLabel('Generations traversed by the query')
+  const shown = page.getByLabel('Generations shown')
+  await expect(query.locator('option')).toHaveText(['1 gen', '2 gen', '3 gen', '4 gen', '5 gen', '6 gen'])
+  await expect(page.getByTestId('depth-contrast')).toBeVisible()          // the depth-4 query finds the two-hop recall
+
+  await Promise.all([page.waitForResponse((r) => r.url().includes(`/api/assess/${K}?depth=1`)), query.selectOption('1')])
+  await expect(page.getByTestId('verdict')).toContainText('No design-recall signal')
+  // only the direct predicate is queried and drawn; the shown generations cannot exceed the query
+  await expect(shown.locator('option')).toHaveText(['1 gen'])
+  await expect(shown).toHaveValue('1')
+  const graph = page.getByTestId('evidence-graph')
+  await expect(graph.locator('svg')).toHaveAttribute('aria-label', `Predicate lineage graph for ${K}: 2 devices, 1 citations`)
+  await expect(graph.locator('.lk', { hasText: 'K200480' })).toHaveCount(1)
+  await expect(graph.locator('.lk', { hasText: 'K131982' })).toHaveCount(0)
+  await expect(graph.locator('.g-more')).toHaveCount(0)
+  await expect(page.getByTestId('depth-contrast')).toHaveCount(0)        // nothing deeper to contrast with
+  await page.getByRole('button', { name: 'Timeline', exact: true }).click()
+  await expect(page.getByText('K131982', { exact: true })).toHaveCount(0)
+  await page.getByRole('button', { name: 'Graph', exact: true }).click()
+
+  const saved = await saveFromUi(page, 1)
+  expect([saved.depth, saved.verdict]).toEqual([1, 'NO_DESIGN_RECALL_SIGNAL'])
+  const hist = page.locator('.hist', { has: page.getByText(saved.id, { exact: true }) })
+  await expect(hist.getByTestId('saved-depth')).toHaveText('1 gen')
+  await expect(hist).toContainText('No design-recall signal')
+  await expect(hist.locator('.stale')).toHaveCount(0)
+
+  // back to a deeper query: the verdict and generation choices follow, the depth-1 save stays current
+  await Promise.all([page.waitForResponse((r) => r.url().includes(`/api/assess/${K}?depth=2`)), query.selectOption('2')])
+  await expect(page.getByTestId('verdict')).toContainText('Review lineage')
+  await expect(shown.locator('option')).toHaveText(['1 gen', '2 gen'])
+  await expect(shown).toHaveValue('2')
+  await expect(graph.locator('.lk', { hasText: 'K131982' })).toHaveCount(1)
+  await page.goto(`${api}/#/history`)
+  await expectRow(page, saved.id, '1 gen', 'Current')
 })
