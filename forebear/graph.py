@@ -318,22 +318,28 @@ class Graph:
         return [r for r in rows if r["kind"] == "predicate" and not r["in_lineage"] and r["dst"] not in corrected]
 
     def cited_after_recall(self, design_only: bool = True, limit: int = 200) -> list[dict]:
-        """Clearances whose (direct or 2nd-generation) predicate was already under a recall
-        when the new device was cleared. A row is conditional if every shortest path
-        to that recall holder contains an unresolved audit link."""
+        """Recall routes where a clearance was decided strictly after a recall had begun on its direct or
+        2nd-generation predicate. The comparison uses the clearance (decision) date only: the application's
+        receipt date is when the submission arrived, which does not establish when, or whether, a citation
+        was made with knowledge of the recall. Same-day and undated pairs are not "after" and are excluded.
+
+        `gen` is the shortest route over any lineage path; `supported_gen` the shortest over paths with no
+        unresolved audit link (null if every path to the recall holder rests on one). A row is conditional
+        when supported_gen is null. `attribution` says how FDA's recall record is tied to the holder."""
         flt = "AND x.design_related" if design_only else ""
         rows = self.q(
-            f"""MATCH p = (d:Device)-[:CITES*1..2]->(a:Device)-[:SUBJECT_OF]->(x:Recall)
+            f"""MATCH p = (d:Device)-[:CITES*1..2]->(a:Device)-[s:SUBJECT_OF]->(x:Recall)
             WHERE all(r IN relationships(p) WHERE type(r) = 'SUBJECT_OF' OR ({LINEAGE_EDGE}))
               AND d.decision_date IS NOT NULL AND x.initiated IS NOT NULL
               AND x.initiated < d.decision_date {flt}
-            WITH d, a, x, min(length(p)) - 1 AS gen,
-                 min(CASE WHEN all(r IN relationships(p) WHERE NOT ({DISPUTED_EDGE}))
-                          THEN length(p) ELSE null END) AS supported_length
+            WITH d, a, x, s, min(length(p)) - 1 AS gen,
+                 min(CASE WHEN all(r IN relationships(p) WHERE type(r) = 'SUBJECT_OF' OR NOT ({DISPUTED_EDGE}))
+                          THEN length(p) - 1 ELSE null END) AS supported_gen
             RETURN d.k AS k, d.name AS name, d.applicant AS applicant,
                    toString(d.decision_date) AS decision_date, toString(d.received_date) AS received_date,
-                   a.k AS ancestor, a.name AS ancestor_name, gen,
-                   (supported_length IS NULL OR supported_length > gen + 1) AS conditional,
+                   a.k AS ancestor, a.name AS ancestor_name, gen, supported_gen,
+                   supported_gen IS NULL AS conditional,
+                   s.name_check AS link_name_check, s.before_clearance AS linked_before_clearance,
                    x.id AS recall_id, x.event AS event, x.classification AS classification,
                    x.root_cause AS root_cause, toString(x.initiated) AS initiated, x.firm AS firm,
                    x.reason AS reason, x.url AS url

@@ -23,7 +23,7 @@ from . import ingest as ingest_mod
 from .ingest import IngestError
 from .investigation import runner as inv_runner
 from .investigation import store as inv_store
-from .lineage import assess, compare, recall_reach
+from .lineage import assess, compare, date_relation, recall_attribution, recall_reach
 
 agent.load_env()
 use_live_cache()          # live ingests never touch the committed data/raw cache
@@ -160,32 +160,56 @@ async def recall_event(event: str, depth: int = 3):
 
 @app.get("/api/watchlist")
 async def watchlist(design_only: bool = True):
+    """Clearances decided strictly after a recall began on a direct or 2nd-generation predicate. Dates compared are
+    the clearance (decision) date and the recall start; the receipt date is returned for reference only, because
+    it does not establish when a citation was made."""
     rows = await run(lambda g: g.cited_after_recall(design_only, limit=5000))
     by: dict[str, dict] = {}
     for r in rows:
         d = by.setdefault(r["k"], {"k": r["k"], "name": r["name"], "applicant": r["applicant"],
                                    "decision_date": r["decision_date"], "received_date": r["received_date"],
                                    "min_gen": r["gen"], "supported_min_gen": None, "recall_count": 0,
-                                   "ancestors": set(), "events": set(), "recalls": []})
+                                   "ancestors": set(), "supported_ancestors": set(), "events": set(), "recalls": [],
+                                   "earliest_recall": None, "earliest_supported_recall": None})
         d["min_gen"] = min(d["min_gen"], r["gen"])
         d["recall_count"] += 1
-        if not r["conditional"]:        # a route that does not rest on an unresolved citation
+        d["earliest_recall"] = min(filter(None, (d["earliest_recall"], r["initiated"])))
+        if r["supported_gen"] is not None:      # at least one route that does not rest on an unresolved citation
             sg = d["supported_min_gen"]
-            d["supported_min_gen"] = r["gen"] if sg is None else min(sg, r["gen"])
+            d["supported_min_gen"] = r["supported_gen"] if sg is None else min(sg, r["supported_gen"])
+            d["supported_ancestors"].add(r["ancestor"])
+            d["earliest_supported_recall"] = min(filter(None, (d["earliest_supported_recall"], r["initiated"])))
         d["ancestors"].add(r["ancestor"])
         d["events"].add(r["event"])
         if len(d["recalls"]) < 6:
-            d["recalls"].append({k: r[k] for k in ("recall_id", "ancestor", "gen", "conditional", "classification",
-                                                   "root_cause", "initiated", "firm", "url")})
-    out = sorted(by.values(), key=lambda d: d["decision_date"] or "", reverse=True)
+            d["recalls"].append({k: r[k] for k in ("recall_id", "ancestor", "gen", "supported_gen", "conditional",
+                                                   "classification", "root_cause", "initiated", "firm", "url",
+                                                   "link_name_check", "linked_before_clearance")}
+                                | {"attribution": recall_attribution(r)})
+    out = sorted(by.values(), key=lambda d: (d["decision_date"] or "", d["k"]), reverse=True)
     for d in out:
         d["ancestors"] = sorted(d["ancestors"])
+        d["supported_ancestors"] = sorted(d["supported_ancestors"])
         d["events"] = sorted(e for e in d["events"] if e)
         # computed over every recall route, not the first six listed: conditional only if none is supported
         d["conditional"] = d["supported_min_gen"] is None
+        basis = d["earliest_recall"] if d["conditional"] else d["earliest_supported_recall"]
+        d["recall_basis"] = basis           # the recall start the clearance date is compared with
+        d["timing"] = date_relation(d["decision_date"], basis)   # always 'after' by the query's strict filter
+        d["days_after_recall"] = _days(basis, d["decision_date"])
     return {"count": len(out), "direct": sum(1 for d in out if d["min_gen"] == 1),
             "direct_supported": sum(1 for d in out if d["supported_min_gen"] == 1),
-            "conditional": sum(1 for d in out if d["conditional"]), "rows": out}
+            "conditional": sum(1 for d in out if d["conditional"]),
+            "compared": "clearance (decision) date vs recall start; receipt date is not a citation date",
+            "rows": out}
+
+
+def _days(a: str | None, b: str | None) -> int | None:
+    from datetime import date
+    try:
+        return (date.fromisoformat(str(b)[:10]) - date.fromisoformat(str(a)[:10])).days
+    except (TypeError, ValueError):
+        return None
 
 
 @app.get("/api/assessments")

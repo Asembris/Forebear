@@ -1,8 +1,11 @@
 """Regression tests for the evidence-integrity fixes: compare keeps coverage, recall reach classifies timing per
 supported / conditional route with date boundaries, the watchlist compares clearance dates and tracks the supported
 generation, and recall links say whether they are FDA-listed associations or name the recalled model."""
+import importlib
+
 import pytest
 from conftest import build_tiny, cite, dev, recall
+from fastapi.testclient import TestClient
 
 from forebear.lineage import assess, classify_reach, compare, date_relation, recall_attribution, recall_reach
 
@@ -83,6 +86,53 @@ def test_reach_graph_conditional_route_does_not_decide_supported_timing(tiny):
 def test_reach_unknown_event_is_empty(tiny):
     r = recall_reach(tiny, "424242", depth=3)
     assert r["recalled"] == [] and r["descendants"] == [] and r["counts"]["after_supported"] == 0
+
+
+# ---------------------------------------------------------------- watchlist
+@pytest.fixture
+def tiny_client(tmp_path, monkeypatch):
+    p = tmp_path / "w.rl"
+    g = build_tiny(p)
+    # K000013 (2011) cites K000002 directly through an unresolved citation, and K000003 through a supported one:
+    # the shortest route (gen 1) is conditional, but a supported gen-2 route exists.
+    # K000014 is cleared on the day K000002's recall began: not "after".
+    g.upsert_devices([dev("K000013", "2011-01-01"), dev("K000014", "2008-04-01")])
+    g.upsert_citations([cite("K000013", "K000002"), cite("K000013", "K000003"), cite("K000014", "K000002")])
+    _unresolve(g, "K000013", "K000002")
+    g.close()
+    monkeypatch.setenv("FOREBEAR_DB", str(p))
+    from forebear import api
+    importlib.reload(api)
+    with TestClient(api.app) as c:
+        yield c
+
+
+def test_watchlist_supported_generation_survives_a_shorter_conditional_route(tiny_client):
+    w = tiny_client.get("/api/watchlist").json()
+    rows = {r["k"]: r for r in w["rows"]}
+    r = rows["K000013"]
+    assert r["min_gen"] == 1 and r["supported_min_gen"] == 2 and r["conditional"] is False
+    assert r["supported_ancestors"] == ["K000002"]
+    assert r["recalls"][0]["gen"] == 1 and r["recalls"][0]["supported_gen"] == 2
+
+
+def test_watchlist_compares_clearance_dates_not_receipt(tiny_client):
+    w = tiny_client.get("/api/watchlist").json()
+    rows = {r["k"]: r for r in w["rows"]}
+    assert "K000014" not in rows                        # same-day clearance is not "after"
+    r = rows["K000003"]                                  # cleared 2010-06-01, recall began 2008-04-01
+    assert r["timing"] == "after" and r["recall_basis"] == "2008-04-01" and r["days_after_recall"] == 791
+    assert "receipt date is not a citation date" in w["compared"]
+    assert all(x["attribution"] in ("product_family", "model_named", "listed_only", "unchecked")
+               for row in w["rows"] for x in row["recalls"])
+
+
+def test_reach_api_reports_timing_counts(tiny_client):
+    r = tiny_client.get("/api/recall-event/1").json()
+    assert set(r["counts"]) >= {"after_supported", "after_conditional", "before", "same_day", "unknown"}
+    d = {x["k"]: x for x in r["descendants"]}
+    assert d["K000014"]["timing"] == "same_day"
+    assert d["K000013"]["evidence"] == "supported" and d["K000013"]["conditional_via"] == []
 
 
 # ---------------------------------------------------------------- compare keeps coverage
