@@ -59,3 +59,31 @@ def test_relate_native_mcp_read_cypher(real_copy):
     body = json.loads(res[2]["result"]["content"][0]["text"])
     assert body["rows"] == [{"p": "K113053", "n": 1}]                # Z-1973-2021 (event 88058; Z-1957/1958 are event 88071)
     assert res[3]["result"]["isError"] is True                      # writes refused on the read-only surface
+
+
+def test_mcp_save_assessment_records_the_requested_depth(live_api):
+    """K251770 reports no design-recall signal at depth 1 and REVIEW_LINEAGE from depth 2."""
+    call = lambda i, args: {"jsonrpc": "2.0", "id": i, "method": "tools/call",  # noqa: E731
+                            "params": {"name": "save_assessment", "arguments": {"k_number": "K251770", **args}}}
+    res = rpc_session([sys.executable, "-m", "forebear.mcp_server"], INIT + [
+        {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
+        call(3, {"depth": 1}), call(4, {"depth": 2}), call(5, {}), call(6, {"depth": 6}),
+        call(7, {"depth": 0}), call(8, {"depth": 7}), call(9, {"depth": "2"}), call(10, {"depth": True}),
+        call(11, {"depth": 1.5}),
+    ], env=live_api)
+    tool = next(t for t in res[2]["result"]["tools"] if t["name"] == "save_assessment")
+    assert tool["inputSchema"]["properties"]["depth"] == {"type": "integer", "minimum": 1, "maximum": 6, "default": 4}
+    assert tool["inputSchema"]["required"] == ["k_number"]
+    out = {i: json.loads(res[i]["result"]["content"][0]["text"]) for i in (3, 4, 5, 6)}
+    assert {i: (o["depth"], o["verdict"]) for i, o in out.items()} == {
+        3: (1, "NO_DESIGN_RECALL_SIGNAL"), 4: (2, "REVIEW_LINEAGE"), 5: (4, "REVIEW_LINEAGE"), 6: (6, "REVIEW_LINEAGE")}
+    for i in (7, 8, 9, 10, 11):                                       # rejected, never saved at another depth
+        assert res[i]["result"]["isError"] is True
+        assert "depth must be an integer from 1 to 6" in res[i]["result"]["content"][0]["text"]
+    import httpx
+    hist = {h["id"]: h for h in httpx.get(live_api["FOREBEAR_URL"] + "/api/assessments", params={"k": "K251770"}).json()}
+    assert len(hist) == 4                                            # the invalid calls saved nothing
+    for o in out.values():
+        h = hist[o["id"]]
+        assert (h["depth"], h["depth_source"], h["verdict"]) == (o["depth"], "recorded", o["verdict"])
+        assert h["verdict_now"] == h["verdict"] and h["stale"] is False
