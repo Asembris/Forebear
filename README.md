@@ -14,7 +14,7 @@
 [![Data: openFDA, cached](https://img.shields.io/badge/data-openFDA_·_cached_offline-e7a948?style=flat-square&labelColor=0b1322)](data/PROVENANCE.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f1ebdd?style=flat-square&labelColor=0b1322)](LICENSE)
 
-**[The discovery](#the-discovery)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)**
+**[The discovery](#the-discovery)** · **[Two hops deep](#two-hops-deep)** · **[Judge walkthrough](#judge-walkthrough)** · **[Why Relate](#why-relate)** · **[Architecture](#architecture)** · **[Results](#results-honestly)** · **[Docs](#go-deeper)**
 
 </div>
 
@@ -40,6 +40,33 @@ BreathePal Bilevel was cleared in March 2026. Its FDA summary names one predicat
 Every value in this table is asserted against the shipped store by [`tests/test_story_facts.py`](tests/test_story_facts.py) and [`tests/test_shipped_evidence.py`](tests/test_shipped_evidence.py). FDA attributes these recalls to product *families* that list K113053, so the signal is "FDA links a Class I design recall to the predicate's clearance", not "this exact model was recalled".
 
 **Why it matters.** FDA's September 2023 draft guidance on [selecting a predicate device](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/best-practices-selecting-predicate-device-support-premarket-notification-510k-submission) recommends predicates without design-related recalls. [Kadakia et al. (JAMA 2023)](https://pubmed.ncbi.nlm.nih.gov/36625810/) found that devices cleared using predicates with Class I recalls had a 6.4× higher risk (RR 6.40, 95% CI 3.59–11.40) of a Class I recall of their own. Forebear is for the regulatory or quality engineer who has to check that before citing a predicate.
+
+## Two hops deep
+
+BreathePal's predicate carries the recall itself, so a one-hop lookup already finds it. **SleepRes PAP System (K251770) is the case where only the graph does.** Its own predicate, the DreamStation 2, has no recall in the shipped FDA records. That predicate's predicates do: two REMstar clearances that FDA lists on Class I design recall **Z-1974-2021**.
+
+| Query depth | What it walks | Verdict for K251770 |
+| --- | --- | --- |
+| **1 generation** | K251770 → K200480 (no recall on file) | `NO_DESIGN_RECALL_SIGNAL`, marked **provisional** because grand-predicates were not traversed |
+| **2 generations** | K251770 → K200480 → K130077 and K131982, both on Z-1974-2021 | `REVIEW_LINEAGE`, evidence complete |
+
+| | Evidence | Source |
+| --- | --- | --- |
+| **Candidate** | K251770 · SleepRes PAP System · Sleepres, Inc. · cleared 2025-12-15 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251770.pdf#page=5) |
+| **Hop 1** | p. 5: *"Predicate Device: Philips DreamStation 2 - K200480"* | same PDF, page 5 |
+| **Predicate** | K200480 · DreamStation 2 System · Respironics · cleared 2020-07-10 | [FDA summary PDF](https://www.accessdata.fda.gov/cdrh_docs/pdf20/K200480.pdf#page=4) |
+| **Hop 2** | p. 4: *"Primary Predicate Device: REMSTAR AUTO A-FLEX HT (K131982)"*, *"Secondary Predicate Device: REMSTAR SE (K130077)"* | K200480 PDF, page 4 |
+| **Recall** | Z-1974-2021 · event 88058 · Class I · Device Design · initiated 2021-06-14 (PE-PUR foam). FDA's record lists K130077 and K131982, not K200480 | [FDA recall Z-1974-2021](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm?id=187815) |
+
+The recall began after the DreamStation 2 was cleared and 4 years 6 months before SleepRes was. The investigation page shows both depths side by side (*Why the graph matters*), with each hop's quote, a link to the FDA PDF at the cited page, and the recall record. The same simplified query as [below](#why-relate), with `*1..1` and then `*1..2`:
+
+```text
+*1..1   (no rows)
+*1..2   ['K251770', 'K200480', 'K131982']  Z-1974-2021  2021-06-14
+        ['K251770', 'K200480', 'K130077']  Z-1974-2021  2021-06-14
+```
+
+Every value here, including both verdicts and both query results, is asserted against the shipped store and the cached FDA page text by [`tests/test_two_hop_story.py`](tests/test_two_hop_story.py). As with BreathePal, FDA attributes the recall to product families that list these clearances; it is a question for the predicate rationale, not a finding that SleepRes is unsafe.
 
 ## Judge walkthrough
 
@@ -67,10 +94,11 @@ powershell -ExecutionPolicy Bypass -File .\run.ps1
 
 1. **Watch the thread.** A short opening film follows K252078 → K113053 → the 2021 Class I recall (Skip or Esc ends it). Deep link: [`#/check/K252078`](http://127.0.0.1:8765/#/check/K252078).
 2. **Investigate K252078.** The verdict is **Review lineage**. Open the evidence graph or its *Timeline* mode: the recall diamonds sit *before* BreathePal's clearance.
-3. **Open the evidence.** Select any thread for its verbatim quote, a link to the FDA PDF at the cited page, and the PDF's SHA-256. *What needs human review* lists every uncertainty.
-4. **Write to the graph.** Click **Save assessment to graph**. Under *What K252078 cites*, reject the edge: the lineage and verdict change at once and the saved assessment is marked **stale**. Restore it.
-5. **Trace recall reach.** Open **Recall reach** for [`88058,88071`](http://127.0.0.1:8765/#/reach/88058,88071), the Philips recall filed as two openFDA events: 14 recalled clearances, 26 later devices descend from them, 8 of those were cleared after the recall on their own lineage began.
-6. **Optional, needs internet.** **Add a clearance** fetches an out-of-family ancestor's summary from FDA into `data/live/` and extends the tree.
+3. **See what one more hop finds.** On the landing page, click **Two hops deep** under the hero (or open [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770)). *Why the graph matters* puts depth 1 (**No design-recall signal · provisional**) next to depth 2 (**Review lineage**, Class I design recall Z-1974-2021), with a PDF link at the cited page for each hop.
+4. **Open the evidence.** Select any thread for its verbatim quote, a link to the FDA PDF at the cited page, and the PDF's SHA-256. *What needs human review* lists every uncertainty.
+5. **Write to the graph.** Click **Save assessment to graph**. Under *What K252078 cites*, reject the edge: the lineage and verdict change at once and the saved assessment is marked **stale**. Restore it.
+6. **Trace recall reach.** Open **Recall reach** for [`88058,88071`](http://127.0.0.1:8765/#/reach/88058,88071), the Philips recall filed as two openFDA events: 14 recalled clearances, 26 later devices descend from them, 8 of those were cleared after the recall on their own lineage began.
+7. **Optional, needs internet.** **Add a clearance** fetches an out-of-family ancestor's summary from FDA into `data/live/` and extends the tree.
 
 <details>
 <summary><b>Manual setup, checks and the browser suite</b></summary>
