@@ -182,17 +182,19 @@ export function WatchlistView({ go }) {
   const nCond = data?.conditional ?? rows.filter((r) => r.conditional).length
   return (
     <div>
-      <Head eyebrow="Recall evidence" title="Watchlist: cited after a recall began">
-        Clearances cleared after a design-related recall had already started on their predicate or grand-predicate. Close to, but not
-        the same as, the JAMA study's measure (Class I predicate recalls, any cause). A question to ask, not a finding: the recall may
-        have been fixed, or limited to lots or software versions.
+      <Head eyebrow="Recall evidence" title="Watchlist: cleared after a predicate recall began">
+        Clearances whose FDA decision date falls after a design-related recall had started on their predicate or grand-predicate.
+        Only the clearance date is compared: it does not show when the predicate was chosen or cited, and the application's receipt
+        date does not establish that either. Same-day dates are not counted as after. Close to, but not the same as, the JAMA study's
+        measure (Class I predicate recalls, any cause). A question to ask, not a finding: the recall may have been fixed, or limited
+        to lots or software versions.
       </Head>
       {err && <p className="err">{err}</p>}
       {!data && !err && <div className="loading-thread"><i />Querying the graph…</div>}
       {data && (
         <section className="panel">
           <div className="bigstats">
-            <div><b>{data.count}</b><span>clearances in the dataset match</span></div>
+            <div><b>{data.count}</b><span>clearances decided after a recall began on their lineage</span></div>
             <div className="amber"><b>{data.direct_supported ?? data.direct}</b><span>cite a directly recalled predicate through a supported citation</span></div>
             <div className="violet"><b>{nCond}</b><span>conditional: every route runs through an unresolved citation</span></div>
           </div>
@@ -206,15 +208,16 @@ export function WatchlistView({ go }) {
         <section className="panel">
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Cleared device</th><th>Received / cleared</th><th>Recalled ancestor</th><th>Recall records</th></tr></thead>
+              <thead><tr><th>Cleared device</th><th>Cleared · recall began</th><th>Recalled ancestor</th><th>Recall records</th></tr></thead>
               <tbody>{shown.map((r) => (
-                <tr key={r.k} className={'click' + (r.conditional ? ' is-conditional' : '')} tabIndex={0} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
+                <tr key={r.k} className={'click' + (r.conditional ? ' is-conditional' : '')} tabIndex={0} data-k={r.k} onClick={() => go('check', r.k)} onKeyDown={rowKey(() => go('check', r.k))}>
                   <td><span className="k mono">{r.k}</span> {r.conditional && <span className="chip tone-violet">conditional</span>}<div className="sub">{r.name}</div><div className="sub">{r.applicant}</div></td>
-                  <td className="num">{fmtDate(r.received_date)}<div className="sub">{fmtDate(r.decision_date)}</div></td>
-                  <td><span className="mono">{r.ancestors.join(', ')}</span><div className="sub">{r.conditional ? 'cited device · citation unresolved' : r.supported_min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
+                  <td className="num" data-testid="watch-dates">Cleared {fmtDate(r.decision_date)}<div className="sub">recall began {fmtDate(r.recall_basis)}{r.days_after_recall != null ? `, ${r.days_after_recall} days earlier` : ''}</div></td>
+                  <td><span className="mono">{(r.conditional ? r.ancestors : r.supported_ancestors || r.ancestors).join(', ')}</span><div className="sub">{r.conditional ? 'cited device · citation unresolved' : r.supported_min_gen === 1 ? 'direct predicate' : 'grand-predicate'}</div></td>
                   <td className="sub">{r.recall_count > 2 && <div className="muted">{r.recall_count} recall routes; first two:</div>}{r.recalls.slice(0, 2).map((x) => (
                     <div key={x.recall_id + x.ancestor}>{x.recall_id} · {x.classification || 'unclassified'} · {x.root_cause} · {fmtDate(x.initiated)}
-                      {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}</div>))}</td>
+                      {x.conditional && <span style={{ color: 'var(--violet)' }}> · conditional</span>}
+                      <div className="muted" title={ATTRIBUTION[x.attribution]?.text} data-testid="watch-attribution">{x.ancestor}: {ATTRIBUTION[x.attribution]?.short}</div></div>))}</td>
                 </tr>))}</tbody>
             </table>
           </div>
