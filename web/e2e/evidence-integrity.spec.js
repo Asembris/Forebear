@@ -52,7 +52,8 @@ test.describe('recall reach timing', () => {
     })
     const body = {
       event: '1', initiated: '2010-01-01',
-      recalled: [{ k: 'K100001', name: 'A', decision_date: '2005-01-01', initiated: '2020-01-01', records: 1, attribution: 'listed_only' }],
+      recalled: [{ k: 'K100001', name: 'A', decision_date: '2005-01-01', initiated: '2020-01-01', records: 1, attribution: 'name_token_absent', linked_before_clearance: false },
+        { k: 'K100002', name: 'B', decision_date: '2012-01-01', initiated: '2010-01-01', records: 1, attribution: 'name_token_match', linked_before_clearance: true }],
       counts: { after_supported: 1, after_conditional: 1, before: 1, same_day: 1, unknown: 1, conditional: 1, mixed: 1 },
       descendants: [
         d('K200001', '2021-01-01', 'after', 'supported'),
@@ -75,7 +76,13 @@ test.describe('recall reach timing', () => {
     await expect(mixed).toContainText('mixed routes')
     await expect(mixed).toContainText('Conditional route only')
     await expect(page.getByTestId('reach-count-undetermined')).toContainText('1 same day, 1 missing a date')
-    await expect(page.getByTestId('reach-stats')).toContainText('model not named')
+    const holders = page.getByTestId('reach-holder')
+    await expect(holders.nth(0)).toContainText('name not found (heuristic)')
+    await expect(holders.nth(1)).toContainText('name match (heuristic)')
+    await expect(holders.nth(1)).toContainText('recall began before this clearance')
+    await expect(holders.nth(1)).toHaveAttribute('title', /does not verify that the recall names this exact model/)
+    await expect(holders.nth(1)).toHaveAttribute('title', /dates alone do not establish whether this cleared model was affected/)
+    await expect(page.getByTestId('reach-stats')).toContainText('not verified model identity')
   })
 })
 
@@ -100,6 +107,23 @@ test.describe('recall attribution', () => {
     await page.locator('.g-node[data-k="K113053"]').click()
     const drawer = page.getByTestId('provenance')
     await expect(drawer).toContainText('Recall records on which FDA lists this 510(k)')
-    await expect(drawer.locator('.recall[data-attribution]').first()).toContainText('FDA-listed')
+    const card = drawer.locator('.recall[data-attribution]').first()
+    await expect(card).toContainText('FDA-listed')
+    await expect(card).toContainText(/name (match|not found) \(heuristic\)|name not checked/)
+    await expect(drawer).not.toContainText(/model named|product family/i)
+  })
+
+  test('a recall that predates the clearance is a caveat, not a conclusion', async ({ page }) => {
+    await page.route('**/api/assess/K252078*', async (route) => {
+      const a = await (await route.fetch()).json()
+      const holder = a.ancestors.find((x) => x.k === 'K113053')
+      holder.recalls = holder.recalls.map((r, i) => (i === 0 ? { ...r, linked_before_clearance: true, link_name_check: 'match' } : r))
+      await route.fulfill({ json: a })
+    })
+    await page.goto('/#/check/K252078')
+    await page.locator('.g-node[data-k="K113053"]').click()
+    const caveat = page.getByTestId('provenance').getByTestId('recall-predates').first()
+    await expect(caveat).toContainText('Recall began before this clearance')
+    await expect(caveat).toContainText('do not establish whether this cleared model was affected')
   })
 })
