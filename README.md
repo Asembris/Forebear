@@ -11,6 +11,7 @@
 [![Frontend](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml)
 [![Security](https://github.com/Asembris/Forebear/actions/workflows/security.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/security.yml)
 [![Hygiene](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml)
+[![CodeQL](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml)
 <br/>
 [![Relate 1.0.2 · single file](https://img.shields.io/badge/Relate_1.0.2-single--file_.rl-7fa2ff?style=flat-square&labelColor=0b1322)](#why-relate)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-7fa2ff?style=flat-square&logo=python&logoColor=f1ebdd&labelColor=0b1322)](requirements.txt)
@@ -252,7 +253,7 @@ flowchart LR
 
 Limits worth knowing: out-of-family predicates are metadata only, so many lineages stop after one or two generations; recall attribution depends on FDA's `k_numbers` lists; the completeness guarantee covers two generations. Full methods and numbers: [evidence quality](docs/EVIDENCE_QUALITY.md) and [agent evaluation](docs/AGENT_EVALUATION.md).
 
-Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web/dist` check and a Playwright suite, `pip-audit`, `npm audit`, gitleaks and actionlint. CodeQL and dependency review are configured but are **skipped while the repository is private**; a skipped run is not a security pass.
+Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web/dist` check and a Playwright suite, `pip-audit`, `npm audit`, gitleaks and actionlint. CodeQL runs on pushes to `main`, on pull requests and weekly, and passes. Dependency review runs on pull requests only while the repository's dependency graph is enabled; when the dependency graph API is unavailable the Security workflow reports the review as **skipped** with a warning, and a skipped run is not a security pass.
 
 ## Go deeper
 
@@ -265,7 +266,7 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 | [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
 | [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K251770](docs/investigations/K251770_I-8203364b195e.md) and [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Data rights, manufacturer-authored text, trademarks, bundled fonts and libraries |
-| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What to confirm before the Devpost entry goes in |
+| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What was confirmed for the submitted Devpost entry, and what to keep true after it |
 
 ## Data, licensing and attribution
 
