@@ -1,11 +1,12 @@
 # Devpost submission checklist
 
-For the maintainer, before the entry goes in. Check each item against the hackathon's own rules page: its deadline (with time zone), eligibility, video length, required technologies and judging criteria take precedence over this list.
+Forebear is public and has been submitted to Devpost: [submission](https://devpost.com/software/forebear), [demo video](https://youtu.be/wi9gg9Cik7Y). This list records what the entry relies on, for the maintainer to keep true after any later change. The hackathon's own rules page (deadline with time zone, eligibility, video length, required technologies and judging criteria) takes precedence over this list.
 
 ## Repository
 
-- [ ] **Judges can open the repo.** It is currently private (CodeQL and dependency review are skipped for that reason). Make it public, or grant access the way the rules require.
-- [ ] **If it goes public**, re-run the Security workflow and check that CodeQL and dependency review pass. The README must not call a skipped run a pass.
+- [x] **Judges can open the repo.** The repository is public.
+- [x] **CodeQL passes** on the public repository.
+- [ ] **Dependency review** runs on pull requests only while the repository's dependency graph is enabled (repository settings, Advanced Security). Without it the Security workflow reports the review as skipped with a warning. The README must not call a skipped run a pass.
 - [ ] **`main` is green.** Backend, Frontend, Security and Hygiene badges at the top of the README.
 - [ ] **Fresh-clone run.** Follow the [README walkthrough](../README.md#judge-walkthrough) on a clean machine or folder, by Docker and natively. <http://127.0.0.1:8765/api/health> returns `"ok": true` and [`#/check/K251770`](http://127.0.0.1:8765/#/check/K251770) shows depth 1 and depth 2 side by side.
 - [ ] **No secrets.** `.env` is gitignored and gitleaks runs in CI. Keep `.env`, API keys and terminal history out of the video and screenshots.

@@ -4,10 +4,14 @@
 
 <br/>
 
+[![Watch: demo video](https://img.shields.io/badge/watch-demo_video-ff0000?style=for-the-badge&logo=youtube&logoColor=white&labelColor=0b1322)](https://youtu.be/wi9gg9Cik7Y)
+[![Devpost: submission](https://img.shields.io/badge/devpost-submission-003e54?style=for-the-badge&logo=devpost&logoColor=white&labelColor=0b1322)](https://devpost.com/software/forebear)
+<br/>
 [![Backend](https://github.com/Asembris/Forebear/actions/workflows/backend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/backend.yml)
 [![Frontend](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/frontend.yml)
 [![Security](https://github.com/Asembris/Forebear/actions/workflows/security.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/security.yml)
 [![Hygiene](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/hygiene.yml)
+[![CodeQL](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml/badge.svg)](https://github.com/Asembris/Forebear/actions/workflows/codeql.yml)
 <br/>
 [![Relate 1.0.2 · single file](https://img.shields.io/badge/Relate_1.0.2-single--file_.rl-7fa2ff?style=flat-square&labelColor=0b1322)](#why-relate)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-7fa2ff?style=flat-square&logo=python&logoColor=f1ebdd&labelColor=0b1322)](requirements.txt)
@@ -81,6 +85,8 @@ BreathePal Bilevel (K252078, the case in the banner above) is the simpler versio
 Every value in this table is asserted against the shipped store by [`tests/test_story_facts.py`](tests/test_story_facts.py) and [`tests/test_shipped_evidence.py`](tests/test_shipped_evidence.py). FDA attributes these recalls to product *families* that list K113053, so the signal is "FDA links a Class I design recall to the predicate's clearance", not "this exact model was recalled".
 
 ## Judge walkthrough
+
+Prefer to watch first? The [demo video](https://youtu.be/wi9gg9Cik7Y) shows Forebear running, and the [Devpost submission](https://devpost.com/software/forebear) has the project write-up.
 
 No API key, external database or other service is needed: the graph (`data/forebear.rl`) and the web build (`web/dist`) are committed, so nothing is fetched from FDA at run time. Pick one way to run it.
 
@@ -247,7 +253,7 @@ flowchart LR
 
 Limits worth knowing: out-of-family predicates are metadata only, so many lineages stop after one or two generations; recall attribution depends on FDA's `k_numbers` lists; the completeness guarantee covers two generations. Full methods and numbers: [evidence quality](docs/EVIDENCE_QUALITY.md) and [agent evaluation](docs/AGENT_EVALUATION.md).
 
-Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web/dist` check and a Playwright suite, `pip-audit`, `npm audit`, gitleaks and actionlint. CodeQL and dependency review are configured but are **skipped while the repository is private**; a skipped run is not a security pass.
+Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web/dist` check and a Playwright suite, `pip-audit`, `npm audit`, gitleaks and actionlint. CodeQL runs on pushes to `main`, on pull requests and weekly, and passes. Dependency review runs on pull requests only while the repository's dependency graph is enabled; when the dependency graph API is unavailable the Security workflow reports the review as **skipped** with a warning, and a skipped run is not a security pass.
 
 ## Go deeper
 
@@ -260,7 +266,7 @@ Continuous integration runs ruff and `pytest` (Ubuntu and Windows), a stale-`web
 | [UX: "The Invisible Thread"](docs/UX_EXPERIENCE.md) | The opening film, the workspace and the design system |
 | [Example investigations](docs/investigations/) | Four committed reports with tool traces, including [K251770](docs/investigations/K251770_I-8203364b195e.md) and [K252078](docs/investigations/K252078_I-ce598786bd48.md) |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Data rights, manufacturer-authored text, trademarks, bundled fonts and libraries |
-| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What to confirm before the Devpost entry goes in |
+| [Submission checklist](docs/SUBMISSION_CHECKLIST.md) | What was confirmed for the submitted Devpost entry, and what to keep true after it |
 
 ## Data, licensing and attribution
 
